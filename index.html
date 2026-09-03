@@ -1,165 +1,23 @@
-<!-- ADMIN DASHBOARD: igaragara kuri admin gusa -->
+majyamberepierre00@gmail.com
+<!-- ADMIN DASHBOARD -->
 <div id="adminDashboard" style="display:none;">
   <h2>Admin Dashboard</h2>
-
   <p>Murakaza neza Admin 👋</p>
 
-  <button onclick="showAdminMessage()">Manage IsokoHub</button>
+  <a href="admin.html">
+    <button>Open Admin Dashboard</button>
+  </a>
 </div>
 
 <script>
-  // Email yemerewe kubona Admin Dashboard
+  // Email ya Admin
   const ADMIN_EMAIL = "majyamberepierre00@gmail.com";
 
-  // Shyiramo email y'umuntu winjiye hano
+  // Hindura iyi value uyishyiremo email y'umukoresha winjiye
   const currentUserEmail = localStorage.getItem("userEmail");
 
+  // Admin gusa ni we ubona Dashboard
   if (currentUserEmail === ADMIN_EMAIL) {
     document.getElementById("adminDashboard").style.display = "block";
   }
-
-  function showAdminMessage() {
-    alert("Welcome to IsokoHub Admin Dashboard!");
-  }
-</script> html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>IsokoHub Global</title><link rel="stylesheet" href="style.css"></head><body><header><div class="nav"><div class="logo">IsokoHub <span>🌍</span></div><input id="search" placeholder="Search products, services or sellers…"><button onclick="searchProducts()">Search</button><button class="ghost" onclick="openCart()">🛒 Cart (<span id="cartCount">0</span>)</button></div></header><section class="hero"><div><p class="tag">GLOBAL MARKETPLACE</p><h1>Buy. Sell. Grow.<br>Anywhere in the world.</h1><p>Discover products and connect with sellers worldwide.</p><button class="primary" onclick="document.getElementById('products').scrollIntoView()">Shop now</button><button class="secondary" onclick="alert('Seller registration will be connected to the backend in the next version.')">Sell on IsokoHub</button></div></section><section class="wrap"><h2>Categories</h2><div class="cats"><button onclick="filter('Fashion')">👕 Fashion</button><button onclick="filter('Electronics')">📱 Electronics</button><button onclick="filter('Home')">🏠 Home</button><button onclick="filter('Beauty')">💄 Beauty</button><button onclick="filter('Vehicles')">🚗 Vehicles</button><button onclick="filter('Services')">🛠️ Services</button></div><div class="row"><h2 id="products">Featured products</h2><button class="link" onclick="render(products)">View all</button></div><div id="grid" class="grid"></div></section><footer><b>IsokoHub 🌍</b><p>Global marketplace • Buyer • Seller • Admin</p><small>Demo version — payments, database and live deployment are not connected yet.</small></footer><script src="app.js"></script></body></html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IsokoHub</title>
-
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f5f6fa;
-    }
-
-    .admin-dashboard {
-      display: none;
-      max-width: 900px;
-      margin: 30px auto;
-      padding: 25px;
-    }
-
-    .admin-dashboard h1 {
-      margin-bottom: 20px;
-    }
-
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 15px;
-    }
-
-    .card {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
-
-    .card h2 {
-      margin: 0 0 8px;
-    }
-
-    .profile {
-      max-width: 900px;
-      margin: 30px auto;
-      padding: 25px;
-    }
-
-    button {
-      padding: 12px 18px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      background: #111827;
-      color: white;
-    }
-  </style>
-</head>
-
-<body>
-
-  <!-- ISOKOHUB PROFILE -->
-  <div class="profile">
-    <h1>IsokoHub</h1>
-    <p>Welcome to your profile.</p>
-
-    <p id="userEmail"></p>
-
-    <button onclick="openAdmin()">Admin Dashboard</button>
-  </div>
-
-
-  <!-- ADMIN DASHBOARD -->
-  <div class="admin-dashboard" id="adminDashboard">
-
-    <h1>Admin Dashboard</h1>
-
-    <p>Welcome, Admin 👋</p>
-
-    <div class="cards">
-
-      <div class="card">
-        <h2 id="users">0</h2>
-        <p>Users</p>
-      </div>
-
-      <div class="card">
-        <h2 id="products">0</h2>
-        <p>Products</p>
-      </div>
-
-      <div class="card">
-        <h2 id="orders">0</h2>
-        <p>Orders</p>
-      </div>
-
-      <div class="card">
-        <h2 id="sellers">0</h2>
-        <p>Sellers</p>
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <script>
-
-    // EMAIL YEMEWE NA ADMIN
-    const ADMIN_EMAIL = "majyamberepierre00@gmail.com";
-
-    // EMAIL Y'UMUKORESHA
-    // Hindura iyi email uyishyireho email yawe ukoresha muri profile
-    const currentUserEmail = "majyamberepierre00@gmail.com";
-
-    document.getElementById("userEmail").textContent =
-      "Email: " + currentUserEmail;
-
-
-    function openAdmin() {
-
-      if (currentUserEmail.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
-
-        document.getElementById("adminDashboard").style.display = "block";
-
-        window.scrollTo({
-          top: document.getElementById("adminDashboard").offsetTop,
-          behavior: "smooth"
-        });
-
-      } else {
-
-        alert("Access denied. Admin only.");
-
-      }
-    }
-
-  </script>
-
-</body>
-    </html>
+</script>
