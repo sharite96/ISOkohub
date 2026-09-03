@@ -1,5 +1,27 @@
 majyamberepierre00@gmail.com
 <!-- ADMIN DASHBOARD -->
+<div id="adminDashboardLink" style="display:none;">
+  <button onclick="openAdminDashboard()">
+    Admin Dashboard
+  </button>
+</div>
+
+<script>
+  // Email ya Admin
+  const ADMIN_EMAIL = "majyamberepierre00@gmail.com";
+
+  // Hindura aha niba system yawe ibika email ahandi
+  const loggedInEmail = localStorage.getItem("userEmail");
+
+  // Admin gusa niwe ubona button
+  if (loggedInEmail === ADMIN_EMAIL) {
+    document.getElementById("adminDashboardLink").style.display = "block";
+  }
+
+  function openAdminDashboard() {
+    window.location.href = "admin.html";
+  }
+</script>!-- ADMIN DASHBOARD -->
 <div id="adminDashboard" style="display:none;">
   <h2>Admin Dashboard</h2>
   <p>Murakaza neza Admin 👋</p>
