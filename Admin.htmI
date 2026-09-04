@@ -14,183 +14,1005 @@
     }
 
     body {
-      background: #f4f6f8;
-      color: #222;
+      background: #f3f4f6;
+      color: #111827;
     }
 
-    .header {
+    /* =========================
+       LOGIN GATE
+    ========================== */
+
+    #loginGate {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
       background: #111827;
-      color: white;
-      padding: 18px;
-      text-align: center;
     }
 
-    .header h1 {
-      font-size: 24px;
-    }
-
-    .container {
-      padding: 20px;
-      max-width: 1100px;
-      margin: auto;
-    }
-
-    .welcome {
+    .login-box {
+      width: 100%;
+      max-width: 420px;
       background: white;
-      padding: 20px;
-      border-radius: 12px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 20px 50px rgba(0,0,0,.25);
     }
 
-    .welcome h2 {
+    .login-box h1 {
+      text-align: center;
       margin-bottom: 8px;
     }
 
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 15px;
+    .login-box p {
+      text-align: center;
+      color: #6b7280;
       margin-bottom: 25px;
     }
 
-    .card {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
-
-    .card h3 {
-      font-size: 15px;
-      color: #666;
-      margin-bottom: 10px;
-    }
-
-    .card p {
-      font-size: 28px;
-      font-weight: bold;
-    }
-
-    .section {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
-
-    .section h2 {
+    .login-box input {
+      width: 100%;
+      padding: 14px;
       margin-bottom: 15px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 16px;
     }
 
-    .button {
-      display: inline-block;
-      padding: 12px 18px;
-      margin: 5px;
+    .login-box button {
+      width: 100%;
+      padding: 14px;
       border: none;
       border-radius: 8px;
-      background: #2563eb;
+      background: #111827;
       color: white;
-      text-decoration: none;
+      font-size: 16px;
       cursor: pointer;
     }
 
-    .button:hover {
-      background: #1d4ed8;
+    .login-box button:hover {
+      background: #374151;
     }
 
-    .danger {
-      background: #dc2626;
-    }
-
-    .danger:hover {
-      background: #b91c1c;
-    }
-
-    .footer {
+    #loginMessage {
+      margin-top: 15px;
       text-align: center;
+      color: #dc2626;
+    }
+
+    /* =========================
+       DASHBOARD
+    ========================== */
+
+    #adminApp {
+      display: none;
+    }
+
+    header {
+      background: #111827;
+      color: white;
+      padding: 18px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    header h1 {
+      font-size: 22px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .role {
+      background: #374151;
+      padding: 7px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+    }
+
+    .logout {
+      background: #dc2626;
+      color: white;
+      border: none;
+      padding: 9px 14px;
+      border-radius: 7px;
+      cursor: pointer;
+    }
+
+    .layout {
+      display: flex;
+      min-height: calc(100vh - 70px);
+    }
+
+    aside {
+      width: 230px;
+      background: white;
+      border-right: 1px solid #e5e7eb;
+      padding: 20px 12px;
+    }
+
+    aside button {
+      width: 100%;
+      padding: 13px;
+      margin-bottom: 8px;
+      border: none;
+      background: transparent;
+      text-align: left;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    aside button:hover,
+    aside button.active {
+      background: #e5e7eb;
+    }
+
+    main {
+      flex: 1;
+      padding: 25px;
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    /* =========================
+       STATISTICS
+    ========================== */
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 22px;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .stat-card h3 {
+      color: #6b7280;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .stat-card strong {
+      font-size: 28px;
+    }
+
+    /* =========================
+       TABLE
+    ========================== */
+
+    .panel {
+      background: white;
       padding: 20px;
-      color: #777;
+      border-radius: 12px;
+      margin-top: 20px;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th,
+    td {
+      padding: 13px;
+      border-bottom: 1px solid #e5e7eb;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    th {
+      background: #f9fafb;
+    }
+
+    .btn {
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-right: 5px;
+    }
+
+    .approve {
+      background: #16a34a;
+      color: white;
+    }
+
+    .reject {
+      background: #dc2626;
+      color: white;
+    }
+
+    .view {
+      background: #2563eb;
+      color: white;
+    }
+
+    /* =========================
+       REPORT CARDS
+    ========================== */
+
+    .report {
+      padding: 15px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      margin-top: 12px;
+      background: white;
+    }
+
+    /* =========================
+       MOBILE
+    ========================== */
+
+    @media (max-width: 900px) {
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 700px) {
+      .layout {
+        flex-direction: column;
+      }
+
+      aside {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      aside button {
+        display: inline-block;
+        width: auto;
+        margin-right: 5px;
+      }
+
+      main {
+        padding: 15px;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      header {
+        padding: 15px;
+      }
+
+      header h1 {
+        font-size: 18px;
+      }
+
+      .role {
+        display: none;
+      }
     }
   </style>
 </head>
 
 <body>
 
-  <div class="header">
-    <h1>IsokoHub Admin Dashboard</h1>
+<!-- ==================================
+     ADMIN LOGIN GATE
+=================================== -->
+
+<div id="loginGate">
+
+  <div class="login-box">
+
+    <h1>🔐 IsokoHub</h1>
+
+    <p>Admin Dashboard Access</p>
+
+    <input
+      type="text"
+      id="adminUsername"
+      placeholder="Admin username"
+      autocomplete="username"
+    >
+
+    <input
+      type="password"
+      id="adminPassword"
+      placeholder="Admin password"
+      autocomplete="current-password"
+    >
+
+    <button onclick="adminLogin()">
+      Login as Admin
+    </button>
+
+    <div id="loginMessage"></div>
+
   </div>
 
-  <div class="container">
+</div>
 
-    <div class="welcome">
-      <h2>Welcome, Admin 👋</h2>
-      <p>Manage your IsokoHub marketplace from this dashboard.</p>
-    </div>
 
-    <div class="cards">
+<!-- ==================================
+     ADMIN APPLICATION
+=================================== -->
 
-      <div class="card">
-        <h3>Total Users</h3>
-        <p>0</p>
-      </div>
+<div id="adminApp">
 
-      <div class="card">
-        <h3>Total Products</h3>
-        <p>0</p>
-      </div>
+  <header>
 
-      <div class="card">
-        <h3>Total Sellers</h3>
-        <p>0</p>
-      </div>
+    <h1>⚙️ IsokoHub Admin</h1>
 
-      <div class="card">
-        <h3>Orders</h3>
-        <p>0</p>
-      </div>
+    <div class="header-right">
 
-    </div>
+      <span class="role">
+        ADMIN
+      </span>
 
-    <div class="section">
-      <h2>Management</h2>
-
-      <a href="#" class="button">Users</a>
-      <a href="#" class="button">Products</a>
-      <a href="#" class="button">Sellers</a>
-      <a href="#" class="button">Orders</a>
-      <a href="#" class="button">Messages</a>
-    </div>
-
-    <div class="section">
-      <h2>Admin Actions</h2>
-
-      <button class="button" onclick="alert('Product management coming soon')">
-        Manage Products
-      </button>
-
-      <button class="button" onclick="alert('User management coming soon')">
-        Manage Users
-      </button>
-
-      <button class="button danger" onclick="logout()">
+      <button
+        class="logout"
+        onclick="adminLogout()"
+      >
         Logout
       </button>
+
     </div>
 
+  </header>
+
+
+  <div class="layout">
+
+    <!-- SIDEBAR -->
+
+    <aside>
+
+      <button
+        class="active"
+        onclick="showSection('dashboard', this)"
+      >
+        📊 Dashboard
+      </button>
+
+      <button
+        onclick="showSection('products', this)"
+      >
+        📦 Products
+      </button>
+
+      <button
+        onclick="showSection('users', this)"
+      >
+        👥 Users
+      </button>
+
+      <button
+        onclick="showSection('reports', this)"
+      >
+        🚨 Reports
+      </button>
+
+      <button
+        onclick="showSection('messages', this)"
+      >
+        💬 Messages
+      </button>
+
+      <button
+        onclick="showSection('settings', this)"
+      >
+        ⚙️ Settings
+      </button>
+
+    </aside>
+
+
+    <!-- MAIN -->
+
+    <main>
+
+      <!-- =========================
+           DASHBOARD
+      ========================== -->
+
+      <section
+        id="dashboard"
+        class="section active"
+      >
+
+        <h2>Dashboard Overview</h2>
+
+        <div class="stats">
+
+          <div class="stat-card">
+            <h3>Total Users</h3>
+            <strong id="usersCount">1,248</strong>
+          </div>
+
+          <div class="stat-card">
+            <h3>Total Products</h3>
+            <strong id="productsCount">356</strong>
+          </div>
+
+          <div class="stat-card">
+            <h3>Pending Products</h3>
+            <strong id="pendingCount">24</strong>
+          </div>
+
+          <div class="stat-card">
+            <h3>Reports</h3>
+            <strong id="reportsCount">8</strong>
+          </div>
+
+        </div>
+
+
+        <div class="panel">
+
+          <h3>Recent Activity</h3>
+
+          <table>
+
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Action</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              <tr>
+                <td>Seller 001</td>
+                <td>Added a product</td>
+                <td>Today</td>
+              </tr>
+
+              <tr>
+                <td>Buyer 002</td>
+                <td>Created account</td>
+                <td>Today</td>
+              </tr>
+
+              <tr>
+                <td>Seller 003</td>
+                <td>Updated product</td>
+                <td>Yesterday</td>
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           PRODUCTS
+      ========================== -->
+
+      <section
+        id="products"
+        class="section"
+      >
+
+        <h2>📦 Product Management</h2>
+
+        <div class="panel">
+
+          <table>
+
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Seller</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              <tr>
+                <td>iPhone 15 Pro Max</td>
+                <td>Seller A</td>
+                <td>RWF 1,200,000</td>
+                <td>Pending</td>
+
+                <td>
+
+                  <button
+                    class="btn approve"
+                    onclick="approveProduct(this)"
+                  >
+                    Approve
+                  </button>
+
+                  <button
+                    class="btn reject"
+                    onclick="rejectProduct(this)"
+                  >
+                    Reject
+                  </button>
+
+                </td>
+
+              </tr>
+
+              <tr>
+                <td>Samsung Galaxy</td>
+                <td>Seller B</td>
+                <td>RWF 700,000</td>
+                <td>Pending</td>
+
+                <td>
+
+                  <button
+                    class="btn approve"
+                    onclick="approveProduct(this)"
+                  >
+                    Approve
+                  </button>
+
+                  <button
+                    class="btn reject"
+                    onclick="rejectProduct(this)"
+                  >
+                    Reject
+                  </button>
+
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           USERS
+      ========================== -->
+
+      <section
+        id="users"
+        class="section"
+      >
+
+        <h2>👥 User Management</h2>
+
+        <div class="panel">
+
+          <table>
+
+            <thead>
+
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+
+            </thead>
+
+            <tbody>
+
+              <tr>
+                <td>John Doe</td>
+                <td>john@example.com</td>
+                <td>Seller</td>
+                <td>Active</td>
+
+                <td>
+                  <button
+                    class="btn view"
+                    onclick="viewUser('John Doe')"
+                  >
+                    View
+                  </button>
+                </td>
+
+              </tr>
+
+              <tr>
+                <td>Jane Doe</td>
+                <td>jane@example.com</td>
+                <td>Buyer</td>
+                <td>Active</td>
+
+                <td>
+                  <button
+                    class="btn view"
+                    onclick="viewUser('Jane Doe')"
+                  >
+                    View
+                  </button>
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           REPORTS
+      ========================== -->
+
+      <section
+        id="reports"
+        class="section"
+      >
+
+        <h2>🚨 Reports</h2>
+
+        <div class="report">
+          <strong>Report #001</strong>
+          <p>Suspicious product listing.</p>
+
+          <button
+            class="btn view"
+            onclick="handleReport(1)"
+          >
+            Review
+          </button>
+        </div>
+
+        <div class="report">
+          <strong>Report #002</strong>
+          <p>User reported inappropriate behavior.</p>
+
+          <button
+            class="btn view"
+            onclick="handleReport(2)"
+          >
+            Review
+          </button>
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           MESSAGES
+      ========================== -->
+
+      <section
+        id="messages"
+        class="section"
+      >
+
+        <h2>💬 Messages</h2>
+
+        <div class="panel">
+
+          <p>
+            Admin messages and platform notifications
+            will appear here.
+          </p>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           SETTINGS
+      ========================== -->
+
+      <section
+        id="settings"
+        class="section"
+      >
+
+        <h2>⚙️ Admin Settings</h2>
+
+        <div class="panel">
+
+          <h3>Access Control</h3>
+
+          <p style="margin-top:10px;">
+            Current role:
+            <strong>ADMIN</strong>
+          </p>
+
+          <p style="margin-top:10px;">
+            Dashboard access:
+            <strong>Enabled</strong>
+          </p>
+
+          <p style="margin-top:10px;">
+            Session protection:
+            <strong>Enabled</strong>
+          </p>
+
+        </div>
+
+      </section>
+
+    </main>
+
   </div>
 
-  <div class="footer">
-    © 2026 IsokoHub — Admin Panel
-  </div>
+</div>
 
-  <script>
-    function logout() {
-      alert("You have been logged out.");
-      window.location.href = "index.html";
+
+<script>
+
+/* ==================================
+   ADMIN CREDENTIALS
+   ==================================
+
+   IMPORTANT:
+   These are DEMO credentials only.
+
+   Real IsokoHub security should use
+   backend authentication.
+=================================== */
+
+const ADMIN_USERNAME = "admin";
+const ADMIN_PASSWORD = "IsokoHubAdmin2026";
+
+
+/* ==================================
+   SESSION CHECK
+=================================== */
+
+function checkAdminSession() {
+
+  const session =
+    localStorage.getItem("isokoHubAdminSession");
+
+  if (session === "authenticated") {
+
+    showAdminDashboard();
+
+  } else {
+
+    showLoginGate();
+
+  }
+
+}
+
+
+/* ==================================
+   LOGIN
+=================================== */
+
+function adminLogin() {
+
+  const username =
+    document.getElementById("adminUsername").value.trim();
+
+  const password =
+    document.getElementById("adminPassword").value;
+
+  const message =
+    document.getElementById("loginMessage");
+
+
+  if (
+    username === ADMIN_USERNAME &&
+    password === ADMIN_PASSWORD
+  ) {
+
+    localStorage.setItem(
+      "isokoHubAdminSession",
+      "authenticated"
+    );
+
+    showAdminDashboard();
+
+  } else {
+
+    message.textContent =
+      "❌ Invalid admin username or password.";
+
+  }
+
+}
+
+
+/* ==================================
+   SHOW DASHBOARD
+=================================== */
+
+function showAdminDashboard() {
+
+  document.getElementById("loginGate")
+    .style.display = "none";
+
+  document.getElementById("adminApp")
+    .style.display = "block";
+
+}
+
+
+/* ==================================
+   SHOW LOGIN
+=================================== */
+
+function showLoginGate() {
+
+  document.getElementById("loginGate")
+    .style.display = "flex";
+
+  document.getElementById("adminApp")
+    .style.display = "none";
+
+}
+
+
+/* ==================================
+   LOGOUT
+=================================== */
+
+function adminLogout() {
+
+  localStorage.removeItem(
+    "isokoHubAdminSession"
+  );
+
+  showLoginGate();
+
+}
+
+
+/* ==================================
+   SECTION NAVIGATION
+=================================== */
+
+function showSection(sectionId, button) {
+
+  const sections =
+    document.querySelectorAll(".section");
+
+  sections.forEach(section => {
+    section.classList.remove("active");
+  });
+
+
+  document
+    .getElementById(sectionId)
+    .classList.add("active");
+
+
+  const buttons =
+    document.querySelectorAll("aside button");
+
+  buttons.forEach(btn => {
+    btn.classList.remove("active");
+  });
+
+
+  button.classList.add("active");
+
+}
+
+
+/* ==================================
+   PRODUCT ACTIONS
+=================================== */
+
+function approveProduct(button) {
+
+  const row =
+    button.closest("tr");
+
+  row.cells[3].textContent =
+    "Approved";
+
+  button.remove();
+
+  alert("✅ Product approved.");
+
+}
+
+
+function rejectProduct(button) {
+
+  const row =
+    button.closest("tr");
+
+  row.cells[3].textContent =
+    "Rejected";
+
+  button.remove();
+
+  alert("❌ Product rejected.");
+
+}
+
+
+/* ==================================
+   USER VIEW
+=================================== */
+
+function viewUser(name) {
+
+  alert(
+    "User profile: " + name
+  );
+
+}
+
+
+/* ==================================
+   REPORT
+=================================== */
+
+function handleReport(id) {
+
+  alert(
+    "Opening report #" + id
+  );
+
+}
+
+
+/* ==================================
+   PROTECTION
+=================================== */
+
+document.addEventListener(
+  "visibilitychange",
+  function() {
+
+    if (
+      document.visibilityState === "visible"
+    ) {
+
+      checkAdminSession();
+
     }
-  </script>
+
+  }
+);
+
+
+/* ==================================
+   START
+=================================== */
+
+checkAdminSession();
+
+</script>
 
 </body>
 </html>
