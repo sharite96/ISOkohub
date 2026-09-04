@@ -2,1066 +2,919 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IsokoHub - Marketplace</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>IsokoHub | Global Marketplace</title>
 
 <style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-  font-family:Arial,sans-serif;
-}
-
-body{
-  background:#f4f7fb;
-  color:#111827;
-}
-
-header{
-  background:#111827;
-  color:white;
-  padding:16px 5%;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:15px;
-  flex-wrap:wrap;
-  position:sticky;
-  top:0;
-  z-index:1000;
-}
-
-.logo{
-  font-size:25px;
-  font-weight:bold;
-}
-
-.search{
-  flex:1;
-  max-width:500px;
-}
-
-.search input{
-  width:100%;
-  padding:12px 16px;
-  border:0;
-  border-radius:25px;
-  outline:none;
-}
-
-nav{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-}
-
-nav button{
-  background:transparent;
-  border:0;
-  color:white;
-  padding:9px 12px;
-  cursor:pointer;
-  border-radius:7px;
-}
-
-nav button:hover{
-  background:#374151;
-}
-
-.container{
-  width:90%;
-  max-width:1200px;
-  margin:30px auto;
-}
-
-.hero{
-  background:linear-gradient(135deg,#2563eb,#111827);
-  color:white;
-  padding:50px 30px;
-  border-radius:18px;
-  margin-bottom:30px;
-}
-
-.hero h1{
-  font-size:40px;
-  margin-bottom:12px;
-}
-
-.hero p{
-  max-width:650px;
-  line-height:1.6;
-  margin-bottom:20px;
-}
-
-.btn{
-  padding:12px 18px;
-  border:0;
-  border-radius:8px;
-  cursor:pointer;
-  font-weight:bold;
-}
-
-.btn-primary{
-  background:#2563eb;
-  color:white;
-}
-
-.btn-light{
-  background:white;
-  color:#111827;
-}
-
-.section-title{
-  margin:30px 0 15px;
-  font-size:25px;
-}
-
-.categories{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-  gap:15px;
-}
-
-.category{
-  background:white;
-  padding:25px 15px;
-  text-align:center;
-  border-radius:12px;
-  box-shadow:0 4px 15px rgba(0,0,0,.06);
-  cursor:pointer;
-}
-
-.category:hover{
-  transform:translateY(-3px);
-}
-
-.products{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:20px;
-}
-
-.product{
-  background:white;
-  border-radius:14px;
-  overflow:hidden;
-  box-shadow:0 4px 15px rgba(0,0,0,.07);
-}
-
-.product-img{
-  height:160px;
-  background:#e5e7eb;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:55px;
-}
-
-.product-info{
-  padding:16px;
-}
-
-.price{
-  color:#2563eb;
-  font-size:20px;
-  font-weight:bold;
-  margin:8px 0;
-}
-
-.page{
-  display:none;
-}
-
-.page.active{
-  display:block;
-}
-
-.form-box{
-  background:white;
-  max-width:650px;
-  margin:auto;
-  padding:25px;
-  border-radius:15px;
-  box-shadow:0 5px 20px rgba(0,0,0,.08);
-}
-
-.form-box input,
-.form-box textarea,
-.form-box select{
-  width:100%;
-  padding:12px;
-  margin:8px 0 15px;
-  border:1px solid #d1d5db;
-  border-radius:8px;
-}
-
-footer{
-  margin-top:50px;
-  background:#111827;
-  color:white;
-  padding:35px 5%;
-  text-align:center;
-}
-
-/* =========================
-   ADMIN DASHBOARD
-========================= */
-
-#adminPage{
-  background:#eef2f7;
-  min-height:100vh;
-}
-
-.admin-layout{
-  display:flex;
-  min-height:100vh;
-}
-
-.admin-sidebar{
-  width:250px;
-  background:#111827;
-  color:white;
-  padding:25px 15px;
-  position:sticky;
-  top:0;
-  height:100vh;
-}
-
-.admin-logo{
-  font-size:23px;
-  font-weight:bold;
-  padding:10px;
-  margin-bottom:25px;
-}
-
-.admin-menu button{
-  width:100%;
-  text-align:left;
-  background:transparent;
-  color:#d1d5db;
-  border:0;
-  padding:13px;
-  margin:3px 0;
-  border-radius:8px;
-  cursor:pointer;
-}
-
-.admin-menu button:hover,
-.admin-menu button.active{
-  background:#2563eb;
-  color:white;
-}
-
-.admin-main{
-  flex:1;
-  padding:25px;
-  overflow:hidden;
-}
-
-.admin-topbar{
-  background:white;
-  padding:18px 22px;
-  border-radius:14px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:15px;
-  margin-bottom:25px;
-  box-shadow:0 3px 12px rgba(0,0,0,.05);
-}
-
-.admin-topbar h2{
-  font-size:24px;
-}
-
-.admin-user{
-  background:#eef2ff;
-  padding:10px 15px;
-  border-radius:20px;
-  color:#3730a3;
-  font-weight:bold;
-}
-
-.stats{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:18px;
-  margin-bottom:25px;
-}
-
-.stat-card{
-  background:white;
-  padding:22px;
-  border-radius:15px;
-  box-shadow:0 4px 15px rgba(0,0,0,.06);
-}
-
-.stat-card .icon{
-  font-size:30px;
-}
-
-.stat-card h3{
-  font-size:28px;
-  margin:10px 0 5px;
-}
-
-.stat-card p{
-  color:#6b7280;
-}
-
-.admin-grid{
-  display:grid;
-  grid-template-columns:2fr 1fr;
-  gap:20px;
-}
-
-.admin-card{
-  background:white;
-  padding:22px;
-  border-radius:15px;
-  box-shadow:0 4px 15px rgba(0,0,0,.06);
-  margin-bottom:20px;
-}
-
-.admin-card h3{
-  margin-bottom:18px;
-}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-}
-
-th,td{
-  padding:13px;
-  text-align:left;
-  border-bottom:1px solid #e5e7eb;
-}
-
-th{
-  background:#f9fafb;
-}
-
-.badge{
-  padding:5px 9px;
-  border-radius:20px;
-  font-size:12px;
-  font-weight:bold;
-}
-
-.badge-success{
-  background:#dcfce7;
-  color:#166534;
-}
-
-.badge-warning{
-  background:#fef3c7;
-  color:#92400e;
-}
-
-.badge-danger{
-  background:#fee2e2;
-  color:#991b1b;
-}
-
-.admin-actions{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-}
-
-.admin-actions button{
-  padding:8px 12px;
-  border:0;
-  border-radius:6px;
-  cursor:pointer;
-}
-
-.approve{
-  background:#dcfce7;
-  color:#166534;
-}
-
-.delete{
-  background:#fee2e2;
-  color:#991b1b;
-}
-
-.admin-section{
-  display:none;
-}
-
-.admin-section.active{
-  display:block;
-}
-
-.activity{
-  display:flex;
-  gap:12px;
-  padding:12px 0;
-  border-bottom:1px solid #eee;
-}
-
-.activity-icon{
-  width:38px;
-  height:38px;
-  background:#e0e7ff;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.chart{
-  height:230px;
-  display:flex;
-  align-items:end;
-  justify-content:space-around;
-  gap:12px;
-  padding:20px 5px 0;
-}
-
-.bar{
-  width:30px;
-  background:#2563eb;
-  border-radius:6px 6px 0 0;
-}
-
-.mobile-admin-btn{
-  display:none;
-}
-
-/* RESPONSIVE */
-
-@media(max-width:800px){
-  .hero h1{
-    font-size:30px;
-  }
-
-  .admin-sidebar{
-    position:fixed;
-    left:-260px;
-    z-index:2000;
-    transition:.3s;
-  }
-
-  .admin-sidebar.open{
-    left:0;
-  }
-
-  .mobile-admin-btn{
-    display:block;
-    background:#111827;
-    color:white;
-    border:0;
-    padding:10px;
-    border-radius:7px;
-    cursor:pointer;
-  }
-
-  .admin-main{
-    padding:15px;
-    width:100%;
-  }
-
-  .admin-grid{
-    grid-template-columns:1fr;
-  }
-
-  table{
-    font-size:13px;
-  }
-
-  th,td{
-    padding:9px;
-  }
-
-  nav{
-    width:100%;
-    justify-content:center;
-  }
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:#f4f7fb;color:#111827}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+header{background:#111827;color:#fff;padding:15px 5%;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.logo{font-size:24px;font-weight:800;white-space:nowrap}
+.search{flex:1;min-width:220px}
+.search input{width:100%;padding:12px 15px;border:0;border-radius:8px;outline:0}
+nav{display:flex;gap:5px;flex-wrap:wrap}
+nav button{background:transparent;color:#fff;border:0;padding:9px 7px}
+.container{width:90%;max-width:1250px;margin:25px auto}
+.page{display:none}
+.page.active{display:block}
+.hero{background:#fff;border-radius:15px;padding:38px;margin-bottom:25px}
+.hero h1{font-size:36px;margin-bottom:12px}
+.hero p{color:#6b7280;line-height:1.6;margin-bottom:20px}
+.btn{border:0;border-radius:8px;padding:11px 16px;font-weight:700;margin:3px}
+.primary{background:#2563eb;color:#fff}
+.dark{background:#111827;color:#fff}
+.success{background:#16a34a;color:#fff}
+.danger{background:#dc2626;color:#fff}
+.light{background:#e5e7eb;color:#111827}
+.section-title{display:flex;justify-content:space-between;align-items:center;margin:20px 0 15px}
+.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+.product{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 3px 12px rgba(0,0,0,.07)}
+.product-img{height:160px;background:#e5e7eb;display:flex;align-items:center;justify-content:center;font-size:55px}
+.product-body{padding:16px}
+.product-body h3{margin-bottom:8px}
+.product-body p{color:#6b7280;line-height:1.4}
+.price{color:#2563eb;font-size:20px;font-weight:800;margin:10px 0}
+.location{color:#6b7280;font-size:14px;margin-bottom:10px}
+.card{background:#fff;padding:24px;border-radius:12px;margin-bottom:20px}
+.form{max-width:700px;margin:auto}
+.group{margin-bottom:15px}
+.group label{display:block;font-weight:700;margin-bottom:6px}
+.group input,.group textarea,.group select{width:100%;padding:12px;border:1px solid #d1d5db;border-radius:8px;outline:0}
+.group textarea{min-height:100px;resize:vertical}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px;margin:20px 0}
+.stat{background:#fff;padding:20px;border-radius:12px}
+.stat small{color:#6b7280}
+.stat strong{display:block;font-size:28px;margin-top:8px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;margin-top:15px}
+th,td{text-align:left;padding:12px;border-bottom:1px solid #e5e7eb}
+.badge{padding:5px 9px;border-radius:20px;background:#dcfce7;color:#166534;font-size:12px;font-weight:700}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);align-items:center;justify-content:center;padding:20px;z-index:50}
+.modal.show{display:flex}
+.modal-box{background:#fff;border-radius:12px;padding:25px;width:100%;max-width:430px}
+.close{float:right;font-size:24px;cursor:pointer}
+.admin-header{background:#111827;color:#fff;border-radius:12px;padding:22px}
+footer{margin-top:45px;background:#111827;color:#fff;text-align:center;padding:30px 5%}
+.empty{text-align:center;color:#6b7280;padding:25px}
+@media(max-width:700px){
+header{align-items:stretch}
+nav{justify-content:center}
+.hero h1{font-size:28px}
 }
 </style>
 </head>
 
 <body>
 
-<!-- =========================
-     MAIN MARKETPLACE
-========================= -->
+<header>
+<div class="logo">🛒 IsokoHub</div>
 
-<header id="mainHeader">
+<div class="search">
+<input id="searchInput"
+placeholder="Search products, services or sellers..."
+oninput="searchProducts()">
+</div>
 
-  <div class="logo">🛍️ IsokoHub</div>
-
-  <div class="search">
-    <input
-      id="searchInput"
-      type="text"
-      placeholder="Search products, services or sellers..."
-      onkeyup="searchProducts()"
-    >
-  </div>
-
-  <nav>
-    <button onclick="showPage('home')">Home</button>
-    <button onclick="showPage('productsPage')">Products</button>
-    <button onclick="showPage('cartPage')">🛒 Cart <span id="cartCount">0</span></button>
-    <button onclick="showPage('messagesPage')">💬 Messages</button>
-    <button onclick="showPage('profilePage')">👤 Profile</button>
-    <button onclick="showPage('sellPage')">Sell</button>
-    <button onclick="openAdminDashboard()">⚙️ Admin</button>
-  </nav>
-
+<nav>
+<button onclick="showPage('home')">Home</button>
+<button onclick="showPage('products')">Products</button>
+<button onclick="showPage('sell')">Sell</button>
+<button onclick="showPage('cart')">🛒 Cart <span id="cartCount">0</span></button>
+<button onclick="showPage('messages')">Messages</button>
+<button onclick="showPage('profile')">Profile</button>
+</nav>
 </header>
 
-<main>
+<div class="container">
 
 <!-- HOME -->
-
 <section id="home" class="page active">
-<div class="container">
+<div class="hero">
+<h1>Welcome to IsokoHub 🌍</h1>
+<p>
+Buy and sell products and services from one marketplace.
+IsokoHub is designed to grow into a global marketplace for buyers,
+sellers, creators and businesses.
+</p>
 
-  <div class="hero">
-    <h1>Welcome to IsokoHub</h1>
-    <p>
-      IsokoHub is a modern marketplace connecting buyers, sellers,
-      service providers, artists, creators and businesses in one place.
-    </p>
-    <button class="btn btn-light" onclick="showPage('productsPage')">
-      Shop Now
-    </button>
-  </div>
-
-  <h2 class="section-title">Explore Categories</h2>
-
-  <div class="categories">
-    <div class="category">📱<br>Electronics</div>
-    <div class="category">👗<br>Fashion</div>
-    <div class="category">🏠<br>Home</div>
-    <div class="category">🎨<br>Art & Creative</div>
-    <div class="category">🎬<br>Films & Entertainment</div>
-    <div class="category">💼<br>Services</div>
-  </div>
-
-  <h2 class="section-title">Featured Products</h2>
-
-  <div class="products">
-
-    <div class="product" data-name="iPhone 15 Pro Max">
-      <div class="product-img">📱</div>
-      <div class="product-info">
-        <h3>iPhone 15 Pro Max</h3>
-        <p>Premium smartphone</p>
-        <div class="price">RWF 850,000</div>
-        <button class="btn btn-primary" onclick="addToCart('iPhone 15 Pro Max',850000)">
-          Add to Cart
-        </button>
-      </div>
-    </div>
-
-    <div class="product" data-name="Fashion Shoes">
-      <div class="product-img">👟</div>
-      <div class="product-info">
-        <h3>Fashion Shoes</h3>
-        <p>Modern quality shoes</p>
-        <div class="price">RWF 35,000</div>
-        <button class="btn btn-primary" onclick="addToCart('Fashion Shoes',35000)">
-          Add to Cart
-        </button>
-      </div>
-    </div>
-
-    <div class="product" data-name="Creative Artwork">
-      <div class="product-img">🎨</div>
-      <div class="product-info">
-        <h3>Creative Artwork</h3>
-        <p>Original creative artwork</p>
-        <div class="price">RWF 50,000</div>
-        <button class="btn btn-primary" onclick="addToCart('Creative Artwork',50000)">
-          Add to Cart
-        </button>
-      </div>
-    </div>
-
-  </div>
-
+<button class="btn primary" onclick="showPage('products')">Shop Now</button>
+<button class="btn dark" onclick="showPage('sell')">Sell on IsokoHub</button>
 </div>
+
+<div class="section-title">
+<h2>Featured Products</h2>
+<button class="btn primary" onclick="showPage('products')">View All</button>
+</div>
+
+<div id="featured" class="products"></div>
 </section>
+
 
 <!-- PRODUCTS -->
-
-<section id="productsPage" class="page">
-<div class="container">
-
-  <h2 class="section-title">All Products</h2>
-
-  <div class="products">
-
-    <div class="product" data-name="Laptop">
-      <div class="product-img">💻</div>
-      <div class="product-info">
-        <h3>Laptop</h3>
-        <p>Business and school laptop</p>
-        <div class="price">RWF 500,000</div>
-        <button class="btn btn-primary" onclick="addToCart('Laptop',500000)">
-          Add to Cart
-        </button>
-      </div>
-    </div>
-
-    <div class="product" data-name="Headphones">
-      <div class="product-img">🎧</div>
-      <div class="product-info">
-        <h3>Headphones</h3>
-        <p>Wireless headphones</p>
-        <div class="price">RWF 25,000</div>
-        <button class="btn btn-primary" onclick="addToCart('Headphones',25000)">
-          Add to Cart
-        </button>
-      </div>
-    </div>
-
-    <div class="product" data-name="Camera">
-      <div class="product-img">📷</div>
-      <div class="product-info">
-        <h3>Camera</h3>
-        <p>Camera for creators</p>
-        <div class="price">RWF 650,000</div>
-        <button class="btn btn-primary" onclick="addToCart('Camera',650000)">
-          Add to Cart
-        </button>
-      </div>
-    </div>
-
-  </div>
-
+<section id="products" class="page">
+<div class="section-title">
+<h2>Marketplace</h2>
 </div>
+
+<div id="productList" class="products"></div>
 </section>
 
-<!-- CART -->
-
-<section id="cartPage" class="page">
-<div class="container">
-
-  <h2 class="section-title">🛒 Your Cart</h2>
-
-  <div class="form-box">
-    <div id="cartItems">Your cart is empty.</div>
-    <hr style="margin:20px 0">
-    <h3>Total: RWF <span id="cartTotal">0</span></h3>
-    <br>
-    <button class="btn btn-primary" onclick="checkout()">
-      Checkout
-    </button>
-  </div>
-
-</div>
-</section>
-
-<!-- MESSAGES -->
-
-<section id="messagesPage" class="page">
-<div class="container">
-
-  <h2 class="section-title">💬 Messages</h2>
-
-  <div class="form-box">
-    <h3>IsokoHub Support</h3>
-    <p style="margin:15px 0">
-      Welcome to IsokoHub. Your messages will appear here.
-    </p>
-
-    <textarea placeholder="Write a message..."></textarea>
-    <button class="btn btn-primary">Send Message</button>
-  </div>
-
-</div>
-</section>
-
-<!-- PROFILE -->
-
-<section id="profilePage" class="page">
-<div class="container">
-
-  <h2 class="section-title">👤 Profile</h2>
-
-  <div class="form-box">
-    <input type="text" placeholder="Full name">
-    <input type="email" placeholder="Email">
-    <input type="tel" placeholder="Phone">
-    <input type="text" placeholder="District">
-    <button class="btn btn-primary">Save Profile</button>
-  </div>
-
-</div>
-</section>
 
 <!-- SELL -->
+<section id="sell" class="page">
+<div class="card form">
+<h2>🏪 Sell on IsokoHub</h2>
+<p style="color:#6b7280;margin:8px 0 20px">
+Create a product listing and submit it for review.
+</p>
 
-<section id="sellPage" class="page">
-<div class="container">
+<div class="group">
+<label>Product Title *</label>
+<input id="title" placeholder="Example: iPhone 15 Pro Max">
+</div>
 
-  <h2 class="section-title">🏪 Sell on IsokoHub</h2>
+<div class="group">
+<label>Short Description *</label>
+<textarea id="description" placeholder="Describe your product"></textarea>
+</div>
 
-  <div class="form-box">
+<div class="group">
+<label>Price (RWF) *</label>
+<input id="price" type="number" placeholder="500000">
+</div>
 
-    <label>Product Title</label>
-    <input id="sellTitle" type="text" placeholder="Example: iPhone 15 Pro Max">
+<div class="group">
+<label>Brand</label>
+<input id="brand" placeholder="Example: Apple">
+</div>
 
-    <label>Short Description</label>
-    <textarea id="sellDescription" placeholder="Describe your product"></textarea>
+<div class="group">
+<label>Condition</label>
+<select id="condition">
+<option>New</option>
+<option>Used</option>
+<option>Has minor damage</option>
+</select>
+</div>
 
-    <label>Price</label>
-    <input id="sellPrice" type="number" placeholder="Price in RWF">
+<div class="group">
+<label>District / Location *</label>
+<input id="district" placeholder="Example: Gasabo">
+</div>
 
-    <label>Brand</label>
-    <input type="text" placeholder="Brand">
+<div class="group">
+<label>Storage</label>
+<input id="storage" placeholder="Example: 256GB">
+</div>
 
-    <label>Condition</label>
-    <select>
-      <option>New</option>
-      <option>Used - Good</option>
-      <option>Used - Fair</option>
-    </select>
+<div class="group">
+<label>RAM</label>
+<input id="ram" placeholder="Example: 8GB">
+</div>
 
-    <label>District</label>
-    <input type="text" placeholder="District">
-
-    <label>Specifications</label>
-    <textarea placeholder="RAM, storage, model and other specifications"></textarea>
-
-    <button class="btn btn-primary" onclick="submitProduct()">
-      Submit for Review
-    </button>
-
-  </div>
-
+<button class="btn success" onclick="submitProduct()">
+Submit for Review
+</button>
 </div>
 </section>
 
-<!-- =========================
-     ADMIN DASHBOARD
-========================= -->
 
-<section id="adminPage" class="page">
+<!-- CART -->
+<section id="cart" class="page">
+<div class="card">
+<h2>🛒 Shopping Cart</h2>
+<div id="cartItems" style="margin-top:15px"></div>
+<h3 id="cartTotal" style="margin-top:20px">Total: RWF 0</h3>
+</div>
+</section>
+
+
+<!-- MESSAGES -->
+<section id="messages" class="page">
+<div class="card">
+<h2>💬 Messages</h2>
+<p style="color:#6b7280;margin-top:12px">
+Your buyer and seller conversations will appear here.
+</p>
+</div>
+</section>
+
+
+<!-- PROFILE -->
+<section id="profile" class="page">
+<div class="card">
+<h2>👤 My Profile</h2>
+<p style="margin:12px 0;color:#6b7280">
+Manage your IsokoHub account.
+</p>
+
+<button class="btn dark" onclick="openAdminLogin()">
+⚙️ Admin Dashboard
+</button>
+</div>
+</section>
+
+
+<!-- ADMIN -->
+<section id="admin" class="page">
+
+<div class="admin-header">
+<h2>⚙️ IsokoHub Admin Dashboard</h2>
+<p style="margin-top:8px">
+Marketplace administration and management.
+</p>
+
+<button class="btn danger" style="margin-top:15px"
+onclick="logoutAdmin()">
+Exit Admin
+</button>
+</div>
+
+<div class="stats">
+
+<div class="stat">
+<small>Total Users</small>
+<strong id="userStat">1250</strong>
+</div>
+
+<div class="stat">
+<small>Total Sellers</small>
+<strong id="sellerStat">320</strong>
+</div>
+
+<div class="stat">
+<small>Products</small>
+<strong id="productStat">0</strong>
+</div>
+
+<div class="stat">
+<small>Orders</small>
+<strong id="orderStat">145</strong>
+</div>
+
+</div>
+
+
+<div class="card">
+<h2>📦 Manage Products</h2>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Product</th>
+<th>Price</th>
+<th>Location</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="adminProducts"></tbody>
+</table>
+</div>
+</div>
+
+
+<div class="card">
+<h2>👨‍💼 Sellers</h2>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Seller</th>
+<th>Products</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Seller One</td>
+<td>24</td>
+<td><span class="badge">Active</span></td>
+<td>
+<button class="btn danger"
+onclick="alert('Seller suspended')">
+Suspend
+</button>
+</td>
+</tr>
+
+<tr>
+<td>Seller Two</td>
+<td>12</td>
+<td><span class="badge">Active</span></td>
+<td>
+<button class="btn danger"
+onclick="alert('Seller suspended')">
+Suspend
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+<div class="card">
+<h2>👥 Users</h2>
+<p style="color:#6b7280;margin-top:10px">
+User management is ready for backend integration.
+</p>
+</div>
+
+
+<div class="card">
+<h2>🧾 Orders</h2>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Order</th>
+<th>Customer</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>#1001</td>
+<td>Customer One</td>
+<td>Pending</td>
+<td>
+<button class="btn success"
+onclick="alert('Order approved')">
+Approve
+</button>
+</td>
+</tr>
+
+<tr>
+<td>#1002</td>
+<td>Customer Two</td>
+<td>Completed</td>
+<td>
+<button class="btn dark"
+onclick="alert('Order details')">
+View
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+</section>
+
+</div>
+
+
+<!-- ADMIN LOGIN -->
+<div id="adminModal" class="modal">
+
+<div class="modal-box">
+
+<span class="close" onclick="closeAdminLogin()">×</span>
+
+<h2>🔐 Admin Access</h2>
+
+<p style="color:#6b7280;margin:10px 0 18px">
+Administrator login required.
+</p>
+
+<div class="group">
+<label>Username</label>
+<input id="adminUsername" placeholder="Username">
+</div>
+
+<div class="group">
+<label>Password</label>
+<input id="adminPassword" type="password" placeholder="Password">
+</div>
+
+<button class="btn dark" onclick="adminLogin()">Login</button>
+
+<p id="adminError" style="color:#dc2626;margin-top:10px"></p>
+
+</div>
+</div>
+
+
+<footer>
+<h3>IsokoHub 🌍</h3>
+<p style="margin-top:8px">
+Marketplace for products, services, sellers and creators.
+</p>
+<p style="margin-top:15px">
+© 2026 IsokoHub. All rights reserved.
+</p>
+</footer>
 
-<div class="admin-layout">
 
-  <aside class="admin-sidebar" id="adminSidebar">
-
-    <div class="admin-logo">
-      ⚙️ IsokoHub Admin
-    </div>
-
-    <div class="admin-menu">
-
-      <button class="active" onclick="adminSection('overview',this)">
-        📊 Overview
-      </button>
-
-      <button onclick="adminSection('users',this)">
-        👥 Users
-      </button>
-
-      <button onclick="adminSection('sellers',this)">
-        🏪 Sellers
-      </button>
-
-      <button onclick="adminSection('products',this)">
-        📦 Products
-      </button>
-
-      <button onclick="adminSection('orders',this)">
-        🛒 Orders
-      </button>
-
-      <button onclick="adminSection('messages',this)">
-        💬 Messages
-      </button>
-
-      <button onclick="adminSection('settings',this)">
-        ⚙️ Settings
-      </button>
-
-      <button onclick="closeAdminDashboard()">
-        ← Back to Marketplace
-      </button>
-
-    </div>
-
-  </aside>
-
-  <div class="admin-main">
-
-    <div class="admin-topbar">
-
-      <div>
-        <button class="mobile-admin-btn" onclick="toggleAdminMenu()">
-          ☰
-        </button>
-        <h2 style="display:inline;margin-left:10px;">
-          Admin Dashboard
-        </h2>
-      </div>
-
-      <div class="admin-user">
-        👤 Administrator
-      </div>
-
-    </div>
-
-    <!-- OVERVIEW -->
-
-    <div id="overview" class="admin-section active">
-
-      <div class="stats">
-
-        <div class="stat-card">
-          <div class="icon">👥</div>
-          <h3>1,248</h3>
-          <p>Total Users</p>
-        </div>
-
-        <div class="stat-card">
-          <div class="icon">🏪</div>
-          <h3>326</h3>
-          <p>Active Sellers</p>
-        </div>
-
-        <div class="stat-card">
-          <div class="icon">📦</div>
-          <h3>2,845</h3>
-          <p>Products</p>
-        </div>
-
-        <div class="stat-card">
-          <div class="icon">🛒</div>
-          <h3>784</h3>
-          <p>Orders</p>
-        </div>
-
-      </div>
-
-      <div class="admin-grid">
-
-        <div class="admin-card">
-
-          <h3>📈 Sales Overview</h3>
-
-          <div class="chart">
-            <div class="bar" style="height:35%"></div>
-            <div class="bar" style="height:55%"></div>
-            <div class="bar" style="height:45%"></div>
-            <div class="bar" style="height:75%"></div>
-            <div class="bar" style="height:60%"></div>
-            <div class="bar" style="height:90%"></div>
-            <div class="bar" style="height:70%"></div>
-          </div>
-
-        </div>
-
-        <div class="admin-card">
-
-          <h3>⚡ Recent Activity</h3>
-
-          <div class="activity">
-            <div class="activity-icon">👤</div>
-            <div>
-              <b>New user</b>
-              <p>Joined IsokoHub</p>
-            </div>
-          </div>
-
-          <div class="activity">
-            <div class="activity-icon">📦</div>
-            <div>
-              <b>New product</b>
-              <p>Submitted for review</p>
-            </div>
-          </div>
-
-          <div class="activity">
-            <div class="activity-icon">🛒</div>
-            <div>
-              <b>New order</b>
-              <p>Order received</p>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-    <!-- USERS -->
-
-    <div id="users" class="admin-section">
-
-      <div class="admin-card">
-
-        <h3>👥 User Management</h3>
-
-        <table>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-
-          <tr>
-            <td>John Doe</td>
-            <td>john@example.com</td>
-            <td><span class="badge badge-success">Active</span></td>
-            <td>
-              <button class="delete" onclick="alert('User management action')">
-                Manage
-              </button>
-            </td>
-          </tr>
-
-          <tr>
-            <td>Jane User</td>
-            <td>jane@example.com</td>
-            <td><span class="badge badge-warning">Pending</span></td>
-            <td>
-              <button class="approve" onclick="alert('User approved')">
-                Approve
-              </button>
-            </td>
-          </tr>
-
-        </table>
-
-      </div>
-
-    </div>
-
-    <!-- SELLERS -->
-
-    <div id="sellers" class="admin-section">
-
-      <div class="admin-card">
-
-        <h3>🏪 Seller Management</h3>
-
-        <table>
-
-          <tr>
-            <th>Seller</th>
-            <th>Products</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-
-          <tr>
-            <td>Isoko Store</td>
-            <td>125</td>
-            <td><span class="badge badge-success">Verified</span></td>
-            <td>
-              <button class="approve">View</button>
-            </td>
-          </tr>
-
-          <tr>
-            <td>Creative Shop</td>
-            <td>48</td>
-            <td><span class="badge badge-warning">Pending</span></td>
-            <td>
-              <button class="approve" onclick="alert('Seller approved')">
-                Approve
-              </button>
-            </td>
-          </tr>
-
-        </table>
-
-      </div>
-
-    </div>
-
-    <!-- PRODUCTS -->
-
-    <div id="products" class="admin-section">
-
-      <div class="admin-card">
-
-        <h3>📦 Product Management</h3>
-
-        <table>
-
-          <tr>
-            <th>Product</th>
-            <th>Price</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-
-          <tr>
-            <td>iPhone 15 Pro Max</td>
-            <td>RWF 850,000</td>
-            <td><span class="badge badge-success">Approved</span></td>
-            <td>
-              <div class="admin-actions">
-                <button class="approve">Edit</button>
-                <button class="delete">Delete</button>
-              </div>
-            </td>
-          </tr>
-
-          <tr>
-            <td>Laptop</td>
-            <td>RWF 500,000</td>
-            <td><span class="badge badge-warning">Pending</span></td>
-            <td>
-              <div class="admin-actions">
-                <button class="approve" onclick="alert('Product approved')">
-                  Approve
-                </button>
-                <button class="delete">Reject</button>
-              </div>
-            </td>
-          </tr>
-
-        </table>
-
-      </div>
-
-    </div>
-
-    <!-- ORDERS -->
-
-    <div id="orders" class="admin-section">
-
-      <div class="admin-card">
-
-        <h3>🛒 Orders</h3>
-
-        <table>
-
-          <tr>
-            <th>Order ID</th>
-            <th>Customer</th>
-            <th>Amount</th>
-            <th>Status</th>
-          </tr>
-
-          <tr>
-            <td>#ISO1001</td>
-            <td>Customer One</td>
-            <td>RWF 850,000</td>
-            <td>
-              <span class="badge badge-success">Completed</span>
-            </td>
-          </tr>
-
-          <tr>
-            <td>#ISO1002</td>
-            <td>Customer Two</td>
-    
 <script>
-console.log("goodbye");
+
+/* =========================
+   DATA
+========================= */
+
+let products = JSON.parse(
+localStorage.getItem("isokohub_products")
+) || [
+
+{
+title:"iPhone 15 Pro Max",
+description:"Premium smartphone with powerful performance.",
+price:1200000,
+district:"Gasabo",
+brand:"Apple",
+condition:"New"
+},
+
+{
+title:"Samsung Galaxy S24",
+description:"Modern smartphone for everyday use.",
+price:950000,
+district:"Kicukiro",
+brand:"Samsung",
+condition:"New"
+},
+
+{
+title:"HP Laptop",
+description:"Laptop for school, business and work.",
+price:750000,
+district:"Nyarugenge",
+brand:"HP",
+condition:"Used"
+},
+
+{
+title:"Fashion Shoes",
+description:"Comfortable shoes for everyday use.",
+price:45000,
+district:"Gasabo",
+brand:"Fashion",
+condition:"New"
+}
+
+];
+
+let cart = JSON.parse(
+localStorage.getItem("isokohub_cart")
+) || [];
+
+
+/* =========================
+   NAVIGATION
+========================= */
+
+function showPage(id){
+
+document.querySelectorAll(".page")
+.forEach(page=>page.classList.remove("active"));
+
+document.getElementById(id).classList.add("active");
+
+window.scrollTo({top:0,behavior:"smooth"});
+}
+
+
+/* =========================
+   PRODUCTS
+========================= */
+
+function saveProducts(){
+
+localStorage.setItem(
+"isokohub_products",
+JSON.stringify(products)
+);
+
+}
+
+
+function renderProducts(list=products){
+
+let productList =
+document.getElementById("productList");
+
+let featured =
+document.getElementById("featured");
+
+productList.innerHTML="";
+featured.innerHTML="";
+
+
+if(list.length===0){
+
+productList.innerHTML=
+'<div class="empty">No products found.</div>';
+
+return;
+
+}
+
+
+list.forEach((product,index)=>{
+
+productList.innerHTML += productCard(product,index);
+
+});
+
+
+products.slice(0,4).forEach((product,index)=>{
+
+featured.innerHTML += productCard(product,index);
+
+});
+
+}
+
+
+function productCard(product,index){
+
+return `
+
+<div class="product">
+
+<div class="product-img">
+🛍️
+</div>
+
+<div class="product-body">
+
+<h3>${escapeHTML(product.title)}</h3>
+
+<p>${escapeHTML(product.description)}</p>
+
+<div class="price">
+RWF ${Number(product.price).toLocaleString()}
+</div>
+
+<div class="location">
+📍 ${escapeHTML(product.district)}
+</div>
+
+<button class="btn primary"
+onclick="addToCart(${index})">
+Add to Cart
+</button>
+
+<button class="btn light"
+onclick="viewProduct(${index})">
+View
+</button>
+
+</div>
+
+</div>
+
+`;
+
+}
+
+
+/* =========================
+   SEARCH
+========================= */
+
+function searchProducts(){
+
+let q=document.getElementById("searchInput")
+.value.toLowerCase().trim();
+
+let filtered=products.filter(p=>
+p.title.toLowerCase().includes(q) ||
+p.description.toLowerCase().includes(q) ||
+p.brand.toLowerCase().includes(q) ||
+p.district.toLowerCase().includes(q)
+);
+
+renderProducts(filtered);
+
+showPage("products");
+
+}
+
+
+/* =========================
+   PRODUCT DETAILS
+========================= */
+
+function viewProduct(index){
+
+let p=products[index];
+
+alert(
+"Product: "+p.title+
+"\n\nPrice: RWF "+Number(p.price).toLocaleString()+
+"\nBrand: "+p.brand+
+"\nCondition: "+p.condition+
+"\nLocation: "+p.district+
+"\n\n"+p.description
+);
+
+}
+
+
+/* =========================
+   CART
+========================= */
+
+function saveCart(){
+
+localStorage.setItem(
+"isokohub_cart",
+JSON.stringify(cart)
+);
+
+}
+
+
+function addToCart(index){
+
+cart.push(products[index]);
+
+saveCart();
+renderCart();
+
+alert("Product added to cart.");
+
+}
+
+
+function removeFromCart(index){
+
+cart.splice(index,1);
+
+saveCart();
+renderCart();
+
+}
+
+
+function renderCart(){
+
+let box=document.getElementById("cartItems");
+
+box.innerHTML="";
+
+if(cart.length===0){
+
+box.innerHTML=
+'<div class="empty">Your cart is empty.</div>';
+
+}else{
+
+cart.forEach((item,index)=>{
+
+box.innerHTML += `
+
+<div style="
+padding:15px 0;
+border-bottom:1px solid #e5e7eb
+">
+
+<strong>${escapeHTML(item.title)}</strong>
+
+<div style="margin:5px 0">
+RWF ${Number(item.price).toLocaleString()}
+</div>
+
+<button class="btn danger"
+onclick="removeFromCart(${index})">
+Remove
+</button>
+
+</div>
+
+`;
+
+});
+
+}
+
+let total=cart.reduce(
+(sum,item)=>sum+Number(item.price),0
+);
+
+document.getElementById("cartTotal").innerText=
+"Total: RWF "+total.toLocaleString();
+
+document.getElementById("cartCount").innerText=
+cart.length;
+
+}
+
+
+/* =========================
+   SELL
+========================= */
+
+function submitProduct(){
+
+let title=document.getElementById("title").value.trim();
+let description=document.getElementById("description").value.trim();
+let price=document.getElementById("price").value;
+let brand=document.getElementById("brand").value.trim();
+let condition=document.getElementById("condition").value;
+let district=document.getElementById("district").value.trim();
+let storage=document.getElementById("storage").value.trim();
+let ram=document.getElementById("ram").value.trim();
+
+if(!title || !description || !price || !district){
+
+alert("Please complete all required fields.");
+
+return;
+
+}
+
+
+products.push({
+
+title,
+description,
+price:Number(price),
+brand:brand || "Other",
+condition,
+district,
+storage,
+ram
+
+});
+
+saveProducts();
+renderProducts();
+updateAdmin();
+
+
+document.getElementById("title").value="";
+document.getElementById("description").value="";
+document.getElementById("price").value="";
+document.getElementById("brand").value="";
+document.getElementById("district").value="";
+document.getElementById("storage").value="";
+document.getElementById("ram").value="";
+
+alert("Product submitted successfully.");
+
+}
+
+
+/* =========================
+   ADMIN
+========================= */
+
+function openAdminLogin(){
+
+document.getElementById("adminModal")
+.classList.add("show");
+
+}
+
+
+function closeAdminLogin(){
+
+document.getElementById("adminModal")
+.classList.remove("show");
+
+}
+
+
+function adminLogin(){
+
+let username=
+document.getElementById("adminUsername").value;
+
+let password=
+document.getElementById("adminPassword").value;
+
+
+/*
+DEMO LOGIN ONLY.
+For production, replace this with
+secure server-side authentication.
+*/
+
+if(username==="admin" && password==="admin123"){
+
+closeAdminLogin();
+
+showPage("admin");
+
+updateAdmin();
+
+}else{
+
+document.getElementById("adminError")
+.innerText=
+"Invalid username or password.";
+
+}
+
+}
+
+
+function logoutAdmin(){
+
+showPage("home");
+
+}
+
+
+function updateAdmin(){
+
+document.getElementById("productStat")
+.innerText=products.length;
+
+let table=document.getElementById("adminProducts");
+
+table.innerHTML="";
+
+products.forEach((p,index)=>{
+
+table.innerHTML += `
+
+<tr>
+
+<td>${escapeHTML(p.title)}</td>
+
+<td>RWF ${Number(p.price).toLocaleString()}</td>
+
+<td>${escapeHTML(p.district)}</td>
+
+<td>
+<span class="badge">Active</span>
+</td>
+
+<td>
+<button class="btn danger"
+onclick="deleteProduct(${index})">
+Delete
+</button>
+</td>
+
+</tr>
+
+`;
+
+});
+
+}
+
+
+function deleteProduct(index){
+
+if(confirm("Delete this product?")){
+
+products.splice(index,1);
+
+saveProducts();
+
+renderProducts();
+
+updateAdmin();
+
+}
+
+}
+
+
+/* =========================
+   SECURITY HELPER
+========================= */
+
+function escapeHTML(value){
+
+return String(value)
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+renderProducts();
+renderCart();
+updateAdmin();
+
 </script>
+
+</body>
+  </html>
