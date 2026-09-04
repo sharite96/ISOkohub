@@ -1,45 +1,65 @@
-majyamberepierre00@gmail.com
-<!-- ADMIN DASHBOARD -->
-<div id="adminDashboardLink" style="display:none;">
-  <button onclick="openAdminDashboard()">
-    Admin Dashboard
+<!-- ============================= -->
+<!-- ADMIN DASHBOARD - ADMIN GUSA -->
+<!-- ============================= -->
+
+<div id="adminDashboardLink" style="display:none; margin:20px 0;">
+
+  <button
+    onclick="openAdminDashboard()"
+    style="
+      padding:12px 20px;
+      background:#111827;
+      color:white;
+      border:none;
+      border-radius:8px;
+      cursor:pointer;
+      font-size:16px;
+    "
+  >
+    ⚙️ Admin Dashboard
   </button>
+
 </div>
 
+
 <script>
-  // Email ya Admin
+  // ==================================
+  // EMAIL YEMEREWE KUBA ADMIN
+  // ==================================
+
   const ADMIN_EMAIL = "majyamberepierre00@gmail.com";
 
-  // Hindura aha niba system yawe ibika email ahandi
-  const loggedInEmail = localStorage.getItem("userEmail");
 
-  // Admin gusa niwe ubona button
-  if (loggedInEmail === ADMIN_EMAIL) {
+  // ==================================
+  // KUBONA EMAIL Y'UMUKORESHA
+  // ==================================
+
+  const loggedInEmail =
+    localStorage.getItem("loggedInEmail");
+
+
+  // ==================================
+  // ADMIN GUSA ABONA BUTTON
+  // ==================================
+
+  if (
+    loggedInEmail &&
+    loggedInEmail.toLowerCase() === ADMIN_EMAIL.toLowerCase()
+  ) {
+
     document.getElementById("adminDashboardLink").style.display = "block";
+
   }
+
+
+  // ==================================
+  // GUFUNGURA ADMIN.HTML
+  // ==================================
 
   function openAdminDashboard() {
+
     window.location.href = "admin.html";
+
   }
-</script>!-- ADMIN DASHBOARD -->
-<div id="adminDashboard" style="display:none;">
-  <h2>Admin Dashboard</h2>
-  <p>Murakaza neza Admin 👋</p>
 
-  <a href="admin.html">
-    <button>Open Admin Dashboard</button>
-  </a>
-</div>
-
-<script>
-  // Email ya Admin
-  const ADMIN_EMAIL = "majyamberepierre00@gmail.com";
-
-  // Hindura iyi value uyishyiremo email y'umukoresha winjiye
-  const currentUserEmail = localStorage.getItem("userEmail");
-
-  // Admin gusa ni we ubona Dashboard
-  if (currentUserEmail === ADMIN_EMAIL) {
-    document.getElementById("adminDashboard").style.display = "block";
-  }
 </script>
