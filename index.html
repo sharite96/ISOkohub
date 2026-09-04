@@ -1,752 +1,110 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IsokoHub - Agrobal Marketplace</title>
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IsokoHub — Marketplace</title>
+<meta name="description" content="IsokoHub connects buyers, sellers, teachers, artists, filmmakers and service providers.">
 <style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-  font-family:Arial,sans-serif;
-}
-
-body{
-  background:#f4f7fb;
-  color:#111827;
-}
-
-header{
-  background:#111827;
-  color:white;
-  padding:15px 5%;
-  position:sticky;
-  top:0;
-  z-index:100;
-}
-
-.nav{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:15px;
-  flex-wrap:wrap;
-}
-
-.logo{
-  font-size:24px;
-  font-weight:bold;
-}
-
-.nav-buttons{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-}
-
-.nav-buttons button{
-  border:none;
-  background:#374151;
-  color:white;
-  padding:9px 13px;
-  border-radius:7px;
-  cursor:pointer;
-}
-
-.nav-buttons button:hover{
-  background:#4b5563;
-}
-
-.container{
-  width:90%;
-  max-width:1200px;
-  margin:auto;
-}
-
-.search-box{
-  margin:20px auto;
-  display:flex;
-  max-width:800px;
-}
-
-.search-box input{
-  flex:1;
-  padding:14px;
-  border:1px solid #d1d5db;
-  border-radius:8px 0 0 8px;
-  font-size:16px;
-}
-
-.search-box button{
-  padding:14px 20px;
-  border:none;
-  background:#16a34a;
-  color:white;
-  border-radius:0 8px 8px 0;
-  cursor:pointer;
-}
-
-.hero{
-  background:linear-gradient(135deg,#166534,#22c55e);
-  color:white;
-  padding:55px 25px;
-  border-radius:15px;
-  text-align:center;
-  margin-bottom:30px;
-}
-
-.hero h1{
-  font-size:38px;
-  margin-bottom:12px;
-}
-
-.hero p{
-  font-size:18px;
-  line-height:1.6;
-  margin-bottom:22px;
-}
-
-.btn{
-  border:none;
-  padding:12px 20px;
-  border-radius:8px;
-  cursor:pointer;
-  font-weight:bold;
-  margin:5px;
-}
-
-.primary{
-  background:white;
-  color:#166534;
-}
-
-.secondary{
-  background:#111827;
-  color:white;
-}
-
-.section{
-  margin:30px 0;
-}
-
-.section h2{
-  margin-bottom:18px;
-}
-
-.categories{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-  gap:12px;
-}
-
-.category{
-  background:white;
-  padding:20px;
-  border-radius:10px;
-  text-align:center;
-  box-shadow:0 2px 8px rgba(0,0,0,.08);
-  cursor:pointer;
-}
-
-.category:hover{
-  transform:translateY(-2px);
-}
-
-.products{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
-  gap:18px;
-}
-
-.product{
-  background:white;
-  padding:18px;
-  border-radius:12px;
-  box-shadow:0 2px 8px rgba(0,0,0,.08);
-}
-
-.product-icon{
-  height:130px;
-  background:#e5e7eb;
-  border-radius:10px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:45px;
-  margin-bottom:12px;
-}
-
-.product h3{
-  margin-bottom:7px;
-}
-
-.price{
-  color:#16a34a;
-  font-weight:bold;
-  margin:8px 0;
-}
-
-.product button{
-  width:100%;
-  padding:10px;
-  border:none;
-  border-radius:7px;
-  background:#16a34a;
-  color:white;
-  cursor:pointer;
-}
-
-.page{
-  display:none;
-  padding:30px 0;
-}
-
-.page.active{
-  display:block;
-}
-
-.card{
-  background:white;
-  padding:25px;
-  border-radius:12px;
-  box-shadow:0 2px 8px rgba(0,0,0,.08);
-  margin-bottom:20px;
-}
-
-.form-group{
-  margin-bottom:15px;
-}
-
-.form-group label{
-  display:block;
-  margin-bottom:6px;
-  font-weight:bold;
-}
-
-.form-group input,
-.form-group textarea,
-.form-group select{
-  width:100%;
-  padding:12px;
-  border:1px solid #d1d5db;
-  border-radius:7px;
-}
-
-.admin{
-  border-left:5px solid #111827;
-}
-
-footer{
-  margin-top:50px;
-  background:#111827;
-  color:white;
-  text-align:center;
-  padding:25px;
-}
-
-.empty{
-  text-align:center;
-  padding:40px;
-  background:white;
-  border-radius:12px;
-}
-
-@media(max-width:600px){
-  .hero h1{
-    font-size:28px;
-  }
-
-  .nav{
-    justify-content:center;
-  }
-
-  .logo{
-    width:100%;
-    text-align:center;
-  }
-
-  .search-box input{
-    min-width:0;
-  }
-}
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:Arial,sans-serif;background:#f5f7fb;color:#172033}
+button,input,select,textarea{font:inherit}button{cursor:pointer}.top{background:#111827;color:#fff;padding:14px 5%;position:sticky;top:0;z-index:20}
+.nav{max-width:1200px;margin:auto;display:flex;gap:12px;align-items:center;flex-wrap:wrap}.logo{font-size:25px;font-weight:800}.logo b{color:#22c55e}.search{flex:1;min-width:220px}.search input{width:100%;padding:11px 14px;border:0;border-radius:8px}.nav button{background:#1f2937;color:#fff;border:1px solid #374151;padding:9px 11px;border-radius:7px}
+.hero{background:linear-gradient(135deg,#14532d,#22c55e);color:white;padding:55px 5%}.hero>div{max-width:1200px;margin:auto}.hero h1{font-size:42px;margin-bottom:12px}.hero p{max-width:720px;line-height:1.6;font-size:18px}
+.container{max-width:1200px;width:90%;margin:35px auto}.section{margin-bottom:42px}.title{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:18px;flex-wrap:wrap}.title h2{font-size:27px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}.cats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px}.cat,.card,.panel{background:#fff;border-radius:12px;box-shadow:0 2px 12px #00000012}.cat{padding:20px;text-align:center}.cat .ico{font-size:34px;margin-bottom:8px}.card{overflow:hidden}.pic{height:155px;background:#e5e7eb;display:flex;align-items:center;justify-content:center;font-size:55px}.body{padding:15px}.body h3{margin:7px 0}.body p{color:#64748b;line-height:1.45;margin:5px 0}.price{color:#15803d;font-size:19px;font-weight:800;margin:10px 0}.badge{display:inline-block;padding:5px 9px;background:#dcfce7;color:#166534;border-radius:20px;font-size:12px}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.btn{border:0;border-radius:7px;padding:10px 13px}.green{background:#16a34a;color:white}.dark{background:#111827;color:white}.light{background:#eef2f7}.hidden{display:none!important}
+.modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;padding:20px;z-index:50}.modal.on{display:flex}.box{background:#fff;border-radius:12px;padding:23px;width:100%;max-width:650px;max-height:90vh;overflow:auto}.boxhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.close{background:#ef4444;color:white;border:0;border-radius:50%;width:30px;height:30px}.formgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}.field{margin-bottom:13px}.field label{display:block;font-weight:700;margin-bottom:5px}.field input,.field select,.field textarea{width:100%;padding:10px;border:1px solid #d1d5db;border-radius:7px}.field textarea{min-height:95px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px}.stat{padding:18px;background:#f8fafc;border-radius:9px}.stat strong{display:block;font-size:27px;color:#15803d;margin-top:5px}.table{overflow:auto}.table table{width:100%;border-collapse:collapse;min-width:650px}.table th,.table td{padding:10px;border-bottom:1px solid #e5e7eb;text-align:left}.notice{padding:12px;background:#ecfdf5;border:1px solid #86efac;border-radius:8px;color:#166534;margin-bottom:14px}
+footer{background:#111827;color:#cbd5e1;padding:35px 5%;margin-top:55px}.foot{max-width:1200px;margin:auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:25px}.foot h3{color:white;margin-bottom:8px}
+@media(max-width:650px){.hero h1{font-size:31px}.search{flex-basis:100%;order:3}}
 </style>
 </head>
-
 <body>
+<header class="top"><nav class="nav">
+<div class="logo">Isoko<b>Hub</b></div>
+<div class="search"><input id="q" placeholder="Search products, services or sellers..." oninput="searchAll()"></div>
+<button onclick="show('home')">Home</button><button onclick="show('saved')">❤️ Saved <span id="sc">0</span></button>
+<button onclick="show('cart')">🛒 Cart <span id="cc">0</span></button><button onclick="show('messages')">💬 Messages</button>
+<button onclick="openModal('sell')">Sell</button><button onclick="openModal('login')">Login</button>
+</nav></header>
 
-<header>
-  <div class="nav">
-    <div class="logo">IsokoHub</div>
+<main id="home">
+<section class="hero"><div><h1>Welcome to IsokoHub</h1><p>Agrobal/global marketplace connecting buyers, sellers, teachers, artists, creators, filmmakers and service providers.</p>
+<button class="btn green" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">Shop Now</button>
+<button class="btn light" onclick="openModal('service')">Offer a Service</button></div></section>
 
-    <div class="nav-buttons">
-      <button onclick="showPage('home')">Home</button>
-      <button onclick="showPage('saved')">Saved</button>
-      <button onclick="showPage('cart')">Cart (<span id="cartCount">0</span>)</button>
-      <button onclick="showPage('messages')">Messages</button>
-      <button onclick="showPage('admin')">Admin</button>
-    </div>
-  </div>
-</header>
-
-<main class="container">
-
-<!-- HOME -->
-<section id="home" class="page active">
-
-  <div class="search-box">
-    <input
-      id="searchInput"
-      type="text"
-      placeholder="Search products, services or sellers..."
-      onkeyup="searchProducts()">
-    <button onclick="searchProducts()">Search</button>
-  </div>
-
-  <div class="hero">
-    <h1>Welcome to IsokoHub</h1>
-    <p>
-      Agrobal Marketplace connecting buyers, sellers, teachers,
-      artists & creators, filmmakers and service providers.
-    </p>
-
-    <button class="btn primary" onclick="shopNow()">Shop Now</button>
-    <button class="btn secondary" onclick="showPage('sell')">
-      Sell on IsokoHub
-    </button>
-  </div>
-
-  <div class="section">
-    <h2>Explore Categories</h2>
-
-    <div class="categories">
-      <div class="category" onclick="filterCategory('Electronics')">📱<br>Electronics</div>
-      <div class="category" onclick="filterCategory('Fashion')">👕<br>Fashion</div>
-      <div class="category" onclick="filterCategory('Home')">🏠<br>Home</div>
-      <div class="category" onclick="filterCategory('Education')">📚<br>Education</div>
-      <div class="category" onclick="filterCategory('Art & Creative')">🎨<br>Art & Creative</div>
-      <div class="category" onclick="filterCategory('Film & Entertainment')">🎬<br>Film & Entertainment</div>
-      <div class="category" onclick="filterCategory('Services')">🛠️<br>Services</div>
-      <div class="category" onclick="filterCategory('Business')">💼<br>Business</div>
-    </div>
-  </div>
-
-  <div class="section">
-    <h2>Featured Products</h2>
-
-    <div id="productGrid" class="products">
-
-      <div class="product" data-name="iPhone 15 Pro Max" data-category="Electronics">
-        <div class="product-icon">📱</div>
-        <h3>iPhone 15 Pro Max</h3>
-        <p>Modern smartphone</p>
-        <div class="price">RWF 1,200,000</div>
-        <button onclick="addToCart('iPhone 15 Pro Max',1200000)">
-          Add to Cart
-        </button>
-      </div>
-
-      <div class="product" data-name="Fashion Collection" data-category="Fashion">
-        <div class="product-icon">👕</div>
-        <h3>Fashion Collection</h3>
-        <p>Modern fashion products</p>
-        <div class="price">RWF 35,000</div>
-        <button onclick="addToCart('Fashion Collection',35000)">
-          Add to Cart
-        </button>
-      </div>
-
-      <div class="product" data-name="Home Chair" data-category="Home">
-        <div class="product-icon">🪑</div>
-        <h3>Home Chair</h3>
-        <p>Comfortable home furniture</p>
-        <div class="price">RWF 75,000</div>
-        <button onclick="addToCart('Home Chair',75000)">
-          Add to Cart
-        </button>
-      </div>
-
-      <div class="product" data-name="Online Education" data-category="Education">
-        <div class="product-icon">📚</div>
-        <h3>Online Education</h3>
-        <p>Learning and teaching services</p>
-        <div class="price">RWF 20,000</div>
-        <button onclick="addToCart('Online Education',20000)">
-          Add to Cart
-        </button>
-      </div>
-
-      <div class="product" data-name="Creative Design" data-category="Art & Creative">
-        <div class="product-icon">🎨</div>
-        <h3>Creative Design</h3>
-        <p>Art and creative services</p>
-        <div class="price">RWF 50,000</div>
-        <button onclick="addToCart('Creative Design',50000)">
-          Add to Cart
-        </button>
-      </div>
-
-      <div class="product" data-name="Film Production Service" data-category="Film & Entertainment">
-        <div class="product-icon">🎬</div>
-        <h3>Film Production Service</h3>
-        <p>Film and entertainment services</p>
-        <div class="price">RWF 100,000</div>
-        <button onclick="addToCart('Film Production Service',100000)">
-          Add to Cart
-        </button>
-      </div>
-
-    </div>
-  </div>
-
-</section>
-
-
-<!-- SAVED -->
-<section id="saved" class="page">
-  <div class="card">
-    <h2>❤️ Saved Items</h2>
-    <div id="savedContent" class="empty">
-      No saved items yet.
-    </div>
-  </div>
-</section>
-
-
-<!-- CART -->
-<section id="cart" class="page">
-  <div class="card">
-    <h2>🛒 Your Cart</h2>
-    <div id="cartContent" class="empty">
-      Your cart is empty.
-    </div>
-  </div>
-</section>
-
-
-<!-- MESSAGES -->
-<section id="messages" class="page">
-  <div class="card">
-    <h2>💬 Messages</h2>
-
-    <div class="form-group">
-      <label>Message seller</label>
-      <textarea id="messageInput"
-        placeholder="Write your message..."></textarea>
-    </div>
-
-    <button class="btn secondary" onclick="sendMessage()">
-      Send Message
-    </button>
-
-    <div id="messageStatus"></div>
-  </div>
-</section>
-
-
-<!-- SELL -->
-<section id="sell" class="page">
-  <div class="card">
-    <h2>💰 Sell on IsokoHub</h2>
-
-    <div class="form-group">
-      <label>Product / Service Name</label>
-      <input id="sellName" type="text" placeholder="Enter name">
-    </div>
-
-    <div class="form-group">
-      <label>Description</label>
-      <textarea id="sellDescription"
-        placeholder="Short description"></textarea>
-    </div>
-
-    <div class="form-group">
-      <label>Price (RWF)</label>
-      <input id="sellPrice" type="number" placeholder="Enter price">
-    </div>
-
-    <div class="form-group">
-      <label>Category</label>
-      <select id="sellCategory">
-        <option>Electronics</option>
-        <option>Fashion</option>
-        <option>Home</option>
-        <option>Education</option>
-        <option>Art & Creative</option>
-        <option>Film & Entertainment</option>
-        <option>Services</option>
-        <option>Business</option>
-      </select>
-    </div>
-
-    <button class="btn secondary" onclick="submitProduct()">
-      Submit for Review
-    </button>
-
-    <p id="sellStatus"></p>
-  </div>
-</section>
-
-
-<!-- ADMIN -->
-<section id="admin" class="page">
-  <div class="card admin">
-    <h2>🔐 Admin Dashboard</h2>
-    <p>Manage IsokoHub marketplace.</p>
-
-    <br>
-
-    <p><strong>Products:</strong> <span id="adminProducts">6</span></p>
-    <p><strong>Orders:</strong> <span id="adminOrders">0</span></p>
-    <p><strong>Messages:</strong> <span id="adminMessages">0</span></p>
-    <p><strong>Pending Reviews:</strong> <span id="pendingReviews">0</span></p>
-
-    <br>
-
-    <button class="btn secondary" onclick="adminAction('products')">
-      Manage Products
-    </button>
-
-    <button class="btn secondary" onclick="adminAction('orders')">
-      Manage Orders
-    </button>
-
-    <button class="btn secondary" onclick="adminAction('users')">
-      Manage Users
-    </button>
-  </div>
-</section>
-
+<div class="container">
+<section class="section"><div class="title"><h2>Explore Categories</h2></div><div class="cats" id="cats"></div></section>
+<section class="section" id="products"><div class="title"><h2>Featured Products</h2><button class="btn dark" onclick="resetSearch()">View All</button></div><div class="grid" id="productGrid"></div></section>
+<section class="section"><div class="title"><h2>Services</h2><button class="btn green" onclick="openModal('service')">Offer a Service</button></div><div class="grid" id="serviceGrid"></div></section>
+</div>
 </main>
 
+<section id="saved" class="container hidden"><div class="title"><h2>❤️ Saved</h2></div><div class="grid" id="savedGrid"></div></section>
+<section id="cart" class="container hidden"><div class="title"><h2>🛒 Cart & Orders</h2></div><div id="cartGrid"></div></section>
+<section id="messages" class="container hidden"><div class="title"><h2>💬 Messages</h2></div><div class="panel" style="padding:20px" id="messagesBox"><div class="notice">Messages will be stored through the API when the backend is connected.</div></div></section>
 
-<footer>
-  © 2026 IsokoHub. All rights reserved.
-</footer>
+<section id="admin" class="container hidden"><div class="title"><h2>👨‍💼 Admin Dashboard</h2><button class="btn dark" onclick="show('home')">Back</button></div>
+<div class="stats"><div class="stat">Products<strong id="ap">0</strong></div><div class="stat">Services<strong id="as">0</strong></div><div class="stat">Saved<strong id="av">0</strong></div><div class="stat">Cart<strong id="ac">0</strong></div></div>
+<div class="panel" style="padding:20px;margin-top:20px"><div class="notice">Production admin authentication must be configured through the backend. Demo password: <b>admin123</b>.</div><div class="table" id="adminTable"></div></div></section>
 
+<footer><div class="foot"><div><h3>IsokoHub</h3><p>Marketplace for products, education, creativity and services.</p></div><div><h3>Marketplace</h3><p>Products</p><p>Services</p><p>Teachers</p></div><div><h3>Creators</h3><p>Art & Creative</p><p>Film & Entertainment</p><p>Photography</p></div><div><h3>Support</h3><p>Terms</p><p>Privacy</p><p>Contact</p></div></div></footer>
+
+<div class="modal" id="sell"><div class="box"><div class="boxhead"><h2>Sell on IsokoHub</h2><button class="close" onclick="closeModal('sell')">×</button></div>
+<form onsubmit="addProduct(event)"><div class="formgrid">
+<div class="field"><label>Title</label><input id="pt" required></div><div class="field"><label>Category</label><select id="pc" required><option>Electronics</option><option>Fashion</option><option>Home</option><option>Education</option><option>Art & Creative</option><option>Film & Entertainment</option><option>Technology</option></select></div>
+<div class="field"><label>Price (RWF)</label><input id="pp" type="number" required></div><div class="field"><label>District / Location</label><input id="pl" required></div><div class="field"><label>Brand</label><input id="pb"></div><div class="field"><label>Condition</label><select id="pcond"><option>New</option><option>Used - Good</option><option>Used - Fair</option></select></div>
+<div class="field"><label>Storage</label><input id="pst"></div><div class="field"><label>RAM</label><input id="pr"></div></div>
+<div class="field"><label>Description</label><textarea id="pd" required></textarea></div><label><input id="pn" type="checkbox"> Price negotiable</label><br>
+<button class="btn green" type="submit">Submit for Review</button></form></div></div>
+
+<div class="modal" id="service"><div class="box"><div class="boxhead"><h2>Offer a Service</h2><button class="close" onclick="closeModal('service')">×</button></div>
+<form onsubmit="addService(event)"><div class="formgrid"><div class="field"><label>Provider Name</label><input id="sn" required></div><div class="field"><label>Category</label><select id="sct" required><option>Teachers & Tutors</option><option>Art & Creative</option><option>Film & Entertainment</option><option>Photography & Video</option><option>Technology & Digital</option><option>Professional Services</option><option>Delivery</option><option>Other Services</option></select></div>
+<div class="field"><label>Subject / Skill</label><input id="ssk"></div><div class="field"><label>Location</label><input id="sl" required></div><div class="field"><label>Rate (RWF)</label><input id="sp" type="number" required></div><div class="field"><label>Availability</label><select id="sa"><option>Online & In Person</option><option>Online</option><option>In Person</option></select></div></div>
+<div class="field"><label>Description</label><textarea id="sd" required></textarea></div><button class="btn green">Submit Service</button></form></div></div>
+
+<div class="modal" id="login"><div class="box"><div class="boxhead"><h2>Account / Admin</h2><button class="close" onclick="closeModal('login')">×</button></div>
+<form onsubmit="login(event)"><div class="field"><label>Email</label><input id="email" type="email" required></div><div class="field"><label>Password</label><input id="pass" type="password" required></div><button class="btn green">Login</button></form>
+<hr style="margin:18px 0"><p style="color:#64748b">For this demo, enter admin@example.com with password <b>admin123</b> to open the dashboard. Real authentication belongs in the backend.</p></div></div>
 
 <script>
-
-let cart = [];
-let messages = 0;
-let pendingReviews = 0;
-
-
-/* PAGE NAVIGATION */
-function showPage(page){
-
-  document.querySelectorAll('.page').forEach(function(section){
-    section.classList.remove('active');
-  });
-
-  const selected = document.getElementById(page);
-
-  if(selected){
-    selected.classList.add('active');
-    window.scrollTo(0,0);
-  }
-}
-
-
-/* SHOP NOW */
-function shopNow(){
-  showPage('home');
-
-  document.getElementById('productGrid').scrollIntoView({
-    behavior:'smooth'
-  });
-}
-
-
-/* ADD TO CART */
-function addToCart(name,price){
-
-  cart.push({
-    name:name,
-    price:price
-  });
-
-  document.getElementById('cartCount').textContent = cart.length;
-
-  updateCart();
-
-  alert(name + " added to cart.");
-}
-
-
-/* UPDATE CART */
-function updateCart(){
-
-  const content = document.getElementById('cartContent');
-
-  if(cart.length === 0){
-    content.innerHTML = "Your cart is empty.";
-    return;
-  }
-
-  let total = 0;
-  let html = "";
-
-  cart.forEach(function(item,index){
-
-    total += item.price;
-
-    html += `
-      <div style="padding:12px;border-bottom:1px solid #ddd;">
-        <strong>${item.name}</strong>
-        <br>
-        RWF ${item.price.toLocaleString()}
-        <br>
-        <button class="btn secondary"
-          onclick="removeFromCart(${index})">
-          Remove
-        </button>
-      </div>
-    `;
-  });
-
-  html += `
-    <div style="padding:20px;">
-      <h3>Total: RWF ${total.toLocaleString()}</h3>
-      <button class="btn secondary" onclick="checkout()">
-        Checkout
-      </button>
-    </div>
-  `;
-
-  content.innerHTML = html;
-}
-
-
-/* REMOVE CART ITEM */
-function removeFromCart(index){
-
-  cart.splice(index,1);
-
-  document.getElementById('cartCount').textContent = cart.length;
-
-  updateCart();
-}
-
-
-/* CHECKOUT */
-function checkout(){
-
-  if(cart.length === 0){
-    alert("Your cart is empty.");
-    return;
-  }
-
-  alert("Checkout feature prepared. Payment integration can be connected next.");
-}
-
-
-/* SEARCH */
-function searchProducts(){
-
-  const query =
-    document.getElementById('searchInput').value.toLowerCase();
-
-  document.querySelectorAll('.product').forEach(function(product){
-
-    const name =
-      product.dataset.name.toLowerCase();
-
-    const category =
-      product.dataset.category.toLowerCase();
-
-    if(name.includes(query) || category.includes(query)){
-      product.style.display = "";
-    }else{
-      product.style.display = "none";
-    }
-  });
-}
-
-
-/* CATEGORY FILTER */
-function filterCategory(category){
-
-  showPage('home');
-
-  document.getElementById('searchInput').value = category;
-
-  searchProducts();
-}
-
-
-/* SEND MESSAGE */
-function sendMessage(){
-
-  const input =
-    document.getElementById('messageInput');
-
-  if(input.value.trim() === ""){
-    alert("Please write a message.");
-    return;
-  }
-
-  messages++;
-
-  document.getElementById('adminMessages').textContent = messages;
-
-  document.getElementById('messageStatus').innerHTML =
-    "<p style='margin-top:15px;'>Message sent successfully.</p>";
-
-  input.value = "";
-}
-
-
-/* SELL PRODUCT */
-function submitProduct(){
-
-  const name =
-    document.getElementById('sellName').value.trim();
-
-  const price =
-    document.getElementById('sellPrice').value;
-
-  if(name === "" || price === ""){
-    alert("Please enter product name and price.");
-    return;
-  }
-
-  pendingReviews++;
-
-  document.getElementById('pendingReviews').textContent =
-    pendingReviews;
-
-  document.getElementById('sellStatus').innerHTML =
-    "<br><strong>Your product has been submitted for admin review.</strong>";
-
-  document.getElementById('sellName').value = "";
-  document.getElementById('sellDescription').value = "";
-  document.getElementById('sellPrice').value = "";
-}
-
-
-/* ADMIN */
-function adminAction(type){
-
-  if(type === "products"){
-    alert("Product management opened.");
-  }
-
-  if(type === "orders"){
-    alert("Order management opened.");
-  }
-
-  if(type === "users"){
-    alert("User management opened.");
-  }
-}
-
-
-/* INITIAL CART */
-updateCart();
-
+const categories=[['📱','Electronics'],['👕','Fashion'],['🏠','Home'],['📚','Education'],['👨‍🏫','Teachers & Tutors'],['🎨','Art & Creative'],['🎬','Film & Entertainment'],['💻','Technology & Digital'],['🛠️','Professional Services'],['📸','Photography & Video']];
+let products=JSON.parse(localStorage.getItem('ih_products')||'null')||[
+{id:1,title:'iPhone 15 Pro Max',category:'Electronics',price:1500000,location:'Kigali',brand:'Apple',condition:'New',storage:'256GB',ram:'8GB',description:'Modern smartphone.',icon:'📱'},
+{id:2,title:'Digital Drawing Tablet',category:'Art & Creative',price:250000,location:'Kigali',brand:'Creative Pro',condition:'New',storage:'',ram:'',description:'Tool for digital creators.',icon:'🎨'}
+];
+let services=JSON.parse(localStorage.getItem('ih_services')||'null')||[
+{id:1,name:'Math Teacher',category:'Teachers & Tutors',skill:'Mathematics',location:'Kigali',price:15000,availability:'Online & In Person',description:'Mathematics tutoring.',icon:'👨‍🏫'},
+{id:2,name:'Graphic Designer',category:'Art & Creative',skill:'Graphic Design',location:'Kigali',price:50000,availability:'Online',description:'Logo and poster design.',icon:'🎨'},
+{id:3,name:'Video Creator',category:'Film & Entertainment',skill:'Video Production',location:'Kigali',price:100000,availability:'In Person',description:'Video production.',icon:'🎬'}
+];
+let saved=JSON.parse(localStorage.getItem('ih_saved')||'[]'),cart=JSON.parse(localStorage.getItem('ih_cart')||'[]');
+
+function money(n){return Number(n||0).toLocaleString()}
+function esc(x){return String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function persist(){localStorage.setItem('ih_products',JSON.stringify(products));localStorage.setItem('ih_services',JSON.stringify(services));localStorage.setItem('ih_saved',JSON.stringify(saved));localStorage.setItem('ih_cart',JSON.stringify(cart));updateCounts()}
+function renderCats(){cats.innerHTML=categories.map(c=>`<div class="cat" onclick="filter('${esc(c[1])}')"><div class="ico">${c[0]}</div><b>${esc(c[1])}</b></div>`).join('')}
+function renderProducts(list=products){productGrid.innerHTML=list.length?list.map(p=>`<article class="card"><div class="pic">${p.icon||'📦'}</div><div class="body"><span class="badge">${esc(p.category)}</span><h3>${esc(p.title)}</h3><p>${esc(p.description)}</p><p>📍 ${esc(p.location)}</p><div class="price">${money(p.price)} RWF</div><p>${p.brand?'Brand: '+esc(p.brand):''} ${p.condition?' · '+esc(p.condition):''}</p><div class="actions"><button class="btn dark" onclick="addCart(${p.id})">🛒 Add</button><button class="btn light" onclick="save(${p.id})">${saved.includes(p.id)?'❤️ Saved':'♡ Save'}</button><button class="btn light" onclick="message('${esc(p.title)}')">💬 Message</button></div></div></article>`).join(''):'<div class="notice">No products found.</div>'}
+function renderServices(list=services){serviceGrid.innerHTML=list.length?list.map(s=>`<article class="card"><div class="pic">${s.icon||'🛠️'}</div><div class="body"><span class="badge">${esc(s.category)}</span><h3>${esc(s.name)}</h3><p><b>Skill:</b> ${esc(s.skill)}</p><p>${esc(s.description)}</p><p>📍 ${esc(s.location)} · ${esc(s.availability)}</p><div class="price">${money(s.price)} RWF</div><div class="actions"><button class="btn green" onclick="message('${esc(s.name)}')">Request Service</button></div></div></article>`).join(''):'<div class="notice">No services found.</div>'}
+function show(id){['home','saved','cart','messages','admin'].forEach(x=>document.getElementById(x)?.classList.add('hidden'));document.getElementById(id)?.classList.remove('hidden');if(id==='saved')renderSaved();if(id==='cart')renderCart();if(id==='admin')admin()}
+function searchAll(){let q=document.getElementById('q').value.toLowerCase().trim();if(!q)return renderProducts(),renderServices();renderProducts(products.filter(p=>Object.values(p).join(' ').toLowerCase().includes(q)));renderServices(services.filter(s=>Object.values(s).join(' ').toLowerCase().includes(q)))}
+function resetSearch(){q.value='';renderProducts();renderServices()}
+function filter(c){show('home');let ps=products.filter(p=>p.category===c),ss=services.filter(s=>s.category===c||(c==='Education'&&s.category==='Teachers & Tutors'));renderProducts(ps);renderServices(ss)}
+function save(id){saved=saved.includes(id)?saved.filter(x=>x!==id):[...saved,id];persist();renderProducts()}
+function renderSaved(){savedGrid.innerHTML=products.filter(p=>saved.includes(p.id)).map(p=>`<div class="card"><div class="body"><h3>${esc(p.title)}</h3><div class="price">${money(p.price)} RWF</div><button class="btn light" onclick="save(${p.id})">Remove</button></div></div>`).join('')||'<div class="notice">No saved products.</div>'}
+function addCart(id){let p=products.find(x=>x.id===id);if(p){cart.push(p);persist();alert('Added to cart.')}}
+function renderCart(){let total=cart.reduce((a,p)=>a+Number(p.price),0);cartGrid.innerHTML=cart.length?`<div class="panel" style="padding:20px"><div class="table"><table><tr><th>Product</th><th>Price</th><th>Location</th><th></th></tr>${cart.map((p,i)=>`<tr><td>${esc(p.title)}</td><td>${money(p.price)} RWF</td><td>${esc(p.location)}</td><td><button class="btn light" onclick="removeCart(${i})">Remove</button></td></tr>`).join('')}</table></div><h2 style="margin-top:18px">Total: ${money(total)} RWF</h2><button class="btn green" onclick="alert('Checkout API is ready to connect to your selected payment provider.')">Proceed to Checkout</button></div>`:'<div class="notice">Your cart is empty.</div>'}
+function removeCart(i){cart.splice(i,1);persist();renderCart()}
+function message(name){show('messages');messagesBox.innerHTML=`<div class="panel" style="padding:20px"><h3>Message: ${esc(name)}</h3><div class="field" style="margin-top:12px"><textarea id="msg" placeholder="Write your message..."></textarea></div><button class="btn green" onclick="sendMsg('${esc(name)}')">Send</button></div>`}
+function sendMsg(name){let t=document.getElementById('msg').value.trim();if(!t)return alert('Write a message first.');messagesBox.innerHTML=`<div class="notice">Message to ${esc(name)} prepared. Connect the API/database to store it permanently.</div>`}
+function openModal(id){document.getElementById(id).classList.add('on')}function closeModal(id){document.getElementById(id).classList.remove('on')}
+function addProduct(e){e.preventDefault();products.push({id:Date.now(),title:pt.value,category:pc.value,price:Number(pp.value),location:pl.value,brand:pb.value,condition:pcond.value,storage:pst.value,ram:pr.value,description:pd.value,negotiable:pn.checked,icon:'📦'});persist();e.target.reset();closeModal('sell');renderProducts();alert('Product submitted.')}
+function addService(e){e.preventDefault();let ic=sct.value==='Teachers & Tutors'?'👨‍🏫':sct.value==='Art & Creative'?'🎨':sct.value==='Film & Entertainment'?'🎬':sct.value.includes('Photography')?'📸':sct.value.includes('Technology')?'💻':'🛠️';services.push({id:Date.now(),name:sn.value,category:sct.value,skill:ssk.value,location:sl.value,price:Number(sp.value),availability:sa.value,description:sd.value,icon:ic});persist();e.target.reset();closeModal('service');renderServices();alert('Service submitted.')}
+function login(e){e.preventDefault();if(email.value==='admin@example.com'&&pass.value==='admin123'){closeModal('login');show('admin')}else alert('For the demo admin dashboard use admin@example.com / admin123.')}
+function admin(){ap.textContent=products.length;as.textContent=services.length;av.textContent=saved.length;ac.textContent=cart.length;adminTable.innerHTML='<h3>Products & Services</h3><br>'+products.map((p,i)=>`<p>${esc(p.title)} — ${money(p.price)} RWF <button class="btn light" onclick="delP(${i})">Delete</button></p>`).join('')+'<hr style="margin:15px 0">'+services.map((s,i)=>`<p>${esc(s.name)} — ${esc(s.category)} <button class="btn light" onclick="delS(${i})">Delete</button></p>`).join('')}
+function delP(i){products.splice(i,1);persist();admin();renderProducts()}function delS(i){services.splice(i,1);persist();admin();renderServices()}
+function updateCounts(){sc.textContent=saved.length;cc.textContent=cart.length;ap.textContent=products.length;as.textContent=services.length;av.textContent=saved.length;ac.textContent=cart.length}
+document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('on')}));
+renderCats();renderProducts();renderServices();updateCounts();
 </script>
-
 </body>
-                                                </html>
+</html>
