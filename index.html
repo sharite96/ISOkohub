@@ -10,571 +10,527 @@
 content="IsokoHub — Global marketplace for products, services, education, art and entertainment.">
 
 <style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-}
+*{box-sizing:border-box;margin:0;padding:0}
 
 body{
-  font-family:Arial,Helvetica,sans-serif;
-  background:#f5f7fb;
-  color:#172033;
-  line-height:1.5;
+font-family:Arial,Helvetica,sans-serif;
+background:#f5f7fb;
+color:#172033;
+line-height:1.5;
 }
 
-button,input,select,textarea{
-  font:inherit;
-}
-
-button{
-  cursor:pointer;
-}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
 
 .header{
-  position:sticky;
-  top:0;
-  z-index:1000;
-  background:#fff;
-  border-bottom:1px solid #e5e7eb;
-  padding:14px 5%;
+position:sticky;
+top:0;
+z-index:1000;
+background:#fff;
+border-bottom:1px solid #e5e7eb;
+padding:14px 5%;
 }
 
 .header-inner{
-  max-width:1400px;
-  margin:auto;
-  display:flex;
-  align-items:center;
-  gap:18px;
-  flex-wrap:wrap;
+max-width:1400px;
+margin:auto;
+display:flex;
+align-items:center;
+gap:18px;
+flex-wrap:wrap;
 }
 
 .logo{
-  font-size:27px;
-  font-weight:800;
-  color:#2563eb;
-  cursor:pointer;
-  white-space:nowrap;
+font-size:27px;
+font-weight:800;
+color:#2563eb;
+cursor:pointer;
+white-space:nowrap;
 }
 
 .search{
-  flex:1;
-  min-width:220px;
-  display:flex;
-  gap:8px;
+flex:1;
+min-width:220px;
+display:flex;
+gap:8px;
 }
 
 .search input{
-  flex:1;
-  padding:12px 15px;
-  border:1px solid #d1d5db;
-  border-radius:10px;
-  outline:none;
+flex:1;
+padding:12px 15px;
+border:1px solid #d1d5db;
+border-radius:10px;
+outline:none;
 }
 
-.search button,
-.primary{
-  background:#2563eb;
-  color:white;
-  border:none;
-  border-radius:10px;
-  padding:11px 17px;
-  font-weight:700;
+.search button,.primary{
+background:#2563eb;
+color:white;
+border:none;
+border-radius:10px;
+padding:11px 17px;
+font-weight:700;
 }
 
 .nav{
-  display:flex;
-  gap:7px;
-  flex-wrap:wrap;
+display:flex;
+gap:7px;
+flex-wrap:wrap;
 }
 
 .nav button{
-  border:1px solid #dbe2ea;
-  background:#fff;
-  border-radius:9px;
-  padding:9px 12px;
-  color:#263246;
+border:1px solid #dbe2ea;
+background:#fff;
+border-radius:9px;
+padding:9px 12px;
+color:#263246;
 }
 
-.nav button:hover{
-  background:#eff6ff;
-}
+.nav button:hover{background:#eff6ff}
 
 .badge{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  min-width:20px;
-  height:20px;
-  padding:0 5px;
-  border-radius:20px;
-  background:#ef4444;
-  color:#fff;
-  font-size:11px;
-  font-weight:700;
+display:inline-flex;
+align-items:center;
+justify-content:center;
+min-width:20px;
+height:20px;
+padding:0 5px;
+border-radius:20px;
+background:#ef4444;
+color:#fff;
+font-size:11px;
+font-weight:700;
 }
 
 .hero{
-  max-width:1400px;
-  margin:25px auto;
-  padding:60px 7%;
-  border-radius:22px;
-  background:linear-gradient(135deg,#dbeafe,#eef2ff);
+max-width:1400px;
+margin:25px auto;
+padding:60px 7%;
+border-radius:22px;
+background:linear-gradient(135deg,#dbeafe,#eef2ff);
 }
 
 .hero h1{
-  font-size:clamp(35px,6vw,62px);
-  margin-bottom:15px;
+font-size:clamp(35px,6vw,62px);
+margin-bottom:15px;
 }
 
 .hero p{
-  max-width:750px;
-  color:#475569;
-  font-size:18px;
-  margin-bottom:25px;
+max-width:750px;
+color:#475569;
+font-size:18px;
+margin-bottom:25px;
 }
 
 .hero-actions{
-  display:flex;
-  gap:12px;
-  flex-wrap:wrap;
+display:flex;
+gap:12px;
+flex-wrap:wrap;
 }
 
 .secondary{
-  border:1px solid #2563eb;
-  color:#2563eb;
-  background:#fff;
-  padding:11px 17px;
-  border-radius:10px;
-  font-weight:700;
+border:1px solid #2563eb;
+color:#2563eb;
+background:#fff;
+padding:11px 17px;
+border-radius:10px;
+font-weight:700;
 }
 
 .section{
-  max-width:1400px;
-  margin:30px auto;
-  padding:0 5%;
+max-width:1400px;
+margin:30px auto;
+padding:0 5%;
 }
 
 .section-title{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:15px;
-  margin-bottom:18px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:15px;
+margin-bottom:18px;
 }
 
-.section-title h2{
-  font-size:25px;
-}
+.section-title h2{font-size:25px}
 
 .categories{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-  gap:13px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+gap:13px;
 }
 
 .category{
-  border:none;
-  background:#fff;
-  border-radius:15px;
-  padding:22px 12px;
-  box-shadow:0 3px 12px rgba(0,0,0,.06);
-  font-weight:700;
+border:none;
+background:#fff;
+border-radius:15px;
+padding:22px 12px;
+box-shadow:0 3px 12px rgba(0,0,0,.06);
+font-weight:700;
 }
 
 .category span{
-  display:block;
-  font-size:30px;
-  margin-bottom:8px;
+display:block;
+font-size:30px;
+margin-bottom:8px;
 }
 
 .products{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
-  gap:18px;
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+gap:18px;
 }
 
 .product{
-  background:#fff;
-  border-radius:15px;
-  padding:18px;
-  box-shadow:0 3px 12px rgba(0,0,0,.06);
+background:#fff;
+border-radius:15px;
+padding:18px;
+box-shadow:0 3px 12px rgba(0,0,0,.06);
 }
 
 .product-image{
-  height:150px;
-  border-radius:12px;
-  background:#eef2f7;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:45px;
-  margin-bottom:13px;
-  overflow:hidden;
+height:150px;
+border-radius:12px;
+background:#eef2f7;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:45px;
+margin-bottom:13px;
+overflow:hidden;
 }
 
 .product-image img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
+width:100%;
+height:100%;
+object-fit:cover;
 }
 
-.product h3{
-  margin-bottom:7px;
-}
+.product h3{margin-bottom:7px}
 
 .product p{
-  color:#64748b;
-  font-size:14px;
-  margin-bottom:8px;
+color:#64748b;
+font-size:14px;
+margin-bottom:8px;
 }
 
 .price{
-  color:#111827;
-  font-size:19px;
-  font-weight:800;
-  margin:10px 0;
+color:#111827;
+font-size:19px;
+font-weight:800;
+margin:10px 0;
 }
 
 .product-actions{
-  display:flex;
-  gap:7px;
-  flex-wrap:wrap;
+display:flex;
+gap:7px;
+flex-wrap:wrap;
 }
 
 .product-actions button{
-  flex:1;
-  border:none;
-  padding:9px;
-  border-radius:8px;
-  background:#2563eb;
-  color:white;
+flex:1;
+border:none;
+padding:9px;
+border-radius:8px;
+background:#2563eb;
+color:white;
 }
 
 .product-actions .save{
-  background:#f1f5f9;
-  color:#334155;
+background:#f1f5f9;
+color:#334155;
 }
 
 .panel{
-  display:none;
-  max-width:1400px;
-  margin:25px auto;
-  padding:25px 5%;
+display:none;
+max-width:1400px;
+margin:25px auto;
+padding:25px 5%;
 }
 
-.panel.active{
-  display:block;
-}
+.panel.active{display:block}
 
 .panel-card{
-  background:#fff;
-  padding:25px;
-  border-radius:17px;
-  box-shadow:0 4px 15px rgba(0,0,0,.06);
+background:#fff;
+padding:25px;
+border-radius:17px;
+box-shadow:0 4px 15px rgba(0,0,0,.06);
 }
 
 .form-grid{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:15px;
+display:grid;
+grid-template-columns:repeat(2,minmax(0,1fr));
+gap:15px;
 }
 
 .field{
-  display:flex;
-  flex-direction:column;
-  gap:6px;
+display:flex;
+flex-direction:column;
+gap:6px;
 }
 
-.field.full{
-  grid-column:1/-1;
-}
+.field.full{grid-column:1/-1}
 
-.field input,
-.field select,
-.field textarea{
-  width:100%;
-  padding:11px;
-  border:1px solid #d1d5db;
-  border-radius:9px;
-  outline:none;
+.field input,.field select,.field textarea{
+width:100%;
+padding:11px;
+border:1px solid #d1d5db;
+border-radius:9px;
+outline:none;
 }
 
 textarea{
-  min-height:100px;
-  resize:vertical;
+min-height:100px;
+resize:vertical;
 }
 
 .checkbox{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  margin-top:8px;
+display:flex;
+align-items:center;
+gap:8px;
+margin-top:8px;
 }
 
-.form-submit{
-  margin-top:18px;
-}
+.form-submit{margin-top:18px}
 
-.cart-item,
-.order-item,
-.message-item,
-.admin-item{
-  border:1px solid #e5e7eb;
-  border-radius:12px;
-  padding:15px;
-  margin-bottom:12px;
-  background:#fff;
+.cart-item,.order-item,.message-item,.admin-item{
+border:1px solid #e5e7eb;
+border-radius:12px;
+padding:15px;
+margin-bottom:12px;
+background:#fff;
 }
 
 .row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
-  flex-wrap:wrap;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:12px;
+flex-wrap:wrap;
 }
 
 .qty{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
+display:inline-flex;
+align-items:center;
+gap:8px;
 }
 
 .qty button{
-  width:30px;
-  height:30px;
-  border:1px solid #d1d5db;
-  background:#fff;
-  border-radius:7px;
+width:30px;
+height:30px;
+border:1px solid #d1d5db;
+background:#fff;
+border-radius:7px;
 }
 
 .danger{
-  background:#fee2e2;
-  color:#b91c1c;
-  border:none;
-  border-radius:8px;
-  padding:8px 11px;
+background:#fee2e2;
+color:#b91c1c;
+border:none;
+border-radius:8px;
+padding:8px 11px;
 }
 
 .success{
-  background:#dcfce7;
-  color:#166534;
-  border:none;
-  border-radius:8px;
-  padding:8px 11px;
+background:#dcfce7;
+color:#166534;
+border:none;
+border-radius:8px;
+padding:8px 11px;
 }
 
 .empty{
-  padding:30px;
-  text-align:center;
-  color:#64748b;
+padding:30px;
+text-align:center;
+color:#64748b;
 }
 
 .total-box{
-  margin-top:18px;
-  padding:18px;
-  border-radius:12px;
-  background:#eff6ff;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+margin-top:18px;
+padding:18px;
+border-radius:12px;
+background:#eff6ff;
+display:flex;
+justify-content:space-between;
+align-items:center;
 }
 
 .admin-tabs{
-  display:flex;
-  gap:7px;
-  overflow-x:auto;
-  padding-bottom:10px;
-  margin-bottom:20px;
+display:flex;
+gap:7px;
+overflow-x:auto;
+padding-bottom:10px;
+margin-bottom:20px;
 }
 
 .admin-tabs button{
-  border:1px solid #dbe2ea;
-  background:#fff;
-  padding:9px 13px;
-  border-radius:8px;
-  white-space:nowrap;
+border:1px solid #dbe2ea;
+background:#fff;
+padding:9px 13px;
+border-radius:8px;
+white-space:nowrap;
 }
 
 .admin-tabs button.active{
-  background:#2563eb;
-  color:#fff;
+background:#2563eb;
+color:#fff;
 }
 
-.admin-tab{
-  display:none;
-}
-
-.admin-tab.active{
-  display:block;
-}
+.admin-tab{display:none}
+.admin-tab.active{display:block}
 
 .stats{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
-  gap:15px;
-  margin-bottom:20px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+gap:15px;
+margin-bottom:20px;
 }
 
 .stat{
-  background:#fff;
-  border-radius:13px;
-  padding:20px;
-  border:1px solid #e5e7eb;
+background:#fff;
+border-radius:13px;
+padding:20px;
+border:1px solid #e5e7eb;
 }
 
 .stat strong{
-  display:block;
-  font-size:28px;
-  margin-top:7px;
+display:block;
+font-size:28px;
+margin-top:7px;
 }
 
-.table-wrap{
-  overflow-x:auto;
-}
+.table-wrap{overflow-x:auto}
 
 table{
-  width:100%;
-  border-collapse:collapse;
-  background:#fff;
+width:100%;
+border-collapse:collapse;
+background:#fff;
 }
 
 th,td{
-  padding:12px;
-  border-bottom:1px solid #e5e7eb;
-  text-align:left;
-  white-space:nowrap;
+padding:12px;
+border-bottom:1px solid #e5e7eb;
+text-align:left;
+white-space:nowrap;
 }
 
-th{
-  background:#f8fafc;
-}
+th{background:#f8fafc}
 
 .status{
-  display:inline-block;
-  padding:5px 9px;
-  border-radius:20px;
-  font-size:12px;
-  font-weight:700;
-  background:#e2e8f0;
+display:inline-block;
+padding:5px 9px;
+border-radius:20px;
+font-size:12px;
+font-weight:700;
+background:#e2e8f0;
 }
 
 .status.pending{
-  background:#fef3c7;
-  color:#92400e;
+background:#fef3c7;
+color:#92400e;
 }
 
 .status.approved{
-  background:#dcfce7;
-  color:#166534;
+background:#dcfce7;
+color:#166534;
 }
 
 .status.rejected{
-  background:#fee2e2;
-  color:#991b1b;
+background:#fee2e2;
+color:#991b1b;
 }
 
 .notice{
-  padding:13px;
-  background:#eff6ff;
-  border-left:4px solid #2563eb;
-  border-radius:8px;
-  margin-bottom:18px;
+padding:13px;
+background:#eff6ff;
+border-left:4px solid #2563eb;
+border-radius:8px;
+margin-bottom:18px;
 }
 
 .footer{
-  margin-top:50px;
-  background:#111827;
-  color:#fff;
-  padding:35px 5%;
+margin-top:50px;
+background:#111827;
+color:#fff;
+padding:35px 5%;
 }
 
 .footer-inner{
-  max-width:1400px;
-  margin:auto;
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:25px;
+max-width:1400px;
+margin:auto;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:25px;
 }
 
 .footer a{
-  display:block;
-  color:#cbd5e1;
-  text-decoration:none;
-  margin-top:8px;
+display:block;
+color:#cbd5e1;
+text-decoration:none;
+margin-top:8px;
 }
 
 .modal{
-  display:none;
-  position:fixed;
-  inset:0;
-  z-index:2000;
-  background:rgba(15,23,42,.6);
-  align-items:center;
-  justify-content:center;
-  padding:20px;
+display:none;
+position:fixed;
+inset:0;
+z-index:2000;
+background:rgba(15,23,42,.6);
+align-items:center;
+justify-content:center;
+padding:20px;
 }
 
-.modal.active{
-  display:flex;
-}
+.modal.active{display:flex}
 
 .modal-card{
-  width:min(500px,100%);
-  background:#fff;
-  border-radius:17px;
-  padding:25px;
+width:min(500px,100%);
+max-height:90vh;
+overflow-y:auto;
+background:#fff;
+border-radius:17px;
+padding:25px;
 }
 
 .close{
-  float:right;
-  border:none;
-  background:#f1f5f9;
-  border-radius:8px;
-  padding:7px 10px;
+float:right;
+border:none;
+background:#f1f5f9;
+border-radius:8px;
+padding:7px 10px;
 }
 
 .small{
-  font-size:13px;
-  color:#64748b;
+font-size:13px;
+color:#64748b;
 }
 
 @media(max-width:760px){
-  .form-grid{
-    grid-template-columns:1fr;
-  }
 
-  .field.full{
-    grid-column:auto;
-  }
+.form-grid{grid-template-columns:1fr}
 
-  .header-inner{
-    gap:10px;
-  }
+.field.full{grid-column:auto}
 
-  .search{
-    order:3;
-    flex-basis:100%;
-  }
+.header-inner{gap:10px}
 
-  .nav{
-    width:100%;
-    overflow-x:auto;
-  }
+.search{
+order:3;
+flex-basis:100%;
+}
 
-  .hero{
-    margin:15px;
-    padding:40px 25px;
-  }
+.nav{
+width:100%;
+overflow-x:auto;
+}
 
-  .section{
-    padding:0 15px;
-  }
+.hero{
+margin:15px;
+padding:40px 25px;
+}
 
-  .panel{
-    padding:15px;
-  }
+.section{padding:0 15px}
+
+.panel{padding:15px}
+
 }
 </style>
 </head>
@@ -591,12 +547,12 @@ th{
 id="searchInput"
 type="search"
 placeholder="Search products, services or sellers..."
-onkeydown="if(event.key==='Enter')searchProducts()"
->
+onkeydown="if(event.key==='Enter')searchProducts()">
 <button onclick="searchProducts()">Search</button>
 </div>
 
 <nav class="nav">
+
 <button onclick="showPanel('savedPanel')">
 ❤️ Saved <span id="savedCount" class="badge">0</span>
 </button>
@@ -620,14 +576,15 @@ onkeydown="if(event.key==='Enter')searchProducts()"
 <button onclick="openAdmin()">
 🛡️ Admin
 </button>
-</nav>
 
+</nav>
 </div>
 </header>
 
 <main id="home">
 
 <section class="hero">
+
 <h1>Welcome to IsokoHub</h1>
 
 <p>
@@ -636,6 +593,7 @@ artists, creators, filmmakers and service providers.
 </p>
 
 <div class="hero-actions">
+
 <button class="primary" onclick="scrollToProducts()">
 Shop Now
 </button>
@@ -643,6 +601,7 @@ Shop Now
 <button class="secondary" onclick="showPanel('sellPanel')">
 Sell on IsokoHub
 </button>
+
 </div>
 </section>
 
@@ -650,6 +609,7 @@ Sell on IsokoHub
 
 <div class="section-title">
 <h2>Explore Categories</h2>
+
 <button class="secondary" onclick="loadCategories()">
 View All
 </button>
@@ -704,8 +664,6 @@ Refresh
 
 </section>
 </main>
-
-<!-- SELL -->
 
 <section id="sellPanel" class="panel">
 <div class="panel-card">
@@ -818,8 +776,6 @@ Submit for Review
 </div>
 </section>
 
-<!-- SAVED -->
-
 <section id="savedPanel" class="panel">
 <div class="panel-card">
 
@@ -830,8 +786,6 @@ Submit for Review
 
 </div>
 </section>
-
-<!-- CART -->
 
 <section id="cartPanel" class="panel">
 <div class="panel-card">
@@ -855,8 +809,6 @@ Checkout
 </div>
 </section>
 
-<!-- ORDERS -->
-
 <section id="ordersPanel" class="panel">
 <div class="panel-card">
 
@@ -867,8 +819,6 @@ Checkout
 
 </div>
 </section>
-
-<!-- MESSAGES -->
 
 <section id="messagesPanel" class="panel">
 <div class="panel-card">
@@ -888,8 +838,6 @@ Checkout
 
 </div>
 </section>
-
-<!-- PROFILE -->
 
 <section id="profilePanel" class="panel">
 <div class="panel-card">
@@ -927,8 +875,8 @@ Checkout
 <option>Creator</option>
 <option>Service Provider</option>
 </select>
-</div>
 
+</div>
 </div>
 
 <button class="primary form-submit" type="submit">
@@ -938,8 +886,6 @@ Save Profile
 </form>
 </div>
 </section>
-
-<!-- SEARCH -->
 
 <section id="searchPanel" class="panel">
 <div class="panel-card">
@@ -951,8 +897,6 @@ Save Profile
 
 </div>
 </section>
-
-<!-- ADMIN -->
 
 <section id="adminPanel" class="panel">
 
@@ -1048,8 +992,6 @@ Reviews
 
 </div>
 
-<!-- ADMIN OVERVIEW -->
-
 <div id="overview" class="admin-tab active">
 
 <h3>Marketplace Overview</h3>
@@ -1063,8 +1005,6 @@ payments, categories, reports and reviews.
 <div id="overviewContent"></div>
 
 </div>
-
-<!-- USERS -->
 
 <div id="users" class="admin-tab">
 
@@ -1089,10 +1029,7 @@ payments, categories, reports and reviews.
 </table>
 
 </div>
-
 </div>
-
-<!-- SELLERS -->
 
 <div id="sellers" class="admin-tab">
 
@@ -1102,8 +1039,6 @@ payments, categories, reports and reviews.
 <div id="sellersList"></div>
 
 </div>
-
-<!-- PRODUCTS -->
 
 <div id="adminProducts" class="admin-tab">
 
@@ -1129,10 +1064,7 @@ payments, categories, reports and reviews.
 </table>
 
 </div>
-
 </div>
-
-<!-- ORDERS -->
 
 <div id="adminOrders" class="admin-tab">
 
@@ -1157,10 +1089,7 @@ payments, categories, reports and reviews.
 </table>
 
 </div>
-
 </div>
-
-<!-- PAYMENTS -->
 
 <div id="payments" class="admin-tab">
 
@@ -1176,8 +1105,6 @@ integration is connected.
 
 </div>
 
-<!-- CATEGORIES -->
-
 <div id="categories" class="admin-tab">
 
 <h3>Categories</h3>
@@ -1187,8 +1114,6 @@ integration is connected.
 
 </div>
 
-<!-- REPORTS -->
-
 <div id="reports" class="admin-tab">
 
 <h3>Reports</h3>
@@ -1197,8 +1122,6 @@ integration is connected.
 <div id="reportsContent"></div>
 
 </div>
-
-<!-- REVIEWS -->
 
 <div id="reviews" class="admin-tab">
 
@@ -1246,18 +1169,13 @@ Global marketplace connecting people, products and services.
 </div>
 
 </div>
-
 </footer>
-
-<!-- PRODUCT MODAL -->
 
 <div id="productModal" class="modal">
 
 <div class="modal-card">
 
-<button class="close" onclick="closeModal()">
-✕
-</button>
+<button class="close" onclick="closeModal()">✕</button>
 
 <div id="modalContent"></div>
 
@@ -1265,35 +1183,100 @@ Global marketplace connecting people, products and services.
 </div>
 
 <script>
-/* =========================================================
-   ISOKOHUB JAVASCRIPT
-   Frontend version
-   ========================================================= */
-
-const STORAGE = {
-  products: "isokohub_products",
-  cart: "isokohub_cart",
-  saved: "isokohub_saved",
-  orders: "isokohub_orders",
-  profile: "isokohub_profile"
+const STORAGE={
+products:"isokohub_products",
+cart:"isokohub_cart",
+saved:"isokohub_saved",
+orders:"isokohub_orders",
+profile:"isokohub_profile",
+admin:"isokohub_admin"
 };
 
-const defaultProducts = [
-  {
-    id: 1,
-    title: "iPhone 15 Pro Max",
-    description: "Premium smartphone with powerful performance.",
-    price: 850000,
-    category: "Electronics",
-    stock: 5,
-    brand: "Apple",
-    model: "iPhone 15 Pro Max",
-    condition: "new",
-    storage: "256GB",
-    ram: "8GB",
-    district: "Gasabo",
-    image: "",
-    specifications: "5G, Face ID, high quality camera",
-    negotiable: true,
-    status: "approved",
-    seller:
+const defaultProducts=[
+{
+id:1,
+title:"iPhone 15 Pro Max",
+description:"Premium smartphone with powerful performance.",
+price:850000,
+category:"Electronics",
+stock:5,
+brand:"Apple",
+model:"iPhone 15 Pro Max",
+condition:"new",
+storage:"256GB",
+ram:"8GB",
+district:"Gasabo",
+image:"",
+specifications:"5G, Face ID, high quality camera",
+negotiable:true,
+status:"approved",
+seller:"IsokoHub Seller"
+},
+{
+id:2,
+title:"Samsung Galaxy S24",
+description:"Modern Android smartphone with excellent camera.",
+price:690000,
+category:"Electronics",
+stock:8,
+brand:"Samsung",
+model:"Galaxy S24",
+condition:"new",
+storage:"256GB",
+ram:"8GB",
+district:"Kicukiro",
+image:"",
+specifications:"5G, AMOLED display, fast charging",
+negotiable:true,
+status:"approved",
+seller:"IsokoHub Seller"
+},
+{
+id:3,
+title:"Men's Fashion Jacket",
+description:"Stylish jacket suitable for everyday use.",
+price:45000,
+category:"Fashion",
+stock:12,
+brand:"Isoko Fashion",
+model:"",
+condition:"new",
+storage:"",
+ram:"",
+district:"Nyarugenge",
+image:"",
+specifications:"Comfortable and durable material",
+negotiable:true,
+status:"approved",
+seller:"Fashion Seller"
+},
+{
+id:4,
+title:"Modern Office Chair",
+description:"Comfortable chair for home and office.",
+price:95000,
+category:"Home",
+stock:10,
+brand:"OfficePro",
+model:"",
+condition:"new",
+storage:"",
+ram:"",
+district:"Gasabo",
+image:"",
+specifications:"Adjustable height and back support",
+negotiable:false,
+status:"approved",
+seller:"Home Seller"
+},
+{
+id:5,
+title:"Online English Course",
+description:"Learn English through online lessons.",
+price:30000,
+category:"Education",
+stock:100,
+brand:"",
+model:"",
+condition:"new",
+  
