@@ -1,989 +1,1299 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IsokoHub — Global Marketplace</title>
-  <meta name="description" content="IsokoHub — Global marketplace for products, services, education, art and entertainment.">
-
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      background: #f5f7fb;
-      color: #172033;
-      line-height: 1.5;
-    }
-
-    button,
-    input,
-    select,
-    textarea {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    .header {
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      background: #ffffff;
-      border-bottom: 1px solid #e5e7eb;
-      padding: 14px 5%;
-    }
-
-    .header-inner {
-      max-width: 1400px;
-      margin: auto;
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      flex-wrap: wrap;
-    }
-
-    .logo {
-      font-size: 27px;
-      font-weight: 800;
-      color: #2563eb;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    .search {
-      flex: 1;
-      min-width: 220px;
-      display: flex;
-      gap: 8px;
-    }
-
-    .search input {
-      flex: 1;
-      padding: 12px 15px;
-      border: 1px solid #d1d5db;
-      border-radius: 10px;
-      outline: none;
-    }
-
-    .search button,
-    .primary {
-      background: #2563eb;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      padding: 11px 17px;
-      font-weight: 700;
-    }
-
-    .nav {
-      display: flex;
-      gap: 7px;
-      flex-wrap: wrap;
-    }
-
-    .nav button {
-      border: 1px solid #dbe2ea;
-      background: white;
-      border-radius: 9px;
-      padding: 9px 12px;
-      color: #263246;
-    }
-
-    .nav button:hover {
-      background: #eff6ff;
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 20px;
-      height: 20px;
-      padding: 0 5px;
-      border-radius: 20px;
-      background: #ef4444;
-      color: white;
-      font-size: 11px;
-      font-weight: 700;
-    }
-
-    .hero {
-      max-width: 1400px;
-      margin: 25px auto;
-      padding: 60px 7%;
-      border-radius: 22px;
-      background: linear-gradient(135deg, #dbeafe, #eef2ff);
-    }
-
-    .hero h1 {
-      font-size: clamp(35px, 6vw, 62px);
-      margin-bottom: 15px;
-    }
-
-    .hero p {
-      max-width: 750px;
-      color: #475569;
-      font-size: 18px;
-      margin-bottom: 25px;
-    }
-
-    .hero-actions {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .secondary {
-      border: 1px solid #2563eb;
-      color: #2563eb;
-      background: white;
-      padding: 11px 17px;
-      border-radius: 10px;
-      font-weight: 700;
-    }
-
-    .section {
-      max-width: 1400px;
-      margin: 30px auto;
-      padding: 0 5%;
-    }
-
-    .section-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 15px;
-      margin-bottom: 18px;
-    }
-
-    .section-title h2 {
-      font-size: 25px;
-    }
-
-    .categories {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 13px;
-    }
-
-    .category {
-      border: none;
-      background: white;
-      border-radius: 15px;
-      padding: 22px 12px;
-      box-shadow: 0 3px 12px rgba(0,0,0,.06);
-      font-weight: 700;
-    }
-
-    .category span {
-      display: block;
-      font-size: 30px;
-      margin-bottom: 8px;
-    }
-
-    .products {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-      gap: 18px;
-    }
-
-    .product {
-      background: white;
-      border-radius: 15px;
-      padding: 18px;
-      box-shadow: 0 3px 12px rgba(0,0,0,.06);
-    }
-
-    .product-image {
-      height: 150px;
-      border-radius: 12px;
-      background: #eef2f7;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 45px;
-      margin-bottom: 13px;
-      overflow: hidden;
-    }
-
-    .product-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .product h3 {
-      margin-bottom: 7px;
-    }
-
-    .product p {
-      color: #64748b;
-      font-size: 14px;
-      margin-bottom: 8px;
-    }
-
-    .price {
-      color: #111827;
-      font-size: 19px;
-      font-weight: 800;
-      margin: 10px 0;
-    }
-
-    .product-actions {
-      display: flex;
-      gap: 7px;
-      flex-wrap: wrap;
-    }
-
-    .product-actions button {
-      flex: 1;
-      border: none;
-      padding: 9px;
-      border-radius: 8px;
-      background: #2563eb;
-      color: white;
-    }
-
-    .product-actions .save {
-      background: #f1f5f9;
-      color: #334155;
-    }
-
-    .panel {
-      display: none;
-      max-width: 1400px;
-      margin: 25px auto;
-      padding: 25px 5%;
-    }
-
-    .panel.active {
-      display: block;
-    }
-
-    .panel-card {
-      background: white;
-      padding: 25px;
-      border-radius: 17px;
-      box-shadow: 0 4px 15px rgba(0,0,0,.06);
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 15px;
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .field.full {
-      grid-column: 1 / -1;
-    }
-
-    .field input,
-    .field select,
-    .field textarea {
-      width: 100%;
-      padding: 11px;
-      border: 1px solid #d1d5db;
-      border-radius: 9px;
-      outline: none;
-    }
-
-    textarea {
-      min-height: 100px;
-      resize: vertical;
-    }
-
-    .checkbox {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 8px;
-    }
-
-    .form-submit {
-      margin-top: 18px;
-    }
-
-    .cart-item,
-    .order-item,
-    .message-item,
-    .admin-item {
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      padding: 15px;
-      margin-bottom: 12px;
-      background: white;
-    }
-
-    .row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .qty {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .qty button {
-      width: 30px;
-      height: 30px;
-      border: 1px solid #d1d5db;
-      background: white;
-      border-radius: 7px;
-    }
-
-    .danger {
-      background: #fee2e2;
-      color: #b91c1c;
-      border: none;
-      border-radius: 8px;
-      padding: 8px 11px;
-    }
-
-    .empty {
-      padding: 30px;
-      text-align: center;
-      color: #64748b;
-    }
-
-    .total-box {
-      margin-top: 18px;
-      padding: 18px;
-      border-radius: 12px;
-      background: #eff6ff;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .admin-tabs {
-      display: flex;
-      gap: 7px;
-      overflow-x: auto;
-      padding-bottom: 10px;
-      margin-bottom: 20px;
-    }
-
-    .admin-tabs button {
-      border: 1px solid #dbe2ea;
-      background: white;
-      padding: 9px 13px;
-      border-radius: 8px;
-      white-space: nowrap;
-    }
-
-    .admin-tabs button.active {
-      background: #2563eb;
-      color: white;
-    }
-
-    .admin-tab {
-      display: none;
-    }
-
-    .admin-tab.active {
-      display: block;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-      gap: 15px;
-      margin-bottom: 20px;
-    }
-
-    .stat {
-      background: white;
-      border-radius: 13px;
-      padding: 20px;
-      border: 1px solid #e5e7eb;
-    }
-
-    .stat strong {
-      display: block;
-      font-size: 28px;
-      margin-top: 7px;
-    }
-
-    .table-wrap {
-      overflow-x: auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-    }
-
-    th,
-    td {
-      padding: 12px;
-      border-bottom: 1px solid #e5e7eb;
-      text-align: left;
-      white-space: nowrap;
-    }
-
-    th {
-      background: #f8fafc;
-    }
-
-    .status {
-      display: inline-block;
-      padding: 5px 9px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 700;
-      background: #e2e8f0;
-    }
-
-    .status.pending {
-      background: #fef3c7;
-      color: #92400e;
-    }
-
-    .status.approved {
-      background: #dcfce7;
-      color: #166534;
-    }
-
-    .status.rejected {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-
-    .footer {
-      margin-top: 50px;
-      background: #111827;
-      color: white;
-      padding: 35px 5%;
-    }
-
-    .footer-inner {
-      max-width: 1400px;
-      margin: auto;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 25px;
-    }
-
-    .footer a {
-      display: block;
-      color: #cbd5e1;
-      text-decoration: none;
-      margin-top: 8px;
-    }
-
-    .notice {
-      padding: 13px;
-      background: #eff6ff;
-      border-left: 4px solid #2563eb;
-      border-radius: 8px;
-      margin-bottom: 18px;
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 2000;
-      background: rgba(15,23,42,.6);
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .modal.active {
-      display: flex;
-    }
-
-    .modal-card {
-      width: min(500px, 100%);
-      background: white;
-      border-radius: 17px;
-      padding: 25px;
-    }
-
-    @media(max-width: 760px) {
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .field.full {
-        grid-column: auto;
-      }
-
-      .header-inner {
-        gap: 10px;
-      }
-
-      .search {
-        order: 3;
-        flex-basis: 100%;
-      }
-
-      .nav {
-        width: 100%;
-        overflow-x: auto;
-      }
-
-      .hero {
-        margin: 15px;
-        padding: 40px 25px;
-      }
-
-      .section {
-        padding: 0 15px;
-      }
-
-      .panel {
-        padding: 15px;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>IsokoHub — Global Marketplace</title>
+
+<meta name="description"
+content="IsokoHub — Global marketplace for products, services, education, art and entertainment.">
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f5f7fb;
+  color:#172033;
+  line-height:1.5;
+}
+
+button,input,select,textarea{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+.header{
+  position:sticky;
+  top:0;
+  z-index:1000;
+  background:#fff;
+  border-bottom:1px solid #e5e7eb;
+  padding:14px 5%;
+}
+
+.header-inner{
+  max-width:1400px;
+  margin:auto;
+  display:flex;
+  align-items:center;
+  gap:18px;
+  flex-wrap:wrap;
+}
+
+.logo{
+  font-size:27px;
+  font-weight:800;
+  color:#2563eb;
+  cursor:pointer;
+  white-space:nowrap;
+}
+
+.search{
+  flex:1;
+  min-width:220px;
+  display:flex;
+  gap:8px;
+}
+
+.search input{
+  flex:1;
+  padding:12px 15px;
+  border:1px solid #d1d5db;
+  border-radius:10px;
+  outline:none;
+}
+
+.search button,
+.primary{
+  background:#2563eb;
+  color:white;
+  border:none;
+  border-radius:10px;
+  padding:11px 17px;
+  font-weight:700;
+}
+
+.nav{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+}
+
+.nav button{
+  border:1px solid #dbe2ea;
+  background:#fff;
+  border-radius:9px;
+  padding:9px 12px;
+  color:#263246;
+}
+
+.nav button:hover{
+  background:#eff6ff;
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:20px;
+  height:20px;
+  padding:0 5px;
+  border-radius:20px;
+  background:#ef4444;
+  color:#fff;
+  font-size:11px;
+  font-weight:700;
+}
+
+.hero{
+  max-width:1400px;
+  margin:25px auto;
+  padding:60px 7%;
+  border-radius:22px;
+  background:linear-gradient(135deg,#dbeafe,#eef2ff);
+}
+
+.hero h1{
+  font-size:clamp(35px,6vw,62px);
+  margin-bottom:15px;
+}
+
+.hero p{
+  max-width:750px;
+  color:#475569;
+  font-size:18px;
+  margin-bottom:25px;
+}
+
+.hero-actions{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.secondary{
+  border:1px solid #2563eb;
+  color:#2563eb;
+  background:#fff;
+  padding:11px 17px;
+  border-radius:10px;
+  font-weight:700;
+}
+
+.section{
+  max-width:1400px;
+  margin:30px auto;
+  padding:0 5%;
+}
+
+.section-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  margin-bottom:18px;
+}
+
+.section-title h2{
+  font-size:25px;
+}
+
+.categories{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:13px;
+}
+
+.category{
+  border:none;
+  background:#fff;
+  border-radius:15px;
+  padding:22px 12px;
+  box-shadow:0 3px 12px rgba(0,0,0,.06);
+  font-weight:700;
+}
+
+.category span{
+  display:block;
+  font-size:30px;
+  margin-bottom:8px;
+}
+
+.products{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+  gap:18px;
+}
+
+.product{
+  background:#fff;
+  border-radius:15px;
+  padding:18px;
+  box-shadow:0 3px 12px rgba(0,0,0,.06);
+}
+
+.product-image{
+  height:150px;
+  border-radius:12px;
+  background:#eef2f7;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:45px;
+  margin-bottom:13px;
+  overflow:hidden;
+}
+
+.product-image img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.product h3{
+  margin-bottom:7px;
+}
+
+.product p{
+  color:#64748b;
+  font-size:14px;
+  margin-bottom:8px;
+}
+
+.price{
+  color:#111827;
+  font-size:19px;
+  font-weight:800;
+  margin:10px 0;
+}
+
+.product-actions{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+}
+
+.product-actions button{
+  flex:1;
+  border:none;
+  padding:9px;
+  border-radius:8px;
+  background:#2563eb;
+  color:white;
+}
+
+.product-actions .save{
+  background:#f1f5f9;
+  color:#334155;
+}
+
+.panel{
+  display:none;
+  max-width:1400px;
+  margin:25px auto;
+  padding:25px 5%;
+}
+
+.panel.active{
+  display:block;
+}
+
+.panel-card{
+  background:#fff;
+  padding:25px;
+  border-radius:17px;
+  box-shadow:0 4px 15px rgba(0,0,0,.06);
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:15px;
+}
+
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.field.full{
+  grid-column:1/-1;
+}
+
+.field input,
+.field select,
+.field textarea{
+  width:100%;
+  padding:11px;
+  border:1px solid #d1d5db;
+  border-radius:9px;
+  outline:none;
+}
+
+textarea{
+  min-height:100px;
+  resize:vertical;
+}
+
+.checkbox{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-top:8px;
+}
+
+.form-submit{
+  margin-top:18px;
+}
+
+.cart-item,
+.order-item,
+.message-item,
+.admin-item{
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+  padding:15px;
+  margin-bottom:12px;
+  background:#fff;
+}
+
+.row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.qty{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+}
+
+.qty button{
+  width:30px;
+  height:30px;
+  border:1px solid #d1d5db;
+  background:#fff;
+  border-radius:7px;
+}
+
+.danger{
+  background:#fee2e2;
+  color:#b91c1c;
+  border:none;
+  border-radius:8px;
+  padding:8px 11px;
+}
+
+.success{
+  background:#dcfce7;
+  color:#166534;
+  border:none;
+  border-radius:8px;
+  padding:8px 11px;
+}
+
+.empty{
+  padding:30px;
+  text-align:center;
+  color:#64748b;
+}
+
+.total-box{
+  margin-top:18px;
+  padding:18px;
+  border-radius:12px;
+  background:#eff6ff;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.admin-tabs{
+  display:flex;
+  gap:7px;
+  overflow-x:auto;
+  padding-bottom:10px;
+  margin-bottom:20px;
+}
+
+.admin-tabs button{
+  border:1px solid #dbe2ea;
+  background:#fff;
+  padding:9px 13px;
+  border-radius:8px;
+  white-space:nowrap;
+}
+
+.admin-tabs button.active{
+  background:#2563eb;
+  color:#fff;
+}
+
+.admin-tab{
+  display:none;
+}
+
+.admin-tab.active{
+  display:block;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+  gap:15px;
+  margin-bottom:20px;
+}
+
+.stat{
+  background:#fff;
+  border-radius:13px;
+  padding:20px;
+  border:1px solid #e5e7eb;
+}
+
+.stat strong{
+  display:block;
+  font-size:28px;
+  margin-top:7px;
+}
+
+.table-wrap{
+  overflow-x:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  background:#fff;
+}
+
+th,td{
+  padding:12px;
+  border-bottom:1px solid #e5e7eb;
+  text-align:left;
+  white-space:nowrap;
+}
+
+th{
+  background:#f8fafc;
+}
+
+.status{
+  display:inline-block;
+  padding:5px 9px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:700;
+  background:#e2e8f0;
+}
+
+.status.pending{
+  background:#fef3c7;
+  color:#92400e;
+}
+
+.status.approved{
+  background:#dcfce7;
+  color:#166534;
+}
+
+.status.rejected{
+  background:#fee2e2;
+  color:#991b1b;
+}
+
+.notice{
+  padding:13px;
+  background:#eff6ff;
+  border-left:4px solid #2563eb;
+  border-radius:8px;
+  margin-bottom:18px;
+}
+
+.footer{
+  margin-top:50px;
+  background:#111827;
+  color:#fff;
+  padding:35px 5%;
+}
+
+.footer-inner{
+  max-width:1400px;
+  margin:auto;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:25px;
+}
+
+.footer a{
+  display:block;
+  color:#cbd5e1;
+  text-decoration:none;
+  margin-top:8px;
+}
+
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:2000;
+  background:rgba(15,23,42,.6);
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.modal.active{
+  display:flex;
+}
+
+.modal-card{
+  width:min(500px,100%);
+  background:#fff;
+  border-radius:17px;
+  padding:25px;
+}
+
+.close{
+  float:right;
+  border:none;
+  background:#f1f5f9;
+  border-radius:8px;
+  padding:7px 10px;
+}
+
+.small{
+  font-size:13px;
+  color:#64748b;
+}
+
+@media(max-width:760px){
+  .form-grid{
+    grid-template-columns:1fr;
+  }
+
+  .field.full{
+    grid-column:auto;
+  }
+
+  .header-inner{
+    gap:10px;
+  }
+
+  .search{
+    order:3;
+    flex-basis:100%;
+  }
+
+  .nav{
+    width:100%;
+    overflow-x:auto;
+  }
+
+  .hero{
+    margin:15px;
+    padding:40px 25px;
+  }
+
+  .section{
+    padding:0 15px;
+  }
+
+  .panel{
+    padding:15px;
+  }
+}
+</style>
 </head>
 
 <body>
 
 <header class="header">
-  <div class="header-inner">
+<div class="header-inner">
 
-    <div class="logo" onclick="showHome()">IsokoHub</div>
+<div class="logo" onclick="showHome()">IsokoHub</div>
 
-    <div class="search">
-      <input
-        id="searchInput"
-        type="search"
-        placeholder="Search products, services or sellers..."
-      >
-      <button onclick="searchProducts()">Search</button>
-    </div>
+<div class="search">
+<input
+id="searchInput"
+type="search"
+placeholder="Search products, services or sellers..."
+onkeydown="if(event.key==='Enter')searchProducts()"
+>
+<button onclick="searchProducts()">Search</button>
+</div>
 
-    <nav class="nav">
-      <button onclick="showPanel('savedPanel')">❤️ Saved</button>
-      <button onclick="showPanel('cartPanel')">
-        🛒 Cart <span id="cartCount" class="badge">0</span>
-      </button>
-      <button onclick="showPanel('ordersPanel')">📦 Orders</button>
-      <button onclick="showPanel('messagesPanel')">💬 Messages</button>
-      <button onclick="showPanel('profilePanel')">👤 Profile</button>
-      <button onclick="openAdmin()">🛡️ Admin</button>
-    </nav>
+<nav class="nav">
+<button onclick="showPanel('savedPanel')">
+❤️ Saved <span id="savedCount" class="badge">0</span>
+</button>
 
-  </div>
+<button onclick="showPanel('cartPanel')">
+🛒 Cart <span id="cartCount" class="badge">0</span>
+</button>
+
+<button onclick="showPanel('ordersPanel')">
+📦 Orders
+</button>
+
+<button onclick="showPanel('messagesPanel')">
+💬 Messages
+</button>
+
+<button onclick="showPanel('profilePanel')">
+👤 Profile
+</button>
+
+<button onclick="openAdmin()">
+🛡️ Admin
+</button>
+</nav>
+
+</div>
 </header>
 
 <main id="home">
 
-  <section class="hero">
-    <h1>Welcome to IsokoHub</h1>
-    <p>
-      A global marketplace connecting buyers, sellers, teachers,
-      artists, creators, filmmakers and service providers.
-    </p>
+<section class="hero">
+<h1>Welcome to IsokoHub</h1>
 
-    <div class="hero-actions">
-      <button class="primary" onclick="scrollToProducts()">Shop Now</button>
-      <button class="secondary" onclick="showPanel('sellPanel')">
-        Sell on IsokoHub
-      </button>
-    </div>
-  </section>
+<p>
+A global marketplace connecting buyers, sellers, teachers,
+artists, creators, filmmakers and service providers.
+</p>
 
-  <section class="section">
-    <div class="section-title">
-      <h2>Explore Categories</h2>
-      <button class="secondary" onclick="loadCategories()">View All</button>
-    </div>
+<div class="hero-actions">
+<button class="primary" onclick="scrollToProducts()">
+Shop Now
+</button>
 
-    <div class="categories">
+<button class="secondary" onclick="showPanel('sellPanel')">
+Sell on IsokoHub
+</button>
+</div>
+</section>
 
-      <button class="category" onclick="filterCategory('Electronics')">
-        <span>📱</span>Electronics
-      </button>
+<section class="section">
 
-      <button class="category" onclick="filterCategory('Fashion')">
-        <span>👕</span>Fashion
-      </button>
+<div class="section-title">
+<h2>Explore Categories</h2>
+<button class="secondary" onclick="loadCategories()">
+View All
+</button>
+</div>
 
-      <button class="category" onclick="filterCategory('Home')">
-        <span>🏠</span>Home
-      </button>
+<div class="categories">
 
-      <button class="category" onclick="filterCategory('Education')">
-        <span>📚</span>Education
-      </button>
+<button class="category" onclick="filterCategory('Electronics')">
+<span>📱</span>Electronics
+</button>
 
-      <button class="category" onclick="filterCategory('Art & Creative')">
-        <span>🎨</span>Art & Creative
-      </button>
+<button class="category" onclick="filterCategory('Fashion')">
+<span>👕</span>Fashion
+</button>
 
-      <button class="category" onclick="filterCategory('Film & Entertainment')">
-        <span>🎬</span>Film & Entertainment
-      </button>
+<button class="category" onclick="filterCategory('Home')">
+<span>🏠</span>Home
+</button>
 
-      <button class="category" onclick="filterCategory('Services')">
-        <span>🛠️</span>Services
-      </button>
+<button class="category" onclick="filterCategory('Education')">
+<span>📚</span>Education
+</button>
 
-    </div>
-  </section>
+<button class="category" onclick="filterCategory('Art & Creative')">
+<span>🎨</span>Art & Creative
+</button>
 
-  <section class="section" id="productsSection">
+<button class="category" onclick="filterCategory('Film & Entertainment')">
+<span>🎬</span>Film & Entertainment
+</button>
 
-    <div class="section-title">
-      <h2>Featured Products</h2>
-      <button class="secondary" onclick="loadProducts()">Refresh</button>
-    </div>
+<button class="category" onclick="filterCategory('Services')">
+<span>🛠️</span>Services
+</button>
 
-    <div id="products" class="products">
-      <div class="empty">Loading products...</div>
-    </div>
+</div>
+</section>
 
-  </section>
+<section class="section" id="productsSection">
 
+<div class="section-title">
+<h2>Featured Products</h2>
+
+<button class="secondary" onclick="loadProducts()">
+Refresh
+</button>
+</div>
+
+<div id="products" class="products">
+<div class="empty">Loading products...</div>
+</div>
+
+</section>
 </main>
 
 <!-- SELL -->
+
 <section id="sellPanel" class="panel">
-  <div class="panel-card">
+<div class="panel-card">
 
-    <h2>Sell on IsokoHub</h2>
-    <p class="notice">
-      Add your product or service. New listings can be reviewed by the admin.
-    </p>
+<h2>Sell on IsokoHub</h2>
 
-    <form id="productForm">
+<p class="notice">
+Add your product or service. New listings can be reviewed by the admin.
+</p>
 
-      <div class="form-grid">
+<form id="productForm">
 
-        <div class="field">
-          <label>Title *</label>
-          <input id="productTitle" required placeholder="e.g. iPhone 15 Pro Max">
-        </div>
+<div class="form-grid">
 
-        <div class="field">
-          <label>Category *</label>
-          <select id="productCategory" required>
-            <option value="">Select category</option>
-            <option>Electronics</option>
-            <option>Fashion</option>
-            <option>Home</option>
-            <option>Education</option>
-            <option>Art & Creative</option>
-            <option>Film & Entertainment</option>
-            <option>Services</option>
-          </select>
-        </div>
+<div class="field">
+<label>Title *</label>
+<input id="productTitle" required placeholder="e.g. iPhone 15 Pro Max">
+</div>
 
-        <div class="field full">
-          <label>Short Description *</label>
-          <textarea id="productDescription" required></textarea>
-        </div>
+<div class="field">
+<label>Category *</label>
 
-        <div class="field">
-          <label>Price (RWF) *</label>
-          <input id="productPrice" type="number" min="0" required>
-        </div>
+<select id="productCategory" required>
+<option value="">Select category</option>
+<option>Electronics</option>
+<option>Fashion</option>
+<option>Home</option>
+<option>Education</option>
+<option>Art & Creative</option>
+<option>Film & Entertainment</option>
+<option>Services</option>
+</select>
+</div>
 
-        <div class="field">
-          <label>Stock</label>
-          <input id="productStock" type="number" min="0" value="1">
-        </div>
+<div class="field full">
+<label>Short Description *</label>
+<textarea id="productDescription" required></textarea>
+</div>
 
-        <div class="field">
-          <label>Brand</label>
-          <input id="productBrand" placeholder="e.g. Apple">
-        </div>
+<div class="field">
+<label>Price (RWF) *</label>
+<input id="productPrice" type="number" min="0" required>
+</div>
 
-        <div class="field">
-          <label>Model</label>
-          <input id="productModel" placeholder="e.g. A3108">
-        </div>
+<div class="field">
+<label>Stock</label>
+<input id="productStock" type="number" min="0" value="1">
+</div>
 
-        <div class="field">
-          <label>Condition</label>
-          <select id="productCondition">
-            <option value="new">New</option>
-            <option value="used">Used</option>
-            <option value="refurbished">Refurbished</option>
-            <option value="has_crack">Has crack</option>
-          </select>
-        </div>
+<div class="field">
+<label>Brand</label>
+<input id="productBrand" placeholder="e.g. Apple">
+</div>
 
-        <div class="field">
-          <label>Storage</label>
-          <input id="productStorage" placeholder="e.g. 256GB">
-        </div>
+<div class="field">
+<label>Model</label>
+<input id="productModel" placeholder="e.g. A3108">
+</div>
 
-        <div class="field">
-          <label>RAM</label>
-          <input id="productRam" placeholder="e.g. 8GB">
-        </div>
+<div class="field">
+<label>Condition</label>
 
-        <div class="field">
-          <label>District</label>
-          <input id="productDistrict" placeholder="e.g. Gasabo">
-        </div>
+<select id="productCondition">
+<option value="new">New</option>
+<option value="used">Used</option>
+<option value="refurbished">Refurbished</option>
+<option value="has_crack">Has crack</option>
+</select>
+</div>
 
-        <div class="field">
-          <label>Photo URL</label>
-          <input id="productImage" placeholder="https://...">
-        </div>
+<div class="field">
+<label>Storage</label>
+<input id="productStorage" placeholder="e.g. 256GB">
+</div>
 
-        <div class="field full">
-          <label>Additional Specifications</label>
-          <textarea id="productSpecifications"></textarea>
-        </div>
+<div class="field">
+<label>RAM</label>
+<input id="productRam" placeholder="e.g. 8GB">
+</div>
 
-        <div class="field full">
-          <label class="checkbox">
-            <input id="productNegotiable" type="checkbox">
-            Price is negotiable
-          </label>
-        </div>
+<div class="field">
+<label>District</label>
+<input id="productDistrict" placeholder="e.g. Gasabo">
+</div>
 
-      </div>
+<div class="field">
+<label>Photo URL</label>
+<input id="productImage" placeholder="https://...">
+</div>
 
-      <button class="primary form-submit" type="submit">
-        Submit for Review
-      </button>
+<div class="field full">
+<label>Additional Specifications</label>
+<textarea id="productSpecifications"></textarea>
+</div>
 
-    </form>
+<div class="field full">
+<label class="checkbox">
+<input id="productNegotiable" type="checkbox">
+Price is negotiable
+</label>
+</div>
 
-  </div>
+</div>
+
+<button class="primary form-submit" type="submit">
+Submit for Review
+</button>
+
+</form>
+</div>
 </section>
 
 <!-- SAVED -->
+
 <section id="savedPanel" class="panel">
-  <div class="panel-card">
-    <h2>❤️ Saved Products</h2>
-    <br>
-    <div id="savedProducts"></div>
-  </div>
+<div class="panel-card">
+
+<h2>❤️ Saved Products</h2>
+<br>
+
+<div id="savedProducts"></div>
+
+</div>
 </section>
 
 <!-- CART -->
+
 <section id="cartPanel" class="panel">
-  <div class="panel-card">
+<div class="panel-card">
 
-    <h2>🛒 Shopping Cart</h2>
-    <br>
+<h2>🛒 Shopping Cart</h2>
+<br>
 
-    <div id="cartProducts"></div>
+<div id="cartProducts"></div>
 
-    <div id="cartTotal" class="total-box" style="display:none;">
-      <strong>Total</strong>
-      <strong id="cartTotalValue">0 RWF</strong>
-    </div>
+<div id="cartTotal" class="total-box" style="display:none">
+<strong>Total</strong>
+<strong id="cartTotalValue">0 RWF</strong>
+</div>
 
-    <br>
+<br>
 
-    <button class="primary" onclick="checkout()">
-      Checkout
-    </button>
+<button class="primary" onclick="checkout()">
+Checkout
+</button>
 
-  </div>
+</div>
 </section>
 
 <!-- ORDERS -->
+
 <section id="ordersPanel" class="panel">
-  <div class="panel-card">
+<div class="panel-card">
 
-    <h2>📦 My Orders</h2>
-    <br>
+<h2>📦 My Orders</h2>
+<br>
 
-    <div id="ordersList"></div>
+<div id="ordersList"></div>
 
-  </div>
+</div>
 </section>
 
 <!-- MESSAGES -->
+
 <section id="messagesPanel" class="panel">
-  <div class="panel-card">
+<div class="panel-card">
 
-    <h2>💬 Messages</h2>
-    <br>
+<h2>💬 Messages</h2>
+<br>
 
-    <div class="message-item">
-      <strong>IsokoHub Support</strong>
-      <p>Welcome to IsokoHub. Your marketplace account is ready.</p>
-    </div>
+<div class="message-item">
+<strong>IsokoHub Support</strong>
+<p>Welcome to IsokoHub. Your marketplace account is ready.</p>
+</div>
 
-    <div class="message-item">
-      <strong>Seller Messages</strong>
-      <p>Your seller conversations will appear here.</p>
-    </div>
+<div class="message-item">
+<strong>Seller Messages</strong>
+<p>Your seller conversations will appear here.</p>
+</div>
 
-  </div>
+</div>
 </section>
 
 <!-- PROFILE -->
+
 <section id="profilePanel" class="panel">
-  <div class="panel-card">
+<div class="panel-card">
 
-    <h2>👤 My Profile</h2>
-    <br>
+<h2>👤 My Profile</h2>
+<br>
 
-    <form id="profileForm">
+<form id="profileForm">
 
-      <div class="form-grid">
+<div class="form-grid">
 
-        <div class="field">
-          <label>Name</label>
-          <input id="profileName">
-        </div>
+<div class="field">
+<label>Name</label>
+<input id="profileName">
+</div>
 
-        <div class="field">
-          <label>Email</label>
-          <input id="profileEmail" type="email">
-        </div>
+<div class="field">
+<label>Email</label>
+<input id="profileEmail" type="email">
+</div>
 
-        <div class="field">
-          <label>Phone</label>
-          <input id="profilePhone">
-        </div>
+<div class="field">
+<label>Phone</label>
+<input id="profilePhone">
+</div>
 
-        <div class="field">
-          <label>Role</label>
-          <select id="profileRole">
-            <option>Buyer</option>
-            <option>Seller</option>
-            <option>Teacher</option>
-            <option>Artist</option>
-            <option>Creator</option>
-            <option>Service Provider</option>
-          </select>
-        </div>
+<div class="field">
+<label>Role</label>
 
-      </div>
+<select id="profileRole">
+<option>Buyer</option>
+<option>Seller</option>
+<option>Teacher</option>
+<option>Artist</option>
+<option>Creator</option>
+<option>Service Provider</option>
+</select>
+</div>
 
-      <button class="primary form-submit" type="submit">
-        Save Profile
-      </button>
+</div>
 
-    </form>
+<button class="primary form-submit" type="submit">
+Save Profile
+</button>
 
-  </div>
+</form>
+</div>
 </section>
 
 <!-- SEARCH -->
+
 <section id="searchPanel" class="panel">
-  <div class="panel-card">
+<div class="panel-card">
 
-    <h2>🔎 Search Results</h2>
-    <br>
+<h2>🔎 Search Results</h2>
+<br>
 
-    <div id="searchResults" class="products"></div>
+<div id="searchResults" class="products"></div>
 
-  </div>
+</div>
 </section>
 
 <!-- ADMIN -->
+
 <section id="adminPanel" class="panel">
 
-  <div class="panel-card">
+<div class="panel-card">
 
-    <div class="row">
-      <div>
-        <h2>🛡️ IsokoHub Admin Dashboard</h2>
-        <p>Marketplace management center</p>
-      </div>
+<div class="row">
 
-      <button class="danger" onclick="logoutAdmin()">
-        Logout Admin
-      </button>
-    </div>
+<div>
+<h2>🛡️ IsokoHub Admin Dashboard</h2>
+<p>Marketplace management center</p>
+</div>
 
-    <br>
+<button class="danger" onclick="logoutAdmin()">
+Logout Admin
+</button>
 
-    <div class="notice">
-      <strong>Important:</strong>
-      This frontend dashboard is for the current project interface.
-      Production admin authorization must also be enforced by the backend.
-    </div>
+</div>
 
-    <div class="stats">
+<br>
 
-      <div class="stat">
-        Products
-        <strong id="statProducts">0</strong>
-      </div>
+<div class="notice">
+<strong>Important:</strong>
+This frontend dashboard is for the current project interface.
+Production admin authorization must also be enforced by the backend.
+</div>
 
-      <div class="stat">
-        Users
-        <strong id="statUsers">0</strong>
-      </div>
+<div class="stats">
 
-      <div class="stat">
-        Sellers
-        <strong id="statSellers">0</strong>
-      </div>
+<div class="stat">
+Products
+<strong id="statProducts">0</strong>
+</div>
 
-      <div class="stat">
-        Orders
-        <strong id="statOrders">0</strong>
-      </div>
+<div class="stat">
+Users
+<strong id="statUsers">0</strong>
+</div>
 
-      <div class="stat">
-        Revenue
-        <strong id="statRevenue">0 RWF</strong>
-      </div>
+<div class="stat">
+Sellers
+<strong id="statSellers">0</strong>
+</div>
 
-    </div>
+<div class="stat">
+Orders
+<strong id="statOrders">0</strong>
+</div>
 
-    <div class="admin-tabs">
+<div class="stat">
+Revenue
+<strong id="statRevenue">0 RWF</strong>
+</div>
 
-      <button class="active" onclick="adminTab('overview', this)">
-        Overview
-      </button>
+</div>
 
-      <button onclick="adminTab('users', this)">
-        Users
-      </button>
+<div class="admin-tabs">
 
-      <button onclick="adminTab('sellers', this)">
-        Sellers
-      </button>
+<button class="active" onclick="adminTab('overview',this)">
+Overview
+</button>
 
-      <button onclick="adminTab('adminProducts', this)">
-        Products
-      </button>
+<button onclick="adminTab('users',this)">
+Users
+</button>
 
-      <button onclick="adminTab('adminOrders', this)">
-        Orders
-      </button>
+<button onclick="adminTab('sellers',this)">
+Sellers
+</button>
 
-      <button onclick="adminTab('payments', this)">
-        Payments
-      </button>
+<button onclick="adminTab('adminProducts',this)">
+Products
+</button>
 
-      <button onclick="adminTab('categories', this)">
-        Categories
-      </button>
+<button onclick="adminTab('adminOrders',this)">
+Orders
+</button>
 
-      <button onclick="adminTab('reports', this)">
-        Reports
-      </button>
+<button onclick="adminTab('payments',this)">
+Payments
+</button>
 
-      <button onclick="adminTab('reviews', this)">
-        Reviews
-      </button>
+<button onclick="adminTab('categories',this)">
+Categories
+</button>
 
-      
+<button onclick="adminTab('reports',this)">
+Reports
+</button>
+
+<button onclick="adminTab('reviews',this)">
+Reviews
+</button>
+
+</div>
+
+<!-- ADMIN OVERVIEW -->
+
+<div id="overview" class="admin-tab active">
+
+<h3>Marketplace Overview</h3>
+<br>
+
+<div class="notice">
+Use the tabs above to manage products, sellers, orders,
+payments, categories, reports and reviews.
+</div>
+
+<div id="overviewContent"></div>
+
+</div>
+
+<!-- USERS -->
+
+<div id="users" class="admin-tab">
+
+<h3>Users</h3>
+<br>
+
+<div class="table-wrap">
+
+<table>
+
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Email</th>
+<th>Role</th>
+</tr>
+</thead>
+
+<tbody id="usersTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<!-- SELLERS -->
+
+<div id="sellers" class="admin-tab">
+
+<h3>Sellers</h3>
+<br>
+
+<div id="sellersList"></div>
+
+</div>
+
+<!-- PRODUCTS -->
+
+<div id="adminProducts" class="admin-tab">
+
+<h3>Product Management</h3>
+<br>
+
+<div class="table-wrap">
+
+<table>
+
+<thead>
+<tr>
+<th>Product</th>
+<th>Category</th>
+<th>Price</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="adminProductsTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<!-- ORDERS -->
+
+<div id="adminOrders" class="admin-tab">
+
+<h3>Order Management</h3>
+<br>
+
+<div class="table-wrap">
+
+<table>
+
+<thead>
+<tr>
+<th>Order</th>
+<th>Date</th>
+<th>Total</th>
+<th>Status</th>
+</tr>
+</thead>
+
+<tbody id="adminOrdersTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<!-- PAYMENTS -->
+
+<div id="payments" class="admin-tab">
+
+<h3>Payments</h3>
+<br>
+
+<div class="notice">
+Payment records will appear here after backend payment
+integration is connected.
+</div>
+
+<div id="paymentsContent"></div>
+
+</div>
+
+<!-- CATEGORIES -->
+
+<div id="categories" class="admin-tab">
+
+<h3>Categories</h3>
+<br>
+
+<div id="categoriesList"></div>
+
+</div>
+
+<!-- REPORTS -->
+
+<div id="reports" class="admin-tab">
+
+<h3>Reports</h3>
+<br>
+
+<div id="reportsContent"></div>
+
+</div>
+
+<!-- REVIEWS -->
+
+<div id="reviews" class="admin-tab">
+
+<h3>Product Reviews</h3>
+<br>
+
+<div id="reviewsContent"></div>
+
+</div>
+
+</div>
+</section>
+
+<footer class="footer">
+
+<div class="footer-inner">
+
+<div>
+<h3>IsokoHub</h3>
+<p class="small">
+Global marketplace connecting people, products and services.
+</p>
+</div>
+
+<div>
+<h3>Marketplace</h3>
+<a href="#" onclick="showHome();return false">Home</a>
+<a href="#" onclick="scrollToProducts();return false">Products</a>
+<a href="#" onclick="showPanel('sellPanel');return false">Sell</a>
+</div>
+
+<div>
+<h3>Services</h3>
+<a href="#" onclick="filterCategory('Education');return false">Education</a>
+<a href="#" onclick="filterCategory('Art & Creative');return false">Art & Creative</a>
+<a href="#" onclick="filterCategory('Film & Entertainment');return false">Film & Entertainment</a>
+<a href="#" onclick="filterCategory('Services');return false">Services</a>
+</div>
+
+<div>
+<h3>Account</h3>
+<a href="#" onclick="showPanel('profilePanel');return false">Profile</a>
+<a href="#" onclick="showPanel('ordersPanel');return false">Orders</a>
+<a href="#" onclick="showPanel('messagesPanel');return false">Messages</a>
+</div>
+
+</div>
+
+</footer>
+
+<!-- PRODUCT MODAL -->
+
+<div id="productModal" class="modal">
+
+<div class="modal-card">
+
+<button class="close" onclick="closeModal()">
+✕
+</button>
+
+<div id="modalContent"></div>
+
+</div>
+</div>
+
+<script>
+/* =========================================================
+   ISOKOHUB JAVASCRIPT
+   Frontend version
+   ========================================================= */
+
+const STORAGE = {
+  products: "isokohub_products",
+  cart: "isokohub_cart",
+  saved: "isokohub_saved",
+  orders: "isokohub_orders",
+  profile: "isokohub_profile"
+};
+
+const defaultProducts = [
+  {
+    id: 1,
+    title: "iPhone 15 Pro Max",
+    description: "Premium smartphone with powerful performance.",
+    price: 850000,
+    category: "Electronics",
+    stock: 5,
+    brand: "Apple",
+    model: "iPhone 15 Pro Max",
+    condition: "new",
+    storage: "256GB",
+    ram: "8GB",
+    district: "Gasabo",
+    image: "",
+    specifications: "5G, Face ID, high quality camera",
+    negotiable: true,
+    status: "approved",
+    seller:
