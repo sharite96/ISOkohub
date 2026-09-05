@@ -1115,3 +1115,577 @@
   }
 
   function renderProducts(products,
+<script>
+  const API = "/api";
+
+  let cart = JSON.parse(
+    localStorage.getItem("isokohub_cart") || "[]"
+  );
+
+  let saved = JSON.parse(
+    localStorage.getItem("isokohub_saved") || "[]"
+  );
+
+  function hidePanels() {
+    document.querySelectorAll(".panel").forEach(panel => {
+      panel.classList.remove("active");
+    });
+  }
+
+  function showPanel(id) {
+    hidePanels();
+
+    const panel = document.getElementById(id);
+
+    if (panel) {
+      panel.classList.add("active");
+
+      panel.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }
+  }
+
+  function showHome() {
+    hidePanels();
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+  async function loadProducts() {
+    const container = document.getElementById("products");
+
+    container.innerHTML =
+      '<div class="empty">Loading products...</div>';
+
+    try {
+      const response = await fetch(`${API}/products`);
+
+      if (!response.ok) {
+        throw new Error("Products request failed");
+      }
+
+      const data = await response.json();
+
+      if (!data.products || data.products.length === 0) {
+        container.innerHTML =
+          '<div class="empty">No products available yet. Sellers can add products from "Sell on IsokoHub".</div>';
+        return;
+      }
+
+      renderProducts(data.products, container);
+
+    } catch (error) {
+      console.error(error);
+
+      container.innerHTML =
+        '<div class="empty">Products are not connected yet. Your backend is ready for connection.</div>';
+    }
+  }
+
+  function renderProducts(products, container) {
+
+    container.innerHTML = "";
+
+    products.forEach(product => {
+
+      const card = document.createElement("div");
+      card.className = "product";
+
+      card.innerHTML = `
+        <div class="product-image">
+          📦
+        </div>
+
+        <div class="product-body">
+
+          <div class="product-title">
+            ${escapeHtml(product.title || "Untitled Product")}
+          </div>
+
+          <div class="product-description">
+            ${escapeHtml(
+              product.description ||
+              product.short_description ||
+              "No description available."
+            )}
+          </div>
+
+          <div class="price">
+            ${formatPrice(product.price)} RWF
+          </div>
+
+          <div class="product-meta">
+            ${escapeHtml(product.category || "Marketplace")}
+            ${product.district ? " • " + escapeHtml(product.district) : ""}
+          </div>
+
+          <div class="product-actions">
+
+            <button onclick="saveProduct(${product.id})">
+              ♡ Save
+            </button>
+
+            <button
+              class="cart-btn"
+              onclick="addToCart(${product.id})"
+            >
+              Add to Cart
+            </button>
+
+          </div>
+
+        </div>
+      `;
+
+      container.appendChild(card);
+    });
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  function formatPrice(price) {
+    const number = Number(price || 0);
+
+    return number.toLocaleString("en-US");
+  }
+
+  function addToCart(productId) {
+
+    const id = Number(productId);
+
+    if (!cart.includes(id)) {
+      cart.push(id);
+    }
+
+    localStorage.setItem(
+      "isokohub_cart",
+      JSON.stringify(cart)
+    );
+
+    updateCartCount();
+    renderCart();
+
+    alert("Product added to cart.");
+  }
+
+  function saveProduct(productId) {
+
+    const id = Number(productId);
+
+    if (!saved.includes(id)) {
+      saved.push(id);
+
+      localStorage.setItem(
+        "isokohub_saved",
+        JSON.stringify(saved)
+      );
+
+      renderSaved();
+
+      alert("Product saved.");
+    } else {
+      alert("This product is already saved.");
+    }
+  }
+
+  function updateCartCount() {
+
+    const count =
+      document.getElementById("cartCount");
+
+    if (count) {
+      count.textContent = cart.length;
+    }
+  }
+
+  function renderCart() {
+
+    const container =
+      document.getElementById("cartProducts");
+
+    if (!container) return;
+
+    if (cart.length === 0) {
+
+      container.className = "empty";
+      container.innerHTML =
+        "Your cart is empty.";
+
+      return;
+    }
+
+    container.className = "";
+
+    container.innerHTML = `
+      <div>
+        <p><strong>${cart.length}</strong> product(s) in your cart.</p>
+
+        <br>
+
+        ${cart.map((id, index) => `
+          <div style="
+            padding:12px;
+            margin-bottom:8px;
+            background:#f5f7fa;
+            border-radius:8px;
+          ">
+            Product ID: ${id}
+
+            <button
+              onclick="removeFromCart(${id})"
+              style="
+                float:right;
+                border:0;
+                background:#fff;
+                padding:5px 8px;
+                border-radius:5px;
+              "
+            >
+              Remove
+            </button>
+          </div>
+        `).join("")}
+      </div>
+    `;
+  }
+
+  function removeFromCart(productId) {
+
+    const id = Number(productId);
+
+    cart = cart.filter(item => item !== id);
+
+    localStorage.setItem(
+      "isokohub_cart",
+      JSON.stringify(cart)
+    );
+
+    updateCartCount();
+    renderCart();
+  }
+
+  function renderSaved() {
+
+    const container =
+      document.getElementById("savedProducts");
+
+    if (!container) return;
+
+    if (saved.length === 0) {
+
+      container.className = "empty";
+      container.innerHTML =
+        "No saved products yet.";
+
+      return;
+    }
+
+    container.className = "";
+
+    container.innerHTML = `
+      <div>
+        <p>
+          You have
+          <strong>${saved.length}</strong>
+          saved product(s).
+        </p>
+
+        <br>
+
+        ${saved.map(id => `
+          <div style="
+            padding:12px;
+            margin-bottom:8px;
+            background:#f5f7fa;
+            border-radius:8px;
+          ">
+            Product ID: ${id}
+
+            <button
+              onclick="removeSaved(${id})"
+              style="
+                float:right;
+                border:0;
+                background:white;
+                padding:5px 8px;
+                border-radius:5px;
+              "
+            >
+              Remove
+            </button>
+          </div>
+        `).join("")}
+      </div>
+    `;
+  }
+
+  function removeSaved(productId) {
+
+    const id = Number(productId);
+
+    saved = saved.filter(item => item !== id);
+
+    localStorage.setItem(
+      "isokohub_saved",
+      JSON.stringify(saved)
+    );
+
+    renderSaved();
+  }
+
+  async function searchProducts() {
+
+    const input =
+      document.getElementById("searchInput");
+
+    const query =
+      input.value.trim().toLowerCase();
+
+    if (!query) {
+      alert("Please enter a search term.");
+      return;
+    }
+
+    showPanel("searchPanel");
+
+    const container =
+      document.getElementById("searchResults");
+
+    container.innerHTML =
+      '<div class="empty">Searching...</div>';
+
+    try {
+
+      const response =
+        await fetch(
+          `${API}/products?search=${encodeURIComponent(query)}`
+        );
+
+      if (!response.ok) {
+        throw new Error("Search failed");
+      }
+
+      const data =
+        await response.json();
+
+      if (!data.products || data.products.length === 0) {
+
+        container.innerHTML =
+          '<div class="empty">No products found.</div>';
+
+        return;
+      }
+
+      renderProducts(
+        data.products,
+        container
+      );
+
+    } catch (error) {
+
+      console.error(error);
+
+      container.innerHTML =
+        '<div class="empty">Search is not connected to the backend yet.</div>';
+    }
+  }
+
+  function filterCategory(category) {
+
+    showPanel("searchPanel");
+
+    const container =
+      document.getElementById("searchResults");
+
+    container.innerHTML =
+      '<div class="empty">Loading category...</div>';
+
+    fetch(
+      `${API}/products?category=${encodeURIComponent(category)}`
+    )
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Category request failed");
+        }
+
+        return response.json();
+      })
+      .then(data => {
+
+        if (!data.products || data.products.length === 0) {
+
+          container.innerHTML =
+            `<div class="empty">No products found in ${escapeHtml(category)}.</div>`;
+
+          return;
+        }
+
+        renderProducts(
+          data.products,
+          container
+        );
+
+      })
+      .catch(error => {
+
+        console.error(error);
+
+        container.innerHTML =
+          `<div class="empty">
+            ${escapeHtml(category)} products are not connected yet.
+          </div>`;
+      });
+  }
+
+  function loadCategories() {
+
+    alert(
+      "Categories: Electronics, Fashion, Home, Education, Art & Creative, Film & Entertainment and Services."
+    );
+  }
+
+  function scrollToProducts() {
+
+    const section =
+      document.getElementById("productsSection");
+
+    if (section) {
+      section.scrollIntoView({
+        behavior: "smooth"
+      });
+    }
+  }
+
+  function checkout() {
+
+    if (cart.length === 0) {
+      alert("Your cart is empty.");
+      return;
+    }
+
+    alert(
+      "Checkout will be connected to the IsokoHub payment system in the next backend stage."
+    );
+  }
+
+  document
+    .getElementById("productForm")
+    .addEventListener("submit", async function(event) {
+
+      event.preventDefault();
+
+      const product = {
+
+        title:
+          document.getElementById("productTitle").value.trim(),
+
+        category:
+          document.getElementById("productCategory").value,
+
+        description:
+          document.getElementById("productDescription").value.trim(),
+
+        price:
+          Number(
+            document.getElementById("productPrice").value
+          ),
+
+        brand:
+          document.getElementById("productBrand").value.trim(),
+
+        model:
+          document.getElementById("productModel").value.trim(),
+
+        condition:
+          document.getElementById("productCondition").value,
+
+        storage:
+          document.getElementById("productStorage").value.trim(),
+
+        ram:
+          document.getElementById("productRam").value.trim(),
+
+        district:
+          document.getElementById("productDistrict").value.trim(),
+
+        negotiable:
+          Number(
+            document.getElementById("productNegotiable").value
+          ),
+
+        specifications:
+          document
+            .getElementById("productSpecifications")
+            .value
+            .trim()
+      };
+
+      try {
+
+        const response = await fetch(
+          `${API}/products`,
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify(product)
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Product submission failed");
+        }
+
+        alert(
+          "Product submitted successfully for review."
+        );
+
+        document
+          .getElementById("productForm")
+          .reset();
+
+        loadProducts();
+
+        showPanel("productsSection");
+
+      } catch (error) {
+
+        console.error(error);
+
+        alert(
+          "Product could not be submitted. Please make sure the backend /api/products endpoint is deployed."
+        );
+      }
+    });
+
+  document
+    .getElementById("searchInput")
+    .addEventListener("keydown", function(event) {
+
+      if (event.key === "Enter") {
+        searchProducts();
+      }
+
+    });
+
+  updateCartCount();
+  renderCart();
+  renderSaved();
+  loadProducts();
+
+</script>
