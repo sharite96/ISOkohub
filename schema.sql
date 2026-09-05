@@ -1,5 +1,5 @@
--- IsokoHub production database schema for Cloudflare D1 / SQLite
-
+Yego. Dutangire kuri schema.sql. Iyi niyo ubanza gusimbuza yose, uko iri, muri file ya schema.sql:
+Writing
 PRAGMA foreign_keys = ON;
 
 CREATE TABLE IF NOT EXISTS users (
@@ -8,6 +8,8 @@ CREATE TABLE IF NOT EXISTS users (
   name TEXT NOT NULL,
   role TEXT NOT NULL DEFAULT 'buyer',
   password_hash TEXT,
+  session_token_hash TEXT,
+  status TEXT NOT NULL DEFAULT 'active',
   country TEXT,
   district TEXT,
   created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -24,6 +26,7 @@ CREATE TABLE IF NOT EXISTS products (
   location TEXT,
   brand TEXT,
   condition TEXT,
+  model TEXT,
   storage TEXT,
   ram TEXT,
   negotiable INTEGER NOT NULL DEFAULT 0,
@@ -98,7 +101,8 @@ CREATE TABLE IF NOT EXISTS reviews (
   product_id TEXT,
   service_id TEXT,
   rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 5),
-  body TEXT,
+  comment TEXT,
+  status TEXT NOT NULL DEFAULT 'published',
   created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (reviewer_id) REFERENCES users(id),
   FOREIGN KEY (product_id) REFERENCES products(id),
@@ -125,3 +129,35 @@ CREATE TABLE IF NOT EXISTS commissions (
   FOREIGN KEY (order_id) REFERENCES orders(id),
   FOREIGN KEY (seller_id) REFERENCES users(id)
 );
+
+CREATE INDEX IF NOT EXISTS idx_products_status
+ON products(status);
+
+CREATE INDEX IF NOT EXISTS idx_products_category
+ON products(category);
+
+CREATE INDEX IF NOT EXISTS idx_services_status
+ON services(status);
+
+CREATE INDEX IF NOT EXISTS idx_services_category
+ON services(category);
+
+CREATE INDEX IF NOT EXISTS idx_orders_buyer
+ON orders(buyer_id);
+
+CREATE INDEX IF NOT EXISTS idx_messages_sender
+ON messages(sender_id);
+
+CREATE INDEX IF NOT EXISTS idx_messages_recipient
+ON messages(recipient_id);
+
+CREATE INDEX IF NOT EXISTS idx_reviews_product
+ON reviews(product_id);
+
+CREATE INDEX IF NOT EXISTS idx_reviews_service
+ON reviews(service_id);
+Did you like this feature?
+Iyi code ni yo ushyira muri schema.sql yose, usibe iyari isanzwe irimo mbere. Schema yawe ya mbere yari ifite tables nyinshi ariko yari ibura fields backend ikoresha, urugero session_token_hash, status, model, na comment/status kuri reviews. � �
+schema.sql
+[[path]].js
+Iyo umaze kuyishyiramo, ntukore indi code ubu. Intambwe ikurikira nzaguha migration_auth.sql yose nayo ari copy & paste imwe.
