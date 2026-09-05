@@ -1,46 +1,179 @@
--- ============================================================
--- IsokoHub - Authentication Migration
+-- =========================================================
+-- ISOKOHUB AUTHENTICATION MIGRATION
 -- Cloudflare D1 / SQLite
--- ============================================================
+-- =========================================================
 
 PRAGMA foreign_keys = ON;
 
--- ------------------------------------------------------------
--- USERS: authentication/session fields
--- ------------------------------------------------------------
+-- =========================================================
+-- AUTH SESSIONS
+-- =========================================================
 
--- Add password hash if the old database does not have it.
-ALTER TABLE users ADD COLUMN password_hash TEXT;
+CREATE TABLE IF NOT EXISTS auth_sessions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
 
--- Add session token hash for logged-in users.
-ALTER TABLE users ADD COLUMN session_token_hash TEXT;
+    user_id INTEGER NOT NULL,
 
--- Add account status.
-ALTER TABLE users ADD COLUMN status TEXT NOT NULL DEFAULT 'active';
+    session_token TEXT NOT NULL UNIQUE,
 
--- ------------------------------------------------------------
--- REVIEWS
--- ------------------------------------------------------------
+    expires_at TEXT NOT NULL,
 
--- Backend uses "comment" when creating reviews.
-ALTER TABLE reviews ADD COLUMN comment TEXT;
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
--- Review moderation status.
-ALTER TABLE reviews ADD COLUMN status TEXT NOT NULL DEFAULT 'published';
+    FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE
+);
 
--- ------------------------------------------------------------
--- INDEXES
--- ------------------------------------------------------------
+-- =========================================================
+-- EMAIL VERIFICATION
+-- =========================================================
 
-CREATE INDEX IF NOT EXISTS idx_users_session_token
-ON users(session_token_hash);
+CREATE TABLE IF NOT EXISTS email_verifications (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
 
-CREATE INDEX IF NOT EXISTS idx_users_status
-ON users(status);
+    user_id INTEGER NOT NULL,
 
-CREATE INDEX IF NOT EXISTS idx_reviews_status
-ON reviews(status);
+    verification_token TEXT NOT NULL UNIQUE,
 
--- ============================================================
--- END IsokoHub AUTH MIGRATION
--- ============================================================
+    expires_at TEXT NOT NULL,
+
+    verified_at TEXT,
+
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE
+);
+
+-- =========================================================
+-- PASSWORD RESET
+-- =========================================================
+
+CREATE TABLE IF NOT EXISTS password_resets (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    user_id INTEGER NOT NULL,
+
+    reset_token TEXT NOT NULL UNIQUE,
+
+    expires_at TEXT NOT NULL,
+
+    used_at TEXT,
+
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE
+);
+
+-- =========================================================
+-- LOGIN ATTEMPTS
+-- =========================================================
+
+CREATE TABLE IF NOT EXISTS login_attempts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    user_id INTEGER,
+
+    email TEXT,
+
+    success INTEGER NOT NULL DEFAULT 0,
+
+    ip_hash TEXT,
+
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE SET NULL
+);
+
+-- =========================================================
+-- USER PROFILE
+-- =========================================================
+
+CREATE TABLE IF NOT EXISTS user_profiles (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    user_id INTEGER NOT NULL UNIQUE,
+
+    first_name TEXT,
+
+    last_name TEXT,
+
+    bio TEXT,
+
+    avatar_url TEXT,
+
+    address TEXT,
+
+    district TEXT,
+
+    city TEXT,
+
+    country TEXT DEFAULT 'Rwanda',
+
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE
+);
+
+-- =========================================================
+-- AUTH INDEXES
+-- =========================================================
+
+CREATE INDEX IF NOT EXISTS idx_auth_sessions_user
+ON auth_sessions(user_id);
+
+CREATE INDEX IF NOT EXISTS idx_auth_sessions_token
+ON auth_sessions(session_token);
+
+CREATE INDEX IF NOT EXISTS idx_auth_sessions_expiry
+ON auth_sessions(expires_at);
+
+CREATE INDEX IF NOT EXISTS idx_email_verifications_user
+ON email_verifications(user_id);
+
+CREATE INDEX IF NOT EXISTS idx_email_verifications_token
+ON email_verifications(verification_token);
+
+CREATE INDEX IF NOT EXISTS idx_password_resets_user
+ON password_resets(user_id);
+
+CREATE INDEX IF NOT EXISTS idx_password_resets_token
+ON password_resets(reset_token);
+
+CREATE INDEX IF NOT EXISTS idx_login_attempts_email
+ON login_attempts(email);
+
+CREATE INDEX IF NOT EXISTS idx_login_attempts_user
+ON login_attempts(user_id);
+
+CREATE INDEX IF NOT EXISTS idx_user_profiles_user
+ON user_profiles(user_id);
+
+-- =========================================================
+-- CLEAN EXPIRED AUTH DATA
+-- =========================================================
+
+DELETE FROM auth_sessions
+WHERE expires_at < CURRENT_TIMESTAMP;
+
+DELETE FROM email_verifications
+WHERE expires_at < CURRENT_TIMESTAMP
+AND verified_at IS NULL;
+
+DELETE FROM password_resets
+WHERE expires_at < CURRENT_TIMESTAMP
+AND used_at IS NULL;
+
+-- =========================================================
+-- DONE
+-- =========================================================
