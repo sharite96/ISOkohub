@@ -1,1053 +1,1797 @@
-{
-  id: 5,
-  title: "Online English Course",
-  description: "Learn English through online lessons.",
-  price: 30000,
-  category: "Education",
-  stock: 100,
-  brand: "",
-  model: "",
-  condition: "new",
-  storage: "",
-  ram: "",
-  district: "",
-  image: "",
-  specifications: "Online lessons and learning materials",
-  negotiable: false,
-  status: "approved",
-  seller: "Education Teacher"
-},
-{
-  id: 6,
-  title: "Handmade African Art",
-  description: "Beautiful handmade African artwork.",
-  price: 75000,
-  category: "Art & Creative",
-  stock: 6,
-  brand: "Local Artist",
-  model: "",
-  condition: "new",
-  storage: "",
-  ram: "",
-  district: "Nyarugenge",
-  image: "",
-  specifications: "Handmade creative artwork",
-  negotiable: true,
-  status: "approved",
-  seller: "African Artist"
-},
-{
-  id: 7,
-  title: "Professional Photography Service",
-  description: "Photography service for events and special occasions.",
-  price: 100000,
-  category: "Services",
-  stock: 10,
-  brand: "",
-  model: "",
-  condition: "new",
-  storage: "",
-  ram: "",
-  district: "Gasabo",
-  image: "",
-  specifications: "Events, portraits and professional photography",
-  negotiable: true,
-  status: "approved",
-  seller: "Creative Photographer"
-},
-{
-  id: 8,
-  title: "Film Production Service",
-  description: "Professional video and film production services.",
-  price: 250000,
-  category: "Film & Entertainment",
-  stock: 5,
-  brand: "",
-  model: "",
-  condition: "new",
-  storage: "",
-  ram: "",
-  district: "Kicukiro",
-  image: "",
-  specifications: "Video production, editing and filming",
-  negotiable: true,
-  status: "approved",
-  seller: "Isoko Film Creator"
-},
-{
-  id: 9,
-  title: "Laptop Computer",
-  description: "Reliable laptop for school, work and business.",
-  price: 550000,
-  category: "Electronics",
-  stock: 7,
-  brand: "HP",
-  model: "ProBook",
-  condition: "new",
-  storage: "512GB SSD",
-  ram: "16GB",
-  district: "Gasabo",
-  image: "",
-  specifications: "Intel processor, WiFi, Bluetooth",
-  negotiable: true,
-  status: "approved",
-  seller: "Tech Seller"
-},
-{
-  id: 10,
-  title: "Graphic Design Service",
-  description: "Professional logos, posters and social media designs.",
-  price: 25000,
-  category: "Art & Creative",
-  stock: 20,
-  brand: "",
-  model: "",
-  condition: "new",
-  storage: "",
-  ram: "",
-  district: "Kicukiro",
-  image: "",
-  specifications: "Logo design, posters and branding",
-  negotiable: true,
-  status: "approved",
-  seller: "Creative Designer"
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>IsokoHub — Global Marketplace</title>
+
+<meta name="description"
+content="IsokoHub — Global marketplace for products, services, education, art and entertainment.">
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
 }
+
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f5f7fb;
+  color:#172033;
+}
+
+button,input,select,textarea{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+  border:0;
+}
+
+.top{
+  background:#111827;
+  color:#fff;
+  padding:14px 5%;
+  display:flex;
+  gap:18px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+.logo{
+  font-size:25px;
+  font-weight:800;
+  color:#fff;
+  cursor:pointer;
+}
+
+.search{
+  display:flex;
+  flex:1;
+  min-width:240px;
+  max-width:700px;
+}
+
+.search input{
+  width:100%;
+  padding:11px 14px;
+  border:0;
+  border-radius:8px 0 0 8px;
+}
+
+.search button{
+  padding:11px 16px;
+  background:#16a34a;
+  color:#fff;
+  border-radius:0 8px 8px 0;
+}
+
+.nav{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  padding:10px 5%;
+  background:#fff;
+  box-shadow:0 2px 8px #0001;
+  position:sticky;
+  top:0;
+  z-index:20;
+}
+
+.nav button{
+  background:#fff;
+  padding:9px 12px;
+  border-radius:7px;
+  color:#273142;
+}
+
+.nav button:hover{
+  background:#eefbf2;
+}
+
+.container{
+  max-width:1200px;
+  margin:auto;
+  padding:24px 5%;
+}
+
+.hero{
+  background:linear-gradient(135deg,#166534,#22c55e);
+  color:#fff;
+  padding:45px 7%;
+  border-radius:18px;
+  margin-bottom:25px;
+}
+
+.hero h1{
+  font-size:clamp(30px,5vw,52px);
+  margin-bottom:12px;
+}
+
+.hero p{
+  max-width:750px;
+  line-height:1.6;
+}
+
+.actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:20px;
+}
+
+.btn{
+  padding:11px 16px;
+  border-radius:8px;
+  background:#16a34a;
+  color:#fff;
+}
+
+.btn.secondary{
+  background:#fff;
+  color:#166534;
+}
+
+.btn.dark{
+  background:#111827;
+}
+
+.btn.danger{
+  background:#dc2626;
+}
+
+.section{
+  margin:28px 0;
+}
+
+.section-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:14px;
+}
+
+.categories{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+  gap:12px;
+}
+
+.cat{
+  background:#fff;
+  padding:20px 12px;
+  border-radius:12px;
+  text-align:center;
+  box-shadow:0 2px 8px #0000000b;
+}
+
+.cat .icon{
+  font-size:30px;
+  display:block;
+  margin-bottom:8px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:16px;
+}
+
+.card{
+  background:#fff;
+  border-radius:13px;
+  overflow:hidden;
+  box-shadow:0 2px 10px #0000000d;
+  position:relative;
+}
+
+.pic{
+  height:170px;
+  background:#eef2f7;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:55px;
+  overflow:hidden;
+}
+
+.pic img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.card-body{
+  padding:14px;
+}
+
+.card h3{
+  font-size:17px;
+  margin:7px 0;
+}
+
+.card p{
+  font-size:14px;
+  color:#657084;
+  line-height:1.45;
+  min-height:40px;
+}
+
+.price{
+  font-weight:800;
+  color:#166534;
+  font-size:18px;
+  margin:10px 0;
+}
+
+.meta{
+  font-size:13px;
+  color:#6b7280;
+  margin:4px 0;
+}
+
+.card-actions{
+  display:flex;
+  gap:7px;
+  margin-top:10px;
+}
+
+.card-actions button{
+  flex:1;
+  padding:9px;
+  border-radius:7px;
+  background:#166534;
+  color:#fff;
+}
+
+.card-actions .save{
+  flex:0 0 42px;
+  background:#f3f4f6;
+  color:#111827;
+}
+
+.panel{
+  display:none;
+}
+
+.panel.active{
+  display:block;
+}
+
+.notice{
+  padding:18px;
+  background:#fff;
+  border-radius:12px;
+  text-align:center;
+  color:#667085;
+}
+
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:#0008;
+  z-index:100;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.modal.active{
+  display:flex;
+}
+
+.modal-box{
+  background:#fff;
+  width:min(650px,100%);
+  max-height:90vh;
+  overflow:auto;
+  border-radius:15px;
+  padding:20px;
+}
+
+.close{
+  float:right;
+  background:#eee;
+  border-radius:50%;
+  width:35px;
+  height:35px;
+}
+
+.form{
+  background:#fff;
+  padding:20px;
+  border-radius:13px;
+  box-shadow:0 2px 10px #0001;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:13px;
+}
+
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.field.full{
+  grid-column:1/-1;
+}
+
+.field input,
+.field select,
+.field textarea{
+  padding:11px;
+  border:1px solid #d5dbe5;
+  border-radius:8px;
+}
+
+.field textarea{
+  min-height:90px;
+  resize:vertical;
+}
+
+.stat-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:12px;
+}
+
+.stat{
+  background:#fff;
+  padding:18px;
+  border-radius:12px;
+}
+
+.stat b{
+  font-size:25px;
+  display:block;
+  margin-top:7px;
+}
+
+.table-wrap{
+  overflow:auto;
+  background:#fff;
+  border-radius:12px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:650px;
+}
+
+th,td{
+  padding:12px;
+  border-bottom:1px solid #eee;
+  text-align:left;
+}
+
+.badge{
+  display:inline-block;
+  padding:4px 8px;
+  border-radius:20px;
+  background:#e8f7ed;
+  color:#166534;
+  font-size:12px;
+}
+
+footer{
+  margin-top:40px;
+  background:#111827;
+  color:#fff;
+  padding:30px 5%;
+  text-align:center;
+}
+
+.toast{
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  background:#111827;
+  color:#fff;
+  padding:13px 17px;
+  border-radius:9px;
+  display:none;
+  z-index:200;
+}
+
+@media(max-width:650px){
+
+  .form-grid{
+    grid-template-columns:1fr;
+  }
+
+  .field.full{
+    grid-column:auto;
+  }
+
+  .top{
+    padding:12px 4%;
+  }
+
+  .nav{
+    padding:8px 4%;
+    overflow:auto;
+    white-space:nowrap;
+  }
+
+  .container{
+    padding:18px 4%;
+  }
+
+  .grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+
+  .pic{
+    height:135px;
+  }
+
+  .card-body{
+    padding:10px;
+  }
+
+  .card h3{
+    font-size:15px;
+  }
+
+  .card p{
+    font-size:12px;
+  }
+
+  .price{
+    font-size:16px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header class="top">
+
+  <div class="logo" onclick="showHome()">
+    IsokoHub
+  </div>
+
+  <div class="search">
+
+    <input
+      id="searchInput"
+      placeholder="Search products, services or sellers..."
+      onkeydown="if(event.key==='Enter')searchProducts()"
+    >
+
+    <button onclick="searchProducts()">
+      Search
+    </button>
+
+  </div>
+
+</header>
+
+
+<nav class="nav">
+
+<button onclick="showHome()">
+🏠 Home
+</button>
+
+<button onclick="showPanel('savedPanel');renderSaved()">
+❤️ Saved <span id="savedCount">0</span>
+</button>
+
+<button onclick="showPanel('cartPanel');renderCart()">
+🛒 Cart <span id="cartCount">0</span>
+</button>
+
+<button onclick="showPanel('ordersPanel');renderOrders()">
+📦 Orders
+</button>
+
+<button onclick="showPanel('messagesPanel');renderMessages()">
+💬 Messages
+</button>
+
+<button onclick="showPanel('profilePanel');loadProfile()">
+👤 Profile
+</button>
+
+<button onclick="showPanel('sellPanel')">
+➕ Sell
+</button>
+
+<button onclick="showPanel('adminPanel');renderAdmin()">
+🛡️ Admin
+</button>
+
+</nav>
+
+
+<main class="container">
+
+
+<section id="homePanel" class="panel active">
+
+<div class="hero">
+
+<h1>
+Welcome to IsokoHub
+</h1>
+
+<p>
+A global marketplace connecting buyers, sellers, teachers,
+artists, creators, filmmakers and service providers.
+</p>
+
+<div class="actions">
+
+<button
+class="btn secondary"
+onclick="document.getElementById('productsSection').scrollIntoView({behavior:'smooth'})">
+Shop Now
+</button>
+
+<button
+class="btn dark"
+onclick="showPanel('sellPanel')">
+Sell on IsokoHub
+</button>
+
+</div>
+
+</div>
+
+
+<section class="section">
+
+<div class="section-head">
+<h2>Explore Categories</h2>
+</div>
+
+<div id="categories" class="categories"></div>
+
+</section>
+
+
+<section class="section" id="productsSection">
+
+<div class="section-head">
+
+<h2>
+Featured Products
+</h2>
+
+<button
+class="btn"
+onclick="loadProducts()">
+View All
+</button>
+
+</div>
+
+<div id="products" class="grid"></div>
+
+</section>
+
+</section>
+
+
+
+<section id="searchPanel" class="panel">
+
+<div class="section-head">
+
+<h2>
+Search Results
+</h2>
+
+<button
+class="btn"
+onclick="showHome()">
+Home
+</button>
+
+</div>
+
+<div
+id="searchResults"
+class="grid">
+</div>
+
+</section>
+
+
+
+<section id="savedPanel" class="panel">
+
+<div class="section-head">
+<h2>❤️ Saved Products</h2>
+</div>
+
+<div
+id="savedProducts"
+class="grid">
+</div>
+
+</section>
+
+
+
+<section id="cartPanel" class="panel">
+
+<div class="section-head">
+<h2>🛒 Shopping Cart</h2>
+</div>
+
+<div id="cartProducts"></div>
+
+<div
+class="form"
+style="margin-top:15px">
+
+<h3>
+Total:
+<span id="cartTotal">
+0 RWF
+</span>
+</h3>
+
+<br>
+
+<button
+class="btn"
+onclick="checkout()">
+Place Order
+</button>
+
+</div>
+
+</section>
+
+
+
+<section id="ordersPanel" class="panel">
+
+<div class="section-head">
+<h2>📦 My Orders</h2>
+</div>
+
+<div id="ordersList"></div>
+
+</section>
+
+
+
+<section id="messagesPanel" class="panel">
+
+<div class="section-head">
+<h2>💬 Messages</h2>
+</div>
+
+<div id="messagesList"></div>
+
+</section>
+
+
+
+<section id="profilePanel" class="panel">
+
+<div class="section-head">
+<h2>👤 Profile</h2>
+</div>
+
+<form
+class="form"
+onsubmit="saveProfile(event)">
+
+<div class="form-grid">
+
+<div class="field">
+
+<label>
+Full name
+</label>
+
+<input
+id="profileName"
+required>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Email
+</label>
+
+<input
+id="profileEmail"
+type="email">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Phone
+</label>
+
+<input
+id="profilePhone">
+
+</div>
+
+
+<div class="field">
+
+<label>
+District
+</label>
+
+<input
+id="profileDistrict">
+
+</div>
+
+
+<div class="field full">
+
+<label>
+Address
+</label>
+
+<textarea
+id="profileAddress">
+</textarea>
+
+</div>
+
+</div>
+
+<br>
+
+<button class="btn">
+Save Profile
+</button>
+
+</form>
+
+</section>
+
+
+
+<section id="sellPanel" class="panel">
+
+<div class="section-head">
+<h2>➕ Sell on IsokoHub</h2>
+</div>
+
+
+<form
+id="sellForm"
+class="form"
+onsubmit="submitProduct(event)">
+
+<div class="form-grid">
+
+
+<div class="field">
+
+<label>
+Title *
+</label>
+
+<input
+id="pTitle"
+required
+placeholder="e.g. iPhone 15 Pro Max">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Category *
+</label>
+
+<select
+id="pCategory"
+required>
+</select>
+
+</div>
+
+
+<div class="field full">
+
+<label>
+Short description *
+</label>
+
+<textarea
+id="pDescription"
+required>
+</textarea>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Price (RWF) *
+</label>
+
+<input
+id="pPrice"
+type="number"
+min="0"
+required>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Stock
+</label>
+
+<input
+id="pStock"
+type="number"
+min="0"
+value="1">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Brand
+</label>
+
+<input id="pBrand">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Model
+</label>
+
+<input id="pModel">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Condition
+</label>
+
+<select id="pCondition">
+
+<option>
+new
+</option>
+
+<option>
+used
+</option>
+
+<option>
+refurbished
+</option>
+
+</select>
+
+</div>
+
+
+<div class="field">
+
+<label>
+District
+</label>
+
+<input id="pDistrict">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Storage
+</label>
+
+<input
+id="pStorage"
+placeholder="e.g. 512GB">
+
+</div>
+
+
+<div class="field">
+
+<label>
+RAM
+</label>
+
+<input
+id="pRam"
+placeholder="e.g. 16GB">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Image URL
+</label>
+
+<input
+id="pImage"
+placeholder="https://...">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Seller name
+</label>
+
+<input id="pSeller">
+
+</div>
+
+
+<div class="field full">
+
+<label>
+Additional specifications
+</label>
+
+<textarea
+id="pSpecifications">
+</textarea>
+
+</div>
+
+
+<div class="field">
+
+<label>
+
+<input
+id="pNegotiable"
+type="checkbox">
+
+Price is negotiable
+
+</label>
+
+</div>
+
+
+</div>
+
+<br>
+
+<button class="btn">
+Submit for Review
+</button>
+
+</form>
+
+</section>
+
+
+
+<section id="adminPanel" class="panel">
+
+<div class="section-head">
+
+<h2>
+🛡️ Admin Dashboard
+</h2>
+
+<button
+class="btn dark"
+onclick="adminLogin()">
+Admin Login
+</button>
+
+</div>
+
+<div id="adminContent"></div>
+
+</section>
+
+</main>
+
+
+
+<footer>
+
+© 2026 IsokoHub — Global Marketplace
+
+</footer>
+
+
+<div
+id="toast"
+class="toast">
+</div>
+
+
+
+<div
+id="productModal"
+class="modal"
+onclick="if(event.target===this)closeModal()">
+
+<div class="modal-box">
+
+<button
+class="close"
+onclick="closeModal()">
+×
+</button>
+
+<div id="modalContent"></div>
+
+</div>
+
+</div>
+
+
+
+<script>
+
+const STORAGE={
+
+products:"isokohub_products_v2",
+
+cart:"isokohub_cart_v2",
+
+saved:"isokohub_saved_v2",
+
+orders:"isokohub_orders_v2",
+
+profile:"isokohub_profile_v2",
+
+admin:"isokohub_admin_v2",
+
+messages:"isokohub_messages_v2"
+
+};
+
+
+const CATEGORIES=[
+
+"Electronics",
+
+"Fashion",
+
+"Home",
+
+"Education",
+
+"Art & Creative",
+
+"Film & Entertainment",
+
+"Services"
+
 ];
 
 
-/* =====================================================
-   ISOKOHUB APPLICATION
-===================================================== */
+const defaultProducts=[
 
-let products = [];
-let cart = [];
-let saved = [];
-let orders = [];
-let profile = {};
-let isAdmin = false;
+{
+id:1,
+title:"iPhone 15 Pro Max",
+description:"Powerful smartphone for work, study and entertainment.",
+price:1200000,
+category:"Electronics",
+stock:8,
+brand:"Apple",
+model:"iPhone 15 Pro Max",
+condition:"new",
+storage:"256GB",
+ram:"8GB",
+district:"Gasabo",
+image:"",
+specifications:"5G, Face ID, high quality camera",
+negotiable:true,
+status:"approved",
+seller:"Tech Seller"
+},
 
+{
+id:2,
+title:"African Fashion Outfit",
+description:"Modern African fashion outfit with beautiful local design.",
+price:85000,
+category:"Fashion",
+stock:12,
+brand:"Local Fashion",
+model:"AF-01",
+condition:"new",
+storage:"",
+ram:"",
+district:"Nyarugenge",
+image:"",
+specifications:"Handmade African-inspired fashion",
+negotiable:true,
+status:"approved",
+seller:"Fashion Designer"
+},
 
-/* =====================================================
-   STORAGE HELPERS
-===================================================== */
+{
+id:3,
+title:"Home Decoration Set",
+description:"Creative decoration items for your home.",
+price:60000,
+category:"Home",
+stock:15,
+brand:"Isoko Home",
+model:"HD-01",
+condition:"new",
+storage:"",
+ram:"",
+district:"Kicukiro",
+image:"",
+specifications:"Decorative home accessories",
+negotiable:true,
+status:"approved",
+seller:"Home Seller"
+},
 
-function getStorage(key, fallback) {
-  try {
-    const data = localStorage.getItem(key);
+{
+id:4,
+title:"Online English Course",
+description:"Learn English through online lessons.",
+price:30000,
+category:"Education",
+stock:100,
+brand:"",
+model:"",
+condition:"new",
+storage:"",
+ram:"",
+district:"",
+image:"",
+specifications:"Online lessons and learning materials",
+negotiable:false,
+status:"approved",
+seller:"Education Teacher"
+},
 
-    if (!data) {
-      return fallback;
-    }
+{
+id:5,
+title:"Handmade African Art",
+description:"Beautiful handmade African artwork.",
+price:75000,
+category:"Art & Creative",
+stock:6,
+brand:"Local Artist",
+model:"",
+condition:"new",
+storage:"",
+ram:"",
+district:"Nyarugenge",
+image:"",
+specifications:"Handmade creative artwork",
+negotiable:true,
+status:"approved",
+seller:"African Artist"
+},
 
-    return JSON.parse(data);
-  } catch (error) {
-    console.warn("Storage error:", key, error);
-    return fallback;
-  }
+{
+id:6,
+title:"Professional Photography Service",
+description:"Photography service for events and special occasions.",
+price:100000,
+category:"Services",
+stock:10,
+brand:"",
+model:"",
+condition:"new",
+storage:"",
+ram:"",
+district:"Gasabo",
+image:"",
+specifications:"Events, portraits and professional photography",
+negotiable:true,
+status:"approved",
+seller:"Creative Photographer"
+},
+
+{
+id:7,
+title:"Film Production Service",
+description:"Professional video and film production services.",
+price:250000,
+category:"Film & Entertainment",
+stock:5,
+brand:"",
+model:"",
+condition:"new",
+storage:"",
+ram:"",
+district:"Kicukiro",
+image:"",
+specifications:"Video production, editing and filming",
+negotiable:true,
+status:"approved",
+seller:"Isoko Film Creator"
+},
+
+{
+id:8,
+title:"Laptop Computer",
+description:"Reliable laptop for school, work and business.",
+price:550000,
+category:"Electronics",
+stock:7,
+brand:"HP",
+model:"ProBook",
+condition:"new",
+storage:"512GB SSD",
+ram:"16GB",
+district:"Gasabo",
+image:"",
+specifications:"Intel processor, WiFi, Bluetooth",
+negotiable:true,
+status:"approved",
+seller:"Tech Seller"
+},
+
+{
+id:9,
+title:"Graphic Design Service",
+description:"Professional logos, posters and social media designs.",
+price:25000,
+category:"Art & Creative",
+stock:20,
+brand:"",
+model:"",
+condition:"new",
+storage:"",
+ram:"",
+district:"Kicukiro",
+image:"",
+specifications:"Logo design, posters and branding",
+negotiable:true,
+status:"approved",
+seller:"Creative Designer"
 }
 
-function saveStorage(key, value) {
-  try {
-    localStorage.setItem(key, JSON.stringify(value));
-  } catch (error) {
-    console.warn("Could not save:", key, error);
-  }
+];
+
+
+let products=[];
+
+let cart=[];
+
+let saved=[];
+
+let orders=[];
+
+let profile={};
+
+let messages=[];
+
+let isAdmin=false;
+
+
+
+function getStorage(key,fallback){
+
+try{
+
+const d=localStorage.getItem(key);
+
+return d ? JSON.parse(d) : fallback;
+
+}catch(e){
+
+return fallback;
+
 }
 
-
-/* =====================================================
-   LOAD DATA
-===================================================== */
-
-function initializeApp() {
-
-  products = getStorage(STORAGE.products, []);
-
-  if (!Array.isArray(products) || products.length === 0) {
-    products = defaultProducts;
-    saveStorage(STORAGE.products, products);
-  }
-
-  cart = getStorage(STORAGE.cart, []);
-  saved = getStorage(STORAGE.saved, []);
-  orders = getStorage(STORAGE.orders, []);
-  profile = getStorage(STORAGE.profile, {});
-  isAdmin = getStorage(STORAGE.admin, false);
-
-  loadProducts();
-  updateCounts();
-  loadProfile();
-  loadCategories();
-
-  if (isAdmin) {
-    renderAdmin();
-  }
-}
-
-
-/* =====================================================
-   SAFE HTML
-===================================================== */
-
-function escapeHTML(value) {
-
-  if (value === null || value === undefined) {
-    return "";
-  }
-
-  return String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
-
-
-/* =====================================================
-   CATEGORY ICON
-===================================================== */
-
-function categoryIcon(category) {
-
-  const icons = {
-    "Electronics": "📱",
-    "Fashion": "👕",
-    "Home": "🏠",
-    "Education": "📚",
-    "Art & Creative": "🎨",
-    "Film & Entertainment": "🎬",
-    "Services": "🛠️"
-  };
-
-  return icons[category] || "🛍️";
-}
-
-
-/* =====================================================
-   PRODUCT IMAGE
-===================================================== */
-
-function productImage(product) {
-
-  if (product.image && String(product.image).trim() !== "") {
-
-    return `
-      <img
-        src="${escapeHTML(product.image)}"
-        alt="${escapeHTML(product.title)}"
-        onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
-      >
-      <div class="product-placeholder" style="display:none">
-        ${categoryIcon(product.category)}
-      </div>
-    `;
-  }
-
-  return `
-    <div class="product-placeholder">
-      ${categoryIcon(product.category)}
-    </div>
-  `;
-}
-
-
-/* =====================================================
-   LOAD PRODUCTS
-===================================================== */
-
-function loadProducts(list = null) {
-
-  const container = document.getElementById("products");
-
-  if (!container) return;
-
-  const source = Array.isArray(list)
-    ? list
-    : products.filter(p => p.status === "approved");
-
-  if (source.length === 0) {
-
-    container.innerHTML = `
-      <div class="empty">
-        <h3>No products found</h3>
-        <p>Try another search or category.</p>
-      </div>
-    `;
-
-    updateCounts();
-    return;
-  }
-
-  container.innerHTML = source.map(productCard).join("");
-
-  updateCounts();
-}
-
-
-/* =====================================================
-   PRODUCT CARD
-===================================================== */
-
-function productCard(product) {
-
-  const isSaved = saved.includes(Number(product.id));
-
-  const cartItem = cart.find(
-    item => Number(item.id) === Number(product.id)
-  );
-
-  return `
-    <article class="product-card">
-
-      <div class="product-image">
-        ${productImage(product)}
-
-        <button
-          class="save-btn"
-          onclick="toggleSaved(${Number(product.id)})"
-          title="Save product"
-        >
-          ${isSaved ? "❤️" : "🤍"}
-        </button>
-      </div>
-
-      <div class="product-info">
-
-        <div class="product-category">
-          ${categoryIcon(product.category)}
-          ${escapeHTML(product.category)}
-        </div>
-
-        <h3>${escapeHTML(product.title)}</h3>
-
-        <p class="product-description">
-          ${escapeHTML(product.description || "")}
-        </p>
-
-        <div class="price">
-          ${formatMoney(product.price)} RWF
-        </div>
-
-        <div class="seller">
-          Seller: ${escapeHTML(product.seller || "IsokoHub Seller")}
-        </div>
-
-        ${
-          product.district
-          ? `<div class="location">📍 ${escapeHTML(product.district)}</div>`
-          : ""
-        }
-
-        <div class="product-actions">
-
-          <button
-            class="secondary-btn"
-            onclick="openProduct(${Number(product.id)})"
-          >
-            View
-          </button>
-
-          <button
-            class="primary-btn"
-            onclick="addToCart(${Number(product.id)})"
-          >
-            🛒 Add
-          </button>
-
-        </div>
-
-        ${
-          cartItem
-          ? `<small>In cart: ${cartItem.quantity}</small>`
-          : ""
-        }
-
-      </div>
-    </article>
-  `;
 }
 
 
-/* =====================================================
-   MONEY
-===================================================== */
+function saveStorage(key,value){
 
-function formatMoney(number) {
+try{
 
-  const value = Number(number) || 0;
+localStorage.setItem(
+key,
+JSON.stringify(value)
+);
 
-  return new Intl.NumberFormat("en-US").format(value);
+}catch(e){
+
+console.warn(e);
+
+}
+
 }
 
 
-/* =====================================================
-   COUNTS
-===================================================== */
+function escapeHTML(v){
 
-function updateCounts() {
+if(v==null){
+return "";
+}
 
-  const savedCount = document.getElementById("savedCount");
-  const cartCount = document.getElementById("cartCount");
+return String(v)
 
-  if (savedCount) {
-    savedCount.textContent = saved.length;
-  }
+.replace(/&/g,"&amp;")
 
-  if (cartCount) {
+.replace(/</g,"&lt;")
 
-    const totalItems = cart.reduce(
-      (sum, item) => sum + Number(item.quantity || 0),
-      0
-    );
+.replace(/>/g,"&gt;")
 
-    cartCount.textContent = totalItems;
-  }
+.replace(/"/g,"&quot;")
+
+.replace(/'/g,"&#039;");
+
 }
 
 
-/* =====================================================
-   SAVED PRODUCTS
-===================================================== */
+function formatMoney(n){
 
-function toggleSaved(id) {
+return new Intl.NumberFormat(
+"en-US"
+).format(Number(n)||0);
 
-  id = Number(id);
-
-  if (saved.includes(id)) {
-
-    saved = saved.filter(item => item !== id);
-
-  } else {
-
-    saved.push(id);
-  }
-
-  saveStorage(STORAGE.saved, saved);
-
-  renderSaved();
-  loadProducts();
-  updateCounts();
 }
 
 
-function renderSaved() {
+function categoryIcon(c){
 
-  const container = document.getElementById("savedProducts");
+return {
 
-  if (!container) return;
+"Electronics":"📱",
 
-  const list = products.filter(
-    product =>
-      saved.includes(Number(product.id)) &&
-      product.status === "approved"
-  );
+"Fashion":"👕",
 
-  if (list.length === 0) {
+"Home":"🏠",
 
-    container.innerHTML = `
-      <div class="empty">
-        <h3>No saved products</h3>
-        <p>Products you save will appear here.</p>
-      </div>
-    `;
+"Education":"📚",
 
-    return;
-  }
+"Art & Creative":"🎨",
 
-  container.innerHTML = `
-    <div class="products">
-      ${list.map(productCard).join("")}
-    </div>
-  `;
+"Film & Entertainment":"🎬",
+
+"Services":"🛠️"
+
+}[c] || "🛍️";
+
 }
 
 
-/* =====================================================
-   CART
-===================================================== */
+function toast(msg){
 
-function addToCart(id) {
+const t=document.getElementById("toast");
 
-  id = Number(id);
+t.textContent=msg;
 
-  const product = products.find(
-    item => Number(item.id) === id
-  );
+t.style.display="block";
 
-  if (!product) {
-    alert("Product not found.");
-    return;
-  }
+setTimeout(()=>{
 
-  if (product.stock !== undefined && Number(product.stock) <= 0) {
-    alert("This product is out of stock.");
-    return;
-  }
+t.style.display="none";
 
-  const existing = cart.find(
-    item => Number(item.id) === id
-  );
+},2200);
 
-  if (existing) {
-
-    if (
-      product.stock &&
-      Number(existing.quantity) >= Number(product.stock)
-    ) {
-      alert("You cannot add more than available stock.");
-      return;
-    }
-
-    existing.quantity++;
-
-  } else {
-
-    cart.push({
-      id: id,
-      quantity: 1
-    });
-  }
-
-  saveStorage(STORAGE.cart, cart);
-
-  updateCounts();
-  renderCart();
-
-  alert("Added to cart.");
 }
 
 
-function changeQuantity(id, change) {
+function productImage(p){
 
-  id = Number(id);
+if(
+p.image &&
+String(p.image).trim()
+){
 
-  const item = cart.find(
-    product => Number(product.id) === id
-  );
+return `
+<img
+src="${escapeHTML(p.image)}"
+alt="${escapeHTML(p.title)}"
+onerror="this.parentElement.innerHTML='<span>${categoryIcon(p.category)}</span>'">
+`;
 
-  if (!item) return;
+}
 
-  item.quantity += Number(change);
+return `
+<span>
+${categoryIcon(p.category)}
+</span>
+`;
 
-  if (item.quantity <= 0) {
-
-    cart = cart.filter(
-      product => Number(product.id) !== id
-    );
-  }
-
-  saveStorage(STORAGE.cart, cart);
-
-  renderCart();
-  updateCounts();
 }
 
 
-function removeFromCart(id) {
 
-  id = Number(id);
+function initializeApp(){
 
-  cart = cart.filter(
-    item => Number(item.id) !== id
-  );
+products=getStorage(
+STORAGE.products,
+[]
+);
 
-  saveStorage(STORAGE.cart, cart);
+if(
+!Array.isArray(products) ||
+products.length===0
+){
 
-  renderCart();
-  updateCounts();
+products=defaultProducts;
+
+saveStorage(
+STORAGE.products,
+products
+);
+
+}
+
+cart=getStorage(
+STORAGE.cart,
+[]
+);
+
+saved=getStorage(
+STORAGE.saved,
+[]
+);
+
+orders=getStorage(
+STORAGE.orders,
+[]
+);
+
+profile=getStorage(
+STORAGE.profile,
+{}
+);
+
+messages=getStorage(
+STORAGE.messages,
+[]
+);
+
+isAdmin=getStorage(
+STORAGE.admin,
+false
+);
+
+loadCategories();
+
+loadProducts();
+
+updateCounts();
+
+loadProfile();
+
+renderMessages();
+
+if(isAdmin){
+
+renderAdmin();
+
+}
+
 }
 
 
-function renderCart() {
 
-  const container = document.getElementById("cartProducts");
+function showPanel(id){
 
-  if (!container) return;
+document
+.querySelectorAll(".panel")
+.forEach(x=>{
 
-  if (cart.length === 0) {
+x.classList.remove("active");
 
-    container.innerHTML = `
-      <div class="empty">
-        <h3>Your cart is empty</h3>
-        <p>Add products to your cart to see them here.</p>
-      </div>
-    `;
+});
 
-    updateCartTotal();
-    return;
-  }
+const p=document.getElementById(id);
 
-  container.innerHTML = cart.map(item => {
+if(p){
 
-    const product = products.find(
-      p => Number(p.id) === Number(item.id)
-    );
+p.classList.add("active");
 
-    if (!product) return "";
+}
 
-    const quantity = Number(item.quantity || 1);
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
 
-    return `
-      <div class="cart-item">
-
-        <div class="cart-image">
-          ${productImage(product)}
-        </div>
-
-        <div class="cart-info">
-
-          <h3>${escapeHTML(product.title)}</h3>
-
-          <p>${formatMoney(product.price)} RWF</p>
-
-          <div class="quantity">
-
-            <button
-              onclick="changeQuantity(${product.id}, -1)"
-            >
-              −
-            </button>
-
-            <strong>${quantity}</strong>
-
-            <button
-              onclick="changeQuantity(${product.id}, 1)"
-            >
-              +
-            </button>
-
-          </div>
-
-          <button
-            class="danger-btn"
-            onclick="removeFromCart(${product.id})"
-          >
-            Remove
-          </button>
-
-        </div>
-
-      </div>
-    `;
-
-  }).join("");
-
-  updateCartTotal();
 }
 
 
-function updateCartTotal() {
+function showHome(){
 
-  const totalElement = document.getElementById("cartTotal");
+showPanel("homePanel");
 
-  if (!totalElement) return;
+loadProducts();
 
-  let total = 0;
-
-  cart.forEach(item => {
-
-    const product = products.find(
-      p => Number(p.id) === Number(item.id)
-    );
-
-    if (product) {
-      total +=
-        Number(product.price || 0) *
-        Number(item.quantity || 1);
-    }
-  });
-
-  totalElement.textContent =
-    formatMoney(total) + " RWF";
 }
 
 
-/* =====================================================
-   CHECKOUT
-===================================================== */
 
-function checkout() {
+function loadCategories(){
 
-  if (cart.length === 0) {
+const box=document.getElementById(
+"categories"
+);
 
-    alert("Your cart is empty.");
-    return;
-  }
+box.innerHTML=CATEGORIES.map(c=>`
 
-  const orderItems = cart.map(item => {
+<button
+class="cat"
+onclick="filterCategory('${escapeHTML(c)}')">
 
-    const product = products.find(
-      p => Number(p.id) === Number(item.id)
-    );
+<span class="icon">
+${categoryIcon(c)}
+</span>
 
-    return {
-      productId: Number(item.id),
-      title: product ? product.title : "Product",
-      price: product ? Number(product.price || 0) : 0,
-      quantity: Number(item.quantity || 1),
-      seller: product ? product.seller : ""
-    };
-  });
+<b>
+${escapeHTML(c)}
+</b>
 
-  const total = orderItems.reduce(
-    (sum, item) =>
-      sum + item.price * item.quantity,
-    0
-  );
+</button>
 
-  const order = {
+`).join("");
 
-    id: "ORD-" + Date.now(),
 
-    date: new Date().toISOString(),
+document.getElementById(
+"pCategory"
+).innerHTML=CATEGORIES.map(c=>`
 
-    items: orderItems,
+<option>
+${escapeHTML(c)}
+</option>
 
-    total: total,
+`).join("");
 
-    status: "Pending",
-
-    paymentStatus: "Pending"
-
-  };
-
-  orders.unshift(order);
-
-  saveStorage(STORAGE.orders, orders);
-
-  cart = [];
-
-  saveStorage(STORAGE.cart, cart);
-
-  updateCounts();
-  renderCart();
-  renderOrders();
-
-  alert(
-    "Order created successfully!\n\nOrder ID: " +
-    order.id
-  );
-
-  showPanel("ordersPanel");
 }
 
 
-/* =====================================================
-   ORDERS
-===================================================== */
 
-function renderOrders() {
+function loadProducts(list=null){
 
-  const container = document.getElementById("ordersList");
+const box=document.getElementById(
+"products"
+);
 
-  if (!container) return;
+if(!box){
+return;
+}
 
-  if (orders.length === 0) {
+const source=
 
-    container.innerHTML = `
-      <div class="empty">
-        <h3>No orders yet</h3>
-        <p>Your orders will appear here.</p>
-      </div>
-    `;
+list ||
 
-    return;
-  }
+products.filter(
+p=>p.status==="approved"
+);
 
-  container.innerHTML = orders.map(order => {
+box.innerHTML=
 
-    const date = new Date(order.date);
+source.length
 
-    return `
-      <div class="order-item">
+?
 
-        <div>
+source.map(productCard).join("")
 
-          <h3>${escapeHTML(order.id)}</h3>
+:
 
-          <p>
-            ${date.toLocaleString()}
-          </p>
+`
+<div
+class="notice"
+style="grid-column:1/-1">
 
-          <p>
-            Items: ${order.items.length}
-          </p>
+No products found.
 
-          <strong>
-            Total: ${formatMoney(order.total)} RWF
-          </strong>
+</div>
+`;
 
-        </div>
+updateCounts();
 
-        <div>
-
-          <span class="status">
-            ${escapeHTML(order.status)}
-          </span>
-
-          <p>
-            Payment:
-            ${escapeHTML(order.paymentStatus)}
-          </p>
-
-        </div>
-
-      </div>
-    `;
-
-  }).join("");
 }
 
 
-/* =====================================================
-   PRODUCT MODAL
-===================================================== */
 
-function openProduct(id) {
+function productCard(p){
 
-  id = Number(id);
+const sid=Number(p.id);
 
-  const product = products.find(
-    p => Number(p.id) === id
-  );
+const isSaved=
+saved.includes(sid);
 
-  if (!product) return;
+const ci=cart.find(
+x=>Number(x.id)===sid
+);
 
-  const modal = document.getElementById("productModal");
-  const content = document.getElementById("modalContent");
+return `
 
-  if (!modal || !content) return;
+<article class="card">
 
-  content.innerHTML = `
+<div class="pic">
 
-    <div class="modal-product">
+${productImage(p)}
 
-      <div class="modal-image">
-        ${productImage(product)}
-      </div>
+</div>
 
-      <div>
 
-        <div class="product-category">
-          ${categoryIcon(product.category)}
-          ${escapeHTML(product.category)}
-        </div>
+<div class="card-body">
 
-        <h2>${escapeHTML(product.title)}</h2>
+<span class="badge">
 
-        <h3 class="price">
-          ${formatMoney(product.price)} RWF
-        </h3>
+${categoryIcon(p.category)}
 
-        <p>
-          ${escapeHTML(product.description || "")}
-        </p>
+${escapeHTML(p.category)}
 
-        <hr>
+</span>
 
-        <p>
-          <strong>Seller:</strong>
-          ${escapeHTML(product.seller || "IsokoHub Seller")}
-        </p>
 
-        <p>
-          <strong>Condition:</strong>
-          ${escapeHTML(product.condition || "N/A")}
-        </p>
+<h3>
+${escapeHTML(p.title)}
+</h3>
 
-        ${
-          product.brand
-          ? `<p><strong>Brand:</strong> ${escapeHTML(product.brand)}</p>`
-          : ""
-        }
 
-        ${
-          product.model
-          ? `<p><strong>Model:</strong> ${escapeHTML(product.model)}</p>`
-          : ""
-        }
+<p>
+${escapeHTML(p.description||"")}
+</p>
 
-        ${
-          product.storage
-          ? `<p><strong>Storage:</strong> ${escapeHTML(product.storage)}</p>`
-          : ""
-        }
 
-        ${
-          product.ram
-          ? `<p><strong>RAM:</strong> ${escapeHTML(product.ram)}</p>`
-          : ""
-        }
+<div class="price">
 
-        ${
-          product.district
-          ? `<p><strong>Location:</strong> ${escapeHTML(product.district)}</p>`
-          : ""
-        }
+${formatMoney(p.price)}
+RWF
 
-        ${
-          product.specifications
-          ? `<p><strong>Specifications:</strong> ${escapeHTML(product.specifications)}</p>`
-          : ""
-        }
+</div>
 
-        <div class="product-actions">
 
-          <button
-            class="primary-btn"
-            onclick="addToCart(${product.id}); closeModal();"
-          >
-            🛒 Add to Cart
-          </button>
+<div class="meta">
 
-          <button
-            class="secondary-btn"
-            onclick="toggleSaved(${product.id})"
-          >
-            ❤️ Save
-          </button>
+Seller:
+${escapeHTML(
+p.seller||"IsokoHub Seller"
+)}
 
-        </div>
+</div>
 
-      </div>
 
-    </div>
-  `;
+${p.district?`
 
-  modal.classList.add("active");
+<div class="meta">
+
+📍 ${escapeHTML(p.district)}
+
+</div>
+
+`:""}
+
+
+<div class="card-actions">
+
+<button
+onclick="openProduct(${sid})">
+
+View
+
+</button>
+
+
+<button
+onclick="addToCart(${sid})">
+
+🛒 Add
+
+</button>
+
+
+<button
+class="save"
+onclick="toggleSaved(${sid})">
+
+${isSaved?"❤️":"🤍"}
+
+</button>
+
+</div>
+
+
+${ci?`
+
+<div class="meta">
+
+In cart:
+${ci.quantity}
+
+</div>
+
+`:""}
+
+</div>
+
+</article>
+
+`;
+
 }
 
 
-function closeModal() {
 
-  const modal = document.getElementById("productModal");
+function updateCounts(){
 
-  if (modal) {
-    modal.classList.remove("active");
-  }
+document.getElementById(
+"savedCount"
+).textContent=saved.length;
+
+
+document.getElementById(
+"cartCount"
+).textContent=
+
+cart.reduce(
+(s,x)=>s+Number(x.quantity||0),
+0
+);
+
 }
 
 
-/* =====================================================
-   SEARCH
-===================================================== */
 
-function searchProducts() {
+function toggleSaved(id){
 
-  const input = document.getElementById("searchInput");
+id=Number(id);
 
-  if (!input) return;
+if(saved.includes(id)){
 
-  const query = input.value
-    .trim()
-    .toLowerCase();
+saved=saved.filter(
+x=>x!==id
+);
 
-  if (!query) {
+}else{
 
-    loadProducts();
-    return;
-  }
+saved.push(id);
 
-  const results = products.filter(product => {
-
-    if (product.status !== "approved") {
-      return false;
-    }
-
-    const text = [
-
-      product.title,
-
-      product.description,
-
-      product.category,
-
-      product.brand,
-
-      product.model,
-
-      product.district,
-
-      product.seller,
-
-      product.specifications
-
-    ].join(" ").toLowerCase();
-
-    return text.includes(query);
-  });
-
-  showPanel("searchPanel");
-
-  const container =
-    document.getElementById("searchResults");
-
-  if (!container) return;
-
-  if (results.length === 0) {
-
-    container.innerHTML = `
-      <div class="empty">
-        <h3>No results</h3>
-        <p>No products or sellers matched "${escapeHTML(query)}".</p>
-      </div>
-    `;
-
-    return;
-  }
-
-  container.innerHTML = `
-    <h2>Search Results</h2>
-    <div class="products">
-      ${results.map(productCard).join("")}
-    </div>
-  `;
 }
 
+saveStorage(
+STORAGE.saved,
+saved
+);
 
-/* =====================================================
-   CATEGORY FILTER
-===================================================== */
+renderSaved();
 
-function filterCategory(category) {
-
-  const results = products.filter(product =>
-    product.status === "approved" &&
-    product.category === category
-  );
-
-  showHome();
-
-  const container =
-    document.getElementById("products");
-
-  if (!container) return;
-
-  if (results.length === 0) {
-
-    container.innerHTML = `
-      <div class="empty">
-        <h3>No products in this category.</h3>
-      </div>
-    `;
-
-    return;
-  }
-
-  container.innerHTML =
-    results.map(productCard).join("");
-
-  const section =
-    document.getElementById("productsSection");
-
-  if (section) {
-    section.scrollIntoView({
-      behavior: "smooth"
-    });
-  }
-}
-
-
-/* =====================================================
-   CATEGORIES
+loadProducts(
