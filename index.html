@@ -1,110 +1,1117 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>IsokoHub — Marketplace</title>
-<meta name="description" content="IsokoHub connects buyers, sellers, teachers, artists, filmmakers and service providers.">
-<style>
-*{box-sizing:border-box;margin:0;padding:0}body{font-family:Arial,sans-serif;background:#f5f7fb;color:#172033}
-button,input,select,textarea{font:inherit}button{cursor:pointer}.top{background:#111827;color:#fff;padding:14px 5%;position:sticky;top:0;z-index:20}
-.nav{max-width:1200px;margin:auto;display:flex;gap:12px;align-items:center;flex-wrap:wrap}.logo{font-size:25px;font-weight:800}.logo b{color:#22c55e}.search{flex:1;min-width:220px}.search input{width:100%;padding:11px 14px;border:0;border-radius:8px}.nav button{background:#1f2937;color:#fff;border:1px solid #374151;padding:9px 11px;border-radius:7px}
-.hero{background:linear-gradient(135deg,#14532d,#22c55e);color:white;padding:55px 5%}.hero>div{max-width:1200px;margin:auto}.hero h1{font-size:42px;margin-bottom:12px}.hero p{max-width:720px;line-height:1.6;font-size:18px}
-.container{max-width:1200px;width:90%;margin:35px auto}.section{margin-bottom:42px}.title{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:18px;flex-wrap:wrap}.title h2{font-size:27px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}.cats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px}.cat,.card,.panel{background:#fff;border-radius:12px;box-shadow:0 2px 12px #00000012}.cat{padding:20px;text-align:center}.cat .ico{font-size:34px;margin-bottom:8px}.card{overflow:hidden}.pic{height:155px;background:#e5e7eb;display:flex;align-items:center;justify-content:center;font-size:55px}.body{padding:15px}.body h3{margin:7px 0}.body p{color:#64748b;line-height:1.45;margin:5px 0}.price{color:#15803d;font-size:19px;font-weight:800;margin:10px 0}.badge{display:inline-block;padding:5px 9px;background:#dcfce7;color:#166534;border-radius:20px;font-size:12px}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.btn{border:0;border-radius:7px;padding:10px 13px}.green{background:#16a34a;color:white}.dark{background:#111827;color:white}.light{background:#eef2f7}.hidden{display:none!important}
-.modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;padding:20px;z-index:50}.modal.on{display:flex}.box{background:#fff;border-radius:12px;padding:23px;width:100%;max-width:650px;max-height:90vh;overflow:auto}.boxhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.close{background:#ef4444;color:white;border:0;border-radius:50%;width:30px;height:30px}.formgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}.field{margin-bottom:13px}.field label{display:block;font-weight:700;margin-bottom:5px}.field input,.field select,.field textarea{width:100%;padding:10px;border:1px solid #d1d5db;border-radius:7px}.field textarea{min-height:95px}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px}.stat{padding:18px;background:#f8fafc;border-radius:9px}.stat strong{display:block;font-size:27px;color:#15803d;margin-top:5px}.table{overflow:auto}.table table{width:100%;border-collapse:collapse;min-width:650px}.table th,.table td{padding:10px;border-bottom:1px solid #e5e7eb;text-align:left}.notice{padding:12px;background:#ecfdf5;border:1px solid #86efac;border-radius:8px;color:#166534;margin-bottom:14px}
-footer{background:#111827;color:#cbd5e1;padding:35px 5%;margin-top:55px}.foot{max-width:1200px;margin:auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:25px}.foot h3{color:white;margin-bottom:8px}
-@media(max-width:650px){.hero h1{font-size:31px}.search{flex-basis:100%;order:3}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>IsokoHub — Global Marketplace</title>
+
+  <meta
+    name="description"
+    content="IsokoHub is a marketplace connecting buyers, sellers, teachers, artists, creators, filmmakers and service providers."
+  >
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f5f7fa;
+      color: #172033;
+      line-height: 1.5;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .container {
+      width: min(1200px, 94%);
+      margin: auto;
+    }
+
+    /* HEADER */
+
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid #e5e7eb;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .topbar {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .logo {
+      font-size: 26px;
+      font-weight: 800;
+      color: #087f5b;
+      white-space: nowrap;
+    }
+
+    .logo span {
+      color: #172033;
+    }
+
+    .search-box {
+      flex: 1;
+      display: flex;
+      gap: 8px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 13px 15px;
+      border: 1px solid #d7dce3;
+      border-radius: 10px;
+      outline: none;
+    }
+
+    .search-box button {
+      border: 0;
+      background: #087f5b;
+      color: white;
+      padding: 0 18px;
+      border-radius: 10px;
+      font-weight: 700;
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .nav-btn {
+      border: 1px solid #dce1e8;
+      background: white;
+      padding: 9px 12px;
+      border-radius: 9px;
+      font-weight: 600;
+    }
+
+    .nav-btn:hover {
+      background: #f1f5f3;
+    }
+
+    /* HERO */
+
+    .hero {
+      margin-top: 28px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #087f5b, #0b6e4f);
+      color: white;
+      padding: 55px 35px;
+    }
+
+    .hero-content {
+      max-width: 720px;
+    }
+
+    .hero h1 {
+      font-size: clamp(32px, 5vw, 58px);
+      line-height: 1.08;
+      margin-bottom: 18px;
+    }
+
+    .hero p {
+      font-size: 18px;
+      opacity: .95;
+      margin-bottom: 25px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .primary-btn,
+    .secondary-btn {
+      border: 0;
+      padding: 13px 20px;
+      border-radius: 10px;
+      font-weight: 700;
+    }
+
+    .primary-btn {
+      background: white;
+      color: #087f5b;
+    }
+
+    .secondary-btn {
+      background: #075f45;
+      color: white;
+    }
+
+    /* SECTIONS */
+
+    section {
+      padding: 35px 0;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      gap: 10px;
+    }
+
+    .section-header h2 {
+      font-size: 25px;
+    }
+
+    .view-all {
+      color: #087f5b;
+      font-weight: 700;
+      border: 0;
+      background: none;
+    }
+
+    /* CATEGORIES */
+
+    .categories {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 12px;
+    }
+
+    .category {
+      background: white;
+      padding: 20px 10px;
+      text-align: center;
+      border-radius: 13px;
+      border: 1px solid #e5e7eb;
+      transition: .2s;
+    }
+
+    .category:hover {
+      transform: translateY(-3px);
+      border-color: #087f5b;
+    }
+
+    .category-icon {
+      font-size: 30px;
+      margin-bottom: 8px;
+    }
+
+    .category strong {
+      display: block;
+      font-size: 14px;
+    }
+
+    /* PRODUCTS */
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .product {
+      background: white;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid #e4e7eb;
+    }
+
+    .product-image {
+      height: 190px;
+      background: #eef2f4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 55px;
+    }
+
+    .product-body {
+      padding: 15px;
+    }
+
+    .product-title {
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .product-description {
+      font-size: 13px;
+      color: #687080;
+      min-height: 40px;
+    }
+
+    .price {
+      color: #087f5b;
+      font-size: 19px;
+      font-weight: 800;
+      margin: 10px 0;
+    }
+
+    .product-meta {
+      font-size: 12px;
+      color: #737b89;
+      margin-bottom: 12px;
+    }
+
+    .product-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .product-actions button {
+      flex: 1;
+      padding: 9px;
+      border-radius: 8px;
+      border: 1px solid #d8dde4;
+      background: white;
+      font-weight: 600;
+    }
+
+    .product-actions .cart-btn {
+      background: #087f5b;
+      color: white;
+      border-color: #087f5b;
+    }
+
+    /* SELL */
+
+    .sell-section {
+      background: white;
+      border-radius: 18px;
+      padding: 35px;
+      border: 1px solid #e4e7eb;
+    }
+
+    .sell-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 30px;
+      align-items: center;
+    }
+
+    .sell-section h2 {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    .sell-section p {
+      color: #626b79;
+      margin-bottom: 20px;
+    }
+
+    .sell-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .sell-list div {
+      background: #f1f7f4;
+      padding: 12px;
+      border-radius: 9px;
+    }
+
+    /* FORMS */
+
+    .form-section {
+      display: none;
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      border: 1px solid #e2e6eb;
+    }
+
+    .form-section.active {
+      display: block;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    .form-group label {
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 12px;
+      border: 1px solid #d7dce3;
+      border-radius: 8px;
+      outline: none;
+    }
+
+    .form-group textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    /* PANELS */
+
+    .panel {
+      display: none;
+      background: white;
+      border: 1px solid #e2e6eb;
+      border-radius: 15px;
+      padding: 25px;
+      margin-top: 25px;
+    }
+
+    .panel.active {
+      display: block;
+    }
+
+    .panel h2 {
+      margin-bottom: 10px;
+    }
+
+    .empty {
+      padding: 30px;
+      text-align: center;
+      color: #747c89;
+      background: #f8fafb;
+      border-radius: 10px;
+    }
+
+    /* FOOTER */
+
+    footer {
+      margin-top: 40px;
+      background: #172033;
+      color: white;
+      padding: 40px 0;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 25px;
+    }
+
+    footer h3 {
+      margin-bottom: 10px;
+    }
+
+    footer p,
+    footer li {
+      color: #cbd2dc;
+      font-size: 14px;
+      margin-bottom: 7px;
+    }
+
+    footer ul {
+      list-style: none;
+    }
+
+    .copyright {
+      border-top: 1px solid #303949;
+      margin-top: 25px;
+      padding-top: 18px;
+      text-align: center;
+      color: #adb6c3;
+      font-size: 13px;
+    }
+
+    /* RESPONSIVE */
+
+    @media (max-width: 950px) {
+      .categories {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .products {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .sell-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .nav-actions {
+        display: none;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .topbar {
+        flex-wrap: wrap;
+        padding: 12px 0;
+      }
+
+      .search-box {
+        order: 3;
+        flex-basis: 100%;
+      }
+
+      .hero {
+        padding: 35px 22px;
+      }
+
+      .categories {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .products {
+        grid-template-columns: 1fr;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-group.full {
+        grid-column: auto;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
+
 <body>
-<header class="top"><nav class="nav">
-<div class="logo">Isoko<b>Hub</b></div>
-<div class="search"><input id="q" placeholder="Search products, services or sellers..." oninput="searchAll()"></div>
-<button onclick="show('home')">Home</button><button onclick="show('saved')">❤️ Saved <span id="sc">0</span></button>
-<button onclick="show('cart')">🛒 Cart <span id="cc">0</span></button><button onclick="show('messages')">💬 Messages</button>
-<button onclick="openModal('sell')">Sell</button><button onclick="openModal('login')">Login</button>
-</nav></header>
 
-<main id="home">
-<section class="hero"><div><h1>Welcome to IsokoHub</h1><p>Agrobal/global marketplace connecting buyers, sellers, teachers, artists, creators, filmmakers and service providers.</p>
-<button class="btn green" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">Shop Now</button>
-<button class="btn light" onclick="openModal('service')">Offer a Service</button></div></section>
+<header>
+  <div class="container topbar">
 
-<div class="container">
-<section class="section"><div class="title"><h2>Explore Categories</h2></div><div class="cats" id="cats"></div></section>
-<section class="section" id="products"><div class="title"><h2>Featured Products</h2><button class="btn dark" onclick="resetSearch()">View All</button></div><div class="grid" id="productGrid"></div></section>
-<section class="section"><div class="title"><h2>Services</h2><button class="btn green" onclick="openModal('service')">Offer a Service</button></div><div class="grid" id="serviceGrid"></div></section>
-</div>
+    <a href="#" class="logo" onclick="showHome()">
+      Isoko<span>Hub</span>
+    </a>
+
+    <div class="search-box">
+      <input
+        id="searchInput"
+        type="search"
+        placeholder="Search products, services or sellers..."
+      >
+      <button onclick="searchProducts()">Search</button>
+    </div>
+
+    <div class="nav-actions">
+      <button class="nav-btn" onclick="showPanel('savedPanel')">
+        Saved
+      </button>
+
+      <button class="nav-btn" onclick="showPanel('cartPanel')">
+        Cart <span id="cartCount">0</span>
+      </button>
+
+      <button class="nav-btn" onclick="showPanel('messagesPanel')">
+        Messages
+      </button>
+
+      <button class="nav-btn" onclick="showPanel('profilePanel')">
+        Profile
+      </button>
+    </div>
+
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- HERO -->
+
+  <section id="homeSection">
+
+    <div class="hero">
+
+      <div class="hero-content">
+
+        <h1>Welcome to IsokoHub</h1>
+
+        <p>
+          A global marketplace connecting buyers, sellers,
+          teachers, artists, creators, filmmakers and service providers.
+        </p>
+
+        <div class="hero-buttons">
+
+          <button class="primary-btn" onclick="scrollToProducts()">
+            Shop Now
+          </button>
+
+          <button class="secondary-btn" onclick="showPanel('sellPanel')">
+            Sell on IsokoHub
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- CATEGORIES -->
+
+  <section>
+
+    <div class="section-header">
+      <h2>Explore Categories</h2>
+      <button class="view-all" onclick="loadCategories()">
+        View All
+      </button>
+    </div>
+
+    <div class="categories">
+
+      <button class="category" onclick="filterCategory('Electronics')">
+        <div class="category-icon">📱</div>
+        <strong>Electronics</strong>
+      </button>
+
+      <button class="category" onclick="filterCategory('Fashion')">
+        <div class="category-icon">👕</div>
+        <strong>Fashion</strong>
+      </button>
+
+      <button class="category" onclick="filterCategory('Home')">
+        <div class="category-icon">🏠</div>
+        <strong>Home</strong>
+      </button>
+
+      <button class="category" onclick="filterCategory('Education')">
+        <div class="category-icon">📚</div>
+        <strong>Education</strong>
+      </button>
+
+      <button class="category" onclick="filterCategory('Art & Creative')">
+        <div class="category-icon">🎨</div>
+        <strong>Art & Creative</strong>
+      </button>
+
+      <button class="category" onclick="filterCategory('Film & Entertainment')">
+        <div class="category-icon">🎬</div>
+        <strong>Film & Entertainment</strong>
+      </button>
+
+      <button class="category" onclick="filterCategory('Services')">
+        <div class="category-icon">🛠️</div>
+        <strong>Services</strong>
+      </button>
+
+    </div>
+
+  </section>
+
+  <!-- PRODUCTS -->
+
+  <section id="productsSection">
+
+    <div class="section-header">
+      <h2>Featured Products</h2>
+      <button class="view-all" onclick="loadProducts()">
+        View All
+      </button>
+    </div>
+
+    <div id="products" class="products">
+
+      <div class="empty">
+        Loading products...
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- SELL -->
+
+  <section>
+
+    <div class="sell-section">
+
+      <div class="sell-grid">
+
+        <div>
+          <h2>Sell on IsokoHub</h2>
+
+          <p>
+            Create your seller account and reach customers
+            through the IsokoHub marketplace.
+          </p>
+
+          <button
+            class="primary-btn"
+            style="background:#087f5b;color:white"
+            onclick="showPanel('sellPanel')"
+          >
+            Start Selling
+          </button>
+        </div>
+
+        <div class="sell-list">
+
+          <div>📦 List your products</div>
+          <div>🛠️ Offer your services</div>
+          <div>🎨 Promote your creative work</div>
+          <div>🎬 Share film & entertainment services</div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- SELL PANEL -->
+
+  <section id="sellPanel" class="panel">
+
+    <h2>Sell on IsokoHub</h2>
+
+    <p>
+      Add your product for review.
+    </p>
+
+    <form id="productForm">
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>Product Title</label>
+          <input
+            id="productTitle"
+            required
+            placeholder="Example: iPhone 15 Pro Max"
+          >
+        </div>
+
+        <div class="form-group">
+          <label>Category</label>
+
+          <select id="productCategory" required>
+
+            <option value="">Select category</option>
+            <option>Electronics</option>
+            <option>Fashion</option>
+            <option>Home</option>
+            <option>Education</option>
+            <option>Art & Creative</option>
+            <option>Film & Entertainment</option>
+            <option>Services</option>
+
+          </select>
+
+        </div>
+
+        <div class="form-group full">
+
+          <label>Short Description</label>
+
+          <textarea
+            id="productDescription"
+            required
+            placeholder="Brief description shown on the product card"
+          ></textarea>
+
+        </div>
+
+        <div class="form-group">
+
+          <label>Price (RWF)</label>
+
+          <input
+            id="productPrice"
+            type="number"
+            min="0"
+            required
+            placeholder="500000"
+          >
+
+        </div>
+
+        <div class="form-group">
+
+          <label>Brand</label>
+
+          <input
+            id="productBrand"
+            placeholder="Example: Apple"
+          >
+
+        </div>
+
+        <div class="form-group">
+
+          <label>Model</label>
+
+          <input
+            id="productModel"
+            placeholder="Example: iPhone 15 Pro Max"
+          >
+
+        </div>
+
+        <div class="form-group">
+
+          <label>Condition</label>
+
+          <select id="productCondition">
+
+            <option value="new">New</option>
+            <option value="used">Used</option>
+            <option value="refurbished">Refurbished</option>
+            <option value="has_crack">Has crack</option>
+
+          </select>
+
+        </div>
+
+        <div class="form-group">
+
+          <label>Storage</label>
+
+          <input
+            id="productStorage"
+            placeholder="Example: 256GB"
+          >
+
+        </div>
+
+        <div class="form-group">
+
+          <label>RAM</label>
+
+          <input
+            id="productRam"
+            placeholder="Example: 8GB"
+          >
+
+        </div>
+
+        <div class="form-group">
+
+          <label>District</label>
+
+          <input
+            id="productDistrict"
+            placeholder="Example: Gasabo"
+          >
+
+        </div>
+
+        <div class="form-group">
+
+          <label>Negotiable</label>
+
+          <select id="productNegotiable">
+
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+
+          </select>
+
+        </div>
+
+        <div class="form-group full">
+
+          <label>Additional Specifications</label>
+
+          <textarea
+            id="productSpecifications"
+            placeholder="Add other specifications..."
+          ></textarea>
+
+        </div>
+
+      </div>
+
+      <br>
+
+      <button
+        type="submit"
+        class="primary-btn"
+        style="background:#087f5b;color:white"
+      >
+        Submit for Review
+      </button>
+
+    </form>
+
+  </section>
+
+  <!-- SAVED -->
+
+  <section id="savedPanel" class="panel">
+
+    <h2>Saved Products</h2>
+
+    <div id="savedProducts" class="empty">
+      No saved products yet.
+    </div>
+
+  </section>
+
+  <!-- CART -->
+
+  <section id="cartPanel" class="panel">
+
+    <h2>Your Cart</h2>
+
+    <div id="cartProducts" class="empty">
+      Your cart is empty.
+    </div>
+
+    <br>
+
+    <button
+      class="primary-btn"
+      style="background:#087f5b;color:white"
+      onclick="checkout()"
+    >
+      Checkout
+    </button>
+
+  </section>
+
+  <!-- MESSAGES -->
+
+  <section id="messagesPanel" class="panel">
+
+    <h2>Messages</h2>
+
+    <div class="empty">
+      You have no messages yet.
+    </div>
+
+  </section>
+
+  <!-- PROFILE -->
+
+  <section id="profilePanel" class="panel">
+
+    <h2>Profile</h2>
+
+    <div class="empty">
+      Sign in or create an account to manage your profile.
+    </div>
+
+  </section>
+
+  <!-- SEARCH RESULTS -->
+
+  <section id="searchPanel" class="panel">
+
+    <h2>Search Results</h2>
+
+    <div id="searchResults" class="products"></div>
+
+  </section>
+
 </main>
 
-<section id="saved" class="container hidden"><div class="title"><h2>❤️ Saved</h2></div><div class="grid" id="savedGrid"></div></section>
-<section id="cart" class="container hidden"><div class="title"><h2>🛒 Cart & Orders</h2></div><div id="cartGrid"></div></section>
-<section id="messages" class="container hidden"><div class="title"><h2>💬 Messages</h2></div><div class="panel" style="padding:20px" id="messagesBox"><div class="notice">Messages will be stored through the API when the backend is connected.</div></div></section>
+<footer>
 
-<section id="admin" class="container hidden"><div class="title"><h2>👨‍💼 Admin Dashboard</h2><button class="btn dark" onclick="show('home')">Back</button></div>
-<div class="stats"><div class="stat">Products<strong id="ap">0</strong></div><div class="stat">Services<strong id="as">0</strong></div><div class="stat">Saved<strong id="av">0</strong></div><div class="stat">Cart<strong id="ac">0</strong></div></div>
-<div class="panel" style="padding:20px;margin-top:20px"><div class="notice">Production admin authentication must be configured through the backend. Demo password: <b>admin123</b>.</div><div class="table" id="adminTable"></div></div></section>
+  <div class="container">
 
-<footer><div class="foot"><div><h3>IsokoHub</h3><p>Marketplace for products, education, creativity and services.</p></div><div><h3>Marketplace</h3><p>Products</p><p>Services</p><p>Teachers</p></div><div><h3>Creators</h3><p>Art & Creative</p><p>Film & Entertainment</p><p>Photography</p></div><div><h3>Support</h3><p>Terms</p><p>Privacy</p><p>Contact</p></div></div></footer>
+    <div class="footer-grid">
 
-<div class="modal" id="sell"><div class="box"><div class="boxhead"><h2>Sell on IsokoHub</h2><button class="close" onclick="closeModal('sell')">×</button></div>
-<form onsubmit="addProduct(event)"><div class="formgrid">
-<div class="field"><label>Title</label><input id="pt" required></div><div class="field"><label>Category</label><select id="pc" required><option>Electronics</option><option>Fashion</option><option>Home</option><option>Education</option><option>Art & Creative</option><option>Film & Entertainment</option><option>Technology</option></select></div>
-<div class="field"><label>Price (RWF)</label><input id="pp" type="number" required></div><div class="field"><label>District / Location</label><input id="pl" required></div><div class="field"><label>Brand</label><input id="pb"></div><div class="field"><label>Condition</label><select id="pcond"><option>New</option><option>Used - Good</option><option>Used - Fair</option></select></div>
-<div class="field"><label>Storage</label><input id="pst"></div><div class="field"><label>RAM</label><input id="pr"></div></div>
-<div class="field"><label>Description</label><textarea id="pd" required></textarea></div><label><input id="pn" type="checkbox"> Price negotiable</label><br>
-<button class="btn green" type="submit">Submit for Review</button></form></div></div>
+      <div>
 
-<div class="modal" id="service"><div class="box"><div class="boxhead"><h2>Offer a Service</h2><button class="close" onclick="closeModal('service')">×</button></div>
-<form onsubmit="addService(event)"><div class="formgrid"><div class="field"><label>Provider Name</label><input id="sn" required></div><div class="field"><label>Category</label><select id="sct" required><option>Teachers & Tutors</option><option>Art & Creative</option><option>Film & Entertainment</option><option>Photography & Video</option><option>Technology & Digital</option><option>Professional Services</option><option>Delivery</option><option>Other Services</option></select></div>
-<div class="field"><label>Subject / Skill</label><input id="ssk"></div><div class="field"><label>Location</label><input id="sl" required></div><div class="field"><label>Rate (RWF)</label><input id="sp" type="number" required></div><div class="field"><label>Availability</label><select id="sa"><option>Online & In Person</option><option>Online</option><option>In Person</option></select></div></div>
-<div class="field"><label>Description</label><textarea id="sd" required></textarea></div><button class="btn green">Submit Service</button></form></div></div>
+        <h3>IsokoHub</h3>
 
-<div class="modal" id="login"><div class="box"><div class="boxhead"><h2>Account / Admin</h2><button class="close" onclick="closeModal('login')">×</button></div>
-<form onsubmit="login(event)"><div class="field"><label>Email</label><input id="email" type="email" required></div><div class="field"><label>Password</label><input id="pass" type="password" required></div><button class="btn green">Login</button></form>
-<hr style="margin:18px 0"><p style="color:#64748b">For this demo, enter admin@example.com with password <b>admin123</b> to open the dashboard. Real authentication belongs in the backend.</p></div></div>
+        <p>
+          A marketplace connecting people,
+          products and services.
+        </p>
+
+      </div>
+
+      <div>
+
+        <h3>Marketplace</h3>
+
+        <ul>
+          <li>Products</li>
+          <li>Services</li>
+          <li>Sellers</li>
+          <li>Categories</li>
+        </ul>
+
+      </div>
+
+      <div>
+
+        <h3>Creators</h3>
+
+        <ul>
+          <li>Education</li>
+          <li>Art & Creative</li>
+          <li>Film & Entertainment</li>
+          <li>Music</li>
+        </ul>
+
+      </div>
+
+      <div>
+
+        <h3>Support</h3>
+
+        <ul>
+          <li>Help Center</li>
+          <li>Contact</li>
+          <li>Privacy</li>
+          <li>Terms</li>
+        </ul>
+
+      </div>
+
+    </div>
+
+    <div class="copyright">
+      © 2026 IsokoHub. All rights reserved.
+    </div>
+
+  </div>
+
+</footer>
 
 <script>
-const categories=[['📱','Electronics'],['👕','Fashion'],['🏠','Home'],['📚','Education'],['👨‍🏫','Teachers & Tutors'],['🎨','Art & Creative'],['🎬','Film & Entertainment'],['💻','Technology & Digital'],['🛠️','Professional Services'],['📸','Photography & Video']];
-let products=JSON.parse(localStorage.getItem('ih_products')||'null')||[
-{id:1,title:'iPhone 15 Pro Max',category:'Electronics',price:1500000,location:'Kigali',brand:'Apple',condition:'New',storage:'256GB',ram:'8GB',description:'Modern smartphone.',icon:'📱'},
-{id:2,title:'Digital Drawing Tablet',category:'Art & Creative',price:250000,location:'Kigali',brand:'Creative Pro',condition:'New',storage:'',ram:'',description:'Tool for digital creators.',icon:'🎨'}
-];
-let services=JSON.parse(localStorage.getItem('ih_services')||'null')||[
-{id:1,name:'Math Teacher',category:'Teachers & Tutors',skill:'Mathematics',location:'Kigali',price:15000,availability:'Online & In Person',description:'Mathematics tutoring.',icon:'👨‍🏫'},
-{id:2,name:'Graphic Designer',category:'Art & Creative',skill:'Graphic Design',location:'Kigali',price:50000,availability:'Online',description:'Logo and poster design.',icon:'🎨'},
-{id:3,name:'Video Creator',category:'Film & Entertainment',skill:'Video Production',location:'Kigali',price:100000,availability:'In Person',description:'Video production.',icon:'🎬'}
-];
-let saved=JSON.parse(localStorage.getItem('ih_saved')||'[]'),cart=JSON.parse(localStorage.getItem('ih_cart')||'[]');
 
-function money(n){return Number(n||0).toLocaleString()}
-function esc(x){return String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
-function persist(){localStorage.setItem('ih_products',JSON.stringify(products));localStorage.setItem('ih_services',JSON.stringify(services));localStorage.setItem('ih_saved',JSON.stringify(saved));localStorage.setItem('ih_cart',JSON.stringify(cart));updateCounts()}
-function renderCats(){cats.innerHTML=categories.map(c=>`<div class="cat" onclick="filter('${esc(c[1])}')"><div class="ico">${c[0]}</div><b>${esc(c[1])}</b></div>`).join('')}
-function renderProducts(list=products){productGrid.innerHTML=list.length?list.map(p=>`<article class="card"><div class="pic">${p.icon||'📦'}</div><div class="body"><span class="badge">${esc(p.category)}</span><h3>${esc(p.title)}</h3><p>${esc(p.description)}</p><p>📍 ${esc(p.location)}</p><div class="price">${money(p.price)} RWF</div><p>${p.brand?'Brand: '+esc(p.brand):''} ${p.condition?' · '+esc(p.condition):''}</p><div class="actions"><button class="btn dark" onclick="addCart(${p.id})">🛒 Add</button><button class="btn light" onclick="save(${p.id})">${saved.includes(p.id)?'❤️ Saved':'♡ Save'}</button><button class="btn light" onclick="message('${esc(p.title)}')">💬 Message</button></div></div></article>`).join(''):'<div class="notice">No products found.</div>'}
-function renderServices(list=services){serviceGrid.innerHTML=list.length?list.map(s=>`<article class="card"><div class="pic">${s.icon||'🛠️'}</div><div class="body"><span class="badge">${esc(s.category)}</span><h3>${esc(s.name)}</h3><p><b>Skill:</b> ${esc(s.skill)}</p><p>${esc(s.description)}</p><p>📍 ${esc(s.location)} · ${esc(s.availability)}</p><div class="price">${money(s.price)} RWF</div><div class="actions"><button class="btn green" onclick="message('${esc(s.name)}')">Request Service</button></div></div></article>`).join(''):'<div class="notice">No services found.</div>'}
-function show(id){['home','saved','cart','messages','admin'].forEach(x=>document.getElementById(x)?.classList.add('hidden'));document.getElementById(id)?.classList.remove('hidden');if(id==='saved')renderSaved();if(id==='cart')renderCart();if(id==='admin')admin()}
-function searchAll(){let q=document.getElementById('q').value.toLowerCase().trim();if(!q)return renderProducts(),renderServices();renderProducts(products.filter(p=>Object.values(p).join(' ').toLowerCase().includes(q)));renderServices(services.filter(s=>Object.values(s).join(' ').toLowerCase().includes(q)))}
-function resetSearch(){q.value='';renderProducts();renderServices()}
-function filter(c){show('home');let ps=products.filter(p=>p.category===c),ss=services.filter(s=>s.category===c||(c==='Education'&&s.category==='Teachers & Tutors'));renderProducts(ps);renderServices(ss)}
-function save(id){saved=saved.includes(id)?saved.filter(x=>x!==id):[...saved,id];persist();renderProducts()}
-function renderSaved(){savedGrid.innerHTML=products.filter(p=>saved.includes(p.id)).map(p=>`<div class="card"><div class="body"><h3>${esc(p.title)}</h3><div class="price">${money(p.price)} RWF</div><button class="btn light" onclick="save(${p.id})">Remove</button></div></div>`).join('')||'<div class="notice">No saved products.</div>'}
-function addCart(id){let p=products.find(x=>x.id===id);if(p){cart.push(p);persist();alert('Added to cart.')}}
-function renderCart(){let total=cart.reduce((a,p)=>a+Number(p.price),0);cartGrid.innerHTML=cart.length?`<div class="panel" style="padding:20px"><div class="table"><table><tr><th>Product</th><th>Price</th><th>Location</th><th></th></tr>${cart.map((p,i)=>`<tr><td>${esc(p.title)}</td><td>${money(p.price)} RWF</td><td>${esc(p.location)}</td><td><button class="btn light" onclick="removeCart(${i})">Remove</button></td></tr>`).join('')}</table></div><h2 style="margin-top:18px">Total: ${money(total)} RWF</h2><button class="btn green" onclick="alert('Checkout API is ready to connect to your selected payment provider.')">Proceed to Checkout</button></div>`:'<div class="notice">Your cart is empty.</div>'}
-function removeCart(i){cart.splice(i,1);persist();renderCart()}
-function message(name){show('messages');messagesBox.innerHTML=`<div class="panel" style="padding:20px"><h3>Message: ${esc(name)}</h3><div class="field" style="margin-top:12px"><textarea id="msg" placeholder="Write your message..."></textarea></div><button class="btn green" onclick="sendMsg('${esc(name)}')">Send</button></div>`}
-function sendMsg(name){let t=document.getElementById('msg').value.trim();if(!t)return alert('Write a message first.');messagesBox.innerHTML=`<div class="notice">Message to ${esc(name)} prepared. Connect the API/database to store it permanently.</div>`}
-function openModal(id){document.getElementById(id).classList.add('on')}function closeModal(id){document.getElementById(id).classList.remove('on')}
-function addProduct(e){e.preventDefault();products.push({id:Date.now(),title:pt.value,category:pc.value,price:Number(pp.value),location:pl.value,brand:pb.value,condition:pcond.value,storage:pst.value,ram:pr.value,description:pd.value,negotiable:pn.checked,icon:'📦'});persist();e.target.reset();closeModal('sell');renderProducts();alert('Product submitted.')}
-function addService(e){e.preventDefault();let ic=sct.value==='Teachers & Tutors'?'👨‍🏫':sct.value==='Art & Creative'?'🎨':sct.value==='Film & Entertainment'?'🎬':sct.value.includes('Photography')?'📸':sct.value.includes('Technology')?'💻':'🛠️';services.push({id:Date.now(),name:sn.value,category:sct.value,skill:ssk.value,location:sl.value,price:Number(sp.value),availability:sa.value,description:sd.value,icon:ic});persist();e.target.reset();closeModal('service');renderServices();alert('Service submitted.')}
-function login(e){e.preventDefault();if(email.value==='admin@example.com'&&pass.value==='admin123'){closeModal('login');show('admin')}else alert('For the demo admin dashboard use admin@example.com / admin123.')}
-function admin(){ap.textContent=products.length;as.textContent=services.length;av.textContent=saved.length;ac.textContent=cart.length;adminTable.innerHTML='<h3>Products & Services</h3><br>'+products.map((p,i)=>`<p>${esc(p.title)} — ${money(p.price)} RWF <button class="btn light" onclick="delP(${i})">Delete</button></p>`).join('')+'<hr style="margin:15px 0">'+services.map((s,i)=>`<p>${esc(s.name)} — ${esc(s.category)} <button class="btn light" onclick="delS(${i})">Delete</button></p>`).join('')}
-function delP(i){products.splice(i,1);persist();admin();renderProducts()}function delS(i){services.splice(i,1);persist();admin();renderServices()}
-function updateCounts(){sc.textContent=saved.length;cc.textContent=cart.length;ap.textContent=products.length;as.textContent=services.length;av.textContent=saved.length;ac.textContent=cart.length}
-document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('on')}));
-renderCats();renderProducts();renderServices();updateCounts();
-</script>
-</body>
-</html>
+  /* =========================================
+     ISOKOHUB FRONTEND
+     ========================================= */
+
+  const API = "/api";
+
+  let cart = JSON.parse(
+    localStorage.getItem("isokohub_cart") || "[]"
+  );
+
+  let saved = JSON.parse(
+    localStorage.getItem("isokohub_saved") || "[]"
+  );
+
+  /* =========================================
+     PANELS
+     ========================================= */
+
+  function hidePanels() {
+
+    document
+      .querySelectorAll(".panel")
+      .forEach(panel => {
+        panel.classList.remove("active");
+      });
+
+  }
+
+  function showPanel(id) {
+
+    hidePanels();
+
+    const panel = document.getElementById(id);
+
+    if (panel) {
+      panel.classList.add("active");
+
+      panel.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }
+
+  }
+
+  function showHome() {
+
+    hidePanels();
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+
+  }
+
+  /* =========================================
+     PRODUCTS
+     ========================================= */
+
+  async function loadProducts() {
+
+    const container =
+      document.getElementById("products");
+
+    container.innerHTML =
+      '<div class="empty">Loading products...</div>';
+
+    try {
+
+      const response =
+        await fetch(`${API}/products`);
+
+      if (!response.ok) {
+        throw new Error("Products request failed");
+      }
+
+      const data =
+        await response.json();
+
+      if (!data.products || data.products.length === 0) {
+
+        container.innerHTML =
+          '<div class="empty">No products available yet. Sellers can add products from "Sell on IsokoHub".</div>';
+
+        return;
+      }
+
+      renderProducts(
+        data.products,
+        container
+      );
+
+    } catch (error) {
+
+      console.error(error);
+
+      container.innerHTML =
+        '<div class="empty">Products are not connected yet. Your backend is ready for connection.</div>';
+
+    }
+
+  }
+
+  function renderProducts(products,
