@@ -1,20 +1,12 @@
-name = "isokohub"
+name = "isokohub-rwr"
 compatibility_date = "2026-09-05"
 
-pages_build_output_dir = "."
+[assets]
+directory = "."
 
 [vars]
 APP_NAME = "IsokoHub"
 APP_ENV = "production"
-
-# D1 DATABASE
-# NYUMA yo gukora D1 database muri Cloudflare,
-# shyiramo database_id yawe hano.
-#
-# [[d1_databases]]
-# binding = "DB"
-# database_name = "isokohub-db"
-# database_id = "SHAKA_DATABASE_ID_YAWE"
 
 [observability]
 enabled = true
