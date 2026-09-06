@@ -9,4 +9,4 @@ binding = "ASSETS"
 [[d1_databases]]
 binding = "DB"
 database_name = "isokohub-db"
-database_id = "DATABASE_ID_HANO"
+database_id = "a1d06336"
