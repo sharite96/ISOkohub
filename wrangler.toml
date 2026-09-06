@@ -6,9 +6,7 @@ compatibility_date = "2026-09-06"
 directory = "./public"
 binding = "ASSETS"
 
-# D1 is required for real accounts, products, orders and messages.
-# After creating the D1 database in Cloudflare, uncomment and fill these values:
-# [[d1_databases]]
-# binding = "DB"
-# database_name = "isokohub-db"
-# database_id = "YOUR_DATABASE_ID"
+[[d1_databases]]
+binding = "DB"
+database_name = "isokohub-db"
+database_id = "DATABASE_ID_HANO"
