@@ -1,12 +1,12 @@
 name = "isokohub-rwr"
+main = "src/index.js"
 compatibility_date = "2026-09-05"
 
 [assets]
-directory = "."
+directory = "./public"
+binding = "ASSETS"
+run_worker_first = ["/api/*"]
 
 [vars]
 APP_NAME = "IsokoHub"
 APP_ENV = "production"
-
-[observability]
-enabled = true
