@@ -44,7 +44,6 @@ button{
 .logo{
   font-size:25px;
   font-weight:800;
-  color:#fff;
   cursor:pointer;
 }
 
@@ -375,7 +374,7 @@ button{
 table{
   width:100%;
   border-collapse:collapse;
-  min-width:650px;
+  min-width:700px;
 }
 
 th,td{
@@ -436,6 +435,20 @@ th,td{
   height:32px;
   border-radius:6px;
   background:#e5e7eb;
+}
+
+.api-status{
+  margin:12px 0;
+  padding:10px 14px;
+  border-radius:8px;
+  font-size:13px;
+  background:#fff7ed;
+  color:#9a3412;
+}
+
+.api-status.online{
+  background:#e8f7ed;
+  color:#166534;
 }
 
 footer{
@@ -531,11 +544,10 @@ footer{
     <input
       id="searchInput"
       placeholder="Search products, services or sellers..."
+      autocomplete="off"
       onkeydown="if(event.key==='Enter')searchProducts()">
 
-    <button onclick="searchProducts()">
-      Search
-    </button>
+    <button onclick="searchProducts()">Search</button>
 
   </div>
 
@@ -576,6 +588,10 @@ footer{
 </nav>
 
 <main class="container">
+
+<div id="apiStatus" class="api-status">
+  Local marketplace mode — ready to connect to IsokoHub backend.
+</div>
 
 <section id="homePanel" class="panel active">
 
@@ -638,7 +654,7 @@ footer{
 
   <div class="section-head">
 
-    <h2>Search Results</h2>
+    <h2>🔎 Search Results</h2>
 
     <button class="btn" onclick="showHome()">
       Home
@@ -758,19 +774,13 @@ footer{
     <h2>➕ Sell on IsokoHub</h2>
   </div>
 
-  <form
-    id="sellForm"
-    class="form"
-    onsubmit="submitProduct(event)">
+  <form id="sellForm" class="form" onsubmit="submitProduct(event)">
 
     <div class="form-grid">
 
       <div class="field">
         <label>Title *</label>
-        <input
-          id="pTitle"
-          required
-          placeholder="e.g. iPhone 15 Pro Max">
+        <input id="pTitle" required placeholder="e.g. iPhone 15 Pro Max">
       </div>
 
       <div class="field">
@@ -785,20 +795,12 @@ footer{
 
       <div class="field">
         <label>Price (RWF) *</label>
-        <input
-          id="pPrice"
-          type="number"
-          min="0"
-          required>
+        <input id="pPrice" type="number" min="0" required>
       </div>
 
       <div class="field">
         <label>Stock</label>
-        <input
-          id="pStock"
-          type="number"
-          min="0"
-          value="1">
+        <input id="pStock" type="number" min="0" value="1">
       </div>
 
       <div class="field">
@@ -827,23 +829,17 @@ footer{
 
       <div class="field">
         <label>Storage</label>
-        <input
-          id="pStorage"
-          placeholder="e.g. 512GB">
+        <input id="pStorage" placeholder="e.g. 512GB">
       </div>
 
       <div class="field">
         <label>RAM</label>
-        <input
-          id="pRam"
-          placeholder="e.g. 16GB">
+        <input id="pRam" placeholder="e.g. 16GB">
       </div>
 
       <div class="field">
         <label>Image URL</label>
-        <input
-          id="pImage"
-          placeholder="https://...">
+        <input id="pImage" placeholder="https://...">
       </div>
 
       <div class="field">
@@ -859,13 +855,8 @@ footer{
       <div class="field">
 
         <label>
-
-          <input
-            id="pNegotiable"
-            type="checkbox">
-
+          <input id="pNegotiable" type="checkbox">
           Price is negotiable
-
         </label>
 
       </div>
@@ -906,16 +897,12 @@ footer{
 
 <div id="toast" class="toast"></div>
 
-<div
-  id="productModal"
-  class="modal"
-  onclick="if(event.target===this)closeModal()">
+<div id="productModal" class="modal"
+onclick="if(event.target===this)closeModal()">
 
   <div class="modal-box">
 
-    <button class="close" onclick="closeModal()">
-      ×
-    </button>
+    <button class="close" onclick="closeModal()">×</button>
 
     <div id="modalContent"></div>
 
@@ -924,26 +911,42 @@ footer{
 </div>
 
 <script>
-
 "use strict";
 
-/* =========================
+/* =========================================================
+   ISOKOHUB CONFIGURATION
+========================================================= */
+
+/*
+  When your real backend/API is ready, put its base URL here.
+
+  Example:
+  const API_BASE_URL = "https://api.example.com";
+
+  Leave it empty for local mode.
+*/
+
+const API_BASE_URL = "";
+
+
+/* =========================================================
    STORAGE
-========================= */
+========================================================= */
 
 const STORAGE = {
-  products:"isokohub_products_v3",
-  cart:"isokohub_cart_v3",
-  saved:"isokohub_saved_v3",
-  orders:"isokohub_orders_v3",
-  profile:"isokohub_profile_v3",
-  admin:"isokohub_admin_v3",
-  messages:"isokohub_messages_v3"
+  products:"isokohub_products_v4",
+  cart:"isokohub_cart_v4",
+  saved:"isokohub_saved_v4",
+  orders:"isokohub_orders_v4",
+  profile:"isokohub_profile_v4",
+  admin:"isokohub_admin_v4",
+  messages:"isokohub_messages_v4"
 };
 
-/* =========================
+
+/* =========================================================
    CATEGORIES
-========================= */
+========================================================= */
 
 const CATEGORIES = [
   "Electronics",
@@ -955,9 +958,10 @@ const CATEGORIES = [
   "Services"
 ];
 
-/* =========================
+
+/* =========================================================
    DEFAULT PRODUCTS
-========================= */
+========================================================= */
 
 const defaultProducts = [
 
@@ -991,8 +995,6 @@ const defaultProducts = [
   brand:"Local Fashion",
   model:"AF-01",
   condition:"new",
-  storage:"",
-  ram:"",
   district:"Nyarugenge",
   image:"",
   specifications:"Handmade African-inspired fashion",
@@ -1011,8 +1013,6 @@ const defaultProducts = [
   brand:"Isoko Home",
   model:"HD-01",
   condition:"new",
-  storage:"",
-  ram:"",
   district:"Kicukiro",
   image:"",
   specifications:"Decorative home accessories",
@@ -1031,8 +1031,6 @@ const defaultProducts = [
   brand:"",
   model:"",
   condition:"new",
-  storage:"",
-  ram:"",
   district:"",
   image:"",
   specifications:"Online lessons and learning materials",
@@ -1051,8 +1049,6 @@ const defaultProducts = [
   brand:"Local Artist",
   model:"",
   condition:"new",
-  storage:"",
-  ram:"",
   district:"Nyarugenge",
   image:"",
   specifications:"Handmade creative artwork",
@@ -1071,8 +1067,6 @@ const defaultProducts = [
   brand:"",
   model:"",
   condition:"new",
-  storage:"",
-  ram:"",
   district:"Gasabo",
   image:"",
   specifications:"Events, portraits and professional photography",
@@ -1091,8 +1085,6 @@ const defaultProducts = [
   brand:"",
   model:"",
   condition:"new",
-  storage:"",
-  ram:"",
   district:"Kicukiro",
   image:"",
   specifications:"Video production, editing and filming",
@@ -1131,8 +1123,6 @@ const defaultProducts = [
   brand:"",
   model:"",
   condition:"new",
-  storage:"",
-  ram:"",
   district:"Kicukiro",
   image:"",
   specifications:"Logo design, posters and branding",
@@ -1143,9 +1133,10 @@ const defaultProducts = [
 
 ];
 
-/* =========================
+
+/* =========================================================
    APP STATE
-========================= */
+========================================================= */
 
 let products = [];
 let cart = [];
@@ -1155,9 +1146,10 @@ let profile = {};
 let messages = [];
 let isAdmin = false;
 
-/* =========================
-   STORAGE FUNCTIONS
-========================= */
+
+/* =========================================================
+   LOCAL STORAGE
+========================================================= */
 
 function getStorage(key,fallback){
 
@@ -1183,6 +1175,7 @@ function getStorage(key,fallback){
 
 }
 
+
 function saveStorage(key,value){
 
   try{
@@ -1200,9 +1193,58 @@ function saveStorage(key,value){
 
 }
 
-/* =========================
+
+/* =========================================================
+   API HELPER
+========================================================= */
+
+async function apiRequest(endpoint,options={}){
+
+  if(!API_BASE_URL){
+    return null;
+  }
+
+  try{
+
+    const response =
+      await fetch(
+        API_BASE_URL + endpoint,
+        {
+          ...options,
+          headers:{
+            "Content-Type":"application/json",
+            ...(options.headers || {})
+          }
+        }
+      );
+
+    if(!response.ok){
+
+      throw new Error(
+        "API error " + response.status
+      );
+
+    }
+
+    return await response.json();
+
+  }catch(error){
+
+    console.warn(
+      "Backend unavailable:",
+      error
+    );
+
+    return null;
+
+  }
+
+}
+
+
+/* =========================================================
    HELPERS
-========================= */
+========================================================= */
 
 function escapeHTML(value){
 
@@ -1219,12 +1261,14 @@ function escapeHTML(value){
 
 }
 
+
 function formatMoney(value){
 
   return new Intl.NumberFormat("en-US")
     .format(Number(value) || 0);
 
 }
+
 
 function categoryIcon(category){
 
@@ -1244,6 +1288,7 @@ function categoryIcon(category){
 
 }
 
+
 function toast(message){
 
   const element =
@@ -1258,13 +1303,15 @@ function toast(message){
 
   clearTimeout(window.__toastTimer);
 
-  window.__toastTimer = setTimeout(function(){
+  window.__toastTimer =
+    setTimeout(function(){
 
-    element.style.display = "none";
+      element.style.display = "none";
 
-  },2200);
+    },2200);
 
 }
+
 
 function getProduct(id){
 
@@ -1274,9 +1321,10 @@ function getProduct(id){
 
 }
 
-/* =========================
+
+/* =========================================================
    IMAGE
-========================= */
+========================================================= */
 
 function productImage(product){
 
@@ -1312,11 +1360,12 @@ function productImage(product){
 
 }
 
-/* =========================
-   INITIALIZATION
-========================= */
 
-function initializeApp(){
+/* =========================================================
+   INITIALIZATION
+========================================================= */
+
+async function initializeApp(){
 
   products =
     getStorage(
@@ -1387,11 +1436,82 @@ function initializeApp(){
   renderMessages();
   renderAdmin();
 
+  await syncProductsFromBackend();
+
 }
 
-/* =========================
+
+/* =========================================================
+   BACKEND PRODUCT SYNC
+========================================================= */
+
+async function syncProductsFromBackend(){
+
+  if(!API_BASE_URL){
+    setApiStatus(false);
+    return;
+  }
+
+  const data =
+    await apiRequest("/api/products");
+
+  if(
+    data &&
+    Array.isArray(data.products)
+  ){
+
+    products =
+      data.products;
+
+    saveStorage(
+      STORAGE.products,
+      products
+    );
+
+    loadProducts();
+
+    setApiStatus(true);
+
+  }else{
+
+    setApiStatus(false);
+
+  }
+
+}
+
+
+function setApiStatus(online){
+
+  const element =
+    document.getElementById("apiStatus");
+
+  if(!element){
+    return;
+  }
+
+  if(online){
+
+    element.textContent =
+      "🟢 IsokoHub backend connected.";
+
+    element.classList.add("online");
+
+  }else{
+
+    element.textContent =
+      "🟠 Local marketplace mode — backend not connected yet.";
+
+    element.classList.remove("online");
+
+  }
+
+}
+
+
+/* =========================================================
    PANELS
-========================= */
+========================================================= */
 
 function showPanel(id){
 
@@ -1419,6 +1539,7 @@ function showPanel(id){
 
 }
 
+
 function showHome(){
 
   showPanel("homePanel");
@@ -1427,9 +1548,10 @@ function showHome(){
 
 }
 
-/* =========================
+
+/* =========================================================
    CATEGORIES
-========================= */
+========================================================= */
 
 function loadCategories(){
 
@@ -1481,6 +1603,7 @@ function loadCategories(){
 
 }
 
+
 function filterCategory(category){
 
   const result =
@@ -1515,9 +1638,10 @@ function filterCategory(category){
 
 }
 
-/* =========================
+
+/* =========================================================
    PRODUCTS
-========================= */
+========================================================= */
 
 function loadProducts(list=null){
 
@@ -1543,6 +1667,7 @@ function loadProducts(list=null){
   updateCounts();
 
 }
+
 
 function productCard(product){
 
@@ -1637,9 +1762,10 @@ function productCard(product){
 
 }
 
-/* =========================
+
+/* =========================================================
    SEARCH
-========================= */
+========================================================= */
 
 function searchProducts(){
 
@@ -1692,7 +1818,9 @@ function searchProducts(){
     box.innerHTML =
       results.length
       ? results.map(productCard).join("")
-      : `<div class="notice">No results for "${escapeHTML(query)}".</div>`;
+      : `<div class="notice">
+          No results for "${escapeHTML(query)}".
+         </div>`;
 
   }
 
@@ -1700,9 +1828,10 @@ function searchProducts(){
 
 }
 
-/* =========================
+
+/* =========================================================
    SAVED
-========================= */
+========================================================= */
 
 function toggleSaved(id){
 
@@ -1735,6 +1864,7 @@ function toggleSaved(id){
 
 }
 
+
 function renderSaved(){
 
   const box =
@@ -1762,9 +1892,10 @@ function renderSaved(){
 
 }
 
-/* =========================
+
+/* =========================================================
    CART
-========================= */
+========================================================= */
 
 function addToCart(id){
 
@@ -1799,8 +1930,22 @@ function addToCart(id){
 
   if(item){
 
-    item.quantity =
+    const nextQuantity =
       Number(item.quantity || 0) + 1;
+
+    if(
+      product.stock !== undefined &&
+      nextQuantity > Number(product.stock)
+    ){
+
+      toast("Maximum available stock reached.");
+
+      return;
+
+    }
+
+    item.quantity =
+      nextQuantity;
 
   }else{
 
@@ -1824,6 +1969,7 @@ function addToCart(id){
 
 }
 
+
 function changeCartQuantity(id,change){
 
   id = Number(id);
@@ -1833,21 +1979,37 @@ function changeCartQuantity(id,change){
       x => Number(x.id) === id
     );
 
-  if(!item){
+  const product =
+    getProduct(id);
+
+  if(!item || !product){
     return;
   }
 
-  item.quantity =
-    Number(item.quantity || 0) + Number(change);
+  const next =
+    Number(item.quantity || 0) +
+    Number(change);
 
-  if(item.quantity <= 0){
+  if(next <= 0){
 
-    cart =
-      cart.filter(
-        x => Number(x.id) !== id
-      );
+    removeFromCart(id);
+
+    return;
 
   }
+
+  if(
+    product.stock !== undefined &&
+    next > Number(product.stock)
+  ){
+
+    toast("Maximum available stock reached.");
+
+    return;
+
+  }
+
+  item.quantity = next;
 
   saveStorage(
     STORAGE.cart,
@@ -1859,6 +2021,7 @@ function changeCartQuantity(id,change){
   loadProducts();
 
 }
+
 
 function removeFromCart(id){
 
@@ -1881,6 +2044,7 @@ function removeFromCart(id){
   toast("Removed from cart.");
 
 }
+
 
 function renderCart(){
 
@@ -1923,7 +2087,8 @@ function renderCart(){
         Number(item.quantity || 1);
 
       const subtotal =
-        Number(product.price || 0) * quantity;
+        Number(product.price || 0) *
+        quantity;
 
       total += subtotal;
 
@@ -1959,9 +2124,7 @@ function renderCart(){
               −
             </button>
 
-            <strong>
-              ${quantity}
-            </strong>
+            <strong>${quantity}</strong>
 
             <button
               onclick="changeCartQuantity(${product.id},1)">
@@ -1991,6 +2154,7 @@ function renderCart(){
 
 }
 
+
 function getCartTotal(){
 
   return cart.reduce(function(total,item){
@@ -2010,11 +2174,12 @@ function getCartTotal(){
 
 }
 
-/* =========================
-   CHECKOUT
-========================= */
 
-function checkout(){
+/* =========================================================
+   CHECKOUT
+========================================================= */
+
+async function checkout(){
 
   if(cart.length === 0){
 
@@ -2038,27 +2203,40 @@ function checkout(){
   }
 
   const orderItems =
-    cart.map(function(item){
+    cart
+      .map(function(item){
 
-      const product =
-        getProduct(item.id);
+        const product =
+          getProduct(item.id);
 
-      return {
+        if(!product){
+          return null;
+        }
 
-        id:product.id,
-        title:product.title,
-        price:Number(product.price || 0),
-        quantity:Number(item.quantity || 1),
-        seller:product.seller || "IsokoHub Seller"
+        return {
 
-      };
+          id:product.id,
+          title:product.title,
+          price:Number(product.price || 0),
+          quantity:Number(item.quantity || 1),
+          seller:product.seller || "IsokoHub Seller"
 
-    });
+        };
+
+      })
+      .filter(Boolean);
+
+  if(orderItems.length === 0){
+
+    toast("No valid products in cart.");
+
+    return;
+
+  }
 
   const order = {
 
-    id:"ORD-" +
-      Date.now(),
+    id:"ORD-" + Date.now(),
 
     date:new Date().toISOString(),
 
@@ -2074,12 +2252,41 @@ function checkout(){
 
   };
 
-  orders.unshift(order);
+
+  /*
+    Try real backend first.
+    If backend is unavailable,
+    save locally so the site keeps working.
+  */
+
+  const serverOrder =
+    await apiRequest(
+      "/api/orders",
+      {
+        method:"POST",
+        body:JSON.stringify(order)
+      }
+    );
+
+
+  if(serverOrder){
+
+    orders.unshift(
+      serverOrder.order || order
+    );
+
+  }else{
+
+    orders.unshift(order);
+
+  }
+
 
   saveStorage(
     STORAGE.orders,
     orders
   );
+
 
   cart = [];
 
@@ -2088,13 +2295,15 @@ function checkout(){
     cart
   );
 
+
   messages.unshift({
 
     id:Date.now(),
 
     date:new Date().toISOString(),
 
-    text:"Your order " +
+    text:
+      "Your order " +
       order.id +
       " has been received.",
 
@@ -2102,10 +2311,12 @@ function checkout(){
 
   });
 
+
   saveStorage(
     STORAGE.messages,
     messages
   );
+
 
   renderCart();
   renderOrders();
@@ -2119,9 +2330,10 @@ function checkout(){
 
 }
 
-/* =========================
+
+/* =========================================================
    ORDERS
-========================= */
+========================================================= */
 
 function renderOrders(){
 
@@ -2135,7 +2347,9 @@ function renderOrders(){
   if(orders.length === 0){
 
     box.innerHTML =
-      `<div class="empty">You have no orders yet.</div>`;
+      `<div class="empty">
+        You have no orders yet.
+       </div>`;
 
     return;
 
@@ -2176,8 +2390,10 @@ function renderOrders(){
                 <div style="margin:7px 0">
                   ${escapeHTML(item.title)}
                   × ${item.quantity}
-                  — ${formatMoney(
-                    item.price * item.quantity
+                  —
+                  ${formatMoney(
+                    Number(item.price) *
+                    Number(item.quantity)
                   )} RWF
                 </div>
               `;
@@ -2200,9 +2416,10 @@ function renderOrders(){
 
 }
 
-/* =========================
+
+/* =========================================================
    MESSAGES
-========================= */
+========================================================= */
 
 function renderMessages(){
 
@@ -2216,7 +2433,9 @@ function renderMessages(){
   if(messages.length === 0){
 
     box.innerHTML =
-      `<div class="empty">No messages yet.</div>`;
+      `<div class="empty">
+        No messages yet.
+       </div>`;
 
     return;
 
@@ -2229,9 +2448,7 @@ function renderMessages(){
 
         <div class="form" style="margin-bottom:10px">
 
-          <strong>
-            IsokoHub
-          </strong>
+          <strong>IsokoHub</strong>
 
           <div class="small">
             ${new Date(message.date).toLocaleString()}
@@ -2251,9 +2468,10 @@ function renderMessages(){
 
 }
 
-/* =========================
+
+/* =========================================================
    PROFILE
-========================= */
+========================================================= */
 
 function loadProfile(){
 
@@ -2283,7 +2501,8 @@ function loadProfile(){
 
 }
 
-function saveProfile(event){
+
+async function saveProfile(event){
 
   event.preventDefault();
 
@@ -2311,15 +2530,26 @@ function saveProfile(event){
     profile
   );
 
+
+  await apiRequest(
+    "/api/profile",
+    {
+      method:"POST",
+      body:JSON.stringify(profile)
+    }
+  );
+
+
   toast("Profile saved successfully.");
 
 }
 
-/* =========================
-   SELL PRODUCT
-========================= */
 
-function submitProduct(event){
+/* =========================================================
+   SELL PRODUCT
+========================================================= */
+
+async function submitProduct(event){
 
   event.preventDefault();
 
@@ -2369,8 +2599,10 @@ function submitProduct(event){
 
     seller:
       document.getElementById("pSeller").value.trim()
-      || profile.name
-      || "IsokoHub Seller",
+      ||
+      profile.name
+      ||
+      "IsokoHub Seller",
 
     specifications:
       document.getElementById("pSpecifications").value.trim(),
@@ -2378,32 +2610,81 @@ function submitProduct(event){
     negotiable:
       document.getElementById("pNegotiable").checked,
 
-    status:"pending"
+    status:"pending",
+
+    createdAt:
+      new Date().toISOString()
 
   };
 
-  if(!product.title || !product.description){
 
-    toast("Please complete the required fields.");
+  if(
+    !product.title ||
+    !product.description
+  ){
 
-    return;
-
-  }
-
-  if(product.price < 0){
-
-    toast("Price cannot be negative.");
+    toast(
+      "Please complete the required fields."
+    );
 
     return;
 
   }
 
-  products.unshift(product);
+
+  if(
+    !Number.isFinite(product.price) ||
+    product.price < 0
+  ){
+
+    toast(
+      "Please enter a valid price."
+    );
+
+    return;
+
+  }
+
+
+  if(product.stock < 0){
+
+    toast(
+      "Stock cannot be negative."
+    );
+
+    return;
+
+  }
+
+
+  const serverProduct =
+    await apiRequest(
+      "/api/products",
+      {
+        method:"POST",
+        body:JSON.stringify(product)
+      }
+    );
+
+
+  if(serverProduct){
+
+    products.unshift(
+      serverProduct.product || product
+    );
+
+  }else{
+
+    products.unshift(product);
+
+  }
+
 
   saveStorage(
     STORAGE.products,
     products
   );
+
 
   messages.unshift({
 
@@ -2420,29 +2701,37 @@ function submitProduct(event){
 
   });
 
+
   saveStorage(
     STORAGE.messages,
     messages
   );
 
+
   document
     .getElementById("sellForm")
     .reset();
+
 
   loadCategories();
   loadProducts();
   renderMessages();
   renderAdmin();
 
-  toast("Product submitted for review.");
+
+  toast(
+    "Product submitted for review."
+  );
+
 
   showPanel("homePanel");
 
 }
 
-/* =========================
+
+/* =========================================================
    PRODUCT MODAL
-========================= */
+========================================================= */
 
 function openProduct(id){
 
@@ -2450,8 +2739,11 @@ function openProduct(id){
     getProduct(id);
 
   if(!product){
+
     toast("Product not found.");
+
     return;
+
   }
 
   const modal =
@@ -2459,6 +2751,7 @@ function openProduct(id){
 
   const content =
     document.getElementById("modalContent");
+
 
   content.innerHTML = `
 
@@ -2487,42 +2780,78 @@ function openProduct(id){
 
     <div class="meta">
       Seller:
-      ${escapeHTML(product.seller || "IsokoHub Seller")}
+      ${escapeHTML(
+        product.seller || "IsokoHub Seller"
+      )}
     </div>
 
     ${
       product.brand
-      ? `<div class="meta">Brand: ${escapeHTML(product.brand)}</div>`
+      ? `
+        <div class="meta">
+          Brand: ${escapeHTML(product.brand)}
+        </div>
+      `
       : ""
     }
 
     ${
       product.model
-      ? `<div class="meta">Model: ${escapeHTML(product.model)}</div>`
+      ? `
+        <div class="meta">
+          Model: ${escapeHTML(product.model)}
+        </div>
+      `
       : ""
     }
 
     ${
       product.condition
-      ? `<div class="meta">Condition: ${escapeHTML(product.condition)}</div>`
+      ? `
+        <div class="meta">
+          Condition: ${escapeHTML(product.condition)}
+        </div>
+      `
       : ""
     }
 
     ${
       product.storage
-      ? `<div class="meta">Storage: ${escapeHTML(product.storage)}</div>`
+      ? `
+        <div class="meta">
+          Storage: ${escapeHTML(product.storage)}
+        </div>
+      `
       : ""
     }
 
     ${
       product.ram
-      ? `<div class="meta">RAM: ${escapeHTML(product.ram)}</div>`
+      ? `
+        <div class="meta">
+          RAM: ${escapeHTML(product.ram)}
+        </div>
+      `
       : ""
     }
 
     ${
       product.district
-      ? `<div class="meta">📍 ${escapeHTML(product.district)}</div>`
+      ? `
+        <div class="meta">
+          📍 ${escapeHTML(product.district)}
+        </div>
+      `
+      : ""
+    }
+
+    ${
+      product.negotiable
+      ? `
+        <div class="meta">
+          💬 Price negotiable
+        </div>
+      `
       : ""
     }
 
@@ -2548,9 +2877,11 @@ function openProduct(id){
 
   `;
 
+
   modal.classList.add("active");
 
 }
+
 
 function closeModal(){
 
@@ -2565,9 +2896,10 @@ function closeModal(){
 
 }
 
-/* =========================
+
+/* =========================================================
    ADMIN
-========================= */
+========================================================= */
 
 function adminLogin(){
 
@@ -2588,6 +2920,7 @@ function adminLogin(){
 
   }
 
+
   const password =
     prompt("Enter admin password:");
 
@@ -2595,10 +2928,12 @@ function adminLogin(){
     return;
   }
 
+
   /*
-    Demo password.
-    Change this when connecting
-    to a real backend.
+    IMPORTANT:
+    This is only a local demo.
+    Real production admin authentication
+    must be handled by the backend.
   */
 
   if(password === "IsokoHub2026"){
@@ -2610,17 +2945,22 @@ function adminLogin(){
       true
     );
 
-    toast("Admin login successful.");
+    toast(
+      "Admin login successful."
+    );
 
     renderAdmin();
 
   }else{
 
-    toast("Incorrect admin password.");
+    toast(
+      "Incorrect admin password."
+    );
 
   }
 
 }
+
 
 function renderAdmin(){
 
@@ -2630,6 +2970,7 @@ function renderAdmin(){
   if(!box){
     return;
   }
+
 
   if(!isAdmin){
 
@@ -2651,6 +2992,7 @@ function renderAdmin(){
 
   }
 
+
   const approved =
     products.filter(
       p => p.status === "approved"
@@ -2665,6 +3007,7 @@ function renderAdmin(){
     products.filter(
       p => p.status === "rejected"
     ).length;
+
 
   box.innerHTML = `
 
@@ -2782,6 +3125,12 @@ function renderAdmin(){
                       : ""
                     }
 
+                    <button
+                      class="btn dark"
+                      onclick="deleteProduct(${product.id})">
+                      Delete
+                    </button>
+
                   </td>
 
                 </tr>
@@ -2809,15 +3158,23 @@ function renderAdmin(){
 
 }
 
-function changeProductStatus(id,status){
+
+/* =========================================================
+   ADMIN STATUS
+========================================================= */
+
+async function changeProductStatus(id,status){
 
   if(!isAdmin){
 
-    toast("Admin login required.");
+    toast(
+      "Admin login required."
+    );
 
     return;
 
   }
+
 
   const product =
     getProduct(id);
@@ -2826,12 +3183,28 @@ function changeProductStatus(id,status){
     return;
   }
 
-  product.status = status;
+
+  product.status =
+    status;
+
 
   saveStorage(
     STORAGE.products,
     products
   );
+
+
+  await apiRequest(
+    "/api/products/" +
+    encodeURIComponent(id),
+    {
+      method:"PATCH",
+      body:JSON.stringify({
+        status:status
+      })
+    }
+  );
+
 
   messages.unshift({
 
@@ -2850,14 +3223,17 @@ function changeProductStatus(id,status){
 
   });
 
+
   saveStorage(
     STORAGE.messages,
     messages
   );
 
+
   renderAdmin();
   renderMessages();
   loadProducts();
+
 
   toast(
     status === "approved"
@@ -2867,9 +3243,104 @@ function changeProductStatus(id,status){
 
 }
 
-/* =========================
+
+/* =========================================================
+   DELETE PRODUCT
+========================================================= */
+
+async function deleteProduct(id){
+
+  if(!isAdmin){
+
+    toast(
+      "Admin login required."
+    );
+
+    return;
+
+  }
+
+
+  const product =
+    getProduct(id);
+
+  if(!product){
+    return;
+  }
+
+
+  const confirmed =
+    confirm(
+      "Delete '" +
+      product.title +
+      "'?"
+    );
+
+  if(!confirmed){
+    return;
+  }
+
+
+  products =
+    products.filter(
+      p => Number(p.id) !== Number(id)
+    );
+
+
+  saved =
+    saved.filter(
+      x => Number(x) !== Number(id)
+    );
+
+
+  cart =
+    cart.filter(
+      x => Number(x.id) !== Number(id)
+    );
+
+
+  saveStorage(
+    STORAGE.products,
+    products
+  );
+
+  saveStorage(
+    STORAGE.saved,
+    saved
+  );
+
+  saveStorage(
+    STORAGE.cart,
+    cart
+  );
+
+
+  await apiRequest(
+    "/api/products/" +
+    encodeURIComponent(id),
+    {
+      method:"DELETE"
+    }
+  );
+
+
+  renderAdmin();
+  renderSaved();
+  renderCart();
+  loadProducts();
+  updateCounts();
+
+
+  toast(
+    "Product deleted."
+  );
+
+}
+
+
+/* =========================================================
    COUNTS
-========================= */
+========================================================= */
 
 function updateCounts(){
 
@@ -2879,12 +3350,14 @@ function updateCounts(){
   const cartCount =
     document.getElementById("cartCount");
 
+
   if(savedCount){
 
     savedCount.textContent =
       saved.length;
 
   }
+
 
   if(cartCount){
 
@@ -2903,9 +3376,28 @@ function updateCounts(){
 
 }
 
-/* =========================
-   START APP
-========================= */
+
+/* =========================================================
+   KEYBOARD
+========================================================= */
+
+document.addEventListener(
+  "keydown",
+  function(event){
+
+    if(event.key === "Escape"){
+
+      closeModal();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   START
+========================================================= */
 
 document.addEventListener(
   "DOMContentLoaded",
