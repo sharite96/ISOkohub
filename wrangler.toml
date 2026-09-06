@@ -1,12 +1,14 @@
-name = "isokohub-rwr"
+name = "isokohub"
 main = "src/index.js"
-compatibility_date = "2026-09-05"
+compatibility_date = "2026-09-06"
 
 [assets]
 directory = "./public"
 binding = "ASSETS"
-run_worker_first = ["/api/*"]
 
-[vars]
-APP_NAME = "IsokoHub"
-APP_ENV = "production"
+# D1 is required for real accounts, products, orders and messages.
+# After creating the D1 database in Cloudflare, uncomment and fill these values:
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "isokohub-db"
+# database_id = "YOUR_DATABASE_ID"
