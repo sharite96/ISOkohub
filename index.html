@@ -60,6 +60,7 @@ button{
   padding:11px 14px;
   border:0;
   border-radius:8px 0 0 8px;
+  outline:none;
 }
 
 .search button{
@@ -268,6 +269,7 @@ button{
   border-radius:12px;
   text-align:center;
   color:#667085;
+  grid-column:1/-1;
 }
 
 .modal{
@@ -331,6 +333,13 @@ button{
   padding:11px;
   border:1px solid #d5dbe5;
   border-radius:8px;
+  outline:none;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus{
+  border-color:#16a34a;
 }
 
 .field textarea{
@@ -348,6 +357,7 @@ button{
   background:#fff;
   padding:18px;
   border-radius:12px;
+  box-shadow:0 2px 8px #0000000b;
 }
 
 .stat b{
@@ -383,6 +393,51 @@ th,td{
   font-size:12px;
 }
 
+.badge.pending{
+  background:#fff7ed;
+  color:#c2410c;
+}
+
+.badge.rejected{
+  background:#fee2e2;
+  color:#b91c1c;
+}
+
+.empty{
+  padding:25px;
+  background:#fff;
+  border-radius:12px;
+  text-align:center;
+  color:#667085;
+}
+
+.cart-row{
+  background:#fff;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:10px;
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+
+.cart-info{
+  flex:1;
+}
+
+.qty{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.qty button{
+  width:32px;
+  height:32px;
+  border-radius:6px;
+  background:#e5e7eb;
+}
+
 footer{
   margin-top:40px;
   background:#111827;
@@ -401,6 +456,11 @@ footer{
   border-radius:9px;
   display:none;
   z-index:200;
+}
+
+.small{
+  font-size:13px;
+  color:#667085;
 }
 
 @media(max-width:650px){
@@ -450,6 +510,10 @@ footer{
   .price{
     font-size:16px;
   }
+
+  .cart-row{
+    flex-wrap:wrap;
+  }
 }
 </style>
 </head>
@@ -467,8 +531,7 @@ footer{
     <input
       id="searchInput"
       placeholder="Search products, services or sellers..."
-      onkeydown="if(event.key==='Enter')searchProducts()"
-    >
+      onkeydown="if(event.key==='Enter')searchProducts()">
 
     <button onclick="searchProducts()">
       Search
@@ -478,1320 +541,2378 @@ footer{
 
 </header>
 
-
 <nav class="nav">
 
-<button onclick="showHome()">
-🏠 Home
-</button>
+  <button onclick="showHome()">🏠 Home</button>
 
-<button onclick="showPanel('savedPanel');renderSaved()">
-❤️ Saved <span id="savedCount">0</span>
-</button>
+  <button onclick="showPanel('savedPanel');renderSaved()">
+    ❤️ Saved <span id="savedCount">0</span>
+  </button>
 
-<button onclick="showPanel('cartPanel');renderCart()">
-🛒 Cart <span id="cartCount">0</span>
-</button>
+  <button onclick="showPanel('cartPanel');renderCart()">
+    🛒 Cart <span id="cartCount">0</span>
+  </button>
 
-<button onclick="showPanel('ordersPanel');renderOrders()">
-📦 Orders
-</button>
+  <button onclick="showPanel('ordersPanel');renderOrders()">
+    📦 Orders
+  </button>
 
-<button onclick="showPanel('messagesPanel');renderMessages()">
-💬 Messages
-</button>
+  <button onclick="showPanel('messagesPanel');renderMessages()">
+    💬 Messages
+  </button>
 
-<button onclick="showPanel('profilePanel');loadProfile()">
-👤 Profile
-</button>
+  <button onclick="showPanel('profilePanel');loadProfile()">
+    👤 Profile
+  </button>
 
-<button onclick="showPanel('sellPanel')">
-➕ Sell
-</button>
+  <button onclick="showPanel('sellPanel')">
+    ➕ Sell
+  </button>
 
-<button onclick="showPanel('adminPanel');renderAdmin()">
-🛡️ Admin
-</button>
+  <button onclick="showPanel('adminPanel');renderAdmin()">
+    🛡️ Admin
+  </button>
 
 </nav>
 
-
 <main class="container">
-
 
 <section id="homePanel" class="panel active">
 
-<div class="hero">
+  <div class="hero">
 
-<h1>
-Welcome to IsokoHub
-</h1>
+    <h1>Welcome to IsokoHub</h1>
 
-<p>
-A global marketplace connecting buyers, sellers, teachers,
-artists, creators, filmmakers and service providers.
-</p>
+    <p>
+      A global marketplace connecting buyers, sellers, teachers,
+      artists, creators, filmmakers and service providers.
+    </p>
 
-<div class="actions">
+    <div class="actions">
 
-<button
-class="btn secondary"
-onclick="document.getElementById('productsSection').scrollIntoView({behavior:'smooth'})">
-Shop Now
-</button>
+      <button
+        class="btn secondary"
+        onclick="document.getElementById('productsSection').scrollIntoView({behavior:'smooth'})">
+        Shop Now
+      </button>
 
-<button
-class="btn dark"
-onclick="showPanel('sellPanel')">
-Sell on IsokoHub
-</button>
+      <button
+        class="btn dark"
+        onclick="showPanel('sellPanel')">
+        Sell on IsokoHub
+      </button>
 
-</div>
+    </div>
 
-</div>
+  </div>
 
+  <section class="section">
 
-<section class="section">
+    <div class="section-head">
+      <h2>Explore Categories</h2>
+    </div>
 
-<div class="section-head">
-<h2>Explore Categories</h2>
-</div>
+    <div id="categories" class="categories"></div>
 
-<div id="categories" class="categories"></div>
+  </section>
 
-</section>
+  <section class="section" id="productsSection">
 
+    <div class="section-head">
 
-<section class="section" id="productsSection">
+      <h2>Featured Products</h2>
 
-<div class="section-head">
+      <button class="btn" onclick="loadProducts()">
+        View All
+      </button>
 
-<h2>
-Featured Products
-</h2>
+    </div>
 
-<button
-class="btn"
-onclick="loadProducts()">
-View All
-</button>
+    <div id="products" class="grid"></div>
 
-</div>
-
-<div id="products" class="grid"></div>
+  </section>
 
 </section>
-
-</section>
-
-
 
 <section id="searchPanel" class="panel">
 
-<div class="section-head">
+  <div class="section-head">
 
-<h2>
-Search Results
-</h2>
+    <h2>Search Results</h2>
 
-<button
-class="btn"
-onclick="showHome()">
-Home
-</button>
+    <button class="btn" onclick="showHome()">
+      Home
+    </button>
 
-</div>
+  </div>
 
-<div
-id="searchResults"
-class="grid">
-</div>
+  <div id="searchResults" class="grid"></div>
 
 </section>
-
-
 
 <section id="savedPanel" class="panel">
 
-<div class="section-head">
-<h2>❤️ Saved Products</h2>
-</div>
+  <div class="section-head">
+    <h2>❤️ Saved Products</h2>
+  </div>
 
-<div
-id="savedProducts"
-class="grid">
-</div>
+  <div id="savedProducts" class="grid"></div>
 
 </section>
-
-
 
 <section id="cartPanel" class="panel">
 
-<div class="section-head">
-<h2>🛒 Shopping Cart</h2>
-</div>
+  <div class="section-head">
+    <h2>🛒 Shopping Cart</h2>
+  </div>
 
-<div id="cartProducts"></div>
+  <div id="cartProducts"></div>
 
-<div
-class="form"
-style="margin-top:15px">
+  <div class="form" style="margin-top:15px">
 
-<h3>
-Total:
-<span id="cartTotal">
-0 RWF
-</span>
-</h3>
+    <h3>
+      Total:
+      <span id="cartTotal">0 RWF</span>
+    </h3>
 
-<br>
+    <br>
 
-<button
-class="btn"
-onclick="checkout()">
-Place Order
-</button>
+    <button class="btn" onclick="checkout()">
+      Place Order
+    </button>
 
-</div>
+  </div>
 
 </section>
-
-
 
 <section id="ordersPanel" class="panel">
 
-<div class="section-head">
-<h2>📦 My Orders</h2>
-</div>
+  <div class="section-head">
+    <h2>📦 My Orders</h2>
+  </div>
 
-<div id="ordersList"></div>
+  <div id="ordersList"></div>
 
 </section>
-
-
 
 <section id="messagesPanel" class="panel">
 
-<div class="section-head">
-<h2>💬 Messages</h2>
-</div>
+  <div class="section-head">
+    <h2>💬 Messages</h2>
+  </div>
 
-<div id="messagesList"></div>
+  <div id="messagesList"></div>
 
 </section>
-
-
 
 <section id="profilePanel" class="panel">
 
-<div class="section-head">
-<h2>👤 Profile</h2>
-</div>
+  <div class="section-head">
+    <h2>👤 Profile</h2>
+  </div>
 
-<form
-class="form"
-onsubmit="saveProfile(event)">
+  <form class="form" onsubmit="saveProfile(event)">
 
-<div class="form-grid">
+    <div class="form-grid">
 
-<div class="field">
+      <div class="field">
+        <label>Full name</label>
+        <input id="profileName" required>
+      </div>
 
-<label>
-Full name
-</label>
+      <div class="field">
+        <label>Email</label>
+        <input id="profileEmail" type="email">
+      </div>
 
-<input
-id="profileName"
-required>
+      <div class="field">
+        <label>Phone</label>
+        <input id="profilePhone">
+      </div>
 
-</div>
+      <div class="field">
+        <label>District</label>
+        <input id="profileDistrict">
+      </div>
 
+      <div class="field full">
+        <label>Address</label>
+        <textarea id="profileAddress"></textarea>
+      </div>
 
-<div class="field">
+    </div>
 
-<label>
-Email
-</label>
+    <br>
 
-<input
-id="profileEmail"
-type="email">
+    <button class="btn">
+      Save Profile
+    </button>
 
-</div>
-
-
-<div class="field">
-
-<label>
-Phone
-</label>
-
-<input
-id="profilePhone">
-
-</div>
-
-
-<div class="field">
-
-<label>
-District
-</label>
-
-<input
-id="profileDistrict">
-
-</div>
-
-
-<div class="field full">
-
-<label>
-Address
-</label>
-
-<textarea
-id="profileAddress">
-</textarea>
-
-</div>
-
-</div>
-
-<br>
-
-<button class="btn">
-Save Profile
-</button>
-
-</form>
+  </form>
 
 </section>
-
-
 
 <section id="sellPanel" class="panel">
 
-<div class="section-head">
-<h2>➕ Sell on IsokoHub</h2>
-</div>
+  <div class="section-head">
+    <h2>➕ Sell on IsokoHub</h2>
+  </div>
+
+  <form
+    id="sellForm"
+    class="form"
+    onsubmit="submitProduct(event)">
+
+    <div class="form-grid">
+
+      <div class="field">
+        <label>Title *</label>
+        <input
+          id="pTitle"
+          required
+          placeholder="e.g. iPhone 15 Pro Max">
+      </div>
+
+      <div class="field">
+        <label>Category *</label>
+        <select id="pCategory" required></select>
+      </div>
+
+      <div class="field full">
+        <label>Short description *</label>
+        <textarea id="pDescription" required></textarea>
+      </div>
+
+      <div class="field">
+        <label>Price (RWF) *</label>
+        <input
+          id="pPrice"
+          type="number"
+          min="0"
+          required>
+      </div>
+
+      <div class="field">
+        <label>Stock</label>
+        <input
+          id="pStock"
+          type="number"
+          min="0"
+          value="1">
+      </div>
+
+      <div class="field">
+        <label>Brand</label>
+        <input id="pBrand">
+      </div>
+
+      <div class="field">
+        <label>Model</label>
+        <input id="pModel">
+      </div>
+
+      <div class="field">
+        <label>Condition</label>
+        <select id="pCondition">
+          <option value="new">New</option>
+          <option value="used">Used</option>
+          <option value="refurbished">Refurbished</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>District</label>
+        <input id="pDistrict">
+      </div>
+
+      <div class="field">
+        <label>Storage</label>
+        <input
+          id="pStorage"
+          placeholder="e.g. 512GB">
+      </div>
+
+      <div class="field">
+        <label>RAM</label>
+        <input
+          id="pRam"
+          placeholder="e.g. 16GB">
+      </div>
+
+      <div class="field">
+        <label>Image URL</label>
+        <input
+          id="pImage"
+          placeholder="https://...">
+      </div>
+
+      <div class="field">
+        <label>Seller name</label>
+        <input id="pSeller">
+      </div>
+
+      <div class="field full">
+        <label>Additional specifications</label>
+        <textarea id="pSpecifications"></textarea>
+      </div>
 
+      <div class="field">
 
-<form
-id="sellForm"
-class="form"
-onsubmit="submitProduct(event)">
+        <label>
 
-<div class="form-grid">
+          <input
+            id="pNegotiable"
+            type="checkbox">
 
+          Price is negotiable
 
-<div class="field">
+        </label>
 
-<label>
-Title *
-</label>
+      </div>
 
-<input
-id="pTitle"
-required
-placeholder="e.g. iPhone 15 Pro Max">
+    </div>
 
-</div>
+    <br>
 
+    <button class="btn">
+      Submit for Review
+    </button>
 
-<div class="field">
-
-<label>
-Category *
-</label>
-
-<select
-id="pCategory"
-required>
-</select>
-
-</div>
-
-
-<div class="field full">
-
-<label>
-Short description *
-</label>
-
-<textarea
-id="pDescription"
-required>
-</textarea>
-
-</div>
-
-
-<div class="field">
-
-<label>
-Price (RWF) *
-</label>
-
-<input
-id="pPrice"
-type="number"
-min="0"
-required>
-
-</div>
-
-
-<div class="field">
-
-<label>
-Stock
-</label>
-
-<input
-id="pStock"
-type="number"
-min="0"
-value="1">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Brand
-</label>
-
-<input id="pBrand">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Model
-</label>
-
-<input id="pModel">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Condition
-</label>
-
-<select id="pCondition">
-
-<option>
-new
-</option>
-
-<option>
-used
-</option>
-
-<option>
-refurbished
-</option>
-
-</select>
-
-</div>
-
-
-<div class="field">
-
-<label>
-District
-</label>
-
-<input id="pDistrict">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Storage
-</label>
-
-<input
-id="pStorage"
-placeholder="e.g. 512GB">
-
-</div>
-
-
-<div class="field">
-
-<label>
-RAM
-</label>
-
-<input
-id="pRam"
-placeholder="e.g. 16GB">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Image URL
-</label>
-
-<input
-id="pImage"
-placeholder="https://...">
-
-</div>
-
-
-<div class="field">
-
-<label>
-Seller name
-</label>
-
-<input id="pSeller">
-
-</div>
-
-
-<div class="field full">
-
-<label>
-Additional specifications
-</label>
-
-<textarea
-id="pSpecifications">
-</textarea>
-
-</div>
-
-
-<div class="field">
-
-<label>
-
-<input
-id="pNegotiable"
-type="checkbox">
-
-Price is negotiable
-
-</label>
-
-</div>
-
-
-</div>
-
-<br>
-
-<button class="btn">
-Submit for Review
-</button>
-
-</form>
+  </form>
 
 </section>
 
-
-
 <section id="adminPanel" class="panel">
 
-<div class="section-head">
+  <div class="section-head">
 
-<h2>
-🛡️ Admin Dashboard
-</h2>
+    <h2>🛡️ Admin Dashboard</h2>
 
-<button
-class="btn dark"
-onclick="adminLogin()">
-Admin Login
-</button>
+    <button class="btn dark" onclick="adminLogin()">
+      Admin Login
+    </button>
 
-</div>
+  </div>
 
-<div id="adminContent"></div>
+  <div id="adminContent"></div>
 
 </section>
 
 </main>
 
-
-
 <footer>
-
-© 2026 IsokoHub — Global Marketplace
-
+  © 2026 IsokoHub — Global Marketplace
 </footer>
 
+<div id="toast" class="toast"></div>
 
 <div
-id="toast"
-class="toast">
-</div>
+  id="productModal"
+  class="modal"
+  onclick="if(event.target===this)closeModal()">
 
+  <div class="modal-box">
 
+    <button class="close" onclick="closeModal()">
+      ×
+    </button>
 
-<div
-id="productModal"
-class="modal"
-onclick="if(event.target===this)closeModal()">
+    <div id="modalContent"></div>
 
-<div class="modal-box">
-
-<button
-class="close"
-onclick="closeModal()">
-×
-</button>
-
-<div id="modalContent"></div>
+  </div>
 
 </div>
-
-</div>
-
-
 
 <script>
 
-const STORAGE={
+"use strict";
 
-products:"isokohub_products_v2",
+/* =========================
+   STORAGE
+========================= */
 
-cart:"isokohub_cart_v2",
-
-saved:"isokohub_saved_v2",
-
-orders:"isokohub_orders_v2",
-
-profile:"isokohub_profile_v2",
-
-admin:"isokohub_admin_v2",
-
-messages:"isokohub_messages_v2"
-
+const STORAGE = {
+  products:"isokohub_products_v3",
+  cart:"isokohub_cart_v3",
+  saved:"isokohub_saved_v3",
+  orders:"isokohub_orders_v3",
+  profile:"isokohub_profile_v3",
+  admin:"isokohub_admin_v3",
+  messages:"isokohub_messages_v3"
 };
 
+/* =========================
+   CATEGORIES
+========================= */
 
-const CATEGORIES=[
-
-"Electronics",
-
-"Fashion",
-
-"Home",
-
-"Education",
-
-"Art & Creative",
-
-"Film & Entertainment",
-
-"Services"
-
+const CATEGORIES = [
+  "Electronics",
+  "Fashion",
+  "Home",
+  "Education",
+  "Art & Creative",
+  "Film & Entertainment",
+  "Services"
 ];
 
+/* =========================
+   DEFAULT PRODUCTS
+========================= */
 
-const defaultProducts=[
+const defaultProducts = [
 
 {
-id:1,
-title:"iPhone 15 Pro Max",
-description:"Powerful smartphone for work, study and entertainment.",
-price:1200000,
-category:"Electronics",
-stock:8,
-brand:"Apple",
-model:"iPhone 15 Pro Max",
-condition:"new",
-storage:"256GB",
-ram:"8GB",
-district:"Gasabo",
-image:"",
-specifications:"5G, Face ID, high quality camera",
-negotiable:true,
-status:"approved",
-seller:"Tech Seller"
+  id:1,
+  title:"iPhone 15 Pro Max",
+  description:"Powerful smartphone for work, study and entertainment.",
+  price:1200000,
+  category:"Electronics",
+  stock:8,
+  brand:"Apple",
+  model:"iPhone 15 Pro Max",
+  condition:"new",
+  storage:"256GB",
+  ram:"8GB",
+  district:"Gasabo",
+  image:"",
+  specifications:"5G, Face ID, high quality camera",
+  negotiable:true,
+  status:"approved",
+  seller:"Tech Seller"
 },
 
 {
-id:2,
-title:"African Fashion Outfit",
-description:"Modern African fashion outfit with beautiful local design.",
-price:85000,
-category:"Fashion",
-stock:12,
-brand:"Local Fashion",
-model:"AF-01",
-condition:"new",
-storage:"",
-ram:"",
-district:"Nyarugenge",
-image:"",
-specifications:"Handmade African-inspired fashion",
-negotiable:true,
-status:"approved",
-seller:"Fashion Designer"
+  id:2,
+  title:"African Fashion Outfit",
+  description:"Modern African fashion outfit with beautiful local design.",
+  price:85000,
+  category:"Fashion",
+  stock:12,
+  brand:"Local Fashion",
+  model:"AF-01",
+  condition:"new",
+  storage:"",
+  ram:"",
+  district:"Nyarugenge",
+  image:"",
+  specifications:"Handmade African-inspired fashion",
+  negotiable:true,
+  status:"approved",
+  seller:"Fashion Designer"
 },
 
 {
-id:3,
-title:"Home Decoration Set",
-description:"Creative decoration items for your home.",
-price:60000,
-category:"Home",
-stock:15,
-brand:"Isoko Home",
-model:"HD-01",
-condition:"new",
-storage:"",
-ram:"",
-district:"Kicukiro",
-image:"",
-specifications:"Decorative home accessories",
-negotiable:true,
-status:"approved",
-seller:"Home Seller"
+  id:3,
+  title:"Home Decoration Set",
+  description:"Creative decoration items for your home.",
+  price:60000,
+  category:"Home",
+  stock:15,
+  brand:"Isoko Home",
+  model:"HD-01",
+  condition:"new",
+  storage:"",
+  ram:"",
+  district:"Kicukiro",
+  image:"",
+  specifications:"Decorative home accessories",
+  negotiable:true,
+  status:"approved",
+  seller:"Home Seller"
 },
 
 {
-id:4,
-title:"Online English Course",
-description:"Learn English through online lessons.",
-price:30000,
-category:"Education",
-stock:100,
-brand:"",
-model:"",
-condition:"new",
-storage:"",
-ram:"",
-district:"",
-image:"",
-specifications:"Online lessons and learning materials",
-negotiable:false,
-status:"approved",
-seller:"Education Teacher"
+  id:4,
+  title:"Online English Course",
+  description:"Learn English through online lessons.",
+  price:30000,
+  category:"Education",
+  stock:100,
+  brand:"",
+  model:"",
+  condition:"new",
+  storage:"",
+  ram:"",
+  district:"",
+  image:"",
+  specifications:"Online lessons and learning materials",
+  negotiable:false,
+  status:"approved",
+  seller:"Education Teacher"
 },
 
 {
-id:5,
-title:"Handmade African Art",
-description:"Beautiful handmade African artwork.",
-price:75000,
-category:"Art & Creative",
-stock:6,
-brand:"Local Artist",
-model:"",
-condition:"new",
-storage:"",
-ram:"",
-district:"Nyarugenge",
-image:"",
-specifications:"Handmade creative artwork",
-negotiable:true,
-status:"approved",
-seller:"African Artist"
+  id:5,
+  title:"Handmade African Art",
+  description:"Beautiful handmade African artwork.",
+  price:75000,
+  category:"Art & Creative",
+  stock:6,
+  brand:"Local Artist",
+  model:"",
+  condition:"new",
+  storage:"",
+  ram:"",
+  district:"Nyarugenge",
+  image:"",
+  specifications:"Handmade creative artwork",
+  negotiable:true,
+  status:"approved",
+  seller:"African Artist"
 },
 
 {
-id:6,
-title:"Professional Photography Service",
-description:"Photography service for events and special occasions.",
-price:100000,
-category:"Services",
-stock:10,
-brand:"",
-model:"",
-condition:"new",
-storage:"",
-ram:"",
-district:"Gasabo",
-image:"",
-specifications:"Events, portraits and professional photography",
-negotiable:true,
-status:"approved",
-seller:"Creative Photographer"
+  id:6,
+  title:"Professional Photography Service",
+  description:"Photography service for events and special occasions.",
+  price:100000,
+  category:"Services",
+  stock:10,
+  brand:"",
+  model:"",
+  condition:"new",
+  storage:"",
+  ram:"",
+  district:"Gasabo",
+  image:"",
+  specifications:"Events, portraits and professional photography",
+  negotiable:true,
+  status:"approved",
+  seller:"Creative Photographer"
 },
 
 {
-id:7,
-title:"Film Production Service",
-description:"Professional video and film production services.",
-price:250000,
-category:"Film & Entertainment",
-stock:5,
-brand:"",
-model:"",
-condition:"new",
-storage:"",
-ram:"",
-district:"Kicukiro",
-image:"",
-specifications:"Video production, editing and filming",
-negotiable:true,
-status:"approved",
-seller:"Isoko Film Creator"
+  id:7,
+  title:"Film Production Service",
+  description:"Professional video and film production services.",
+  price:250000,
+  category:"Film & Entertainment",
+  stock:5,
+  brand:"",
+  model:"",
+  condition:"new",
+  storage:"",
+  ram:"",
+  district:"Kicukiro",
+  image:"",
+  specifications:"Video production, editing and filming",
+  negotiable:true,
+  status:"approved",
+  seller:"Isoko Film Creator"
 },
 
 {
-id:8,
-title:"Laptop Computer",
-description:"Reliable laptop for school, work and business.",
-price:550000,
-category:"Electronics",
-stock:7,
-brand:"HP",
-model:"ProBook",
-condition:"new",
-storage:"512GB SSD",
-ram:"16GB",
-district:"Gasabo",
-image:"",
-specifications:"Intel processor, WiFi, Bluetooth",
-negotiable:true,
-status:"approved",
-seller:"Tech Seller"
+  id:8,
+  title:"Laptop Computer",
+  description:"Reliable laptop for school, work and business.",
+  price:550000,
+  category:"Electronics",
+  stock:7,
+  brand:"HP",
+  model:"ProBook",
+  condition:"new",
+  storage:"512GB SSD",
+  ram:"16GB",
+  district:"Gasabo",
+  image:"",
+  specifications:"Intel processor, WiFi, Bluetooth",
+  negotiable:true,
+  status:"approved",
+  seller:"Tech Seller"
 },
 
 {
-id:9,
-title:"Graphic Design Service",
-description:"Professional logos, posters and social media designs.",
-price:25000,
-category:"Art & Creative",
-stock:20,
-brand:"",
-model:"",
-condition:"new",
-storage:"",
-ram:"",
-district:"Kicukiro",
-image:"",
-specifications:"Logo design, posters and branding",
-negotiable:true,
-status:"approved",
-seller:"Creative Designer"
+  id:9,
+  title:"Graphic Design Service",
+  description:"Professional logos, posters and social media designs.",
+  price:25000,
+  category:"Art & Creative",
+  stock:20,
+  brand:"",
+  model:"",
+  condition:"new",
+  storage:"",
+  ram:"",
+  district:"Kicukiro",
+  image:"",
+  specifications:"Logo design, posters and branding",
+  negotiable:true,
+  status:"approved",
+  seller:"Creative Designer"
 }
 
 ];
 
+/* =========================
+   APP STATE
+========================= */
 
-let products=[];
+let products = [];
+let cart = [];
+let saved = [];
+let orders = [];
+let profile = {};
+let messages = [];
+let isAdmin = false;
 
-let cart=[];
-
-let saved=[];
-
-let orders=[];
-
-let profile={};
-
-let messages=[];
-
-let isAdmin=false;
-
-
+/* =========================
+   STORAGE FUNCTIONS
+========================= */
 
 function getStorage(key,fallback){
 
-try{
+  try{
 
-const d=localStorage.getItem(key);
+    const data = localStorage.getItem(key);
 
-return d ? JSON.parse(d) : fallback;
+    if(!data){
+      return fallback;
+    }
 
-}catch(e){
+    const parsed = JSON.parse(data);
 
-return fallback;
+    return parsed;
+
+  }catch(error){
+
+    console.warn("Storage read error:",error);
+
+    return fallback;
+
+  }
 
 }
-
-}
-
 
 function saveStorage(key,value){
 
-try{
+  try{
 
-localStorage.setItem(
-key,
-JSON.stringify(value)
-);
+    localStorage.setItem(
+      key,
+      JSON.stringify(value)
+    );
 
-}catch(e){
+  }catch(error){
 
-console.warn(e);
+    console.warn("Storage save error:",error);
 
-}
-
-}
-
-
-function escapeHTML(v){
-
-if(v==null){
-return "";
-}
-
-return String(v)
-
-.replace(/&/g,"&amp;")
-
-.replace(/</g,"&lt;")
-
-.replace(/>/g,"&gt;")
-
-.replace(/"/g,"&quot;")
-
-.replace(/'/g,"&#039;");
+  }
 
 }
 
+/* =========================
+   HELPERS
+========================= */
 
-function formatMoney(n){
+function escapeHTML(value){
 
-return new Intl.NumberFormat(
-"en-US"
-).format(Number(n)||0);
+  if(value === null || value === undefined){
+    return "";
+  }
 
-}
-
-
-function categoryIcon(c){
-
-return {
-
-"Electronics":"📱",
-
-"Fashion":"👕",
-
-"Home":"🏠",
-
-"Education":"📚",
-
-"Art & Creative":"🎨",
-
-"Film & Entertainment":"🎬",
-
-"Services":"🛠️"
-
-}[c] || "🛍️";
+  return String(value)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
 
 }
 
+function formatMoney(value){
 
-function toast(msg){
-
-const t=document.getElementById("toast");
-
-t.textContent=msg;
-
-t.style.display="block";
-
-setTimeout(()=>{
-
-t.style.display="none";
-
-},2200);
+  return new Intl.NumberFormat("en-US")
+    .format(Number(value) || 0);
 
 }
 
+function categoryIcon(category){
 
-function productImage(p){
+  const icons = {
 
-if(
-p.image &&
-String(p.image).trim()
-){
+    "Electronics":"📱",
+    "Fashion":"👕",
+    "Home":"🏠",
+    "Education":"📚",
+    "Art & Creative":"🎨",
+    "Film & Entertainment":"🎬",
+    "Services":"🛠️"
 
-return `
-<img
-src="${escapeHTML(p.image)}"
-alt="${escapeHTML(p.title)}"
-onerror="this.parentElement.innerHTML='<span>${categoryIcon(p.category)}</span>'">
-`;
+  };
 
-}
-
-return `
-<span>
-${categoryIcon(p.category)}
-</span>
-`;
+  return icons[category] || "🛍️";
 
 }
 
+function toast(message){
 
+  const element =
+    document.getElementById("toast");
+
+  if(!element){
+    return;
+  }
+
+  element.textContent = message;
+  element.style.display = "block";
+
+  clearTimeout(window.__toastTimer);
+
+  window.__toastTimer = setTimeout(function(){
+
+    element.style.display = "none";
+
+  },2200);
+
+}
+
+function getProduct(id){
+
+  return products.find(
+    p => Number(p.id) === Number(id)
+  );
+
+}
+
+/* =========================
+   IMAGE
+========================= */
+
+function productImage(product){
+
+  if(
+    product.image &&
+    String(product.image).trim()
+  ){
+
+    const safeImage =
+      escapeHTML(product.image);
+
+    const safeTitle =
+      escapeHTML(product.title);
+
+    return `
+      <img
+        src="${safeImage}"
+        alt="${safeTitle}"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+
+      <span style="display:none">
+        ${categoryIcon(product.category)}
+      </span>
+    `;
+
+  }
+
+  return `
+    <span>
+      ${categoryIcon(product.category)}
+    </span>
+  `;
+
+}
+
+/* =========================
+   INITIALIZATION
+========================= */
 
 function initializeApp(){
 
-products=getStorage(
-STORAGE.products,
-[]
-);
+  products =
+    getStorage(
+      STORAGE.products,
+      []
+    );
 
-if(
-!Array.isArray(products) ||
-products.length===0
-){
+  if(
+    !Array.isArray(products) ||
+    products.length === 0
+  ){
 
-products=defaultProducts;
+    products =
+      JSON.parse(
+        JSON.stringify(defaultProducts)
+      );
 
-saveStorage(
-STORAGE.products,
-products
-);
+    saveStorage(
+      STORAGE.products,
+      products
+    );
+
+  }
+
+  cart =
+    getStorage(
+      STORAGE.cart,
+      []
+    );
+
+  saved =
+    getStorage(
+      STORAGE.saved,
+      []
+    );
+
+  orders =
+    getStorage(
+      STORAGE.orders,
+      []
+    );
+
+  profile =
+    getStorage(
+      STORAGE.profile,
+      {}
+    );
+
+  messages =
+    getStorage(
+      STORAGE.messages,
+      []
+    );
+
+  isAdmin =
+    getStorage(
+      STORAGE.admin,
+      false
+    );
+
+  loadCategories();
+  loadProducts();
+  updateCounts();
+  loadProfile();
+  renderSaved();
+  renderCart();
+  renderOrders();
+  renderMessages();
+  renderAdmin();
 
 }
 
-cart=getStorage(
-STORAGE.cart,
-[]
-);
-
-saved=getStorage(
-STORAGE.saved,
-[]
-);
-
-orders=getStorage(
-STORAGE.orders,
-[]
-);
-
-profile=getStorage(
-STORAGE.profile,
-{}
-);
-
-messages=getStorage(
-STORAGE.messages,
-[]
-);
-
-isAdmin=getStorage(
-STORAGE.admin,
-false
-);
-
-loadCategories();
-
-loadProducts();
-
-updateCounts();
-
-loadProfile();
-
-renderMessages();
-
-if(isAdmin){
-
-renderAdmin();
-
-}
-
-}
-
-
+/* =========================
+   PANELS
+========================= */
 
 function showPanel(id){
 
-document
-.querySelectorAll(".panel")
-.forEach(x=>{
+  document
+    .querySelectorAll(".panel")
+    .forEach(function(panel){
 
-x.classList.remove("active");
+      panel.classList.remove("active");
 
-});
+    });
 
-const p=document.getElementById(id);
+  const target =
+    document.getElementById(id);
 
-if(p){
+  if(target){
 
-p.classList.add("active");
+    target.classList.add("active");
+
+  }
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
 
 }
-
-window.scrollTo({
-top:0,
-behavior:"smooth"
-});
-
-}
-
 
 function showHome(){
 
-showPanel("homePanel");
+  showPanel("homePanel");
 
-loadProducts();
+  loadProducts();
 
 }
 
-
+/* =========================
+   CATEGORIES
+========================= */
 
 function loadCategories(){
 
-const box=document.getElementById(
-"categories"
-);
+  const categoryBox =
+    document.getElementById("categories");
 
-box.innerHTML=CATEGORIES.map(c=>`
+  const select =
+    document.getElementById("pCategory");
 
-<button
-class="cat"
-onclick="filterCategory('${escapeHTML(c)}')">
+  if(categoryBox){
 
-<span class="icon">
-${categoryIcon(c)}
-</span>
+    categoryBox.innerHTML =
+      CATEGORIES.map(function(category){
 
-<b>
-${escapeHTML(c)}
-</b>
+        return `
+          <button
+            class="cat"
+            onclick="filterCategory('${escapeHTML(category)}')">
 
-</button>
+            <span class="icon">
+              ${categoryIcon(category)}
+            </span>
 
-`).join("");
+            <b>
+              ${escapeHTML(category)}
+            </b>
 
+          </button>
+        `;
 
-document.getElementById(
-"pCategory"
-).innerHTML=CATEGORIES.map(c=>`
+      }).join("");
 
-<option>
-${escapeHTML(c)}
-</option>
+  }
 
-`).join("");
+  if(select){
+
+    select.innerHTML =
+      CATEGORIES.map(function(category){
+
+        return `
+          <option value="${escapeHTML(category)}">
+            ${escapeHTML(category)}
+          </option>
+        `;
+
+      }).join("");
+
+  }
 
 }
 
+function filterCategory(category){
 
+  const result =
+    products.filter(function(product){
+
+      return (
+        product.status === "approved" &&
+        product.category === category
+      );
+
+    });
+
+  showPanel("homePanel");
+
+  const box =
+    document.getElementById("products");
+
+  if(box){
+
+    box.innerHTML =
+      result.length
+      ? result.map(productCard).join("")
+      : `<div class="notice">No products found in this category.</div>`;
+
+  }
+
+  document
+    .getElementById("productsSection")
+    ?.scrollIntoView({
+      behavior:"smooth"
+    });
+
+}
+
+/* =========================
+   PRODUCTS
+========================= */
 
 function loadProducts(list=null){
 
-const box=document.getElementById(
-"products"
-);
+  const box =
+    document.getElementById("products");
 
-if(!box){
-return;
-}
+  if(!box){
+    return;
+  }
 
-const source=
+  const source =
+    Array.isArray(list)
+    ? list
+    : products.filter(
+        p => p.status === "approved"
+      );
 
-list ||
+  box.innerHTML =
+    source.length
+    ? source.map(productCard).join("")
+    : `<div class="notice">No products found.</div>`;
 
-products.filter(
-p=>p.status==="approved"
-);
-
-box.innerHTML=
-
-source.length
-
-?
-
-source.map(productCard).join("")
-
-:
-
-`
-<div
-class="notice"
-style="grid-column:1/-1">
-
-No products found.
-
-</div>
-`;
-
-updateCounts();
+  updateCounts();
 
 }
 
+function productCard(product){
 
+  const id =
+    Number(product.id);
 
-function productCard(p){
+  const savedState =
+    saved.includes(id);
 
-const sid=Number(p.id);
+  const cartItem =
+    cart.find(
+      item => Number(item.id) === id
+    );
 
-const isSaved=
-saved.includes(sid);
+  return `
 
-const ci=cart.find(
-x=>Number(x.id)===sid
-);
+    <article class="card">
 
-return `
+      <div class="pic">
+        ${productImage(product)}
+      </div>
 
-<article class="card">
+      <div class="card-body">
 
-<div class="pic">
+        <span class="badge">
+          ${categoryIcon(product.category)}
+          ${escapeHTML(product.category)}
+        </span>
 
-${productImage(p)}
+        <h3>
+          ${escapeHTML(product.title)}
+        </h3>
 
-</div>
+        <p>
+          ${escapeHTML(product.description || "")}
+        </p>
 
+        <div class="price">
+          ${formatMoney(product.price)} RWF
+        </div>
 
-<div class="card-body">
+        <div class="meta">
+          Seller:
+          ${escapeHTML(product.seller || "IsokoHub Seller")}
+        </div>
 
-<span class="badge">
+        ${
+          product.district
+          ? `
+            <div class="meta">
+              📍 ${escapeHTML(product.district)}
+            </div>
+          `
+          : ""
+        }
 
-${categoryIcon(p.category)}
+        <div class="card-actions">
 
-${escapeHTML(p.category)}
+          <button onclick="openProduct(${id})">
+            View
+          </button>
 
-</span>
+          <button onclick="addToCart(${id})">
+            🛒 Add
+          </button>
 
+          <button
+            class="save"
+            onclick="toggleSaved(${id})">
 
-<h3>
-${escapeHTML(p.title)}
-</h3>
+            ${savedState ? "❤️" : "🤍"}
 
+          </button>
 
-<p>
-${escapeHTML(p.description||"")}
-</p>
+        </div>
 
+        ${
+          cartItem
+          ? `
+            <div class="meta">
+              In cart: ${cartItem.quantity}
+            </div>
+          `
+          : ""
+        }
 
-<div class="price">
+      </div>
 
-${formatMoney(p.price)}
-RWF
+    </article>
 
-</div>
-
-
-<div class="meta">
-
-Seller:
-${escapeHTML(
-p.seller||"IsokoHub Seller"
-)}
-
-</div>
-
-
-${p.district?`
-
-<div class="meta">
-
-📍 ${escapeHTML(p.district)}
-
-</div>
-
-`:""}
-
-
-<div class="card-actions">
-
-<button
-onclick="openProduct(${sid})">
-
-View
-
-</button>
-
-
-<button
-onclick="addToCart(${sid})">
-
-🛒 Add
-
-</button>
-
-
-<button
-class="save"
-onclick="toggleSaved(${sid})">
-
-${isSaved?"❤️":"🤍"}
-
-</button>
-
-</div>
-
-
-${ci?`
-
-<div class="meta">
-
-In cart:
-${ci.quantity}
-
-</div>
-
-`:""}
-
-</div>
-
-</article>
-
-`;
+  `;
 
 }
 
+/* =========================
+   SEARCH
+========================= */
 
+function searchProducts(){
 
-function updateCounts(){
+  const input =
+    document.getElementById("searchInput");
 
-document.getElementById(
-"savedCount"
-).textContent=saved.length;
+  const query =
+    String(input?.value || "")
+      .trim()
+      .toLowerCase();
 
+  if(!query){
 
-document.getElementById(
-"cartCount"
-).textContent=
+    toast("Type something to search.");
 
-cart.reduce(
-(s,x)=>s+Number(x.quantity||0),
-0
-);
+    return;
+
+  }
+
+  const results =
+    products.filter(function(product){
+
+      if(product.status !== "approved"){
+        return false;
+      }
+
+      const text = [
+
+        product.title,
+        product.description,
+        product.category,
+        product.seller,
+        product.brand,
+        product.model,
+        product.district
+
+      ]
+      .join(" ")
+      .toLowerCase();
+
+      return text.includes(query);
+
+    });
+
+  const box =
+    document.getElementById("searchResults");
+
+  if(box){
+
+    box.innerHTML =
+      results.length
+      ? results.map(productCard).join("")
+      : `<div class="notice">No results for "${escapeHTML(query)}".</div>`;
+
+  }
+
+  showPanel("searchPanel");
 
 }
 
-
+/* =========================
+   SAVED
+========================= */
 
 function toggleSaved(id){
 
-id=Number(id);
+  id = Number(id);
 
-if(saved.includes(id)){
+  if(saved.includes(id)){
 
-saved=saved.filter(
-x=>x!==id
-);
+    saved =
+      saved.filter(
+        item => Number(item) !== id
+      );
 
-}else{
+    toast("Removed from saved.");
 
-saved.push(id);
+  }else{
+
+    saved.push(id);
+
+    toast("Saved successfully.");
+
+  }
+
+  saveStorage(
+    STORAGE.saved,
+    saved
+  );
+
+  renderSaved();
+  loadProducts();
 
 }
 
-saveStorage(
-STORAGE.saved,
-saved
+function renderSaved(){
+
+  const box =
+    document.getElementById("savedProducts");
+
+  if(!box){
+    return;
+  }
+
+  const items =
+    products.filter(function(product){
+
+      return saved.includes(
+        Number(product.id)
+      );
+
+    });
+
+  box.innerHTML =
+    items.length
+    ? items.map(productCard).join("")
+    : `<div class="empty">No saved products yet.</div>`;
+
+  updateCounts();
+
+}
+
+/* =========================
+   CART
+========================= */
+
+function addToCart(id){
+
+  id = Number(id);
+
+  const product =
+    getProduct(id);
+
+  if(!product){
+
+    toast("Product not found.");
+
+    return;
+
+  }
+
+  if(
+    product.stock !== undefined &&
+    Number(product.stock) <= 0
+  ){
+
+    toast("This product is out of stock.");
+
+    return;
+
+  }
+
+  const item =
+    cart.find(
+      x => Number(x.id) === id
+    );
+
+  if(item){
+
+    item.quantity =
+      Number(item.quantity || 0) + 1;
+
+  }else{
+
+    cart.push({
+      id:id,
+      quantity:1
+    });
+
+  }
+
+  saveStorage(
+    STORAGE.cart,
+    cart
+  );
+
+  updateCounts();
+  renderCart();
+  loadProducts();
+
+  toast("Added to cart.");
+
+}
+
+function changeCartQuantity(id,change){
+
+  id = Number(id);
+
+  const item =
+    cart.find(
+      x => Number(x.id) === id
+    );
+
+  if(!item){
+    return;
+  }
+
+  item.quantity =
+    Number(item.quantity || 0) + Number(change);
+
+  if(item.quantity <= 0){
+
+    cart =
+      cart.filter(
+        x => Number(x.id) !== id
+      );
+
+  }
+
+  saveStorage(
+    STORAGE.cart,
+    cart
+  );
+
+  renderCart();
+  updateCounts();
+  loadProducts();
+
+}
+
+function removeFromCart(id){
+
+  id = Number(id);
+
+  cart =
+    cart.filter(
+      x => Number(x.id) !== id
+    );
+
+  saveStorage(
+    STORAGE.cart,
+    cart
+  );
+
+  renderCart();
+  updateCounts();
+  loadProducts();
+
+  toast("Removed from cart.");
+
+}
+
+function renderCart(){
+
+  const box =
+    document.getElementById("cartProducts");
+
+  const totalElement =
+    document.getElementById("cartTotal");
+
+  if(!box){
+    return;
+  }
+
+  if(cart.length === 0){
+
+    box.innerHTML =
+      `<div class="empty">Your cart is empty.</div>`;
+
+    if(totalElement){
+      totalElement.textContent = "0 RWF";
+    }
+
+    return;
+
+  }
+
+  let total = 0;
+
+  box.innerHTML =
+    cart.map(function(item){
+
+      const product =
+        getProduct(item.id);
+
+      if(!product){
+        return "";
+      }
+
+      const quantity =
+        Number(item.quantity || 1);
+
+      const subtotal =
+        Number(product.price || 0) * quantity;
+
+      total += subtotal;
+
+      return `
+
+        <div class="cart-row">
+
+          <div style="font-size:40px">
+            ${categoryIcon(product.category)}
+          </div>
+
+          <div class="cart-info">
+
+            <strong>
+              ${escapeHTML(product.title)}
+            </strong>
+
+            <div class="small">
+              ${formatMoney(product.price)} RWF each
+            </div>
+
+            <div class="small">
+              Subtotal:
+              ${formatMoney(subtotal)} RWF
+            </div>
+
+          </div>
+
+          <div class="qty">
+
+            <button
+              onclick="changeCartQuantity(${product.id},-1)">
+              −
+            </button>
+
+            <strong>
+              ${quantity}
+            </strong>
+
+            <button
+              onclick="changeCartQuantity(${product.id},1)">
+              +
+            </button>
+
+          </div>
+
+          <button
+            class="btn danger"
+            onclick="removeFromCart(${product.id})">
+            Remove
+          </button>
+
+        </div>
+
+      `;
+
+    }).join("");
+
+  if(totalElement){
+
+    totalElement.textContent =
+      `${formatMoney(total)} RWF`;
+
+  }
+
+}
+
+function getCartTotal(){
+
+  return cart.reduce(function(total,item){
+
+    const product =
+      getProduct(item.id);
+
+    if(!product){
+      return total;
+    }
+
+    return total +
+      Number(product.price || 0) *
+      Number(item.quantity || 0);
+
+  },0);
+
+}
+
+/* =========================
+   CHECKOUT
+========================= */
+
+function checkout(){
+
+  if(cart.length === 0){
+
+    toast("Your cart is empty.");
+
+    return;
+
+  }
+
+  if(
+    !profile.name &&
+    !profile.phone
+  ){
+
+    toast("Please complete your profile first.");
+
+    showPanel("profilePanel");
+
+    return;
+
+  }
+
+  const orderItems =
+    cart.map(function(item){
+
+      const product =
+        getProduct(item.id);
+
+      return {
+
+        id:product.id,
+        title:product.title,
+        price:Number(product.price || 0),
+        quantity:Number(item.quantity || 1),
+        seller:product.seller || "IsokoHub Seller"
+
+      };
+
+    });
+
+  const order = {
+
+    id:"ORD-" +
+      Date.now(),
+
+    date:new Date().toISOString(),
+
+    customer:profile.name || "Customer",
+
+    phone:profile.phone || "",
+
+    items:orderItems,
+
+    total:getCartTotal(),
+
+    status:"Pending"
+
+  };
+
+  orders.unshift(order);
+
+  saveStorage(
+    STORAGE.orders,
+    orders
+  );
+
+  cart = [];
+
+  saveStorage(
+    STORAGE.cart,
+    cart
+  );
+
+  messages.unshift({
+
+    id:Date.now(),
+
+    date:new Date().toISOString(),
+
+    text:"Your order " +
+      order.id +
+      " has been received.",
+
+    read:false
+
+  });
+
+  saveStorage(
+    STORAGE.messages,
+    messages
+  );
+
+  renderCart();
+  renderOrders();
+  renderMessages();
+  updateCounts();
+  loadProducts();
+
+  showPanel("ordersPanel");
+
+  toast("Order placed successfully.");
+
+}
+
+/* =========================
+   ORDERS
+========================= */
+
+function renderOrders(){
+
+  const box =
+    document.getElementById("ordersList");
+
+  if(!box){
+    return;
+  }
+
+  if(orders.length === 0){
+
+    box.innerHTML =
+      `<div class="empty">You have no orders yet.</div>`;
+
+    return;
+
+  }
+
+  box.innerHTML =
+    orders.map(function(order){
+
+      const items =
+        order.items || [];
+
+      return `
+
+        <div class="form" style="margin-bottom:12px">
+
+          <div class="section-head">
+
+            <h3>
+              ${escapeHTML(order.id)}
+            </h3>
+
+            <span class="badge">
+              ${escapeHTML(order.status || "Pending")}
+            </span>
+
+          </div>
+
+          <div class="small">
+            ${new Date(order.date).toLocaleString()}
+          </div>
+
+          <br>
+
+          ${
+            items.map(function(item){
+
+              return `
+                <div style="margin:7px 0">
+                  ${escapeHTML(item.title)}
+                  × ${item.quantity}
+                  — ${formatMoney(
+                    item.price * item.quantity
+                  )} RWF
+                </div>
+              `;
+
+            }).join("")
+          }
+
+          <hr style="margin:12px 0">
+
+          <strong>
+            Total:
+            ${formatMoney(order.total)} RWF
+          </strong>
+
+        </div>
+
+      `;
+
+    }).join("");
+
+}
+
+/* =========================
+   MESSAGES
+========================= */
+
+function renderMessages(){
+
+  const box =
+    document.getElementById("messagesList");
+
+  if(!box){
+    return;
+  }
+
+  if(messages.length === 0){
+
+    box.innerHTML =
+      `<div class="empty">No messages yet.</div>`;
+
+    return;
+
+  }
+
+  box.innerHTML =
+    messages.map(function(message){
+
+      return `
+
+        <div class="form" style="margin-bottom:10px">
+
+          <strong>
+            IsokoHub
+          </strong>
+
+          <div class="small">
+            ${new Date(message.date).toLocaleString()}
+          </div>
+
+          <br>
+
+          <div>
+            ${escapeHTML(message.text)}
+          </div>
+
+        </div>
+
+      `;
+
+    }).join("");
+
+}
+
+/* =========================
+   PROFILE
+========================= */
+
+function loadProfile(){
+
+  const fields = {
+
+    profileName:"name",
+    profileEmail:"email",
+    profilePhone:"phone",
+    profileDistrict:"district",
+    profileAddress:"address"
+
+  };
+
+  Object.keys(fields).forEach(function(id){
+
+    const element =
+      document.getElementById(id);
+
+    if(element){
+
+      element.value =
+        profile[fields[id]] || "";
+
+    }
+
+  });
+
+}
+
+function saveProfile(event){
+
+  event.preventDefault();
+
+  profile = {
+
+    name:
+      document.getElementById("profileName").value.trim(),
+
+    email:
+      document.getElementById("profileEmail").value.trim(),
+
+    phone:
+      document.getElementById("profilePhone").value.trim(),
+
+    district:
+      document.getElementById("profileDistrict").value.trim(),
+
+    address:
+      document.getElementById("profileAddress").value.trim()
+
+  };
+
+  saveStorage(
+    STORAGE.profile,
+    profile
+  );
+
+  toast("Profile saved successfully.");
+
+}
+
+/* =========================
+   SELL PRODUCT
+========================= */
+
+function submitProduct(event){
+
+  event.preventDefault();
+
+  const product = {
+
+    id:Date.now(),
+
+    title:
+      document.getElementById("pTitle").value.trim(),
+
+    category:
+      document.getElementById("pCategory").value,
+
+    description:
+      document.getElementById("pDescription").value.trim(),
+
+    price:
+      Number(
+        document.getElementById("pPrice").value
+      ),
+
+    stock:
+      Number(
+        document.getElementById("pStock").value || 1
+      ),
+
+    brand:
+      document.getElementById("pBrand").value.trim(),
+
+    model:
+      document.getElementById("pModel").value.trim(),
+
+    condition:
+      document.getElementById("pCondition").value,
+
+    district:
+      document.getElementById("pDistrict").value.trim(),
+
+    storage:
+      document.getElementById("pStorage").value.trim(),
+
+    ram:
+      document.getElementById("pRam").value.trim(),
+
+    image:
+      document.getElementById("pImage").value.trim(),
+
+    seller:
+      document.getElementById("pSeller").value.trim()
+      || profile.name
+      || "IsokoHub Seller",
+
+    specifications:
+      document.getElementById("pSpecifications").value.trim(),
+
+    negotiable:
+      document.getElementById("pNegotiable").checked,
+
+    status:"pending"
+
+  };
+
+  if(!product.title || !product.description){
+
+    toast("Please complete the required fields.");
+
+    return;
+
+  }
+
+  if(product.price < 0){
+
+    toast("Price cannot be negative.");
+
+    return;
+
+  }
+
+  products.unshift(product);
+
+  saveStorage(
+    STORAGE.products,
+    products
+  );
+
+  messages.unshift({
+
+    id:Date.now(),
+
+    date:new Date().toISOString(),
+
+    text:
+      "Your product '" +
+      product.title +
+      "' was submitted for review.",
+
+    read:false
+
+  });
+
+  saveStorage(
+    STORAGE.messages,
+    messages
+  );
+
+  document
+    .getElementById("sellForm")
+    .reset();
+
+  loadCategories();
+  loadProducts();
+  renderMessages();
+  renderAdmin();
+
+  toast("Product submitted for review.");
+
+  showPanel("homePanel");
+
+}
+
+/* =========================
+   PRODUCT MODAL
+========================= */
+
+function openProduct(id){
+
+  const product =
+    getProduct(id);
+
+  if(!product){
+    toast("Product not found.");
+    return;
+  }
+
+  const modal =
+    document.getElementById("productModal");
+
+  const content =
+    document.getElementById("modalContent");
+
+  content.innerHTML = `
+
+    <div class="pic" style="height:250px">
+      ${productImage(product)}
+    </div>
+
+    <br>
+
+    <span class="badge">
+      ${categoryIcon(product.category)}
+      ${escapeHTML(product.category)}
+    </span>
+
+    <h2 style="margin:10px 0">
+      ${escapeHTML(product.title)}
+    </h2>
+
+    <p>
+      ${escapeHTML(product.description || "")}
+    </p>
+
+    <div class="price">
+      ${formatMoney(product.price)} RWF
+    </div>
+
+    <div class="meta">
+      Seller:
+      ${escapeHTML(product.seller || "IsokoHub Seller")}
+    </div>
+
+    ${
+      product.brand
+      ? `<div class="meta">Brand: ${escapeHTML(product.brand)}</div>`
+      : ""
+    }
+
+    ${
+      product.model
+      ? `<div class="meta">Model: ${escapeHTML(product.model)}</div>`
+      : ""
+    }
+
+    ${
+      product.condition
+      ? `<div class="meta">Condition: ${escapeHTML(product.condition)}</div>`
+      : ""
+    }
+
+    ${
+      product.storage
+      ? `<div class="meta">Storage: ${escapeHTML(product.storage)}</div>`
+      : ""
+    }
+
+    ${
+      product.ram
+      ? `<div class="meta">RAM: ${escapeHTML(product.ram)}</div>`
+      : ""
+    }
+
+    ${
+      product.district
+      ? `<div class="meta">📍 ${escapeHTML(product.district)}</div>`
+      : ""
+    }
+
+    ${
+      product.specifications
+      ? `
+        <br>
+        <strong>Specifications</strong>
+        <p>
+          ${escapeHTML(product.specifications)}
+        </p>
+      `
+      : ""
+    }
+
+    <br>
+
+    <button
+      class="btn"
+      onclick="addToCart(${product.id});closeModal()">
+      🛒 Add to Cart
+    </button>
+
+  `;
+
+  modal.classList.add("active");
+
+}
+
+function closeModal(){
+
+  const modal =
+    document.getElementById("productModal");
+
+  if(modal){
+
+    modal.classList.remove("active");
+
+  }
+
+}
+
+/* =========================
+   ADMIN
+========================= */
+
+function adminLogin(){
+
+  if(isAdmin){
+
+    isAdmin = false;
+
+    saveStorage(
+      STORAGE.admin,
+      false
+    );
+
+    toast("Admin logged out.");
+
+    renderAdmin();
+
+    return;
+
+  }
+
+  const password =
+    prompt("Enter admin password:");
+
+  if(password === null){
+    return;
+  }
+
+  /*
+    Demo password.
+    Change this when connecting
+    to a real backend.
+  */
+
+  if(password === "IsokoHub2026"){
+
+    isAdmin = true;
+
+    saveStorage(
+      STORAGE.admin,
+      true
+    );
+
+    toast("Admin login successful.");
+
+    renderAdmin();
+
+  }else{
+
+    toast("Incorrect admin password.");
+
+  }
+
+}
+
+function renderAdmin(){
+
+  const box =
+    document.getElementById("adminContent");
+
+  if(!box){
+    return;
+  }
+
+  if(!isAdmin){
+
+    box.innerHTML = `
+
+      <div class="empty">
+
+        <h3>Admin access required</h3>
+
+        <p style="margin:10px 0">
+          Click "Admin Login" to open the dashboard.
+        </p>
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+  const approved =
+    products.filter(
+      p => p.status === "approved"
+    ).length;
+
+  const pending =
+    products.filter(
+      p => p.status === "pending"
+    ).length;
+
+  const rejected =
+    products.filter(
+      p => p.status === "rejected"
+    ).length;
+
+  box.innerHTML = `
+
+    <div class="stat-grid">
+
+      <div class="stat">
+        Products
+        <b>${products.length}</b>
+      </div>
+
+      <div class="stat">
+        Approved
+        <b>${approved}</b>
+      </div>
+
+      <div class="stat">
+        Pending
+        <b>${pending}</b>
+      </div>
+
+      <div class="stat">
+        Orders
+        <b>${orders.length}</b>
+      </div>
+
+      <div class="stat">
+        Rejected
+        <b>${rejected}</b>
+      </div>
+
+    </div>
+
+    <br>
+
+    <h3>Product Management</h3>
+
+    <br>
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Product</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          ${
+            products.map(function(product){
+
+              return `
+
+                <tr>
+
+                  <td>
+                    ${escapeHTML(product.title)}
+                  </td>
+
+                  <td>
+                    ${escapeHTML(product.category)}
+                  </td>
+
+                  <td>
+                    ${formatMoney(product.price)} RWF
+                  </td>
+
+                  <td>
+
+                    <span class="badge ${
+                      product.status === "pending"
+                      ? "pending"
+                      : product.status === "rejected"
+                      ? "rejected"
+                      : ""
+                    }">
+
+                      ${escapeHTML(product.status)}
+
+                    </span>
+
+                  </td>
+
+                  <td>
+
+                    ${
+                      product.status !== "approved"
+                      ? `
+                        <button
+                          class="btn"
+                          onclick="changeProductStatus(${product.id},'approved')">
+                          Approve
+                        </button>
+                      `
+                      : ""
+                    }
+
+                    ${
+                      product.status !== "rejected"
+                      ? `
+                        <button
+                          class="btn danger"
+                          onclick="changeProductStatus(${product.id},'rejected')">
+                          Reject
+                        </button>
+                      `
+                      : ""
+                    }
+
+                  </td>
+
+                </tr>
+
+              `;
+
+            }).join("")
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+    <br>
+
+    <button
+      class="btn dark"
+      onclick="adminLogin()">
+      Logout Admin
+    </button>
+
+  `;
+
+}
+
+function changeProductStatus(id,status){
+
+  if(!isAdmin){
+
+    toast("Admin login required.");
+
+    return;
+
+  }
+
+  const product =
+    getProduct(id);
+
+  if(!product){
+    return;
+  }
+
+  product.status = status;
+
+  saveStorage(
+    STORAGE.products,
+    products
+  );
+
+  messages.unshift({
+
+    id:Date.now(),
+
+    date:new Date().toISOString(),
+
+    text:
+      "Product '" +
+      product.title +
+      "' status changed to " +
+      status +
+      ".",
+
+    read:false
+
+  });
+
+  saveStorage(
+    STORAGE.messages,
+    messages
+  );
+
+  renderAdmin();
+  renderMessages();
+  loadProducts();
+
+  toast(
+    status === "approved"
+    ? "Product approved."
+    : "Product rejected."
+  );
+
+}
+
+/* =========================
+   COUNTS
+========================= */
+
+function updateCounts(){
+
+  const savedCount =
+    document.getElementById("savedCount");
+
+  const cartCount =
+    document.getElementById("cartCount");
+
+  if(savedCount){
+
+    savedCount.textContent =
+      saved.length;
+
+  }
+
+  if(cartCount){
+
+    cartCount.textContent =
+      cart.reduce(
+        function(total,item){
+
+          return total +
+            Number(item.quantity || 0);
+
+        },
+        0
+      );
+
+  }
+
+}
+
+/* =========================
+   START APP
+========================= */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  initializeApp
 );
 
-renderSaved();
+</script>
 
-loadProducts(
+</body>
+</html>
