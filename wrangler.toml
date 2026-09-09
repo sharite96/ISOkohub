@@ -1,11 +1,12 @@
-name = "isokohub"
-compatibility_date = "2026-09-08"
+name = "isokohub-rwr"
+main = "src/index.js"
+compatibility_date = "2026-09-09"
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
 
 [[d1_databases]]
 binding = "DB"
 database_name = "isokohub-db"
-database_id = "AHA_NIHO_USHYIRA_REAL_D1_DATABASE_ID"
-
-[[r2_buckets]]
-binding = "IMAGES"
-bucket_name = "isokohub-images"
+database_id = "a1d06336"
