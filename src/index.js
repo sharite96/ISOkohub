@@ -3,7 +3,9 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
 
-    // CORS
+    // =========================
+    // CORS / OPTIONS
+    // =========================
     if (request.method === "OPTIONS") {
       return new Response(null, {
         status: 204,
@@ -12,28 +14,36 @@ export default {
     }
 
     try {
-      // Health check
+      // =========================
+      // HEALTH CHECK
+      // =========================
       if (path === "/api/health" && request.method === "GET") {
         return json({
           ok: true,
           service: "IsokoHub API",
           database: !!env.DB,
+          assets: !!env.ASSETS,
           time: new Date().toISOString()
         });
       }
 
-      // Configuration
+      // =========================
+      // CONFIGURATION
+      // =========================
       if (path === "/api/config" && request.method === "GET") {
         return json({
           ok: true,
           app: "IsokoHub",
           database: !!env.DB,
           payments: false,
-          images: !!env.IMAGES
+          images: !!env.IMAGES,
+          assets: !!env.ASSETS
         });
       }
 
-      // Categories
+      // =========================
+      // CATEGORIES
+      // =========================
       if (path === "/api/categories" && request.method === "GET") {
         const categories = [
           {
@@ -79,21 +89,28 @@ export default {
         });
       }
 
-      // Products
+      // =========================
+      // PRODUCTS
+      // =========================
       if (path === "/api/products" && request.method === "GET") {
         if (!env.DB) {
-          return json({
-            ok: false,
-            error: "D1 database binding DB is not connected"
-          }, 500);
+          return json(
+            {
+              ok: false,
+              error: "D1 database binding DB is not connected"
+            },
+            500
+          );
         }
 
-        const result = await env.DB.prepare(`
-          SELECT *
-          FROM products
-          ORDER BY id DESC
-          LIMIT 100
-        `).all();
+        const result = await env.DB
+          .prepare(`
+            SELECT *
+            FROM products
+            ORDER BY id DESC
+            LIMIT 100
+          `)
+          .all();
 
         return json({
           ok: true,
@@ -101,34 +118,53 @@ export default {
         });
       }
 
-      // Single product
+      // =========================
+      // SINGLE PRODUCT
+      // =========================
       if (
         path.startsWith("/api/products/") &&
         request.method === "GET"
       ) {
         if (!env.DB) {
-          return json({
-            ok: false,
-            error: "D1 database binding DB is not connected"
-          }, 500);
+          return json(
+            {
+              ok: false,
+              error: "D1 database binding DB is not connected"
+            },
+            500
+          );
         }
 
         const id = path.split("/").pop();
 
-        const product = await env.DB.prepare(`
-          SELECT *
-          FROM products
-          WHERE id = ?
-          LIMIT 1
-        `)
+        if (!id) {
+          return json(
+            {
+              ok: false,
+              error: "Product ID is required"
+            },
+            400
+          );
+        }
+
+        const product = await env.DB
+          .prepare(`
+            SELECT *
+            FROM products
+            WHERE id = ?
+            LIMIT 1
+          `)
           .bind(id)
           .first();
 
         if (!product) {
-          return json({
-            ok: false,
-            error: "Product not found"
-          }, 404);
+          return json(
+            {
+              ok: false,
+              error: "Product not found"
+            },
+            404
+          );
         }
 
         return json({
@@ -137,36 +173,54 @@ export default {
         });
       }
 
-      // API not found
+      // =========================
+      // UNKNOWN API ENDPOINT
+      // =========================
       if (path.startsWith("/api/")) {
-        return json({
-          ok: false,
-          error: "API endpoint not found",
-          path
-        }, 404);
+        return json(
+          {
+            ok: false,
+            error: "API endpoint not found",
+            path
+          },
+          404
+        );
       }
 
-      // Static frontend
+      // =========================
+      // STATIC FRONTEND
+      // =========================
       if (env.ASSETS) {
         return env.ASSETS.fetch(request);
       }
 
+      // =========================
+      // FALLBACK
+      // =========================
       return new Response("IsokoHub is running.", {
         status: 200,
         headers: {
           "content-type": "text/plain; charset=UTF-8"
         }
       });
-
     } catch (error) {
-      return json({
-        ok: false,
-        error: error.message || "Internal server error"
-      }, 500);
+      console.error("IsokoHub API Error:", error);
+
+      return json(
+        {
+          ok: false,
+          error: error?.message || "Internal server error"
+        },
+        500
+      );
     }
   }
 };
 
+
+// ========================================
+// CORS HEADERS
+// ========================================
 function corsHeaders() {
   return {
     "Access-Control-Allow-Origin": "*",
@@ -178,13 +232,17 @@ function corsHeaders() {
   };
 }
 
+
+// ========================================
+// JSON RESPONSE
+// ========================================
 function json(data, status = 200) {
   return new Response(
     JSON.stringify(data, null, 2),
     {
       status,
       headers: {
-        "content-type": "application/json; charset=UTF-8",
+        "Content-Type": "application/json; charset=UTF-8",
         ...corsHeaders()
       }
     }
