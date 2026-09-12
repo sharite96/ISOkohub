@@ -22,10 +22,7 @@ body{
   color:#172033;
 }
 
-button,
-input,
-textarea,
-select{
+button,input,textarea,select{
   font:inherit;
 }
 
@@ -34,7 +31,7 @@ button{
 }
 
 header{
-  background:#ffffff;
+  background:#fff;
   border-bottom:1px solid #e5e7eb;
   position:sticky;
   top:0;
@@ -71,8 +68,7 @@ header{
   outline:none;
 }
 
-.search button,
-.primary{
+.search button,.primary{
   background:#ff6b00;
   color:white;
   border:none;
@@ -367,6 +363,13 @@ header{
   z-index:5000;
 }
 
+.auth-status{
+  background:#f4f6f9;
+  padding:12px;
+  border-radius:10px;
+  margin-bottom:18px;
+}
+
 footer{
   margin-top:50px;
   background:#172033;
@@ -461,6 +464,7 @@ footer p{
 
 <section class="hero">
   <h1>Welcome to IsokoHub</h1>
+
   <p>
     A global marketplace connecting buyers, sellers, teachers,
     artists, creators, filmmakers and service providers.
@@ -482,6 +486,7 @@ footer p{
 </section>
 
 <section class="section" id="productsSection">
+
   <div class="section-head">
     <h2>Featured Products</h2>
     <button onclick="loadProducts()">Refresh</button>
@@ -490,9 +495,85 @@ footer p{
   <div class="product-grid" id="productGrid">
     <div class="empty">Loading products...</div>
   </div>
+
 </section>
 
 </main>
+
+<!-- AUTH PANEL -->
+<div class="panel" id="authPanel">
+  <div class="panel-box">
+
+    <button class="close" onclick="closePanels()">×</button>
+
+    <h2>🔐 IsokoHub Account</h2>
+
+    <div id="authStatus" class="auth-status">
+      Login or create an account to continue.
+    </div>
+
+    <form id="loginForm">
+
+      <div class="form-group">
+        <label>Email</label>
+        <input id="loginEmail" type="email" required>
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input id="loginPassword" type="password" required>
+      </div>
+
+      <button class="primary" type="submit">
+        Login
+      </button>
+
+    </form>
+
+    <hr style="margin:22px 0">
+
+    <h3>Create account</h3>
+
+    <form id="registerForm" style="margin-top:15px">
+
+      <div class="form-group">
+        <label>Name</label>
+        <input id="registerName" required>
+      </div>
+
+      <div class="form-group">
+        <label>Email</label>
+        <input id="registerEmail" type="email" required>
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input id="registerPassword" type="password" minlength="6" required>
+      </div>
+
+      <div class="form-group">
+        <label>Phone</label>
+        <input id="registerPhone">
+      </div>
+
+      <div class="form-group">
+        <label>Country</label>
+        <input id="registerCountry" value="Rwanda">
+      </div>
+
+      <div class="form-group">
+        <label>District</label>
+        <input id="registerDistrict">
+      </div>
+
+      <button class="primary" type="submit">
+        Create Account
+      </button>
+
+    </form>
+
+  </div>
+</div>
 
 <!-- SELL PANEL -->
 <div class="panel" id="sellPanel">
@@ -501,9 +582,12 @@ footer p{
     <button class="close" onclick="closePanels()">×</button>
 
     <h2>Sell on IsokoHub</h2>
+
     <p style="margin:8px 0 20px;color:#697386">
       Submit your product for review.
     </p>
+
+    <div id="sellAuthMessage"></div>
 
     <form id="sellForm">
 
@@ -550,7 +634,7 @@ footer p{
           <select id="pCondition">
             <option value="new">New</option>
             <option value="used">Used</option>
-            <option value="has crack">Has crack</option>
+            <option value="has_crack">Has crack</option>
             <option value="refurbished">Refurbished</option>
           </select>
         </div>
@@ -573,7 +657,7 @@ footer p{
       </div>
 
       <div class="form-group">
-        <label>Image URL (optional for now)</label>
+        <label>Image URL</label>
         <input id="pImage" placeholder="https://...">
       </div>
 
@@ -601,50 +685,88 @@ footer p{
 <!-- SAVED -->
 <div class="panel" id="savedPanel">
   <div class="panel-box">
+
     <button class="close" onclick="closePanels()">×</button>
+
     <h2>❤️ Saved Products</h2>
+
     <div id="savedList" style="margin-top:20px"></div>
+
   </div>
 </div>
 
 <!-- CART -->
 <div class="panel" id="cartPanel">
   <div class="panel-box">
+
     <button class="close" onclick="closePanels()">×</button>
+
     <h2>🛒 Cart</h2>
+
     <div id="cartList" style="margin-top:20px"></div>
-    <button class="primary" onclick="checkout()" style="margin-top:20px">
+
+    <div class="form-group" style="margin-top:20px">
+      <label>Delivery address</label>
+      <textarea id="deliveryAddress"
+        placeholder="Enter delivery address"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Delivery phone</label>
+      <input id="deliveryPhone" placeholder="Phone number">
+    </div>
+
+    <div class="form-group">
+      <label>Delivery district</label>
+      <input id="deliveryDistrict" placeholder="Example: Gasabo">
+    </div>
+
+    <button class="primary" onclick="checkout()">
       Place Order
     </button>
+
   </div>
 </div>
 
 <!-- ORDERS -->
 <div class="panel" id="ordersPanel">
   <div class="panel-box">
+
     <button class="close" onclick="closePanels()">×</button>
+
     <h2>📦 Orders</h2>
-    <div id="ordersList" style="margin-top:20px"></div>
+
+    <div id="ordersList" style="margin-top:20px">
+      <div class="empty">Login to view your orders.</div>
+    </div>
+
   </div>
 </div>
 
 <!-- MESSAGES -->
 <div class="panel" id="messagesPanel">
   <div class="panel-box">
+
     <button class="close" onclick="closePanels()">×</button>
+
     <h2>💬 Messages</h2>
 
-    <div class="empty" style="margin-top:20px">
-      Messaging backend will be connected in the next stage.
+    <div id="messagesList" style="margin-top:20px">
+      <div class="empty">Login to view messages.</div>
     </div>
+
   </div>
 </div>
 
 <!-- PROFILE -->
 <div class="panel" id="profilePanel">
   <div class="panel-box">
+
     <button class="close" onclick="closePanels()">×</button>
+
     <h2>👤 Profile</h2>
+
+    <div id="profileAuthMessage"></div>
 
     <form id="profileForm" style="margin-top:20px">
 
@@ -673,45 +795,66 @@ footer p{
       </button>
 
     </form>
+
+    <button
+      onclick="logout()"
+      style="margin-top:15px;padding:10px 15px;border:1px solid #ddd;border-radius:8px;background:white"
+    >
+      Logout
+    </button>
+
   </div>
 </div>
 
 <!-- ADMIN -->
 <div class="panel" id="adminPanel">
   <div class="panel-box">
+
     <button class="close" onclick="closePanels()">×</button>
 
     <h2>🛡️ Admin</h2>
 
     <div class="empty" style="margin-top:20px">
-      Admin dashboard will be connected securely to the backend
-      in the next stage.
+      Admin controls require an authorized admin account.
     </div>
+
   </div>
 </div>
 
 <!-- PRODUCT MODAL -->
 <div class="panel" id="productPanel">
   <div class="panel-box">
+
     <button class="close" onclick="closePanels()">×</button>
+
     <div id="productDetails"></div>
+
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <footer>
+
   <h2>IsokoHub</h2>
+
   <p>
     Global marketplace for products, services, education,
     art and entertainment.
   </p>
+
   <p>© 2026 IsokoHub. All rights reserved.</p>
+
 </footer>
 
 <script>
 
 const API_BASE = "/api";
+
+const TOKEN_KEY = "isokohub_auth_token_v1";
+
+let authToken = localStorage.getItem(TOKEN_KEY) || "";
+let currentUser = null;
 
 let liveProducts = [];
 let liveCategories = [];
@@ -726,7 +869,8 @@ const defaultCategories = [
   {name:"Services",icon:"🛠️"}
 ];
 
-function getStorage(key, fallback){
+function getStorage(key,fallback){
+
   try{
     return JSON.parse(localStorage.getItem(key)) || fallback;
   }catch(e){
@@ -740,36 +884,9 @@ function setStorage(key,value){
 
 let cart = getStorage("isokohub_cart_v3",[]);
 let saved = getStorage("isokohub_saved_v3",[]);
-let orders = getStorage("isokohub_orders_v3",[]);
-let profile = getStorage("isokohub_profile_v3",{
-  name:"",
-  email:"",
-  phone:"",
-  district:""
-});
-
-async function api(path,options={}){
-  const response = await fetch(API_BASE + path,{
-    ...options,
-    headers:{
-      "Content-Type":"application/json",
-      ...(options.headers || {})
-    }
-  });
-
-  const data = await response.json().catch(()=>({
-    success:false,
-    error:"Invalid server response"
-  }));
-
-  if(!response.ok){
-    throw new Error(data.error || "API request failed");
-  }
-
-  return data;
-}
 
 function showToast(message){
+
   const toast = document.getElementById("toast");
 
   toast.textContent = message;
@@ -782,7 +899,43 @@ function showToast(message){
   },3000);
 }
 
+async function api(path,options={}){
+
+  const headers = {
+    "Content-Type":"application/json",
+    ...(options.headers || {})
+  };
+
+  if(authToken){
+    headers.Authorization = "Bearer " + authToken;
+  }
+
+  const response = await fetch(API_BASE + path,{
+    ...options,
+    headers
+  });
+
+  const data = await response.json().catch(()=>({
+    ok:false,
+    error:"Invalid server response"
+  }));
+
+  if(!response.ok){
+
+    if(response.status === 401){
+
+      currentUser = null;
+
+    }
+
+    throw new Error(data.error || "API request failed");
+  }
+
+  return data;
+}
+
 function showPanel(id){
+
   closePanels();
 
   const panel = document.getElementById(id);
@@ -792,265 +945,49 @@ function showPanel(id){
   }
 
   if(id==="savedPanel") renderSaved();
+
   if(id==="cartPanel") renderCart();
-  if(id==="ordersPanel") renderOrders();
-  if(id==="profilePanel") renderProfile();
+
+  if(id==="ordersPanel") loadOrders();
+
+  if(id==="messagesPanel") loadMessages();
+
+  if(id==="profilePanel") loadProfile();
+
+  if(id==="sellPanel") updateSellPanel();
+
+  if(id==="authPanel") updateAuthStatus();
 }
 
 function closePanels(){
+
   document.querySelectorAll(".panel").forEach(panel=>{
     panel.style.display = "none";
   });
+
 }
 
 function scrollToProducts(){
+
   document.getElementById("productsSection")
     .scrollIntoView({behavior:"smooth"});
+
 }
 
 function scrollToCategories(){
+
   document.getElementById("categoriesSection")
     .scrollIntoView({behavior:"smooth"});
+
 }
 
 function categoryIcon(name){
+
   const found = defaultCategories.find(
     c => c.name.toLowerCase() === String(name).toLowerCase()
   );
 
   return found ? found.icon : "🛍️";
-}
-
-async function checkBackend(){
-
-  const status = document.getElementById("backendStatus");
-
-  try{
-
-    const data = await api("/health");
-
-    if(data.success){
-
-      status.className = "backend-status status-ok";
-
-      status.textContent =
-        "🟢 Backend connected — IsokoHub products and categories are live.";
-
-    }else{
-      throw new Error("Backend returned an error");
-    }
-
-  }catch(error){
-
-    console.error(error);
-
-    status.className = "backend-status status-error";
-
-    status.textContent =
-      "🔴 Backend connection failed — check Cloudflare D1/API settings.";
-  }
-}
-
-async function loadCategories(){
-
-  try{
-
-    const data = await api("/categories");
-
-    liveCategories = data.categories || [];
-
-    renderCategories();
-    populateCategorySelect();
-
-  }catch(error){
-
-    console.error(error);
-
-    liveCategories = defaultCategories.map((c,i)=>({
-      id:i+1,
-      name:c.name,
-      slug:c.name.toLowerCase().replace(/\s+/g,"-"),
-      description:""
-    }));
-
-    renderCategories();
-    populateCategorySelect();
-  }
-}
-
-function renderCategories(){
-
-  const grid = document.getElementById("categoryGrid");
-
-  if(!liveCategories.length){
-
-    grid.innerHTML =
-      '<div class="empty">No categories found.</div>';
-
-    return;
-  }
-
-  grid.innerHTML = liveCategories.map(category=>`
-
-    <button
-      class="category"
-      onclick="filterCategory('${escapeHtml(category.name)}')"
-    >
-
-      <div class="icon">
-        ${categoryIcon(category.name)}
-      </div>
-
-      <strong>${escapeHtml(category.name)}</strong>
-
-    </button>
-
-  `).join("");
-}
-
-function populateCategorySelect(){
-
-  const select = document.getElementById("pCategory");
-
-  select.innerHTML =
-    '<option value="">Select category</option>';
-
-  liveCategories.forEach(category=>{
-
-    const option = document.createElement("option");
-
-    option.value = category.name;
-    option.textContent = category.name;
-
-    select.appendChild(option);
-
-  });
-}
-
-async function loadProducts(){
-
-  const grid = document.getElementById("productGrid");
-
-  grid.innerHTML =
-    '<div class="empty">Loading products...</div>';
-
-  try{
-
-    const data = await api("/products");
-
-    liveProducts = data.products || [];
-
-    renderProducts();
-
-  }catch(error){
-
-    console.error(error);
-
-    grid.innerHTML = `
-      <div class="empty">
-        Could not load products from IsokoHub backend.
-      </div>
-    `;
-  }
-}
-
-function renderProducts(products=liveProducts){
-
-  const grid = document.getElementById("productGrid");
-
-  if(!products.length){
-
-    grid.innerHTML = `
-      <div class="empty">
-        No approved products found yet.
-        <br><br>
-        Products submitted for review will appear here
-        after an admin approves them.
-      </div>
-    `;
-
-    return;
-  }
-
-  grid.innerHTML = products.map(product=>{
-
-    const image =
-      product.image_url ||
-      product.image ||
-      "";
-
-    return `
-
-      <article class="product-card">
-
-        <div class="product-image">
-
-          ${
-            image
-            ?
-            `<img src="${escapeAttribute(image)}"
-                  alt="${escapeAttribute(product.title)}">`
-            :
-            `<div class="placeholder">
-               ${categoryIcon(product.category_name)}
-             </div>`
-          }
-
-        </div>
-
-        <div class="product-info">
-
-          <h3>
-            ${escapeHtml(product.title)}
-          </h3>
-
-          <div class="price">
-            ${formatMoney(product.price)}
-            ${escapeHtml(product.currency || "RWF")}
-          </div>
-
-          <div class="meta">
-            ${escapeHtml(product.category_name || "Marketplace")}
-          </div>
-
-          <div class="meta">
-            📍 ${escapeHtml(product.district || product.country || "")}
-          </div>
-
-          <div class="meta">
-            Stock: ${escapeHtml(product.stock ?? 0)}
-          </div>
-
-          <div class="card-buttons">
-
-            <button onclick="viewProduct(${product.id})">
-              View
-            </button>
-
-            <button onclick="saveProduct(${product.id})">
-              ❤️
-            </button>
-
-            <button class="buy"
-                    onclick="addToCart(${product.id})">
-              🛒
-            </button>
-
-          </div>
-
-        </div>
-
-      </article>
-    `;
-
-  }).join("");
-}
-
-function formatMoney(value){
-
-  const number = Number(value || 0);
-
-  return number.toLocaleString("en-US");
 }
 
 function escapeHtml(value){
@@ -1067,17 +1004,308 @@ function escapeAttribute(value){
   return escapeHtml(value);
 }
 
+function formatMoney(value){
+
+  return Number(value || 0).toLocaleString("en-US");
+
+}
+
+async function checkBackend(){
+
+  const status =
+    document.getElementById("backendStatus");
+
+  try{
+
+    const data = await api("/health");
+
+    if(data.ok){
+
+      status.className =
+        "backend-status status-ok";
+
+      status.textContent =
+        "🟢 Backend connected — IsokoHub API and D1 are live.";
+
+    }else{
+
+      throw new Error(
+        data.error || "Backend returned an error"
+      );
+
+    }
+
+  }catch(error){
+
+    console.error(error);
+
+    status.className =
+      "backend-status status-error";
+
+    status.textContent =
+      "🔴 Backend connection failed — check Cloudflare Worker/D1.";
+
+  }
+
+}
+
+async function loadCategories(){
+
+  try{
+
+    const data = await api("/categories");
+
+    liveCategories =
+      data.categories || [];
+
+    if(!liveCategories.length){
+      useDefaultCategories();
+    }
+
+  }catch(error){
+
+    console.error(error);
+
+    useDefaultCategories();
+
+  }
+
+  renderCategories();
+  populateCategorySelect();
+
+}
+
+function useDefaultCategories(){
+
+  liveCategories =
+    defaultCategories.map((c,i)=>({
+      id:i+1,
+      name:c.name,
+      slug:c.name.toLowerCase().replace(/\s+/g,"-"),
+      description:""
+    }));
+
+}
+
+function renderCategories(){
+
+  const grid =
+    document.getElementById("categoryGrid");
+
+  if(!liveCategories.length){
+
+    grid.innerHTML =
+      '<div class="empty">No categories found.</div>';
+
+    return;
+
+  }
+
+  grid.innerHTML =
+    liveCategories.map(category=>`
+
+      <button
+        class="category"
+        onclick="filterCategory('${escapeAttribute(category.name)}')"
+      >
+
+        <div class="icon">
+          ${categoryIcon(category.name)}
+        </div>
+
+        <strong>
+          ${escapeHtml(category.name)}
+        </strong>
+
+      </button>
+
+    `).join("");
+
+}
+
+function populateCategorySelect(){
+
+  const select =
+    document.getElementById("pCategory");
+
+  select.innerHTML =
+    '<option value="">Select category</option>';
+
+  liveCategories.forEach(category=>{
+
+    const option =
+      document.createElement("option");
+
+    option.value =
+      category.name;
+
+    option.textContent =
+      category.name;
+
+    select.appendChild(option);
+
+  });
+
+}
+
+async function loadProducts(){
+
+  const grid =
+    document.getElementById("productGrid");
+
+  grid.innerHTML =
+    '<div class="empty">Loading products...</div>';
+
+  try{
+
+    const data =
+      await api("/products");
+
+    liveProducts =
+      data.products || [];
+
+    renderProducts();
+
+  }catch(error){
+
+    console.error(error);
+
+    grid.innerHTML = `
+      <div class="empty">
+        Could not load products from IsokoHub backend.
+        <br><br>
+        ${escapeHtml(error.message)}
+      </div>
+    `;
+
+  }
+
+}
+
+function renderProducts(products=liveProducts){
+
+  const grid =
+    document.getElementById("productGrid");
+
+  if(!products.length){
+
+    grid.innerHTML = `
+      <div class="empty">
+        No approved products found yet.
+      </div>
+    `;
+
+    return;
+  }
+
+  grid.innerHTML =
+    products.map(product=>{
+
+      const image =
+        product.image_url ||
+        product.image ||
+        "";
+
+      const category =
+        product.category || "Marketplace";
+
+      return `
+
+        <article class="product-card">
+
+          <div class="product-image">
+
+            ${
+              image
+              ?
+              `<img
+                src="${escapeAttribute(image)}"
+                alt="${escapeAttribute(product.title)}"
+              >`
+              :
+              `<div class="placeholder">
+                ${categoryIcon(category)}
+              </div>`
+            }
+
+          </div>
+
+          <div class="product-info">
+
+            <h3>
+              ${escapeHtml(product.title)}
+            </h3>
+
+            <div class="price">
+              ${formatMoney(product.price)}
+              ${escapeHtml(product.currency || "RWF")}
+            </div>
+
+            <div class="meta">
+              ${escapeHtml(category)}
+            </div>
+
+            <div class="meta">
+              📍
+              ${escapeHtml(
+                product.district ||
+                product.country ||
+                ""
+              )}
+            </div>
+
+            <div class="meta">
+              Stock:
+              ${escapeHtml(product.stock ?? 0)}
+            </div>
+
+            <div class="card-buttons">
+
+              <button
+                onclick="viewProduct(${product.id})"
+              >
+                View
+              </button>
+
+              <button
+                onclick="saveProduct(${product.id})"
+              >
+                ❤️
+              </button>
+
+              <button
+                class="buy"
+                onclick="addToCart(${product.id})"
+              >
+                🛒
+              </button>
+
+            </div>
+
+          </div>
+
+        </article>
+
+      `;
+
+    }).join("");
+
+}
+
 async function searchProducts(term){
 
-  const search = String(term || "").trim();
+  const search =
+    String(term || "").trim();
 
   if(!search){
 
     await loadProducts();
+
     return;
   }
 
-  const grid = document.getElementById("productGrid");
+  const grid =
+    document.getElementById("productGrid");
 
   grid.innerHTML =
     '<div class="empty">Searching...</div>';
@@ -1085,9 +1313,13 @@ async function searchProducts(term){
   try{
 
     const data =
-      await api("/products?search="+encodeURIComponent(search));
+      await api(
+        "/products?search=" +
+        encodeURIComponent(search)
+      );
 
-    liveProducts = data.products || [];
+    liveProducts =
+      data.products || [];
 
     renderProducts();
 
@@ -1095,16 +1327,21 @@ async function searchProducts(term){
 
   }catch(error){
 
-    console.error(error);
-
     grid.innerHTML =
-      '<div class="empty">Search failed.</div>';
+      `<div class="empty">
+        Search failed.
+        <br>
+        ${escapeHtml(error.message)}
+      </div>`;
+
   }
+
 }
 
 async function filterCategory(category){
 
-  const grid = document.getElementById("productGrid");
+  const grid =
+    document.getElementById("productGrid");
 
   grid.innerHTML =
     '<div class="empty">Loading category...</div>';
@@ -1112,9 +1349,13 @@ async function filterCategory(category){
   try{
 
     const data =
-      await api("/products?category="+encodeURIComponent(category));
+      await api(
+        "/products?category=" +
+        encodeURIComponent(category)
+      );
 
-    liveProducts = data.products || [];
+    liveProducts =
+      data.products || [];
 
     renderProducts();
 
@@ -1122,16 +1363,18 @@ async function filterCategory(category){
 
   }catch(error){
 
-    console.error(error);
-
     grid.innerHTML =
-      '<div class="empty">Could not load this category.</div>';
+      `<div class="empty">
+        Could not load this category.
+      </div>`;
+
   }
+
 }
 
-document.getElementById("searchForm").addEventListener(
-  "submit",
-  function(event){
+document
+  .getElementById("searchForm")
+  .addEventListener("submit",event=>{
 
     event.preventDefault();
 
@@ -1139,26 +1382,274 @@ document.getElementById("searchForm").addEventListener(
       document.getElementById("searchInput").value
     );
 
+  });
+
+function requireLogin(){
+
+  if(!authToken){
+
+    showToast("Please login first.");
+
+    showPanel("authPanel");
+
+    return false;
+
   }
-);
+
+  return true;
+
+}
+
+async function register(event){
+
+  event.preventDefault();
+
+  const body = {
+
+    name:
+      document.getElementById("registerName").value.trim(),
+
+    email:
+      document.getElementById("registerEmail").value.trim(),
+
+    password:
+      document.getElementById("registerPassword").value,
+
+    phone:
+      document.getElementById("registerPhone").value.trim(),
+
+    country:
+      document.getElementById("registerCountry").value.trim(),
+
+    district:
+      document.getElementById("registerDistrict").value.trim()
+
+  };
+
+  try{
+
+    const data =
+      await api("/register",{
+        method:"POST",
+        body:JSON.stringify(body)
+      });
+
+    if(!data.ok){
+
+      throw new Error(
+        data.error || "Registration failed"
+      );
+
+    }
+
+    showToast(
+      "Account created. You can now login."
+    );
+
+    document.getElementById("registerForm").reset();
+
+  }catch(error){
+
+    showToast(error.message);
+
+  }
+
+}
+
+async function login(event){
+
+  event.preventDefault();
+
+  const body = {
+
+    email:
+      document.getElementById("loginEmail").value.trim(),
+
+    password:
+      document.getElementById("loginPassword").value
+
+  };
+
+  try{
+
+    const data =
+      await api("/login",{
+        method:"POST",
+        body:JSON.stringify(body)
+      });
+
+    if(!data.ok || !data.token){
+
+      throw new Error(
+        data.error || "Login failed"
+      );
+
+    }
+
+    authToken =
+      data.token;
+
+    localStorage.setItem(
+      TOKEN_KEY,
+      authToken
+    );
+
+    currentUser =
+      data.user || null;
+
+    showToast("Login successful.");
+
+    updateAuthStatus();
+
+    closePanels();
+
+  }catch(error){
+
+    showToast(error.message);
+
+  }
+
+}
+
+function updateAuthStatus(){
+
+  const box =
+    document.getElementById("authStatus");
+
+  if(currentUser){
+
+    box.innerHTML =
+      `🟢 Logged in as
+       <strong>${escapeHtml(currentUser.name)}</strong>
+       (${escapeHtml(currentUser.email)})`;
+
+  }else{
+
+    box.innerHTML =
+      "Please login or create an account.";
+
+  }
+
+}
+
+async function loadCurrentUser(){
+
+  if(!authToken){
+
+    return false;
+
+  }
+
+  try{
+
+    const data =
+      await api("/me");
+
+    if(data.ok && data.authenticated){
+
+      currentUser =
+        data.user;
+
+      return true;
+
+    }
+
+  }catch(error){
+
+    console.error(error);
+
+  }
+
+  authToken = "";
+
+  currentUser = null;
+
+  localStorage.removeItem(TOKEN_KEY);
+
+  return false;
+
+}
+
+async function logout(){
+
+  try{
+
+    if(authToken){
+
+      await api("/logout",{
+        method:"POST"
+      });
+
+    }
+
+  }catch(error){
+
+    console.error(error);
+
+  }
+
+  authToken = "";
+  currentUser = null;
+
+  localStorage.removeItem(TOKEN_KEY);
+
+  showToast("You have been logged out.");
+
+  closePanels();
+
+}
+
+function updateSellPanel(){
+
+  const box =
+    document.getElementById("sellAuthMessage");
+
+  if(currentUser){
+
+    box.innerHTML = `
+      <div class="auth-status">
+        🟢 You are logged in as
+        <strong>${escapeHtml(currentUser.name)}</strong>.
+      </div>
+    `;
+
+  }else{
+
+    box.innerHTML = `
+      <div class="auth-status">
+        🔐 You must login before submitting a product.
+        <button
+          type="button"
+          class="primary"
+          onclick="showPanel('authPanel')"
+          style="margin-top:10px"
+        >
+          Login / Register
+        </button>
+      </div>
+    `;
+
+  }
+
+}
 
 async function submitProduct(event){
 
   event.preventDefault();
 
+  if(!requireLogin()){
+
+    return;
+
+  }
+
   const button =
-    event.target.querySelector("button[type='submit']");
+    event.target.querySelector(
+      "button[type='submit']"
+    );
 
   button.disabled = true;
   button.textContent = "Submitting...";
-
-  const conditionValue =
-    document.getElementById("pCondition").value;
-
-  const condition =
-    conditionValue === "has crack"
-      ? "has_crack"
-      : conditionValue;
 
   const body = {
 
@@ -1172,10 +1663,14 @@ async function submitProduct(event){
       document.getElementById("pDescription").value.trim(),
 
     price:
-      Number(document.getElementById("pPrice").value),
+      Number(
+        document.getElementById("pPrice").value
+      ),
 
     stock:
-      Number(document.getElementById("pStock").value || 1),
+      Number(
+        document.getElementById("pStock").value || 1
+      ),
 
     brand:
       document.getElementById("pBrand").value.trim(),
@@ -1183,7 +1678,8 @@ async function submitProduct(event){
     model:
       document.getElementById("pModel").value.trim(),
 
-    condition:condition,
+    condition:
+      document.getElementById("pCondition").value,
 
     district:
       document.getElementById("pDistrict").value.trim(),
@@ -1197,11 +1693,14 @@ async function submitProduct(event){
     image_url:
       document.getElementById("pImage").value.trim(),
 
-    specifications:
+    specs:
       document.getElementById("pSpecs").value.trim(),
 
     negotiable:
-      document.getElementById("pNegotiable").checked ? 1 : 0
+      document.getElementById("pNegotiable").checked
+        ? 1
+        : 0
+
   };
 
   try{
@@ -1212,28 +1711,28 @@ async function submitProduct(event){
         body:JSON.stringify(body)
       });
 
-    if(data.success){
-
-      showToast(
-        "Product submitted successfully for review."
-      );
-
-      document.getElementById("sellForm").reset();
-
-      closePanels();
-
-      await loadProducts();
-
-    }else{
+    if(!data.ok){
 
       throw new Error(
-        data.error || "Could not submit product."
+        data.error ||
+        "Could not submit product."
       );
+
     }
 
-  }catch(error){
+    showToast(
+      "Product submitted successfully for review."
+    );
 
-    console.error(error);
+    document
+      .getElementById("sellForm")
+      .reset();
+
+    closePanels();
+
+    await loadProducts();
+
+  }catch(error){
 
     showToast(error.message);
 
@@ -1241,21 +1740,29 @@ async function submitProduct(event){
 
     button.disabled = false;
     button.textContent = "Submit for Review";
+
   }
+
 }
 
-document.getElementById("sellForm").addEventListener(
-  "submit",
-  submitProduct
-);
+document
+  .getElementById("sellForm")
+  .addEventListener(
+    "submit",
+    submitProduct
+  );
 
 function viewProduct(id){
 
   const product =
-    liveProducts.find(p=>Number(p.id)===Number(id));
+    liveProducts.find(
+      p => Number(p.id) === Number(id)
+    );
 
   if(!product){
+
     return;
+
   }
 
   const image =
@@ -1263,63 +1770,104 @@ function viewProduct(id){
     product.image ||
     "";
 
-  document.getElementById("productDetails").innerHTML = `
+  const category =
+    product.category ||
+    "Marketplace";
 
-    ${
-      image
-      ?
-      `<img
-        src="${escapeAttribute(image)}"
-        alt="${escapeAttribute(product.title)}"
-        style="width:100%;max-height:350px;object-fit:cover;border-radius:12px;margin-bottom:18px"
-      >`
-      :
-      `<div style="font-size:80px;text-align:center;margin-bottom:18px">
-        ${categoryIcon(product.category_name)}
-      </div>`
-    }
+  document
+    .getElementById("productDetails")
+    .innerHTML = `
 
-    <h2>${escapeHtml(product.title)}</h2>
+      ${
+        image
+        ?
+        `<img
+          src="${escapeAttribute(image)}"
+          alt="${escapeAttribute(product.title)}"
+          style="
+            width:100%;
+            max-height:350px;
+            object-fit:cover;
+            border-radius:12px;
+            margin-bottom:18px
+          "
+        >`
+        :
+        `<div
+          style="
+            font-size:80px;
+            text-align:center;
+            margin-bottom:18px
+          "
+        >
+          ${categoryIcon(category)}
+        </div>`
+      }
 
-    <h3 style="color:#ff6b00;margin:10px 0">
-      ${formatMoney(product.price)}
-      ${escapeHtml(product.currency || "RWF")}
-    </h3>
+      <h2>
+        ${escapeHtml(product.title)}
+      </h2>
 
-    <p style="margin:10px 0">
-      ${escapeHtml(product.description || product.short_description || "")}
-    </p>
+      <h3
+        style="color:#ff6b00;margin:10px 0"
+      >
+        ${formatMoney(product.price)}
+        ${escapeHtml(product.currency || "RWF")}
+      </h3>
 
-    <p class="meta">
-      Category: ${escapeHtml(product.category_name || "")}
-    </p>
+      <p style="margin:10px 0">
+        ${escapeHtml(
+          product.description || ""
+        )}
+      </p>
 
-    <p class="meta">
-      Seller: ${escapeHtml(product.seller_name || "Seller")}
-    </p>
+      <p class="meta">
+        Category:
+        ${escapeHtml(category)}
+      </p>
 
-    <p class="meta">
-      Location: ${escapeHtml(product.district || product.country || "")}
-    </p>
+      <p class="meta">
+        Seller:
+        ${escapeHtml(
+          product.seller_name || "Seller"
+        )}
+      </p>
 
-    <p class="meta">
-      Condition: ${escapeHtml(product.condition || "")}
-    </p>
+      <p class="meta">
+        Location:
+        ${escapeHtml(
+          product.district ||
+          product.country ||
+          ""
+        )}
+      </p>
 
-    <p class="meta">
-      Stock: ${escapeHtml(product.stock ?? 0)}
-    </p>
+      <p class="meta">
+        Condition:
+        ${escapeHtml(
+          product.condition || ""
+        )}
+      </p>
 
-    <button
-      class="primary"
-      onclick="addToCart(${product.id});closePanels()"
-      style="margin-top:18px"
-    >
-      🛒 Add to Cart
-    </button>
-  `;
+      <p class="meta">
+        Stock:
+        ${escapeHtml(product.stock ?? 0)}
+      </p>
+
+      <button
+        class="primary"
+        onclick="
+          addToCart(${product.id});
+          closePanels();
+        "
+        style="margin-top:18px"
+      >
+        🛒 Add to Cart
+      </button>
+    `;
 
   showPanel("productPanel");
+
 }
 
 function saveProduct(id){
@@ -1328,7 +1876,10 @@ function saveProduct(id){
 
   if(saved.includes(id)){
 
-    saved = saved.filter(item=>Number(item)!==id);
+    saved =
+      saved.filter(
+        item => Number(item) !== id
+      );
 
     showToast("Removed from saved.");
 
@@ -1337,12 +1888,18 @@ function saveProduct(id){
     saved.push(id);
 
     showToast("Product saved.");
+
   }
 
-  setStorage("isokohub_saved_v3",saved);
+  setStorage(
+    "isokohub_saved_v3",
+    saved
+  );
 
   updateCounts();
+
   renderSaved();
+
 }
 
 function renderSaved(){
@@ -1352,7 +1909,11 @@ function renderSaved(){
 
   const products =
     saved
-      .map(id=>liveProducts.find(p=>Number(p.id)===Number(id)))
+      .map(id =>
+        liveProducts.find(
+          p => Number(p.id) === Number(id)
+        )
+      )
       .filter(Boolean);
 
   if(!products.length){
@@ -1361,31 +1922,37 @@ function renderSaved(){
       '<div class="empty">No saved products yet.</div>';
 
     return;
+
   }
 
-  list.innerHTML = products.map(product=>`
+  list.innerHTML =
+    products.map(product=>`
 
-    <div class="list-item">
+      <div class="list-item">
 
-      <strong>
-        ${escapeHtml(product.title)}
-      </strong>
+        <strong>
+          ${escapeHtml(product.title)}
+        </strong>
 
-      <div class="price">
-        ${formatMoney(product.price)}
-        ${escapeHtml(product.currency || "RWF")}
+        <div class="price">
+          ${formatMoney(product.price)}
+          ${escapeHtml(product.currency || "RWF")}
+        </div>
+
+        <button
+          onclick="viewProduct(${product.id})"
+          style="
+            margin-top:8px;
+            padding:7px 12px
+          "
+        >
+          View
+        </button>
+
       </div>
 
-      <button
-        onclick="viewProduct(${product.id})"
-        style="margin-top:8px;padding:7px 12px"
-      >
-        View
-      </button>
+    `).join("");
 
-    </div>
-
-  `).join("");
 }
 
 function addToCart(id){
@@ -1393,16 +1960,22 @@ function addToCart(id){
   id = Number(id);
 
   const product =
-    liveProducts.find(p=>Number(p.id)===id);
+    liveProducts.find(
+      p => Number(p.id) === id
+    );
 
   if(!product){
 
     showToast("Product not found.");
+
     return;
+
   }
 
   const existing =
-    cart.find(item=>Number(item.id)===id);
+    cart.find(
+      item => Number(item.id) === id
+    );
 
   if(existing){
 
@@ -1412,31 +1985,52 @@ function addToCart(id){
   }else{
 
     cart.push({
+
       id:id,
+
       title:product.title,
-      price:Number(product.price || 0),
-      currency:product.currency || "RWF",
+
+      price:Number(
+        product.price || 0
+      ),
+
+      currency:
+        product.currency || "RWF",
+
       quantity:1
+
     });
+
   }
 
-  setStorage("isokohub_cart_v3",cart);
+  setStorage(
+    "isokohub_cart_v3",
+    cart
+  );
 
   updateCounts();
   renderCart();
 
   showToast("Added to cart.");
+
 }
 
 function removeFromCart(id){
 
   cart =
-    cart.filter(item=>Number(item.id)!==Number(id));
+    cart.filter(
+      item =>
+        Number(item.id) !== Number(id)
+    );
 
-  setStorage("isokohub_cart_v3",cart);
+  setStorage(
+    "isokohub_cart_v3",
+    cart
+  );
 
   updateCounts();
   renderCart();
+
 }
 
 function renderCart(){
@@ -1450,199 +2044,520 @@ function renderCart(){
       '<div class="empty">Your cart is empty.</div>';
 
     return;
+
   }
 
   let total = 0;
 
-  list.innerHTML = cart.map(item=>{
+  list.innerHTML =
+    cart.map(item=>{
 
-    const subtotal =
-      Number(item.price || 0) *
-      Number(item.quantity || 1);
+      const subtotal =
+        Number(item.price || 0) *
+        Number(item.quantity || 1);
 
-    total += subtotal;
+      total += subtotal;
 
-    return `
+      return `
 
-      <div class="list-item">
+        <div class="list-item">
 
-        <strong>
-          ${escapeHtml(item.title)}
-        </strong>
+          <strong>
+            ${escapeHtml(item.title)}
+          </strong>
 
-        <div>
-          ${formatMoney(item.price)}
-          ${escapeHtml(item.currency || "RWF")}
-          × ${item.quantity}
+          <div>
+            ${formatMoney(item.price)}
+            ${escapeHtml(
+              item.currency || "RWF"
+            )}
+            × ${item.quantity}
+          </div>
+
+          <button
+            onclick="removeFromCart(${item.id})"
+            style="
+              margin-top:7px;
+              padding:6px 10px
+            "
+          >
+            Remove
+          </button>
+
         </div>
 
-        <button
-          onclick="removeFromCart(${item.id})"
-          style="margin-top:7px;padding:6px 10px"
-        >
-          Remove
-        </button>
+      `;
 
+    }).join("") +
+
+    `
+
+      <div
+        style="
+          margin-top:18px;
+          font-size:20px;
+          font-weight:bold
+        "
+      >
+        Total:
+        ${formatMoney(total)}
+        RWF
       </div>
+
     `;
 
-  }).join("") +
-
-  `
-
-    <div style="margin-top:18px;font-size:20px;font-weight:bold">
-      Total: ${formatMoney(total)} RWF
-    </div>
-  `;
 }
 
-function checkout(){
+async function checkout(){
 
   if(!cart.length){
 
     showToast("Your cart is empty.");
+
     return;
+
   }
 
-  const order = {
+  if(!requireLogin()){
 
-    id:"local-"+Date.now(),
+    return;
 
-    items:[...cart],
+  }
 
-    total:cart.reduce(
-      (sum,item)=>
-        sum +
-        Number(item.price || 0) *
-        Number(item.quantity || 1),
-      0
-    ),
+  const deliveryAddress =
+    document
+      .getElementById("deliveryAddress")
+      .value.trim();
 
-    status:"pending",
+  const deliveryPhone =
+    document
+      .getElementById("deliveryPhone")
+      .value.trim();
 
-    created_at:new Date().toISOString()
-  };
+  const deliveryDistrict =
+    document
+      .getElementById("deliveryDistrict")
+      .value.trim();
 
-  orders.unshift(order);
+  if(!deliveryAddress){
 
-  setStorage("isokohub_orders_v3",orders);
+    showToast(
+      "Please enter delivery address."
+    );
 
-  cart = [];
+    return;
 
-  setStorage("isokohub_cart_v3",cart);
+  }
 
-  updateCounts();
-  renderCart();
+  if(!deliveryPhone){
 
-  showToast(
-    "Order saved locally. Online order API comes next."
-  );
+    showToast(
+      "Please enter delivery phone."
+    );
+
+    return;
+
+  }
+
+  try{
+
+    for(const item of cart){
+
+      const product =
+        liveProducts.find(
+          p => Number(p.id) === Number(item.id)
+        );
+
+      if(!product){
+
+        throw new Error(
+          "A product in your cart is no longer available."
+        );
+
+      }
+
+      const quantity =
+        Number(item.quantity || 1);
+
+      const body = {
+
+        product_id:
+          Number(product.id),
+
+        quantity:
+
+          quantity,
+
+        delivery_address:
+          deliveryAddress,
+
+        delivery_country:
+          product.country ||
+          currentUser?.country ||
+          "Rwanda",
+
+        delivery_district:
+          deliveryDistrict,
+
+        delivery_phone:
+          deliveryPhone
+
+      };
+
+      const data =
+        await api("/orders",{
+          method:"POST",
+          body:JSON.stringify(body)
+        });
+
+      if(!data.ok){
+
+        throw new Error(
+          data.error ||
+          "Order failed."
+        );
+
+      }
+
+    }
+
+    cart = [];
+
+    setStorage(
+      "isokohub_cart_v3",
+      cart
+    );
+
+    updateCounts();
+    renderCart();
+
+    showToast(
+      "Order placed successfully."
+    );
+
+    await loadProducts();
+
+  }catch(error){
+
+    showToast(error.message);
+
+  }
+
 }
 
-function renderOrders(){
+async function loadOrders(){
 
   const list =
     document.getElementById("ordersList");
 
-  if(!orders.length){
+  if(!requireLogin()){
 
     list.innerHTML =
-      '<div class="empty">No orders yet.</div>';
+      '<div class="empty">Login to view your orders.</div>';
 
     return;
-  }
-
-  list.innerHTML = orders.map(order=>`
-
-    <div class="list-item">
-
-      <strong>
-        Order ${escapeHtml(order.id)}
-      </strong>
-
-      <div>
-        Total:
-        ${formatMoney(order.total)} RWF
-      </div>
-
-      <div class="meta">
-        Status: ${escapeHtml(order.status)}
-      </div>
-
-    </div>
-
-  `).join("");
-}
-
-function renderProfile(){
-
-  document.getElementById("profileName").value =
-    profile.name || "";
-
-  document.getElementById("profileEmail").value =
-    profile.email || "";
-
-  document.getElementById("profilePhone").value =
-    profile.phone || "";
-
-  document.getElementById("profileDistrict").value =
-    profile.district || "";
-}
-
-document.getElementById("profileForm").addEventListener(
-  "submit",
-  function(event){
-
-    event.preventDefault();
-
-    profile = {
-
-      name:
-        document.getElementById("profileName").value.trim(),
-
-      email:
-        document.getElementById("profileEmail").value.trim(),
-
-      phone:
-        document.getElementById("profilePhone").value.trim(),
-
-      district:
-        document.getElementById("profileDistrict").value.trim()
-    };
-
-    setStorage("isokohub_profile_v3",profile);
-
-    showToast("Profile saved locally.");
 
   }
-);
+
+  list.innerHTML =
+    '<div class="empty">Loading orders...</div>';
+
+  try{
+
+    const data =
+      await api("/orders");
+
+    const orders =
+      data.orders || [];
+
+    if(!orders.length){
+
+      list.innerHTML =
+        '<div class="empty">No orders yet.</div>';
+
+      return;
+
+    }
+
+    list.innerHTML =
+      orders.map(order=>`
+
+        <div class="list-item">
+
+          <strong>
+            Order #${escapeHtml(order.id)}
+          </strong>
+
+          <div>
+            Product:
+            ${escapeHtml(
+              order.product_title ||
+              "Product"
+            )}
+          </div>
+
+          <div>
+            Quantity:
+            ${escapeHtml(
+              order.quantity
+            )}
+          </div>
+
+          <div>
+            Total:
+            ${formatMoney(
+              order.total_price
+            )}
+            ${escapeHtml(
+              order.currency || "RWF"
+            )}
+          </div>
+
+          <div class="meta">
+            Status:
+            ${escapeHtml(
+              order.status || "pending"
+            )}
+          </div>
+
+        </div>
+
+      `).join("");
+
+  }catch(error){
+
+    list.innerHTML =
+      `<div class="empty">
+        Could not load orders.
+        <br>
+        ${escapeHtml(error.message)}
+      </div>`;
+
+  }
+
+}
+
+async function loadMessages(){
+
+  const list =
+    document.getElementById("messagesList");
+
+  if(!requireLogin()){
+
+    return;
+
+  }
+
+  list.innerHTML =
+    '<div class="empty">Loading messages...</div>';
+
+  try{
+
+    const data =
+      await api("/messages");
+
+    const messages =
+      data.messages || [];
+
+    if(!messages.length){
+
+      list.innerHTML =
+        '<div class="empty">No messages yet.</div>';
+
+      return;
+
+    }
+
+    list.innerHTML =
+      messages.map(message=>`
+
+        <div class="list-item">
+
+          <strong>
+            ${escapeHtml(
+              message.sender_name ||
+              message.receiver_name ||
+              "Message"
+            )}
+          </strong>
+
+          <div style="margin-top:6px">
+            ${escapeHtml(
+              message.body ||
+              message.message ||
+              ""
+            )}
+          </div>
+
+        </div>
+
+      `).join("");
+
+  }catch(error){
+
+    list.innerHTML =
+      `<div class="empty">
+        Could not load messages.
+        <br>
+        ${escapeHtml(error.message)}
+      </div>`;
+
+  }
+
+}
+
+async function loadProfile(){
+
+  const message =
+    document.getElementById(
+      "profileAuthMessage"
+    );
+
+  if(!authToken){
+
+    message.innerHTML = `
+      <div class="auth-status">
+        🔐 Login to view your account.
+        <button
+          type="button"
+          class="primary"
+          onclick="showPanel('authPanel')"
+          style="margin-top:10px"
+        >
+          Login
+        </button>
+      </div>
+    `;
+
+    return;
+
+  }
+
+  try{
+
+    const data =
+      await api("/me");
+
+    if(data.ok && data.user){
+
+      currentUser =
+        data.user;
+
+      document.getElementById(
+        "profileName"
+      ).value =
+        currentUser.name || "";
+
+      document.getElementById(
+        "profileEmail"
+      ).value =
+        currentUser.email || "";
+
+      document.getElementById(
+        "profilePhone"
+      ).value =
+        currentUser.phone || "";
+
+      document.getElementById(
+        "profileDistrict"
+      ).value =
+        currentUser.district || "";
+
+      message.innerHTML = `
+        <div class="auth-status">
+          🟢 Account connected to IsokoHub backend.
+        </div>
+      `;
+
+    }
+
+  }catch(error){
+
+    message.innerHTML = `
+      <div class="auth-status">
+        🔴 ${escapeHtml(error.message)}
+      </div>
+    `;
+
+  }
+
+}
+
+document
+  .getElementById("profileForm")
+  .addEventListener(
+    "submit",
+    function(event){
+
+      event.preventDefault();
+
+      if(!requireLogin()){
+
+        return;
+
+      }
+
+      /*
+       * The current Worker has /api/me but does not expose
+       * a profile-update endpoint yet.
+       * Therefore we do not pretend to save profile data
+       * to D1 here.
+       */
+
+      showToast(
+        "Profile is connected. Profile editing API will be added separately."
+      );
+
+    }
+  );
 
 function updateCounts(){
 
-  document.getElementById("savedCount").textContent =
+  document.getElementById(
+    "savedCount"
+  ).textContent =
     saved.length;
 
-  document.getElementById("cartCount").textContent =
+  document.getElementById(
+    "cartCount"
+  ).textContent =
     cart.reduce(
-      (sum,item)=>sum + Number(item.quantity || 1),
+      (sum,item)=>
+        sum +
+        Number(item.quantity || 1),
       0
     );
+
 }
+
+document
+  .getElementById("loginForm")
+  .addEventListener(
+    "submit",
+    login
+  );
+
+document
+  .getElementById("registerForm")
+  .addEventListener(
+    "submit",
+    register
+  );
 
 async function init(){
 
   updateCounts();
 
-  renderProfile();
-  renderCart();
-  renderOrders();
-  renderSaved();
+  await loadCurrentUser();
+
+  updateAuthStatus();
 
   await checkBackend();
 
   await loadCategories();
 
   await loadProducts();
+
 }
 
 init();
