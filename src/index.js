@@ -7,8 +7,7 @@ export default {
     const corsHeaders = {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type, Authorization",
-      "Content-Type": "application/json; charset=UTF-8"
+      "Access-Control-Allow-Headers": "Content-Type, Authorization"
     };
 
     if (method === "OPTIONS") {
@@ -25,13 +24,13 @@ export default {
       if (path === "/api/health" && method === "GET") {
         let database = "not_connected";
 
-        try {
-          if (env.DB) {
+        if (env.DB) {
+          try {
             await env.DB.prepare("SELECT 1").first();
             database = "connected";
+          } catch {
+            database = "error";
           }
-        } catch {
-          database = "error";
         }
 
         return json({
@@ -76,7 +75,7 @@ export default {
       }
 
       // =========================
-      // PRODUCTS - GET
+      // PRODUCTS
       // =========================
       if (path === "/api/products" && method === "GET") {
         requireDB(env);
@@ -84,10 +83,14 @@ export default {
         const search = url.searchParams.get("search") || "";
         const category = url.searchParams.get("category") || "";
         const country = url.searchParams.get("country") || "";
-        const limit = Math.min(
-          Math.max(Number(url.searchParams.get("limit") || 50), 1),
-          100
-        );
+
+        let limit = Number(url.searchParams.get("limit") || 50);
+
+        if (!Number.isFinite(limit)) {
+          limit = 50;
+        }
+
+        limit = Math.min(Math.max(Math.floor(limit), 1), 100);
 
         let query = `
           SELECT
@@ -112,7 +115,13 @@ export default {
           `;
 
           const value = `%${search}%`;
-          params.push(value, value, value, value);
+
+          params.push(
+            value,
+            value,
+            value,
+            value
+          );
         }
 
         if (category) {
@@ -144,14 +153,14 @@ export default {
       }
 
       // =========================
-      // PRODUCT - SINGLE
+      // SINGLE PRODUCT
       // =========================
       const productMatch = path.match(/^\/api\/products\/(\d+)$/);
 
       if (productMatch && method === "GET") {
         requireDB(env);
 
-        const id = productMatch[1];
+        const id = Number(productMatch[1]);
 
         const product = await env.DB.prepare(`
           SELECT
@@ -171,12 +180,6 @@ export default {
             error: "Product not found"
           }, 404, corsHeaders);
         }
-
-        await env.DB.prepare(`
-          UPDATE products
-          SET views = views + 1
-          WHERE id = ?
-        `).bind(id).run();
 
         return json({
           ok: true,
@@ -231,7 +234,14 @@ export default {
 
         const result = await env.DB.prepare(`
           INSERT INTO users
-          (name, email, password_hash, phone, country, district)
+          (
+            name,
+            email,
+            password_hash,
+            phone,
+            country,
+            district
+          )
           VALUES (?, ?, ?, ?, ?, ?)
         `).bind(
           name,
@@ -271,7 +281,7 @@ export default {
           SELECT *
           FROM users
           WHERE email = ?
-          AND is_active = 1
+            AND is_active = 1
           LIMIT 1
         `).bind(email).first();
 
@@ -301,7 +311,11 @@ export default {
 
         await env.DB.prepare(`
           INSERT INTO sessions
-          (user_id, token_hash, expires_at)
+          (
+            user_id,
+            token_hash,
+            expires_at
+          )
           VALUES (?, ?, datetime('now', '+30 days'))
         `).bind(
           user.id,
@@ -382,8 +396,9 @@ export default {
         const title = String(body.title || "").trim();
         const category = String(body.category || "").trim();
         const description = String(body.description || "").trim();
+
         const price = Number(body.price || 0);
-        const stock = Number(body.stock || 1);
+        const stock = Number(body.stock ?? 1);
 
         if (!title || !category) {
           return json({
@@ -396,6 +411,13 @@ export default {
           return json({
             ok: false,
             error: "Invalid price"
+          }, 400, corsHeaders);
+        }
+
+        if (!Number.isFinite(stock) || stock < 0) {
+          return json({
+            ok: false,
+            error: "Invalid stock"
           }, 400, corsHeaders);
         }
 
@@ -428,7 +450,7 @@ export default {
           description || null,
           price,
           String(body.currency || "RWF"),
-          Number.isFinite(stock) && stock >= 0 ? stock : 1,
+          stock,
           body.brand || null,
           body.model || null,
           body.condition || null,
@@ -464,12 +486,13 @@ export default {
           }, 401, corsHeaders);
         }
 
-        const id = productMatch[1];
+        const id = Number(productMatch[1]);
 
         const product = await env.DB.prepare(`
           SELECT *
           FROM products
           WHERE id = ?
+          LIMIT 1
         `).bind(id).first();
 
         if (!product) {
@@ -479,7 +502,10 @@ export default {
           }, 404, corsHeaders);
         }
 
-        if (product.seller_id !== user.id && user.role !== "admin") {
+        if (
+          Number(product.seller_id) !== Number(user.id) &&
+          user.role !== "admin"
+        ) {
           return json({
             ok: false,
             error: "Not authorized"
@@ -505,8 +531,7 @@ export default {
             ram = COALESCE(?, ram),
             image_url = COALESCE(?, image_url),
             specs = COALESCE(?, specs),
-            negotiable = COALESCE(?, negotiable),
-            updated_at = datetime('now')
+            negotiable = COALESCE(?, negotiable)
           WHERE id = ?
         `).bind(
           body.title ?? null,
@@ -550,12 +575,13 @@ export default {
           }, 401, corsHeaders);
         }
 
-        const id = productMatch[1];
+        const id = Number(productMatch[1]);
 
         const product = await env.DB.prepare(`
           SELECT seller_id
           FROM products
           WHERE id = ?
+          LIMIT 1
         `).bind(id).first();
 
         if (!product) {
@@ -565,7 +591,10 @@ export default {
           }, 404, corsHeaders);
         }
 
-        if (product.seller_id !== user.id && user.role !== "admin") {
+        if (
+          Number(product.seller_id) !== Number(user.id) &&
+          user.role !== "admin"
+        ) {
           return json({
             ok: false,
             error: "Not authorized"
@@ -584,7 +613,7 @@ export default {
       }
 
       // =========================
-      // SAVED PRODUCTS - GET
+      // SAVED
       // =========================
       if (path === "/api/saved" && method === "GET") {
         requireDB(env);
@@ -614,9 +643,6 @@ export default {
         }, 200, corsHeaders);
       }
 
-      // =========================
-      // SAVE PRODUCT
-      // =========================
       if (path === "/api/saved" && method === "POST") {
         requireDB(env);
 
@@ -630,7 +656,9 @@ export default {
         }
 
         const body = await request.json();
-        const productId = Number(body.product_id || body.productId);
+        const productId = Number(
+          body.product_id || body.productId
+        );
 
         if (!productId) {
           return json({
@@ -643,7 +671,10 @@ export default {
           INSERT OR IGNORE INTO saved_products
           (user_id, product_id)
           VALUES (?, ?)
-        `).bind(user.id, productId).run();
+        `).bind(
+          user.id,
+          productId
+        ).run();
 
         return json({
           ok: true,
@@ -651,9 +682,6 @@ export default {
         }, 200, corsHeaders);
       }
 
-      // =========================
-      // REMOVE SAVED PRODUCT
-      // =========================
       if (path.startsWith("/api/saved/") && method === "DELETE") {
         requireDB(env);
 
@@ -666,13 +694,16 @@ export default {
           }, 401, corsHeaders);
         }
 
-        const id = path.split("/").pop();
+        const id = Number(path.split("/").pop());
 
         await env.DB.prepare(`
           DELETE FROM saved_products
           WHERE user_id = ?
-          AND product_id = ?
-        `).bind(user.id, id).run();
+            AND product_id = ?
+        `).bind(
+          user.id,
+          id
+        ).run();
 
         return json({
           ok: true,
@@ -681,7 +712,7 @@ export default {
       }
 
       // =========================
-      // MESSAGES - GET
+      // MESSAGES
       // =========================
       if (path === "/api/messages" && method === "GET") {
         requireDB(env);
@@ -706,7 +737,10 @@ export default {
           WHERE m.sender_id = ?
              OR m.receiver_id = ?
           ORDER BY m.id DESC
-        `).bind(user.id, user.id).all();
+        `).bind(
+          user.id,
+          user.id
+        ).all();
 
         return json({
           ok: true,
@@ -714,9 +748,6 @@ export default {
         }, 200, corsHeaders);
       }
 
-      // =========================
-      // SEND MESSAGE
-      // =========================
       if (path === "/api/messages" && method === "POST") {
         requireDB(env);
 
@@ -735,7 +766,9 @@ export default {
           body.receiver_id || body.receiverId
         );
 
-        const message = String(body.message || "").trim();
+        const message = String(
+          body.message || ""
+        ).trim();
 
         if (!receiverId || !message) {
           return json({
@@ -746,7 +779,12 @@ export default {
 
         const result = await env.DB.prepare(`
           INSERT INTO messages
-          (sender_id, receiver_id, product_id, message)
+          (
+            sender_id,
+            receiver_id,
+            product_id,
+            message
+          )
           VALUES (?, ?, ?, ?)
         `).bind(
           user.id,
@@ -763,7 +801,7 @@ export default {
       }
 
       // =========================
-      // ORDERS - GET
+      // ORDERS GET
       // =========================
       if (path === "/api/orders" && method === "GET") {
         requireDB(env);
@@ -791,7 +829,10 @@ export default {
           WHERE o.buyer_id = ?
              OR o.seller_id = ?
           ORDER BY o.id DESC
-        `).bind(user.id, user.id).all();
+        `).bind(
+          user.id,
+          user.id
+        ).all();
 
         return json({
           ok: true,
@@ -836,7 +877,7 @@ export default {
           SELECT *
           FROM products
           WHERE id = ?
-          AND status = 'active'
+            AND status = 'active'
           LIMIT 1
         `).bind(productId).first();
 
@@ -847,14 +888,15 @@ export default {
           }, 404, corsHeaders);
         }
 
-        if (product.stock < quantity) {
+        if (Number(product.stock) < quantity) {
           return json({
             ok: false,
             error: "Not enough stock"
           }, 400, corsHeaders);
         }
 
-        const total = Number(product.price) * quantity;
+        const total =
+          Number(product.price) * quantity;
 
         const result = await env.DB.prepare(`
           INSERT INTO orders (
@@ -879,18 +921,31 @@ export default {
           product.price,
           total,
           product.currency || "RWF",
-          body.delivery_address || body.deliveryAddress || null,
-          body.delivery_country || body.deliveryCountry || user.country || null,
-          body.delivery_district || body.deliveryDistrict || user.district || null,
-          body.delivery_phone || body.deliveryPhone || user.phone || null
+          body.delivery_address ||
+            body.deliveryAddress ||
+            null,
+          body.delivery_country ||
+            body.deliveryCountry ||
+            user.country ||
+            null,
+          body.delivery_district ||
+            body.deliveryDistrict ||
+            user.district ||
+            null,
+          body.delivery_phone ||
+            body.deliveryPhone ||
+            user.phone ||
+            null
         ).run();
 
         await env.DB.prepare(`
           UPDATE products
-          SET stock = stock - ?,
-              updated_at = datetime('now')
+          SET stock = stock - ?
           WHERE id = ?
-        `).bind(quantity, product.id).run();
+        `).bind(
+          quantity,
+          product.id
+        ).run();
 
         return json({
           ok: true,
@@ -901,7 +956,7 @@ export default {
       }
 
       // =========================
-      // API NOT FOUND
+      // UNKNOWN API
       // =========================
       if (path.startsWith("/api/")) {
         return json({
@@ -912,18 +967,21 @@ export default {
       }
 
       // =========================
-      // FRONTEND
+      // STATIC FRONTEND
       // =========================
       if (env.ASSETS) {
         return env.ASSETS.fetch(request);
       }
 
-      return new Response("IsokoHub", {
-        status: 200,
-        headers: {
-          "Content-Type": "text/plain; charset=UTF-8"
+      return new Response(
+        "IsokoHub",
+        {
+          status: 200,
+          headers: {
+            "Content-Type": "text/plain; charset=UTF-8"
+          }
         }
-      });
+      );
 
     } catch (error) {
       return json({
@@ -937,8 +995,9 @@ export default {
 
 
 // =========================
-// DATABASE CHECK
+// DATABASE
 // =========================
+
 function requireDB(env) {
   if (!env.DB) {
     throw new Error("D1 database is not connected");
@@ -947,8 +1006,9 @@ function requireDB(env) {
 
 
 // =========================
-// JSON
+// JSON RESPONSE
 // =========================
+
 function json(data, status = 200, extraHeaders = {}) {
   return new Response(
     JSON.stringify(data, null, 2),
@@ -964,39 +1024,54 @@ function json(data, status = 200, extraHeaders = {}) {
 
 
 // =========================
-// SHA-256
+// SHA256
 // =========================
+
 async function sha256(value) {
-  const data = new TextEncoder().encode(String(value));
+  const data =
+    new TextEncoder().encode(String(value));
 
-  const hash = await crypto.subtle.digest(
-    "SHA-256",
-    data
-  );
+  const hash =
+    await crypto.subtle.digest(
+      "SHA-256",
+      data
+    );
 
-  return Array.from(new Uint8Array(hash))
-    .map(byte => byte.toString(16).padStart(2, "0"))
+  return Array.from(
+    new Uint8Array(hash)
+  )
+    .map(
+      byte =>
+        byte
+          .toString(16)
+          .padStart(2, "0")
+    )
     .join("");
 }
 
 
 // =========================
-// GET BEARER TOKEN
+// TOKEN
 // =========================
+
 function getToken(request) {
-  const header = request.headers.get("Authorization") || "";
+  const header =
+    request.headers.get("Authorization") || "";
 
   if (!header.startsWith("Bearer ")) {
     return null;
   }
 
-  return header.slice(7).trim() || null;
+  return header
+    .slice(7)
+    .trim() || null;
 }
 
 
 // =========================
-// AUTHENTICATE USER
+// AUTH
 // =========================
+
 async function authenticate(request, env) {
   const token = getToken(request);
 
@@ -1004,17 +1079,22 @@ async function authenticate(request, env) {
     return null;
   }
 
-  const tokenHash = await sha256(token);
+  const tokenHash =
+    await sha256(token);
 
-  const user = await env.DB.prepare(`
-    SELECT u.*
-    FROM sessions s
-    JOIN users u ON u.id = s.user_id
-    WHERE s.token_hash = ?
-      AND s.expires_at > datetime('now')
-      AND u.is_active = 1
-    LIMIT 1
-  `).bind(tokenHash).first();
+  const user =
+    await env.DB.prepare(`
+      SELECT u.*
+      FROM sessions s
+      JOIN users u
+        ON u.id = s.user_id
+      WHERE s.token_hash = ?
+        AND s.expires_at > datetime('now')
+        AND u.is_active = 1
+      LIMIT 1
+    `)
+      .bind(tokenHash)
+      .first();
 
   return user || null;
 }
@@ -1023,6 +1103,7 @@ async function authenticate(request, env) {
 // =========================
 // SAFE USER
 // =========================
+
 function safeUser(user) {
   return {
     id: user.id,
