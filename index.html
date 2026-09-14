@@ -68,13 +68,23 @@ header{
   outline:none;
 }
 
-.search button,.primary{
+.search input:focus{
+  border-color:#ff6b00;
+}
+
+.search button,
+.primary{
   background:#ff6b00;
   color:white;
   border:none;
   padding:11px 18px;
   border-radius:10px;
   font-weight:bold;
+}
+
+.search button:hover,
+.primary:hover{
+  opacity:.92;
 }
 
 .nav-actions{
@@ -90,6 +100,11 @@ header{
   border-radius:8px;
 }
 
+.nav-actions button:hover{
+  border-color:#ff6b00;
+  color:#ff6b00;
+}
+
 .container{
   max-width:1200px;
   margin:auto;
@@ -102,6 +117,7 @@ header{
   padding:8px 18px;
   font-size:13px;
   font-weight:bold;
+  border-radius:0 0 8px 8px;
 }
 
 .status-ok{
@@ -269,6 +285,10 @@ header{
   background:white;
 }
 
+.card-buttons button:hover{
+  border-color:#ff6b00;
+}
+
 .card-buttons .buy{
   background:#ff6b00;
   color:white;
@@ -320,6 +340,13 @@ header{
   padding:11px;
   border:1px solid #d8dde6;
   border-radius:9px;
+  outline:none;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus{
+  border-color:#ff6b00;
 }
 
 .form-group textarea{
@@ -384,6 +411,7 @@ footer p{
 }
 
 @media(max-width:800px){
+
   .navbar{
     flex-wrap:wrap;
   }
@@ -399,6 +427,7 @@ footer p{
 }
 
 @media(max-width:550px){
+
   .container{
     padding:12px;
   }
@@ -423,6 +452,15 @@ footer p{
   .product-image{
     height:130px;
   }
+
+  .panel{
+    padding:10px;
+  }
+
+  .panel-box{
+    margin:25px auto;
+    padding:18px;
+  }
 }
 </style>
 </head>
@@ -439,18 +477,39 @@ footer p{
         type="search"
         id="searchInput"
         placeholder="Search products, services or sellers..."
+        autocomplete="off"
       >
       <button type="submit">Search</button>
     </form>
 
     <div class="nav-actions">
-      <button onclick="showPanel('savedPanel')">❤️ Saved <span id="savedCount">0</span></button>
-      <button onclick="showPanel('cartPanel')">🛒 Cart <span id="cartCount">0</span></button>
-      <button onclick="showPanel('ordersPanel')">📦 Orders</button>
-      <button onclick="showPanel('messagesPanel')">💬 Messages</button>
-      <button onclick="showPanel('profilePanel')">👤 Profile</button>
-      <button onclick="showPanel('adminPanel')">🛡️ Admin</button>
-      <button onclick="showPanel('sellPanel')">➕ Sell</button>
+      <button onclick="showPanel('savedPanel')">
+        ❤️ Saved <span id="savedCount">0</span>
+      </button>
+
+      <button onclick="showPanel('cartPanel')">
+        🛒 Cart <span id="cartCount">0</span>
+      </button>
+
+      <button onclick="showPanel('ordersPanel')">
+        📦 Orders
+      </button>
+
+      <button onclick="showPanel('messagesPanel')">
+        💬 Messages
+      </button>
+
+      <button onclick="showPanel('profilePanel')">
+        👤 Profile
+      </button>
+
+      <button onclick="showPanel('adminPanel')">
+        🛡️ Admin
+      </button>
+
+      <button onclick="showPanel('sellPanel')">
+        ➕ Sell
+      </button>
     </div>
 
   </div>
@@ -463,6 +522,7 @@ footer p{
 <main class="container">
 
 <section class="hero">
+
   <h1>Welcome to IsokoHub</h1>
 
   <p>
@@ -471,37 +531,61 @@ footer p{
   </p>
 
   <div class="hero-buttons">
-    <button class="white" onclick="scrollToProducts()">Shop Now</button>
-    <button class="dark" onclick="showPanel('sellPanel')">Sell on IsokoHub</button>
-    <button class="white" onclick="scrollToCategories()">Explore Categories</button>
+
+    <button class="white" onclick="scrollToProducts()">
+      Shop Now
+    </button>
+
+    <button class="dark" onclick="showPanel('sellPanel')">
+      Sell on IsokoHub
+    </button>
+
+    <button class="white" onclick="scrollToCategories()">
+      Explore Categories
+    </button>
+
   </div>
+
 </section>
 
 <section class="section" id="categoriesSection">
+
   <div class="section-head">
     <h2>Categories</h2>
   </div>
 
   <div class="category-grid" id="categoryGrid"></div>
+
 </section>
 
 <section class="section" id="productsSection">
 
   <div class="section-head">
+
     <h2>Featured Products</h2>
-    <button onclick="loadProducts()">Refresh</button>
+
+    <button onclick="loadProducts()">
+      Refresh
+    </button>
+
   </div>
 
   <div class="product-grid" id="productGrid">
-    <div class="empty">Loading products...</div>
+
+    <div class="empty">
+      Loading products...
+    </div>
+
   </div>
 
 </section>
 
 </main>
 
-<!-- AUTH PANEL -->
+<!-- AUTH -->
+
 <div class="panel" id="authPanel">
+
   <div class="panel-box">
 
     <button class="close" onclick="closePanels()">×</button>
@@ -548,7 +632,12 @@ footer p{
 
       <div class="form-group">
         <label>Password</label>
-        <input id="registerPassword" type="password" minlength="6" required>
+        <input
+          id="registerPassword"
+          type="password"
+          minlength="6"
+          required
+        >
       </div>
 
       <div class="form-group">
@@ -573,10 +662,13 @@ footer p{
     </form>
 
   </div>
+
 </div>
 
-<!-- SELL PANEL -->
+<!-- SELL -->
+
 <div class="panel" id="sellPanel">
+
   <div class="panel-box">
 
     <button class="close" onclick="closePanels()">×</button>
@@ -593,7 +685,11 @@ footer p{
 
       <div class="form-group">
         <label>Product title</label>
-        <input id="pTitle" required placeholder="Example: iPhone 15 Pro Max">
+        <input
+          id="pTitle"
+          required
+          placeholder="Example: iPhone 15 Pro Max"
+        >
       </div>
 
       <div class="form-group">
@@ -603,8 +699,11 @@ footer p{
 
       <div class="form-group">
         <label>Description</label>
-        <textarea id="pDescription" required
-          placeholder="Describe your product..."></textarea>
+        <textarea
+          id="pDescription"
+          required
+          placeholder="Describe your product..."
+        ></textarea>
       </div>
 
       <div class="form-grid">
@@ -616,7 +715,13 @@ footer p{
 
         <div class="form-group">
           <label>Stock</label>
-          <input id="pStock" type="number" min="1" value="1" required>
+          <input
+            id="pStock"
+            type="number"
+            min="1"
+            value="1"
+            required
+          >
         </div>
 
         <div class="form-group">
@@ -631,34 +736,61 @@ footer p{
 
         <div class="form-group">
           <label>Condition</label>
+
           <select id="pCondition">
-            <option value="new">New</option>
-            <option value="used">Used</option>
-            <option value="has_crack">Has crack</option>
-            <option value="refurbished">Refurbished</option>
+
+            <option value="new">
+              New
+            </option>
+
+            <option value="used">
+              Used
+            </option>
+
+            <option value="has_crack">
+              Has crack
+            </option>
+
+            <option value="refurbished">
+              Refurbished
+            </option>
+
           </select>
+
         </div>
 
         <div class="form-group">
           <label>District</label>
-          <input id="pDistrict" placeholder="Example: Gasabo">
+          <input
+            id="pDistrict"
+            placeholder="Example: Gasabo"
+          >
         </div>
 
         <div class="form-group">
           <label>Storage</label>
-          <input id="pStorage" placeholder="Example: 256GB">
+          <input
+            id="pStorage"
+            placeholder="Example: 256GB"
+          >
         </div>
 
         <div class="form-group">
           <label>RAM</label>
-          <input id="pRam" placeholder="Example: 8GB">
+          <input
+            id="pRam"
+            placeholder="Example: 8GB"
+          >
         </div>
 
       </div>
 
       <div class="form-group">
         <label>Image URL</label>
-        <input id="pImage" placeholder="https://...">
+        <input
+          id="pImage"
+          placeholder="https://..."
+        >
       </div>
 
       <div class="form-group">
@@ -667,10 +799,12 @@ footer p{
       </div>
 
       <div class="form-group">
+
         <label>
           <input type="checkbox" id="pNegotiable">
           Price is negotiable
         </label>
+
       </div>
 
       <button class="primary" type="submit">
@@ -680,10 +814,13 @@ footer p{
     </form>
 
   </div>
+
 </div>
 
 <!-- SAVED -->
+
 <div class="panel" id="savedPanel">
+
   <div class="panel-box">
 
     <button class="close" onclick="closePanels()">×</button>
@@ -693,10 +830,13 @@ footer p{
     <div id="savedList" style="margin-top:20px"></div>
 
   </div>
+
 </div>
 
 <!-- CART -->
+
 <div class="panel" id="cartPanel">
+
   <div class="panel-box">
 
     <button class="close" onclick="closePanels()">×</button>
@@ -706,19 +846,36 @@ footer p{
     <div id="cartList" style="margin-top:20px"></div>
 
     <div class="form-group" style="margin-top:20px">
+
       <label>Delivery address</label>
-      <textarea id="deliveryAddress"
-        placeholder="Enter delivery address"></textarea>
+
+      <textarea
+        id="deliveryAddress"
+        placeholder="Enter delivery address"
+      ></textarea>
+
     </div>
 
     <div class="form-group">
+
       <label>Delivery phone</label>
-      <input id="deliveryPhone" placeholder="Phone number">
+
+      <input
+        id="deliveryPhone"
+        placeholder="Phone number"
+      >
+
     </div>
 
     <div class="form-group">
+
       <label>Delivery district</label>
-      <input id="deliveryDistrict" placeholder="Example: Gasabo">
+
+      <input
+        id="deliveryDistrict"
+        placeholder="Example: Gasabo"
+      >
+
     </div>
 
     <button class="primary" onclick="checkout()">
@@ -726,10 +883,13 @@ footer p{
     </button>
 
   </div>
+
 </div>
 
 <!-- ORDERS -->
+
 <div class="panel" id="ordersPanel">
+
   <div class="panel-box">
 
     <button class="close" onclick="closePanels()">×</button>
@@ -737,14 +897,21 @@ footer p{
     <h2>📦 Orders</h2>
 
     <div id="ordersList" style="margin-top:20px">
-      <div class="empty">Login to view your orders.</div>
+
+      <div class="empty">
+        Login to view your orders.
+      </div>
+
     </div>
 
   </div>
+
 </div>
 
 <!-- MESSAGES -->
+
 <div class="panel" id="messagesPanel">
+
   <div class="panel-box">
 
     <button class="close" onclick="closePanels()">×</button>
@@ -752,14 +919,21 @@ footer p{
     <h2>💬 Messages</h2>
 
     <div id="messagesList" style="margin-top:20px">
-      <div class="empty">Login to view messages.</div>
+
+      <div class="empty">
+        Login to view messages.
+      </div>
+
     </div>
 
   </div>
+
 </div>
 
 <!-- PROFILE -->
+
 <div class="panel" id="profilePanel">
+
   <div class="panel-box">
 
     <button class="close" onclick="closePanels()">×</button>
@@ -798,31 +972,47 @@ footer p{
 
     <button
       onclick="logout()"
-      style="margin-top:15px;padding:10px 15px;border:1px solid #ddd;border-radius:8px;background:white"
+      style="
+        margin-top:15px;
+        padding:10px 15px;
+        border:1px solid #ddd;
+        border-radius:8px;
+        background:white
+      "
     >
       Logout
     </button>
 
   </div>
+
 </div>
 
 <!-- ADMIN -->
+
 <div class="panel" id="adminPanel">
+
   <div class="panel-box">
 
     <button class="close" onclick="closePanels()">×</button>
 
     <h2>🛡️ Admin</h2>
 
-    <div class="empty" style="margin-top:20px">
+    <div
+      id="adminContent"
+      class="empty"
+      style="margin-top:20px"
+    >
       Admin controls require an authorized admin account.
     </div>
 
   </div>
+
 </div>
 
-<!-- PRODUCT MODAL -->
+<!-- PRODUCT -->
+
 <div class="panel" id="productPanel">
+
   <div class="panel-box">
 
     <button class="close" onclick="closePanels()">×</button>
@@ -830,6 +1020,7 @@ footer p{
     <div id="productDetails"></div>
 
   </div>
+
 </div>
 
 <div class="toast" id="toast"></div>
@@ -843,19 +1034,23 @@ footer p{
     art and entertainment.
   </p>
 
-  <p>© 2026 IsokoHub. All rights reserved.</p>
+  <p>
+    © 2026 IsokoHub. All rights reserved.
+  </p>
 
 </footer>
 
 <script>
 
-const API_BASE = "/api";
+"use strict";
 
+const API_BASE = "/api";
 const TOKEN_KEY = "isokohub_auth_token_v1";
 
-let authToken = localStorage.getItem(TOKEN_KEY) || "";
-let currentUser = null;
+let authToken =
+  localStorage.getItem(TOKEN_KEY) || "";
 
+let currentUser = null;
 let liveProducts = [];
 let liveCategories = [];
 
@@ -872,31 +1067,57 @@ const defaultCategories = [
 function getStorage(key,fallback){
 
   try{
-    return JSON.parse(localStorage.getItem(key)) || fallback;
-  }catch(e){
+
+    const value =
+      localStorage.getItem(key);
+
+    if(!value){
+      return fallback;
+    }
+
+    const parsed =
+      JSON.parse(value);
+
+    return parsed ?? fallback;
+
+  }catch(error){
+
     return fallback;
+
   }
+
 }
 
 function setStorage(key,value){
-  localStorage.setItem(key,JSON.stringify(value));
+
+  localStorage.setItem(
+    key,
+    JSON.stringify(value)
+  );
+
 }
 
-let cart = getStorage("isokohub_cart_v3",[]);
-let saved = getStorage("isokohub_saved_v3",[]);
+let cart =
+  getStorage("isokohub_cart_v3",[]);
+
+let saved =
+  getStorage("isokohub_saved_v3",[]);
 
 function showToast(message){
 
-  const toast = document.getElementById("toast");
+  const toast =
+    document.getElementById("toast");
 
   toast.textContent = message;
   toast.style.display = "block";
 
   clearTimeout(window.toastTimer);
 
-  window.toastTimer = setTimeout(()=>{
-    toast.style.display = "none";
-  },3000);
+  window.toastTimer =
+    setTimeout(()=>{
+      toast.style.display = "none";
+    },3000);
+
 }
 
 async function api(path,options={}){
@@ -907,87 +1128,173 @@ async function api(path,options={}){
   };
 
   if(authToken){
-    headers.Authorization = "Bearer " + authToken;
+
+    headers.Authorization =
+      "Bearer " + authToken;
+
   }
 
-  const response = await fetch(API_BASE + path,{
-    ...options,
-    headers
-  });
+  const response =
+    await fetch(
+      API_BASE + path,
+      {
+        ...options,
+        headers
+      }
+    );
 
-  const data = await response.json().catch(()=>({
-    ok:false,
-    error:"Invalid server response"
-  }));
+  const data =
+    await response.json().catch(()=>({
+      ok:false,
+      error:"Invalid server response"
+    }));
 
   if(!response.ok){
 
     if(response.status === 401){
 
+      authToken = "";
       currentUser = null;
+
+      localStorage.removeItem(
+        TOKEN_KEY
+      );
 
     }
 
-    throw new Error(data.error || "API request failed");
+    throw new Error(
+      data.error ||
+      "API request failed"
+    );
+
   }
 
   return data;
+
 }
 
 function showPanel(id){
 
   closePanels();
 
-  const panel = document.getElementById(id);
+  const panel =
+    document.getElementById(id);
 
   if(panel){
+
     panel.style.display = "block";
+
   }
 
-  if(id==="savedPanel") renderSaved();
+  if(id === "savedPanel"){
+    renderSaved();
+  }
 
-  if(id==="cartPanel") renderCart();
+  if(id === "cartPanel"){
+    renderCart();
+  }
 
-  if(id==="ordersPanel") loadOrders();
+  if(id === "ordersPanel"){
+    loadOrders();
+  }
 
-  if(id==="messagesPanel") loadMessages();
+  if(id === "messagesPanel"){
+    loadMessages();
+  }
 
-  if(id==="profilePanel") loadProfile();
+  if(id === "profilePanel"){
+    loadProfile();
+  }
 
-  if(id==="sellPanel") updateSellPanel();
+  if(id === "sellPanel"){
+    updateSellPanel();
+  }
 
-  if(id==="authPanel") updateAuthStatus();
+  if(id === "authPanel"){
+    updateAuthStatus();
+  }
+
+  if(id === "adminPanel"){
+    loadAdmin();
+  }
+
 }
 
 function closePanels(){
 
-  document.querySelectorAll(".panel").forEach(panel=>{
-    panel.style.display = "none";
-  });
+  document
+    .querySelectorAll(".panel")
+    .forEach(panel=>{
+      panel.style.display = "none";
+    });
 
 }
 
+document
+  .querySelectorAll(".panel")
+  .forEach(panel=>{
+
+    panel.addEventListener(
+      "click",
+      event=>{
+
+        if(event.target === panel){
+
+          panel.style.display = "none";
+
+        }
+
+      }
+    );
+
+  });
+
+document.addEventListener(
+  "keydown",
+  event=>{
+
+    if(event.key === "Escape"){
+
+      closePanels();
+
+    }
+
+  }
+);
+
 function scrollToProducts(){
 
-  document.getElementById("productsSection")
-    .scrollIntoView({behavior:"smooth"});
+  document
+    .getElementById("productsSection")
+    .scrollIntoView({
+      behavior:"smooth"
+    });
 
 }
 
 function scrollToCategories(){
 
-  document.getElementById("categoriesSection")
-    .scrollIntoView({behavior:"smooth"});
+  document
+    .getElementById("categoriesSection")
+    .scrollIntoView({
+      behavior:"smooth"
+    });
 
 }
 
 function categoryIcon(name){
 
-  const found = defaultCategories.find(
-    c => c.name.toLowerCase() === String(name).toLowerCase()
-  );
+  const found =
+    defaultCategories.find(
+      category =>
+        category.name.toLowerCase() ===
+        String(name).toLowerCase()
+    );
 
-  return found ? found.icon : "🛍️";
+  return found
+    ? found.icon
+    : "🛍️";
+
 }
 
 function escapeHtml(value){
@@ -998,26 +1305,33 @@ function escapeHtml(value){
     .replace(/>/g,"&gt;")
     .replace(/"/g,"&quot;")
     .replace(/'/g,"&#039;");
+
 }
 
 function escapeAttribute(value){
+
   return escapeHtml(value);
+
 }
 
 function formatMoney(value){
 
-  return Number(value || 0).toLocaleString("en-US");
+  return Number(value || 0)
+    .toLocaleString("en-US");
 
 }
 
 async function checkBackend(){
 
   const status =
-    document.getElementById("backendStatus");
+    document.getElementById(
+      "backendStatus"
+    );
 
   try{
 
-    const data = await api("/health");
+    const data =
+      await api("/health");
 
     if(data.ok){
 
@@ -1030,14 +1344,18 @@ async function checkBackend(){
     }else{
 
       throw new Error(
-        data.error || "Backend returned an error"
+        data.error ||
+        "Backend returned an error"
       );
 
     }
 
   }catch(error){
 
-    console.error(error);
+    console.error(
+      "Backend health error:",
+      error
+    );
 
     status.className =
       "backend-status status-error";
@@ -1053,18 +1371,26 @@ async function loadCategories(){
 
   try{
 
-    const data = await api("/categories");
+    const data =
+      await api("/categories");
 
     liveCategories =
-      data.categories || [];
+      Array.isArray(data.categories)
+        ? data.categories
+        : [];
 
     if(!liveCategories.length){
+
       useDefaultCategories();
+
     }
 
   }catch(error){
 
-    console.error(error);
+    console.error(
+      "Categories error:",
+      error
+    );
 
     useDefaultCategories();
 
@@ -1078,19 +1404,32 @@ async function loadCategories(){
 function useDefaultCategories(){
 
   liveCategories =
-    defaultCategories.map((c,i)=>({
-      id:i+1,
-      name:c.name,
-      slug:c.name.toLowerCase().replace(/\s+/g,"-"),
-      description:""
-    }));
+    defaultCategories.map(
+      (category,index)=>({
+
+        id:index + 1,
+
+        name:category.name,
+
+        slug:
+          category.name
+            .toLowerCase()
+            .replace(/&/g,"and")
+            .replace(/\s+/g,"-"),
+
+        description:""
+
+      })
+    );
 
 }
 
 function renderCategories(){
 
   const grid =
-    document.getElementById("categoryGrid");
+    document.getElementById(
+      "categoryGrid"
+    );
 
   if(!liveCategories.length){
 
@@ -1126,7 +1465,9 @@ function renderCategories(){
 function populateCategorySelect(){
 
   const select =
-    document.getElementById("pCategory");
+    document.getElementById(
+      "pCategory"
+    );
 
   select.innerHTML =
     '<option value="">Select category</option>';
@@ -1151,7 +1492,9 @@ function populateCategorySelect(){
 async function loadProducts(){
 
   const grid =
-    document.getElementById("productGrid");
+    document.getElementById(
+      "productGrid"
+    );
 
   grid.innerHTML =
     '<div class="empty">Loading products...</div>';
@@ -1162,19 +1505,29 @@ async function loadProducts(){
       await api("/products");
 
     liveProducts =
-      data.products || [];
+      Array.isArray(data.products)
+        ? data.products
+        : [];
 
     renderProducts();
 
   }catch(error){
 
-    console.error(error);
+    console.error(
+      "Products error:",
+      error
+    );
 
     grid.innerHTML = `
       <div class="empty">
-        Could not load products from IsokoHub backend.
+
+        Could not load products
+        from IsokoHub backend.
+
         <br><br>
+
         ${escapeHtml(error.message)}
+
       </div>
     `;
 
@@ -1182,10 +1535,14 @@ async function loadProducts(){
 
 }
 
-function renderProducts(products=liveProducts){
+function renderProducts(
+  products=liveProducts
+){
 
   const grid =
-    document.getElementById("productGrid");
+    document.getElementById(
+      "productGrid"
+    );
 
   if(!products.length){
 
@@ -1196,6 +1553,7 @@ function renderProducts(products=liveProducts){
     `;
 
     return;
+
   }
 
   grid.innerHTML =
@@ -1207,7 +1565,11 @@ function renderProducts(products=liveProducts){
         "";
 
       const category =
-        product.category || "Marketplace";
+        product.category ||
+        "Marketplace";
+
+      const productId =
+        Number(product.id);
 
       return `
 
@@ -1221,6 +1583,8 @@ function renderProducts(products=liveProducts){
               `<img
                 src="${escapeAttribute(image)}"
                 alt="${escapeAttribute(product.title)}"
+                loading="lazy"
+                onerror="this.style.display='none'"
               >`
               :
               `<div class="placeholder">
@@ -1237,8 +1601,13 @@ function renderProducts(products=liveProducts){
             </h3>
 
             <div class="price">
+
               ${formatMoney(product.price)}
-              ${escapeHtml(product.currency || "RWF")}
+
+              ${escapeHtml(
+                product.currency || "RWF"
+              )}
+
             </div>
 
             <div class="meta">
@@ -1246,36 +1615,43 @@ function renderProducts(products=liveProducts){
             </div>
 
             <div class="meta">
+
               📍
               ${escapeHtml(
                 product.district ||
                 product.country ||
                 ""
               )}
+
             </div>
 
             <div class="meta">
+
               Stock:
-              ${escapeHtml(product.stock ?? 0)}
+              ${escapeHtml(
+                product.stock ?? 0
+              )}
+
             </div>
 
             <div class="card-buttons">
 
               <button
-                onclick="viewProduct(${product.id})"
+                onclick="viewProduct(${productId})"
               >
                 View
               </button>
 
               <button
-                onclick="saveProduct(${product.id})"
+                onclick="saveProduct(${productId})"
+                aria-label="Save product"
               >
                 ❤️
               </button>
 
               <button
                 class="buy"
-                onclick="addToCart(${product.id})"
+                onclick="addToCart(${productId})"
               >
                 🛒
               </button>
@@ -1302,10 +1678,13 @@ async function searchProducts(term){
     await loadProducts();
 
     return;
+
   }
 
   const grid =
-    document.getElementById("productGrid");
+    document.getElementById(
+      "productGrid"
+    );
 
   grid.innerHTML =
     '<div class="empty">Searching...</div>';
@@ -1319,7 +1698,9 @@ async function searchProducts(term){
       );
 
     liveProducts =
-      data.products || [];
+      Array.isArray(data.products)
+        ? data.products
+        : [];
 
     renderProducts();
 
@@ -1327,11 +1708,20 @@ async function searchProducts(term){
 
   }catch(error){
 
+    console.error(
+      "Search error:",
+      error
+    );
+
     grid.innerHTML =
       `<div class="empty">
+
         Search failed.
-        <br>
+
+        <br><br>
+
         ${escapeHtml(error.message)}
+
       </div>`;
 
   }
@@ -1341,7 +1731,9 @@ async function searchProducts(term){
 async function filterCategory(category){
 
   const grid =
-    document.getElementById("productGrid");
+    document.getElementById(
+      "productGrid"
+    );
 
   grid.innerHTML =
     '<div class="empty">Loading category...</div>';
@@ -1355,13 +1747,20 @@ async function filterCategory(category){
       );
 
     liveProducts =
-      data.products || [];
+      Array.isArray(data.products)
+        ? data.products
+        : [];
 
     renderProducts();
 
     scrollToProducts();
 
   }catch(error){
+
+    console.error(
+      "Category error:",
+      error
+    );
 
     grid.innerHTML =
       `<div class="empty">
@@ -1374,21 +1773,28 @@ async function filterCategory(category){
 
 document
   .getElementById("searchForm")
-  .addEventListener("submit",event=>{
+  .addEventListener(
+    "submit",
+    event=>{
 
-    event.preventDefault();
+      event.preventDefault();
 
-    searchProducts(
-      document.getElementById("searchInput").value
-    );
+      searchProducts(
+        document.getElementById(
+          "searchInput"
+        ).value
+      );
 
-  });
+    }
+  );
 
 function requireLogin(){
 
   if(!authToken){
 
-    showToast("Please login first.");
+    showToast(
+      "Please login first."
+    );
 
     showPanel("authPanel");
 
@@ -1407,37 +1813,58 @@ async function register(event){
   const body = {
 
     name:
-      document.getElementById("registerName").value.trim(),
+      document
+        .getElementById("registerName")
+        .value
+        .trim(),
 
     email:
-      document.getElementById("registerEmail").value.trim(),
+      document
+        .getElementById("registerEmail")
+        .value
+        .trim(),
 
     password:
-      document.getElementById("registerPassword").value,
+      document
+        .getElementById("registerPassword")
+        .value,
 
     phone:
-      document.getElementById("registerPhone").value.trim(),
+      document
+        .getElementById("registerPhone")
+        .value
+        .trim(),
 
     country:
-      document.getElementById("registerCountry").value.trim(),
+      document
+        .getElementById("registerCountry")
+        .value
+        .trim(),
 
     district:
-      document.getElementById("registerDistrict").value.trim()
+      document
+        .getElementById("registerDistrict")
+        .value
+        .trim()
 
   };
 
   try{
 
     const data =
-      await api("/register",{
-        method:"POST",
-        body:JSON.stringify(body)
-      });
+      await api(
+        "/register",
+        {
+          method:"POST",
+          body:JSON.stringify(body)
+        }
+      );
 
     if(!data.ok){
 
       throw new Error(
-        data.error || "Registration failed"
+        data.error ||
+        "Registration failed"
       );
 
     }
@@ -1446,11 +1873,19 @@ async function register(event){
       "Account created. You can now login."
     );
 
-    document.getElementById("registerForm").reset();
+    document
+      .getElementById("registerForm")
+      .reset();
+
+    document
+      .getElementById("registerCountry")
+      .value = "Rwanda";
 
   }catch(error){
 
-    showToast(error.message);
+    showToast(
+      error.message
+    );
 
   }
 
@@ -1463,25 +1898,34 @@ async function login(event){
   const body = {
 
     email:
-      document.getElementById("loginEmail").value.trim(),
+      document
+        .getElementById("loginEmail")
+        .value
+        .trim(),
 
     password:
-      document.getElementById("loginPassword").value
+      document
+        .getElementById("loginPassword")
+        .value
 
   };
 
   try{
 
     const data =
-      await api("/login",{
-        method:"POST",
-        body:JSON.stringify(body)
-      });
+      await api(
+        "/login",
+        {
+          method:"POST",
+          body:JSON.stringify(body)
+        }
+      );
 
     if(!data.ok || !data.token){
 
       throw new Error(
-        data.error || "Login failed"
+        data.error ||
+        "Login failed"
       );
 
     }
@@ -1497,7 +1941,9 @@ async function login(event){
     currentUser =
       data.user || null;
 
-    showToast("Login successful.");
+    showToast(
+      "Login successful."
+    );
 
     updateAuthStatus();
 
@@ -1505,7 +1951,9 @@ async function login(event){
 
   }catch(error){
 
-    showToast(error.message);
+    showToast(
+      error.message
+    );
 
   }
 
@@ -1514,13 +1962,17 @@ async function login(event){
 function updateAuthStatus(){
 
   const box =
-    document.getElementById("authStatus");
+    document.getElementById(
+      "authStatus"
+    );
 
   if(currentUser){
 
     box.innerHTML =
       `🟢 Logged in as
-       <strong>${escapeHtml(currentUser.name)}</strong>
+       <strong>
+         ${escapeHtml(currentUser.name)}
+       </strong>
        (${escapeHtml(currentUser.email)})`;
 
   }else{
@@ -1545,7 +1997,11 @@ async function loadCurrentUser(){
     const data =
       await api("/me");
 
-    if(data.ok && data.authenticated){
+    if(
+      data.ok &&
+      data.authenticated &&
+      data.user
+    ){
 
       currentUser =
         data.user;
@@ -1556,15 +2012,19 @@ async function loadCurrentUser(){
 
   }catch(error){
 
-    console.error(error);
+    console.error(
+      "Current user error:",
+      error
+    );
 
   }
 
   authToken = "";
-
   currentUser = null;
 
-  localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem(
+    TOKEN_KEY
+  );
 
   return false;
 
@@ -1576,24 +2036,34 @@ async function logout(){
 
     if(authToken){
 
-      await api("/logout",{
-        method:"POST"
-      });
+      await api(
+        "/logout",
+        {
+          method:"POST"
+        }
+      );
 
     }
 
   }catch(error){
 
-    console.error(error);
+    console.error(
+      "Logout error:",
+      error
+    );
 
   }
 
   authToken = "";
   currentUser = null;
 
-  localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem(
+    TOKEN_KEY
+  );
 
-  showToast("You have been logged out.");
+  showToast(
+    "You have been logged out."
+  );
 
   closePanels();
 
@@ -1602,14 +2072,20 @@ async function logout(){
 function updateSellPanel(){
 
   const box =
-    document.getElementById("sellAuthMessage");
+    document.getElementById(
+      "sellAuthMessage"
+    );
 
   if(currentUser){
 
     box.innerHTML = `
       <div class="auth-status">
+
         🟢 You are logged in as
-        <strong>${escapeHtml(currentUser.name)}</strong>.
+        <strong>
+          ${escapeHtml(currentUser.name)}
+        </strong>.
+
       </div>
     `;
 
@@ -1617,7 +2093,12 @@ function updateSellPanel(){
 
     box.innerHTML = `
       <div class="auth-status">
-        🔐 You must login before submitting a product.
+
+        🔐 You must login before
+        submitting a product.
+
+        <br>
+
         <button
           type="button"
           class="primary"
@@ -1626,6 +2107,7 @@ function updateSellPanel(){
         >
           Login / Register
         </button>
+
       </div>
     `;
 
@@ -1649,55 +2131,93 @@ async function submitProduct(event){
     );
 
   button.disabled = true;
-  button.textContent = "Submitting...";
+  button.textContent =
+    "Submitting...";
 
   const body = {
 
     title:
-      document.getElementById("pTitle").value.trim(),
+      document
+        .getElementById("pTitle")
+        .value
+        .trim(),
 
     category:
-      document.getElementById("pCategory").value,
+      document
+        .getElementById("pCategory")
+        .value,
 
     description:
-      document.getElementById("pDescription").value.trim(),
+      document
+        .getElementById("pDescription")
+        .value
+        .trim(),
 
     price:
       Number(
-        document.getElementById("pPrice").value
+        document
+          .getElementById("pPrice")
+          .value
       ),
 
     stock:
       Number(
-        document.getElementById("pStock").value || 1
+        document
+          .getElementById("pStock")
+          .value || 1
       ),
 
     brand:
-      document.getElementById("pBrand").value.trim(),
+      document
+        .getElementById("pBrand")
+        .value
+        .trim(),
 
     model:
-      document.getElementById("pModel").value.trim(),
+      document
+        .getElementById("pModel")
+        .value
+        .trim(),
 
     condition:
-      document.getElementById("pCondition").value,
+      document
+        .getElementById("pCondition")
+        .value,
 
     district:
-      document.getElementById("pDistrict").value.trim(),
+      document
+        .getElementById("pDistrict")
+        .value
+        .trim(),
 
     storage:
-      document.getElementById("pStorage").value.trim(),
+      document
+        .getElementById("pStorage")
+        .value
+        .trim(),
 
     ram:
-      document.getElementById("pRam").value.trim(),
+      document
+        .getElementById("pRam")
+        .value
+        .trim(),
 
     image_url:
-      document.getElementById("pImage").value.trim(),
+      document
+        .getElementById("pImage")
+        .value
+        .trim(),
 
     specs:
-      document.getElementById("pSpecs").value.trim(),
+      document
+        .getElementById("pSpecs")
+        .value
+        .trim(),
 
     negotiable:
-      document.getElementById("pNegotiable").checked
+      document
+        .getElementById("pNegotiable")
+        .checked
         ? 1
         : 0
 
@@ -1706,10 +2226,13 @@ async function submitProduct(event){
   try{
 
     const data =
-      await api("/products",{
-        method:"POST",
-        body:JSON.stringify(body)
-      });
+      await api(
+        "/products",
+        {
+          method:"POST",
+          body:JSON.stringify(body)
+        }
+      );
 
     if(!data.ok){
 
@@ -1734,12 +2257,15 @@ async function submitProduct(event){
 
   }catch(error){
 
-    showToast(error.message);
+    showToast(
+      error.message
+    );
 
   }finally{
 
     button.disabled = false;
-    button.textContent = "Submit for Review";
+    button.textContent =
+      "Submit for Review";
 
   }
 
@@ -1756,10 +2282,16 @@ function viewProduct(id){
 
   const product =
     liveProducts.find(
-      p => Number(p.id) === Number(id)
+      p =>
+        Number(p.id) ===
+        Number(id)
     );
 
   if(!product){
+
+    showToast(
+      "Product not found."
+    );
 
     return;
 
@@ -1809,16 +2341,26 @@ function viewProduct(id){
       </h2>
 
       <h3
-        style="color:#ff6b00;margin:10px 0"
+        style="
+          color:#ff6b00;
+          margin:10px 0
+        "
       >
+
         ${formatMoney(product.price)}
-        ${escapeHtml(product.currency || "RWF")}
+
+        ${escapeHtml(
+          product.currency || "RWF"
+        )}
+
       </h3>
 
       <p style="margin:10px 0">
+
         ${escapeHtml(
           product.description || ""
         )}
+
       </p>
 
       <p class="meta">
@@ -1829,7 +2371,8 @@ function viewProduct(id){
       <p class="meta">
         Seller:
         ${escapeHtml(
-          product.seller_name || "Seller"
+          product.seller_name ||
+          "Seller"
         )}
       </p>
 
@@ -1851,22 +2394,27 @@ function viewProduct(id){
 
       <p class="meta">
         Stock:
-        ${escapeHtml(product.stock ?? 0)}
+        ${escapeHtml(
+          product.stock ?? 0
+        )}
       </p>
 
       <button
         class="primary"
         onclick="
-          addToCart(${product.id});
+          addToCart(${Number(product.id)});
           closePanels();
         "
         style="margin-top:18px"
       >
         🛒 Add to Cart
       </button>
+
     `;
 
-  showPanel("productPanel");
+  showPanel(
+    "productPanel"
+  );
 
 }
 
@@ -1878,16 +2426,21 @@ function saveProduct(id){
 
     saved =
       saved.filter(
-        item => Number(item) !== id
+        item =>
+          Number(item) !== id
       );
 
-    showToast("Removed from saved.");
+    showToast(
+      "Removed from saved."
+    );
 
   }else{
 
     saved.push(id);
 
-    showToast("Product saved.");
+    showToast(
+      "Product saved."
+    );
 
   }
 
@@ -1905,13 +2458,17 @@ function saveProduct(id){
 function renderSaved(){
 
   const list =
-    document.getElementById("savedList");
+    document.getElementById(
+      "savedList"
+    );
 
   const products =
     saved
       .map(id =>
         liveProducts.find(
-          p => Number(p.id) === Number(id)
+          p =>
+            Number(p.id) ===
+            Number(id)
         )
       )
       .filter(Boolean);
@@ -1935,12 +2492,17 @@ function renderSaved(){
         </strong>
 
         <div class="price">
+
           ${formatMoney(product.price)}
-          ${escapeHtml(product.currency || "RWF")}
+
+          ${escapeHtml(
+            product.currency || "RWF"
+          )}
+
         </div>
 
         <button
-          onclick="viewProduct(${product.id})"
+          onclick="viewProduct(${Number(product.id)})"
           style="
             margin-top:8px;
             padding:7px 12px
@@ -1961,26 +2523,51 @@ function addToCart(id){
 
   const product =
     liveProducts.find(
-      p => Number(p.id) === id
+      p =>
+        Number(p.id) === id
     );
 
   if(!product){
 
-    showToast("Product not found.");
+    showToast(
+      "Product not found."
+    );
 
     return;
 
   }
 
+  const stock =
+    Number(product.stock || 0);
+
   const existing =
     cart.find(
-      item => Number(item.id) === id
+      item =>
+        Number(item.id) === id
     );
+
+  const currentQuantity =
+    existing
+      ? Number(existing.quantity || 1)
+      : 0;
+
+  if(
+    stock > 0 &&
+    currentQuantity >= stock
+  ){
+
+    showToast(
+      "Maximum available stock reached."
+    );
+
+    return;
+
+  }
 
   if(existing){
 
     existing.quantity =
-      Number(existing.quantity || 1) + 1;
+      currentQuantity + 1;
 
   }else{
 
@@ -1988,11 +2575,11 @@ function addToCart(id){
 
       id:id,
 
-      title:product.title,
+      title:
+        product.title,
 
-      price:Number(
-        product.price || 0
-      ),
+      price:
+        Number(product.price || 0),
 
       currency:
         product.currency || "RWF",
@@ -2011,7 +2598,9 @@ function addToCart(id){
   updateCounts();
   renderCart();
 
-  showToast("Added to cart.");
+  showToast(
+    "Added to cart."
+  );
 
 }
 
@@ -2020,7 +2609,8 @@ function removeFromCart(id){
   cart =
     cart.filter(
       item =>
-        Number(item.id) !== Number(id)
+        Number(item.id) !==
+        Number(id)
     );
 
   setStorage(
@@ -2036,7 +2626,9 @@ function removeFromCart(id){
 function renderCart(){
 
   const list =
-    document.getElementById("cartList");
+    document.getElementById(
+      "cartList"
+    );
 
   if(!cart.length){
 
@@ -2067,15 +2659,20 @@ function renderCart(){
           </strong>
 
           <div>
+
             ${formatMoney(item.price)}
+
             ${escapeHtml(
               item.currency || "RWF"
             )}
-            × ${item.quantity}
+
+            ×
+            ${escapeHtml(item.quantity)}
+
           </div>
 
           <button
-            onclick="removeFromCart(${item.id})"
+            onclick="removeFromCart(${Number(item.id)})"
             style="
               margin-top:7px;
               padding:6px 10px
@@ -2099,9 +2696,11 @@ function renderCart(){
           font-weight:bold
         "
       >
+
         Total:
         ${formatMoney(total)}
         RWF
+
       </div>
 
     `;
@@ -2112,7 +2711,9 @@ async function checkout(){
 
   if(!cart.length){
 
-    showToast("Your cart is empty.");
+    showToast(
+      "Your cart is empty."
+    );
 
     return;
 
@@ -2127,17 +2728,20 @@ async function checkout(){
   const deliveryAddress =
     document
       .getElementById("deliveryAddress")
-      .value.trim();
+      .value
+      .trim();
 
   const deliveryPhone =
     document
       .getElementById("deliveryPhone")
-      .value.trim();
+      .value
+      .trim();
 
   const deliveryDistrict =
     document
       .getElementById("deliveryDistrict")
-      .value.trim();
+      .value
+      .trim();
 
   if(!deliveryAddress){
 
@@ -2165,7 +2769,9 @@ async function checkout(){
 
       const product =
         liveProducts.find(
-          p => Number(p.id) === Number(item.id)
+          p =>
+            Number(p.id) ===
+            Number(item.id)
         );
 
       if(!product){
@@ -2185,7 +2791,6 @@ async function checkout(){
           Number(product.id),
 
         quantity:
-
           quantity,
 
         delivery_address:
@@ -2205,10 +2810,13 @@ async function checkout(){
       };
 
       const data =
-        await api("/orders",{
-          method:"POST",
-          body:JSON.stringify(body)
-        });
+        await api(
+          "/orders",
+          {
+            method:"POST",
+            body:JSON.stringify(body)
+          }
+        );
 
       if(!data.ok){
 
@@ -2239,7 +2847,9 @@ async function checkout(){
 
   }catch(error){
 
-    showToast(error.message);
+    showToast(
+      error.message
+    );
 
   }
 
@@ -2248,9 +2858,11 @@ async function checkout(){
 async function loadOrders(){
 
   const list =
-    document.getElementById("ordersList");
+    document.getElementById(
+      "ordersList"
+    );
 
-  if(!requireLogin()){
+  if(!authToken){
 
     list.innerHTML =
       '<div class="empty">Login to view your orders.</div>';
@@ -2268,7 +2880,9 @@ async function loadOrders(){
       await api("/orders");
 
     const orders =
-      data.orders || [];
+      Array.isArray(data.orders)
+        ? data.orders
+        : [];
 
     if(!orders.length){
 
@@ -2289,35 +2903,45 @@ async function loadOrders(){
           </strong>
 
           <div>
+
             Product:
             ${escapeHtml(
               order.product_title ||
               "Product"
             )}
+
           </div>
 
           <div>
+
             Quantity:
             ${escapeHtml(
               order.quantity
             )}
+
           </div>
 
           <div>
+
             Total:
             ${formatMoney(
               order.total_price
             )}
+
             ${escapeHtml(
               order.currency || "RWF"
             )}
+
           </div>
 
           <div class="meta">
+
             Status:
             ${escapeHtml(
-              order.status || "pending"
+              order.status ||
+              "pending"
             )}
+
           </div>
 
         </div>
@@ -2328,9 +2952,13 @@ async function loadOrders(){
 
     list.innerHTML =
       `<div class="empty">
+
         Could not load orders.
-        <br>
+
+        <br><br>
+
         ${escapeHtml(error.message)}
+
       </div>`;
 
   }
@@ -2340,9 +2968,14 @@ async function loadOrders(){
 async function loadMessages(){
 
   const list =
-    document.getElementById("messagesList");
+    document.getElementById(
+      "messagesList"
+    );
 
-  if(!requireLogin()){
+  if(!authToken){
+
+    list.innerHTML =
+      '<div class="empty">Login to view messages.</div>';
 
     return;
 
@@ -2357,7 +2990,9 @@ async function loadMessages(){
       await api("/messages");
 
     const messages =
-      data.messages || [];
+      Array.isArray(data.messages)
+        ? data.messages
+        : [];
 
     if(!messages.length){
 
@@ -2374,19 +3009,23 @@ async function loadMessages(){
         <div class="list-item">
 
           <strong>
+
             ${escapeHtml(
               message.sender_name ||
               message.receiver_name ||
               "Message"
             )}
+
           </strong>
 
           <div style="margin-top:6px">
+
             ${escapeHtml(
               message.body ||
               message.message ||
               ""
             )}
+
           </div>
 
         </div>
@@ -2397,9 +3036,13 @@ async function loadMessages(){
 
     list.innerHTML =
       `<div class="empty">
+
         Could not load messages.
-        <br>
+
+        <br><br>
+
         ${escapeHtml(error.message)}
+
       </div>`;
 
   }
@@ -2417,7 +3060,11 @@ async function loadProfile(){
 
     message.innerHTML = `
       <div class="auth-status">
+
         🔐 Login to view your account.
+
+        <br>
+
         <button
           type="button"
           class="primary"
@@ -2426,6 +3073,7 @@ async function loadProfile(){
         >
           Login
         </button>
+
       </div>
     `;
 
@@ -2465,7 +3113,10 @@ async function loadProfile(){
 
       message.innerHTML = `
         <div class="auth-status">
-          🟢 Account connected to IsokoHub backend.
+
+          🟢 Account connected
+          to IsokoHub backend.
+
         </div>
       `;
 
@@ -2475,7 +3126,10 @@ async function loadProfile(){
 
     message.innerHTML = `
       <div class="auth-status">
-        🔴 ${escapeHtml(error.message)}
+
+        🔴
+        ${escapeHtml(error.message)}
+
       </div>
     `;
 
@@ -2497,19 +3151,125 @@ document
 
       }
 
-      /*
-       * The current Worker has /api/me but does not expose
-       * a profile-update endpoint yet.
-       * Therefore we do not pretend to save profile data
-       * to D1 here.
-       */
-
       showToast(
-        "Profile is connected. Profile editing API will be added separately."
+        "Profile editing API is not available yet."
       );
 
     }
   );
+
+async function loadAdmin(){
+
+  const box =
+    document.getElementById(
+      "adminContent"
+    );
+
+  if(!authToken){
+
+    box.innerHTML = `
+      <div class="empty">
+
+        🔐 Login with an authorized
+        admin account to continue.
+
+        <br><br>
+
+        <button
+          class="primary"
+          onclick="showPanel('authPanel')"
+        >
+          Login
+        </button>
+
+      </div>
+    `;
+
+    return;
+
+  }
+
+  try{
+
+    const data =
+      await api("/me");
+
+    if(
+      data.ok &&
+      data.user
+    ){
+
+      currentUser =
+        data.user;
+
+      const role =
+        String(
+          currentUser.role || ""
+        ).toLowerCase();
+
+      if(
+        role === "admin" ||
+        role === "administrator"
+      ){
+
+        box.innerHTML = `
+          <div class="auth-status">
+
+            🟢 Authorized admin account.
+
+          </div>
+
+          <div
+            class="list-item"
+          >
+            <strong>
+              Admin Dashboard
+            </strong>
+
+            <p
+              class="meta"
+              style="margin-top:8px"
+            >
+              Admin API controls can be
+              connected here as they are
+              exposed by the Worker.
+            </p>
+
+          </div>
+        `;
+
+      }else{
+
+        box.innerHTML = `
+          <div class="empty">
+
+            🔒 This account is not
+            authorized for admin access.
+
+          </div>
+        `;
+
+      }
+
+    }
+
+  }catch(error){
+
+    box.innerHTML = `
+      <div class="empty">
+
+        Could not verify admin account.
+
+        <br><br>
+
+        ${escapeHtml(error.message)}
+
+      </div>
+    `;
+
+  }
+
+}
 
 function updateCounts(){
 
@@ -2551,6 +3311,8 @@ async function init(){
   await loadCurrentUser();
 
   updateAuthStatus();
+
+  updateSellPanel();
 
   await checkBackend();
 
