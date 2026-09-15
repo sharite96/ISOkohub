@@ -1,20 +1,18 @@
+const CORS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  "Access-Control-Max-Age": "86400"
+};
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     const path = url.pathname;
     const method = request.method;
 
-    const corsHeaders = {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type, Authorization"
-    };
-
     if (method === "OPTIONS") {
-      return new Response(null, {
-        status: 204,
-        headers: corsHeaders
-      });
+      return new Response(null, { status: 204, headers: CORS });
     }
 
     try {
@@ -38,7 +36,7 @@ export default {
           service: "IsokoHub API",
           database,
           time: new Date().toISOString()
-        }, 200, corsHeaders);
+        });
       }
 
       // =========================
@@ -52,44 +50,37 @@ export default {
           backend: "cloudflare-workers",
           database: env.DB ? "D1" : "none",
           assets: env.ASSETS ? "connected" : "none"
-        }, 200, corsHeaders);
+        });
       }
+
+      requireDB(env);
 
       // =========================
       // CATEGORIES
       // =========================
       if (path === "/api/categories" && method === "GET") {
-        requireDB(env);
-
         const result = await env.DB.prepare(`
           SELECT *
           FROM categories
-          WHERE is_active = 1
           ORDER BY name ASC
         `).all();
 
         return json({
           ok: true,
           categories: result.results || []
-        }, 200, corsHeaders);
+        });
       }
 
       // =========================
       // PRODUCTS
       // =========================
       if (path === "/api/products" && method === "GET") {
-        requireDB(env);
-
         const search = url.searchParams.get("search") || "";
         const category = url.searchParams.get("category") || "";
         const country = url.searchParams.get("country") || "";
 
         let limit = Number(url.searchParams.get("limit") || 50);
-
-        if (!Number.isFinite(limit)) {
-          limit = 50;
-        }
-
+        if (!Number.isFinite(limit)) limit = 50;
         limit = Math.min(Math.max(Math.floor(limit), 1), 100);
 
         let query = `
@@ -110,18 +101,12 @@ export default {
               p.title LIKE ?
               OR p.description LIKE ?
               OR p.category LIKE ?
-              OR u.name LIKE ?
+              OR p.brand LIKE ?
             )
           `;
 
-          const value = `%${search}%`;
-
-          params.push(
-            value,
-            value,
-            value,
-            value
-          );
+          const q = `%${search}%`;
+          params.push(q, q, q, q);
         }
 
         if (category) {
@@ -130,12 +115,12 @@ export default {
         }
 
         if (country) {
-          query += ` AND p.country = ?`;
+          query += ` AND u.country = ?`;
           params.push(country);
         }
 
         query += `
-          ORDER BY p.id DESC
+          ORDER BY p.created_at DESC
           LIMIT ?
         `;
 
@@ -149,25 +134,24 @@ export default {
         return json({
           ok: true,
           products: result.results || []
-        }, 200, corsHeaders);
+        });
       }
 
       // =========================
       // SINGLE PRODUCT
       // =========================
-      const productMatch = path.match(/^\/api\/products\/(\d+)$/);
+      const productMatch = path.match(/^\/api\/products\/([^/]+)$/);
 
       if (productMatch && method === "GET") {
-        requireDB(env);
-
-        const id = Number(productMatch[1]);
+        const id = productMatch[1];
 
         const product = await env.DB.prepare(`
           SELECT
             p.*,
             u.name AS seller_name,
             u.email AS seller_email,
-            u.phone AS seller_phone
+            u.country AS seller_country,
+            u.district AS seller_district
           FROM products p
           LEFT JOIN users u ON u.id = p.seller_id
           WHERE p.id = ?
@@ -178,27 +162,32 @@ export default {
           return json({
             ok: false,
             error: "Product not found"
-          }, 404, corsHeaders);
+          }, 404);
         }
+
+        const images = await env.DB.prepare(`
+          SELECT *
+          FROM product_images
+          WHERE product_id = ?
+          ORDER BY created_at ASC
+        `).bind(id).all();
 
         return json({
           ok: true,
-          product
-        }, 200, corsHeaders);
+          product,
+          images: images.results || []
+        });
       }
 
       // =========================
       // REGISTER
       // =========================
       if (path === "/api/register" && method === "POST") {
-        requireDB(env);
-
-        const body = await request.json();
+        const body = await readJSON(request);
 
         const name = String(body.name || "").trim();
         const email = String(body.email || "").trim().toLowerCase();
         const password = String(body.password || "");
-        const phone = String(body.phone || "").trim();
         const country = String(body.country || "Rwanda").trim();
         const district = String(body.district || "").trim();
 
@@ -206,14 +195,14 @@ export default {
           return json({
             ok: false,
             error: "Name, email and password are required"
-          }, 400, corsHeaders);
+          }, 400);
         }
 
         if (password.length < 6) {
           return json({
             ok: false,
             error: "Password must contain at least 6 characters"
-          }, 400, corsHeaders);
+          }, 400);
         }
 
         const existing = await env.DB.prepare(`
@@ -227,45 +216,45 @@ export default {
           return json({
             ok: false,
             error: "Email already registered"
-          }, 409, corsHeaders);
+          }, 409);
         }
 
+        const id = crypto.randomUUID();
         const passwordHash = await sha256(password);
 
-        const result = await env.DB.prepare(`
-          INSERT INTO users
-          (
-            name,
+        await env.DB.prepare(`
+          INSERT INTO users (
+            id,
             email,
+            name,
+            role,
             password_hash,
-            phone,
             country,
             district
           )
-          VALUES (?, ?, ?, ?, ?, ?)
+          VALUES (?, ?, ?, ?, ?, ?, ?)
         `).bind(
-          name,
+          id,
           email,
+          name,
+          "buyer",
           passwordHash,
-          phone || null,
-          country || "Rwanda",
+          country,
           district || null
         ).run();
 
         return json({
           ok: true,
           message: "Account created successfully",
-          userId: result.meta?.last_row_id || null
-        }, 201, corsHeaders);
+          userId: id
+        }, 201);
       }
 
       // =========================
       // LOGIN
       // =========================
       if (path === "/api/login" && method === "POST") {
-        requireDB(env);
-
-        const body = await request.json();
+        const body = await readJSON(request);
 
         const email = String(body.email || "").trim().toLowerCase();
         const password = String(body.password || "");
@@ -274,50 +263,45 @@ export default {
           return json({
             ok: false,
             error: "Email and password are required"
-          }, 400, corsHeaders);
+          }, 400);
         }
 
         const user = await env.DB.prepare(`
           SELECT *
           FROM users
           WHERE email = ?
-            AND is_active = 1
           LIMIT 1
         `).bind(email).first();
 
-        if (!user) {
+        if (!user || !user.password_hash) {
           return json({
             ok: false,
             error: "Invalid email or password"
-          }, 401, corsHeaders);
+          }, 401);
         }
 
         const passwordHash = await sha256(password);
 
-        if (user.password_hash !== passwordHash) {
+        if (passwordHash !== user.password_hash) {
           return json({
             ok: false,
             error: "Invalid email or password"
-          }, 401, corsHeaders);
+          }, 401);
         }
 
         const token = crypto.randomUUID();
         const tokenHash = await sha256(token);
 
         await env.DB.prepare(`
-          DELETE FROM sessions
-          WHERE user_id = ?
-        `).bind(user.id).run();
-
-        await env.DB.prepare(`
-          INSERT INTO sessions
-          (
+          INSERT INTO sessions (
+            id,
             user_id,
             token_hash,
             expires_at
           )
-          VALUES (?, ?, datetime('now', '+30 days'))
+          VALUES (?, ?, ?, datetime('now', '+30 days'))
         `).bind(
+          crypto.randomUUID(),
           user.id,
           tokenHash
         ).run();
@@ -327,15 +311,13 @@ export default {
           message: "Login successful",
           token,
           user: safeUser(user)
-        }, 200, corsHeaders);
+        });
       }
 
       // =========================
       // ME
       // =========================
       if (path === "/api/me" && method === "GET") {
-        requireDB(env);
-
         const user = await authenticate(request, env);
 
         if (!user) {
@@ -343,22 +325,20 @@ export default {
             ok: false,
             authenticated: false,
             error: "Authentication required"
-          }, 401, corsHeaders);
+          }, 401);
         }
 
         return json({
           ok: true,
           authenticated: true,
           user: safeUser(user)
-        }, 200, corsHeaders);
+        });
       }
 
       // =========================
       // LOGOUT
       // =========================
       if (path === "/api/logout" && method === "POST") {
-        requireDB(env);
-
         const token = getToken(request);
 
         if (token) {
@@ -373,93 +353,76 @@ export default {
         return json({
           ok: true,
           message: "Logged out successfully"
-        }, 200, corsHeaders);
+        });
       }
 
       // =========================
       // CREATE PRODUCT
       // =========================
       if (path === "/api/products" && method === "POST") {
-        requireDB(env);
-
         const user = await authenticate(request, env);
 
         if (!user) {
           return json({
             ok: false,
             error: "Authentication required"
-          }, 401, corsHeaders);
+          }, 401);
         }
 
-        const body = await request.json();
+        const body = await readJSON(request);
 
         const title = String(body.title || "").trim();
         const category = String(body.category || "").trim();
         const description = String(body.description || "").trim();
-
-        const price = Number(body.price || 0);
-        const stock = Number(body.stock ?? 1);
+        const price = Number(body.price);
 
         if (!title || !category) {
           return json({
             ok: false,
             error: "Title and category are required"
-          }, 400, corsHeaders);
+          }, 400);
         }
 
         if (!Number.isFinite(price) || price < 0) {
           return json({
             ok: false,
             error: "Invalid price"
-          }, 400, corsHeaders);
+          }, 400);
         }
 
-        if (!Number.isFinite(stock) || stock < 0) {
-          return json({
-            ok: false,
-            error: "Invalid stock"
-          }, 400, corsHeaders);
-        }
+        const id = crypto.randomUUID();
 
-        const result = await env.DB.prepare(`
+        await env.DB.prepare(`
           INSERT INTO products (
+            id,
             seller_id,
             title,
-            category,
             description,
+            category,
             price,
             currency,
-            stock,
+            location,
             brand,
-            model,
             condition,
-            country,
-            district,
             storage,
             ram,
-            image_url,
-            specs,
             negotiable,
             status
           )
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `).bind(
+          id,
           user.id,
           title,
-          category,
           description || null,
-          price,
+          category,
+          Math.round(price),
           String(body.currency || "RWF"),
-          stock,
+          body.location || null,
           body.brand || null,
-          body.model || null,
           body.condition || null,
-          body.country || user.country || "Rwanda",
-          body.district || user.district || null,
           body.storage || null,
           body.ram || null,
-          body.image_url || body.imageUrl || null,
-          body.specs || null,
           body.negotiable ? 1 : 0,
           "active"
         ).run();
@@ -467,26 +430,24 @@ export default {
         return json({
           ok: true,
           message: "Product created successfully",
-          productId: result.meta?.last_row_id || null
-        }, 201, corsHeaders);
+          productId: id
+        }, 201);
       }
 
       // =========================
       // UPDATE PRODUCT
       // =========================
       if (productMatch && method === "PUT") {
-        requireDB(env);
-
         const user = await authenticate(request, env);
 
         if (!user) {
           return json({
             ok: false,
             error: "Authentication required"
-          }, 401, corsHeaders);
+          }, 401);
         }
 
-        const id = Number(productMatch[1]);
+        const id = productMatch[1];
 
         const product = await env.DB.prepare(`
           SELECT *
@@ -499,83 +460,72 @@ export default {
           return json({
             ok: false,
             error: "Product not found"
-          }, 404, corsHeaders);
+          }, 404);
         }
 
-        if (
-          Number(product.seller_id) !== Number(user.id) &&
-          user.role !== "admin"
-        ) {
+        if (product.seller_id !== user.id && user.role !== "admin") {
           return json({
             ok: false,
             error: "Not authorized"
-          }, 403, corsHeaders);
+          }, 403);
         }
 
-        const body = await request.json();
+        const body = await readJSON(request);
 
         await env.DB.prepare(`
           UPDATE products
           SET
             title = COALESCE(?, title),
-            category = COALESCE(?, category),
             description = COALESCE(?, description),
+            category = COALESCE(?, category),
             price = COALESCE(?, price),
-            stock = COALESCE(?, stock),
+            currency = COALESCE(?, currency),
+            location = COALESCE(?, location),
             brand = COALESCE(?, brand),
-            model = COALESCE(?, model),
             condition = COALESCE(?, condition),
-            country = COALESCE(?, country),
-            district = COALESCE(?, district),
             storage = COALESCE(?, storage),
             ram = COALESCE(?, ram),
-            image_url = COALESCE(?, image_url),
-            specs = COALESCE(?, specs),
-            negotiable = COALESCE(?, negotiable)
+            negotiable = COALESCE(?, negotiable),
+            status = COALESCE(?, status)
           WHERE id = ?
         `).bind(
           body.title ?? null,
-          body.category ?? null,
           body.description ?? null,
-          body.price ?? null,
-          body.stock ?? null,
+          body.category ?? null,
+          body.price !== undefined ? Number(body.price) : null,
+          body.currency ?? null,
+          body.location ?? null,
           body.brand ?? null,
-          body.model ?? null,
           body.condition ?? null,
-          body.country ?? null,
-          body.district ?? null,
           body.storage ?? null,
           body.ram ?? null,
-          body.image_url ?? body.imageUrl ?? null,
-          body.specs ?? null,
           body.negotiable === undefined
             ? null
             : (body.negotiable ? 1 : 0),
+          body.status ?? null,
           id
         ).run();
 
         return json({
           ok: true,
           message: "Product updated successfully"
-        }, 200, corsHeaders);
+        });
       }
 
       // =========================
       // DELETE PRODUCT
       // =========================
       if (productMatch && method === "DELETE") {
-        requireDB(env);
-
         const user = await authenticate(request, env);
 
         if (!user) {
           return json({
             ok: false,
             error: "Authentication required"
-          }, 401, corsHeaders);
+          }, 401);
         }
 
-        const id = Number(productMatch[1]);
+        const id = productMatch[1];
 
         const product = await env.DB.prepare(`
           SELECT seller_id
@@ -588,17 +538,14 @@ export default {
           return json({
             ok: false,
             error: "Product not found"
-          }, 404, corsHeaders);
+          }, 404);
         }
 
-        if (
-          Number(product.seller_id) !== Number(user.id) &&
-          user.role !== "admin"
-        ) {
+        if (product.seller_id !== user.id && user.role !== "admin") {
           return json({
             ok: false,
             error: "Not authorized"
-          }, 403, corsHeaders);
+          }, 403);
         }
 
         await env.DB.prepare(`
@@ -609,257 +556,145 @@ export default {
         return json({
           ok: true,
           message: "Product deleted successfully"
-        }, 200, corsHeaders);
+        });
       }
 
       // =========================
-      // SAVED
+      // SERVICES
       // =========================
-      if (path === "/api/saved" && method === "GET") {
-        requireDB(env);
-
-        const user = await authenticate(request, env);
-
-        if (!user) {
-          return json({
-            ok: false,
-            error: "Authentication required"
-          }, 401, corsHeaders);
-        }
-
+      if (path === "/api/services" && method === "GET") {
         const result = await env.DB.prepare(`
           SELECT
-            p.*,
-            s.created_at AS saved_at
-          FROM saved_products s
-          JOIN products p ON p.id = s.product_id
-          WHERE s.user_id = ?
-          ORDER BY s.id DESC
-        `).bind(user.id).all();
+            s.*,
+            u.name AS provider_name,
+            u.email AS provider_email
+          FROM services s
+          LEFT JOIN users u ON u.id = s.provider_id
+          WHERE s.status = 'active'
+          ORDER BY s.created_at DESC
+        `).all();
 
         return json({
           ok: true,
-          products: result.results || []
-        }, 200, corsHeaders);
+          services: result.results || []
+        });
       }
 
-      if (path === "/api/saved" && method === "POST") {
-        requireDB(env);
-
+      if (path === "/api/services" && method === "POST") {
         const user = await authenticate(request, env);
 
         if (!user) {
           return json({
             ok: false,
             error: "Authentication required"
-          }, 401, corsHeaders);
+          }, 401);
         }
 
-        const body = await request.json();
-        const productId = Number(
-          body.product_id || body.productId
-        );
+        const body = await readJSON(request);
 
-        if (!productId) {
+        const name = String(body.name || "").trim();
+        const category = String(body.category || "").trim();
+
+        if (!name || !category) {
           return json({
             ok: false,
-            error: "Product ID is required"
-          }, 400, corsHeaders);
+            error: "Service name and category are required"
+          }, 400);
         }
+
+        const id = crypto.randomUUID();
 
         await env.DB.prepare(`
-          INSERT OR IGNORE INTO saved_products
-          (user_id, product_id)
-          VALUES (?, ?)
-        `).bind(
-          user.id,
-          productId
-        ).run();
-
-        return json({
-          ok: true,
-          message: "Product saved"
-        }, 200, corsHeaders);
-      }
-
-      if (path.startsWith("/api/saved/") && method === "DELETE") {
-        requireDB(env);
-
-        const user = await authenticate(request, env);
-
-        if (!user) {
-          return json({
-            ok: false,
-            error: "Authentication required"
-          }, 401, corsHeaders);
-        }
-
-        const id = Number(path.split("/").pop());
-
-        await env.DB.prepare(`
-          DELETE FROM saved_products
-          WHERE user_id = ?
-            AND product_id = ?
-        `).bind(
-          user.id,
-          id
-        ).run();
-
-        return json({
-          ok: true,
-          message: "Product removed from saved"
-        }, 200, corsHeaders);
-      }
-
-      // =========================
-      // MESSAGES
-      // =========================
-      if (path === "/api/messages" && method === "GET") {
-        requireDB(env);
-
-        const user = await authenticate(request, env);
-
-        if (!user) {
-          return json({
-            ok: false,
-            error: "Authentication required"
-          }, 401, corsHeaders);
-        }
-
-        const result = await env.DB.prepare(`
-          SELECT
-            m.*,
-            s.name AS sender_name,
-            r.name AS receiver_name
-          FROM messages m
-          JOIN users s ON s.id = m.sender_id
-          JOIN users r ON r.id = m.receiver_id
-          WHERE m.sender_id = ?
-             OR m.receiver_id = ?
-          ORDER BY m.id DESC
-        `).bind(
-          user.id,
-          user.id
-        ).all();
-
-        return json({
-          ok: true,
-          messages: result.results || []
-        }, 200, corsHeaders);
-      }
-
-      if (path === "/api/messages" && method === "POST") {
-        requireDB(env);
-
-        const user = await authenticate(request, env);
-
-        if (!user) {
-          return json({
-            ok: false,
-            error: "Authentication required"
-          }, 401, corsHeaders);
-        }
-
-        const body = await request.json();
-
-        const receiverId = Number(
-          body.receiver_id || body.receiverId
-        );
-
-        const message = String(
-          body.message || ""
-        ).trim();
-
-        if (!receiverId || !message) {
-          return json({
-            ok: false,
-            error: "Receiver and message are required"
-          }, 400, corsHeaders);
-        }
-
-        const result = await env.DB.prepare(`
-          INSERT INTO messages
-          (
-            sender_id,
-            receiver_id,
-            product_id,
-            message
+          INSERT INTO services (
+            id,
+            provider_id,
+            name,
+            category,
+            skill,
+            description,
+            price,
+            currency,
+            location,
+            availability,
+            status
           )
-          VALUES (?, ?, ?, ?)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `).bind(
+          id,
           user.id,
-          receiverId,
-          body.product_id || body.productId || null,
-          message
+          name,
+          category,
+          body.skill || null,
+          body.description || null,
+          body.price !== undefined ? Number(body.price) : null,
+          body.currency || "RWF",
+          body.location || null,
+          body.availability || null,
+          "active"
         ).run();
 
         return json({
           ok: true,
-          message: "Message sent",
-          messageId: result.meta?.last_row_id || null
-        }, 201, corsHeaders);
+          message: "Service created successfully",
+          serviceId: id
+        }, 201);
       }
 
       // =========================
-      // ORDERS GET
+      // ORDERS
       // =========================
       if (path === "/api/orders" && method === "GET") {
-        requireDB(env);
-
         const user = await authenticate(request, env);
 
         if (!user) {
           return json({
             ok: false,
             error: "Authentication required"
-          }, 401, corsHeaders);
+          }, 401);
         }
 
         const result = await env.DB.prepare(`
           SELECT
             o.*,
+            oi.id AS item_id,
+            oi.product_id,
+            oi.seller_id,
+            oi.quantity,
+            oi.unit_price,
             p.title AS product_title,
-            p.image_url AS product_image,
-            b.name AS buyer_name,
-            s.name AS seller_name
+            p.location AS product_location
           FROM orders o
-          JOIN products p ON p.id = o.product_id
-          JOIN users b ON b.id = o.buyer_id
-          LEFT JOIN users s ON s.id = o.seller_id
+          LEFT JOIN order_items oi ON oi.order_id = o.id
+          LEFT JOIN products p ON p.id = oi.product_id
           WHERE o.buyer_id = ?
-             OR o.seller_id = ?
-          ORDER BY o.id DESC
-        `).bind(
-          user.id,
-          user.id
-        ).all();
+             OR oi.seller_id = ?
+          ORDER BY o.created_at DESC
+        `).bind(user.id, user.id).all();
 
         return json({
           ok: true,
           orders: result.results || []
-        }, 200, corsHeaders);
+        });
       }
 
       // =========================
       // CREATE ORDER
       // =========================
       if (path === "/api/orders" && method === "POST") {
-        requireDB(env);
-
         const user = await authenticate(request, env);
 
         if (!user) {
           return json({
             ok: false,
             error: "Authentication required"
-          }, 401, corsHeaders);
+          }, 401);
         }
 
-        const body = await request.json();
+        const body = await readJSON(request);
 
-        const productId = Number(
-          body.product_id || body.productId
-        );
+        const productId = String(
+          body.product_id || body.productId || ""
+        ).trim();
 
         const quantity = Math.max(
           Number(body.quantity || 1),
@@ -870,7 +705,7 @@ export default {
           return json({
             ok: false,
             error: "Product ID is required"
-          }, 400, corsHeaders);
+          }, 400);
         }
 
         const product = await env.DB.prepare(`
@@ -885,74 +720,251 @@ export default {
           return json({
             ok: false,
             error: "Product not found"
-          }, 404, corsHeaders);
+          }, 404);
         }
 
-        if (Number(product.stock) < quantity) {
-          return json({
-            ok: false,
-            error: "Not enough stock"
-          }, 400, corsHeaders);
-        }
+        const total = Number(product.price) * quantity;
+        const orderId = crypto.randomUUID();
 
-        const total =
-          Number(product.price) * quantity;
-
-        const result = await env.DB.prepare(`
+        await env.DB.prepare(`
           INSERT INTO orders (
+            id,
             buyer_id,
-            product_id,
-            seller_id,
-            quantity,
-            unit_price,
-            total_price,
+            total,
             currency,
-            delivery_address,
-            delivery_country,
-            delivery_district,
-            delivery_phone
+            status,
+            payment_status,
+            delivery_status,
+            delivery_address
           )
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         `).bind(
+          orderId,
           user.id,
-          product.id,
-          product.seller_id,
-          quantity,
-          product.price,
           total,
           product.currency || "RWF",
+          "pending",
+          "unpaid",
+          "not_started",
           body.delivery_address ||
-            body.deliveryAddress ||
-            null,
-          body.delivery_country ||
-            body.deliveryCountry ||
-            user.country ||
-            null,
-          body.delivery_district ||
-            body.deliveryDistrict ||
-            user.district ||
-            null,
-          body.delivery_phone ||
-            body.deliveryPhone ||
-            user.phone ||
-            null
+          body.deliveryAddress ||
+          null
         ).run();
 
         await env.DB.prepare(`
-          UPDATE products
-          SET stock = stock - ?
-          WHERE id = ?
+          INSERT INTO order_items (
+            id,
+            order_id,
+            product_id,
+            seller_id,
+            quantity,
+            unit_price
+          )
+          VALUES (?, ?, ?, ?, ?, ?)
         `).bind(
+          crypto.randomUUID(),
+          orderId,
+          product.id,
+          product.seller_id,
           quantity,
-          product.id
+          product.price
         ).run();
 
         return json({
           ok: true,
           message: "Order created successfully",
-          orderId: result.meta?.last_row_id || null,
-          total
-        }, 201, corsHeaders);
+          orderId,
+          total,
+          currency: product.currency || "RWF"
+        }, 201);
+      }
+
+      // =========================
+      // MESSAGES
+      // =========================
+      if (path === "/api/messages" && method === "GET") {
+        const user = await authenticate(request, env);
+
+        if (!user) {
+          return json({
+            ok: false,
+            error: "Authentication required"
+          }, 401);
+        }
+
+        const result = await env.DB.prepare(`
+          SELECT
+            m.*,
+            s.name AS sender_name,
+            r.name AS recipient_name
+          FROM messages m
+          JOIN users s ON s.id = m.sender_id
+          JOIN users r ON r.id = m.recipient_id
+          WHERE m.sender_id = ?
+             OR m.recipient_id = ?
+          ORDER BY m.created_at DESC
+        `).bind(user.id, user.id).all();
+
+        return json({
+          ok: true,
+          messages: result.results || []
+        });
+      }
+
+      if (path === "/api/messages" && method === "POST") {
+        const user = await authenticate(request, env);
+
+        if (!user) {
+          return json({
+            ok: false,
+            error: "Authentication required"
+          }, 401);
+        }
+
+        const body = await readJSON(request);
+
+        const recipientId = String(
+          body.recipient_id ||
+          body.recipientId ||
+          ""
+        ).trim();
+
+        const messageBody = String(
+          body.body ||
+          body.message ||
+          ""
+        ).trim();
+
+        if (!recipientId || !messageBody) {
+          return json({
+            ok: false,
+            error: "Recipient and message are required"
+          }, 400);
+        }
+
+        const recipient = await env.DB.prepare(`
+          SELECT id
+          FROM users
+          WHERE id = ?
+          LIMIT 1
+        `).bind(recipientId).first();
+
+        if (!recipient) {
+          return json({
+            ok: false,
+            error: "Recipient not found"
+          }, 404);
+        }
+
+        const id = crypto.randomUUID();
+
+        await env.DB.prepare(`
+          INSERT INTO messages (
+            id,
+            sender_id,
+            recipient_id,
+            body
+          )
+          VALUES (?, ?, ?, ?)
+        `).bind(
+          id,
+          user.id,
+          recipientId,
+          messageBody
+        ).run();
+
+        return json({
+          ok: true,
+          message: "Message sent",
+          messageId: id
+        }, 201);
+      }
+
+      // =========================
+      // REVIEWS
+      // =========================
+      if (path === "/api/reviews" && method === "POST") {
+        const user = await authenticate(request, env);
+
+        if (!user) {
+          return json({
+            ok: false,
+            error: "Authentication required"
+          }, 401);
+        }
+
+        const body = await readJSON(request);
+        const rating = Number(body.rating);
+
+        if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+          return json({
+            ok: false,
+            error: "Rating must be between 1 and 5"
+          }, 400);
+        }
+
+        const productId = body.product_id || null;
+        const serviceId = body.service_id || null;
+
+        if (!productId && !serviceId) {
+          return json({
+            ok: false,
+            error: "Product ID or service ID is required"
+          }, 400);
+        }
+
+        const id = crypto.randomUUID();
+
+        await env.DB.prepare(`
+          INSERT INTO reviews (
+            id,
+            reviewer_id,
+            product_id,
+            service_id,
+            rating,
+            body
+          )
+          VALUES (?, ?, ?, ?, ?, ?)
+        `).bind(
+          id,
+          user.id,
+          productId,
+          serviceId,
+          rating,
+          body.body || null
+        ).run();
+
+        return json({
+          ok: true,
+          message: "Review submitted",
+          reviewId: id
+        }, 201);
+      }
+
+      // =========================
+      // NOTIFICATIONS
+      // =========================
+      if (path === "/api/notifications" && method === "GET") {
+        const user = await authenticate(request, env);
+
+        if (!user) {
+          return json({
+            ok: false,
+            error: "Authentication required"
+          }, 401);
+        }
+
+        const result = await env.DB.prepare(`
+          SELECT *
+          FROM notifications
+          WHERE user_id = ?
+          ORDER BY created_at DESC
+        `).bind(user.id).all();
+
+        return json({
+          ok: true,
+          notifications: result.results || []
+        });
       }
 
       // =========================
@@ -963,7 +975,7 @@ export default {
           ok: false,
           error: "API endpoint not found",
           path
-        }, 404, corsHeaders);
+        }, 404);
       }
 
       // =========================
@@ -973,22 +985,19 @@ export default {
         return env.ASSETS.fetch(request);
       }
 
-      return new Response(
-        "IsokoHub",
-        {
-          status: 200,
-          headers: {
-            "Content-Type": "text/plain; charset=UTF-8"
-          }
+      return new Response("IsokoHub", {
+        status: 200,
+        headers: {
+          "Content-Type": "text/plain; charset=UTF-8"
         }
-      );
+      });
 
     } catch (error) {
       return json({
         ok: false,
         error: "Server error",
         message: error?.message || String(error)
-      }, 500, corsHeaders);
+      }, 500);
     }
   }
 };
@@ -1006,20 +1015,29 @@ function requireDB(env) {
 
 
 // =========================
-// JSON RESPONSE
+// JSON
 // =========================
 
-function json(data, status = 200, extraHeaders = {}) {
+function json(data, status = 200) {
   return new Response(
     JSON.stringify(data, null, 2),
     {
       status,
       headers: {
         "Content-Type": "application/json; charset=UTF-8",
-        ...extraHeaders
+        ...CORS
       }
     }
   );
+}
+
+
+async function readJSON(request) {
+  try {
+    return await request.json();
+  } catch {
+    throw new Error("Invalid JSON body");
+  }
 }
 
 
@@ -1028,23 +1046,16 @@ function json(data, status = 200, extraHeaders = {}) {
 // =========================
 
 async function sha256(value) {
-  const data =
-    new TextEncoder().encode(String(value));
+  const data = new TextEncoder().encode(String(value));
 
-  const hash =
-    await crypto.subtle.digest(
-      "SHA-256",
-      data
-    );
+  const hash = await crypto.subtle.digest(
+    "SHA-256",
+    data
+  );
 
-  return Array.from(
-    new Uint8Array(hash)
-  )
-    .map(
-      byte =>
-        byte
-          .toString(16)
-          .padStart(2, "0")
+  return Array.from(new Uint8Array(hash))
+    .map(byte =>
+      byte.toString(16).padStart(2, "0")
     )
     .join("");
 }
@@ -1062,14 +1073,12 @@ function getToken(request) {
     return null;
   }
 
-  return header
-    .slice(7)
-    .trim() || null;
+  return header.slice(7).trim() || null;
 }
 
 
 // =========================
-// AUTH
+// AUTHENTICATION
 // =========================
 
 async function authenticate(request, env) {
@@ -1079,22 +1088,16 @@ async function authenticate(request, env) {
     return null;
   }
 
-  const tokenHash =
-    await sha256(token);
+  const tokenHash = await sha256(token);
 
-  const user =
-    await env.DB.prepare(`
-      SELECT u.*
-      FROM sessions s
-      JOIN users u
-        ON u.id = s.user_id
-      WHERE s.token_hash = ?
-        AND s.expires_at > datetime('now')
-        AND u.is_active = 1
-      LIMIT 1
-    `)
-      .bind(tokenHash)
-      .first();
+  const user = await env.DB.prepare(`
+    SELECT u.*
+    FROM sessions s
+    JOIN users u ON u.id = s.user_id
+    WHERE s.token_hash = ?
+      AND s.expires_at > datetime('now')
+    LIMIT 1
+  `).bind(tokenHash).first();
 
   return user || null;
 }
@@ -1110,13 +1113,8 @@ function safeUser(user) {
     name: user.name,
     email: user.email,
     role: user.role,
-    phone: user.phone,
     country: user.country,
     district: user.district,
-    avatar_url: user.avatar_url,
-    bio: user.bio,
-    is_verified: user.is_verified,
-    is_active: user.is_active,
     created_at: user.created_at
   };
 }
