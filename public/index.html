@@ -1,3591 +1,2120 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IsokoHub — Global Marketplace</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    :root {
-      --primary: #166534;
-      --primary-dark: #14532d;
-      --secondary: #f59e0b;
-      --bg: #f5f7f6;
-      --card: #ffffff;
-      --text: #17201a;
-      --muted: #6b7280;
-      --border: #e5e7eb;
-      --danger: #dc2626;
-      --success: #15803d;
-      --shadow: 0 8px 30px rgba(0,0,0,.08);
-      --radius: 16px;
-    }
-
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-    }
-
-    button,
-    input,
-    select,
-    textarea {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-      border: 0;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    .container {
-      width: min(1200px, 94%);
-      margin: auto;
-    }
-
-    /* HEADER */
-    header {
-      background: #fff;
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 50;
-    }
-
-    .topbar {
-      min-height: 68px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .logo {
-      font-size: 25px;
-      font-weight: 900;
-      color: var(--primary);
-      white-space: nowrap;
-    }
-
-    .logo span {
-      color: var(--secondary);
-    }
-
-    .search-box {
-      flex: 1;
-      display: flex;
-      gap: 8px;
-      max-width: 620px;
-      margin: auto;
-    }
-
-    .search-box input {
-      width: 100%;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 12px 14px;
-      outline: none;
-      background: #fafafa;
-    }
-
-    .search-box input:focus {
-      border-color: var(--primary);
-      background: #fff;
-    }
-
-    .btn {
-      padding: 11px 16px;
-      border-radius: 11px;
-      font-weight: 700;
-      transition: .2s;
-    }
-
-    .btn:hover {
-      transform: translateY(-1px);
-    }
-
-    .btn-primary {
-      background: var(--primary);
-      color: #fff;
-    }
-
-    .btn-primary:hover {
-      background: var(--primary-dark);
-    }
-
-    .btn-secondary {
-      background: #fef3c7;
-      color: #92400e;
-    }
-
-    .btn-light {
-      background: #f3f4f6;
-      color: var(--text);
-    }
-
-    .btn-danger {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-
-    .nav {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .nav button {
-      background: transparent;
-      padding: 9px 10px;
-      border-radius: 9px;
-      color: #374151;
-      font-weight: 600;
-    }
-
-    .nav button:hover {
-      background: #f3f4f6;
-      color: var(--primary);
-    }
-
-    .badge {
-      display: inline-flex;
-      min-width: 19px;
-      height: 19px;
-      align-items: center;
-      justify-content: center;
-      padding: 0 5px;
-      border-radius: 20px;
-      background: var(--secondary);
-      color: #111;
-      font-size: 11px;
-      font-weight: 800;
-      margin-left: 3px;
-    }
-
-    /* STATUS */
-    .status-bar {
-      background: #ecfdf5;
-      color: #166534;
-      border-bottom: 1px solid #bbf7d0;
-      padding: 9px 0;
-      font-size: 13px;
-    }
-
-    .status-inner {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    /* HERO */
-    .hero {
-      margin: 28px auto;
-      padding: 45px 30px;
-      border-radius: 24px;
-      background:
-        linear-gradient(135deg, rgba(22,101,52,.97), rgba(20,83,45,.9));
-      color: #fff;
-      box-shadow: var(--shadow);
-    }
-
-    .hero h1 {
-      font-size: clamp(32px, 5vw, 54px);
-      margin-bottom: 14px;
-      line-height: 1.05;
-    }
-
-    .hero p {
-      max-width: 720px;
-      line-height: 1.7;
-      color: #dcfce7;
-      margin-bottom: 24px;
-      font-size: 16px;
-    }
-
-    .hero-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .hero .btn-secondary {
-      background: #fff;
-      color: var(--primary);
-    }
-
-    /* SECTION */
-    section {
-      margin: 34px 0;
-    }
-
-    .section-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 15px;
-      margin-bottom: 18px;
-      flex-wrap: wrap;
-    }
-
-    .section-head h2 {
-      font-size: 25px;
-    }
-
-    /* CATEGORIES */
-    .categories {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 10px;
-    }
-
-    .category-card {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 17px 10px;
-      text-align: center;
-      transition: .2s;
-      cursor: pointer;
-    }
-
-    .category-card:hover {
-      transform: translateY(-3px);
-      border-color: var(--primary);
-      box-shadow: var(--shadow);
-    }
-
-    .category-icon {
-      font-size: 30px;
-      display: block;
-      margin-bottom: 8px;
-    }
-
-    .category-card strong {
-      font-size: 13px;
-    }
-
-    /* FILTERS */
-    .filters {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 18px;
-    }
-
-    .filters input,
-    .filters select,
-    .form-control {
-      border: 1px solid var(--border);
-      background: #fff;
-      padding: 11px 13px;
-      border-radius: 10px;
-      outline: none;
-    }
-
-    .filters input {
-      min-width: 230px;
-      flex: 1;
-    }
-
-    .filters select {
-      min-width: 160px;
-    }
-
-    /* PRODUCTS */
-    .products {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 18px;
-    }
-
-    .product {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: 0 3px 12px rgba(0,0,0,.04);
-      transition: .2s;
-    }
-
-    .product:hover {
-      transform: translateY(-3px);
-      box-shadow: var(--shadow);
-    }
-
-    .product-image {
-      height: 190px;
-      background: #e5e7eb;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .product-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .product-placeholder {
-      font-size: 55px;
-    }
-
-    .save-btn {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      background: rgba(255,255,255,.95);
-      font-size: 19px;
-    }
-
-    .save-btn.saved {
-      color: #dc2626;
-    }
-
-    .product-body {
-      padding: 15px;
-    }
-
-    .product-category {
-      color: var(--primary);
-      font-size: 12px;
-      font-weight: 800;
-      margin-bottom: 6px;
-    }
-
-    .product-title {
-      font-size: 17px;
-      font-weight: 800;
-      margin-bottom: 8px;
-      min-height: 40px;
-    }
-
-    .product-description {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
-      min-height: 39px;
-      margin-bottom: 10px;
-    }
-
-    .price {
-      font-size: 19px;
-      font-weight: 900;
-      color: var(--primary);
-      margin-bottom: 5px;
-    }
-
-    .seller {
-      color: var(--muted);
-      font-size: 12px;
-      margin-bottom: 12px;
-    }
-
-    .product-actions {
-      display: flex;
-      gap: 7px;
-    }
-
-    .product-actions .btn {
-      flex: 1;
-      padding: 9px 7px;
-      font-size: 12px;
-    }
-
-    .empty {
-      padding: 35px;
-      background: #fff;
-      border-radius: 15px;
-      text-align: center;
-      color: var(--muted);
-      border: 1px dashed var(--border);
-    }
-
-    /* MODAL */
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.55);
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 15px;
-    }
-
-    .modal-box {
-      background: #fff;
-      width: min(850px, 100%);
-      max-height: 92vh;
-      overflow-y: auto;
-      border-radius: 20px;
-      box-shadow: 0 20px 60px rgba(0,0,0,.25);
-    }
-
-    .modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 15px;
-      padding: 18px 20px;
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      background: #fff;
-      z-index: 2;
-    }
-
-    .modal-header h3 {
-      font-size: 21px;
-    }
-
-    .close {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: #f3f4f6;
-      font-size: 20px;
-    }
-
-    .modal-content {
-      padding: 20px;
-    }
-
-    /* FORMS */
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .form-group.full {
-      grid-column: 1 / -1;
-    }
-
-    .form-group label {
-      font-size: 13px;
-      font-weight: 800;
-    }
-
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      outline: none;
-      background: #fff;
-    }
-
-    .form-group textarea {
-      min-height: 100px;
-      resize: vertical;
-    }
-
-    .form-actions {
-      display: flex;
-      gap: 9px;
-      margin-top: 18px;
-      flex-wrap: wrap;
-    }
-
-    .auth-tabs {
-      display: flex;
-      gap: 7px;
-      margin-bottom: 18px;
-    }
-
-    .auth-tabs button {
-      flex: 1;
-      padding: 11px;
-      border-radius: 10px;
-      background: #f3f4f6;
-      font-weight: 700;
-    }
-
-    .auth-tabs button.active {
-      background: var(--primary);
-      color: #fff;
-    }
-
-    /* PRODUCT DETAIL */
-    .detail-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 22px;
-    }
-
-    .detail-image {
-      min-height: 330px;
-      border-radius: 16px;
-      overflow: hidden;
-      background: #f3f4f6;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .detail-image img {
-      width: 100%;
-      max-height: 430px;
-      object-fit: cover;
-    }
-
-    .detail-info h2 {
-      font-size: 27px;
-      margin-bottom: 10px;
-    }
-
-    .detail-info p {
-      color: var(--muted);
-      line-height: 1.7;
-      margin: 12px 0;
-    }
-
-    .specs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin: 15px 0;
-    }
-
-    .spec {
-      padding: 10px;
-      background: #f9fafb;
-      border-radius: 9px;
-      font-size: 13px;
-    }
-
-    /* CART */
-    .cart-item {
-      display: grid;
-      grid-template-columns: 65px 1fr auto;
-      gap: 12px;
-      align-items: center;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .cart-thumb {
-      width: 65px;
-      height: 65px;
-      border-radius: 9px;
-      background: #f3f4f6;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .cart-thumb img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .quantity {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 7px;
-    }
-
-    .quantity button {
-      width: 27px;
-      height: 27px;
-      border-radius: 7px;
-      background: #f3f4f6;
-    }
-
-    .cart-total {
-      text-align: right;
-      font-size: 21px;
-      font-weight: 900;
-      color: var(--primary);
-      padding-top: 18px;
-    }
-
-    /* TABLE */
-    .table-wrap {
-      overflow-x: auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 650px;
-    }
-
-    th,
-    td {
-      padding: 11px;
-      text-align: left;
-      border-bottom: 1px solid var(--border);
-      font-size: 13px;
-    }
-
-    th {
-      background: #f9fafb;
-      font-weight: 900;
-    }
-
-    /* DASHBOARD */
-    .dashboard-tabs {
-      display: flex;
-      gap: 7px;
-      overflow-x: auto;
-      margin-bottom: 18px;
-    }
-
-    .dashboard-tabs button {
-      white-space: nowrap;
-      padding: 10px 14px;
-      border-radius: 9px;
-      background: #f3f4f6;
-      font-weight: 700;
-    }
-
-    .dashboard-tabs button.active {
-      background: var(--primary);
-      color: #fff;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-
-    .stat {
-      background: #f9fafb;
-      border: 1px solid var(--border);
-      padding: 18px;
-      border-radius: 14px;
-    }
-
-    .stat small {
-      color: var(--muted);
-      display: block;
-      margin-bottom: 8px;
-    }
-
-    .stat strong {
-      font-size: 27px;
-      color: var(--primary);
-    }
-
-    /* MESSAGES */
-    .messages-list {
-      max-height: 360px;
-      overflow-y: auto;
-      margin-bottom: 15px;
-    }
-
-    .message {
-      padding: 12px;
-      border-radius: 12px;
-      margin-bottom: 9px;
-      background: #f3f4f6;
-    }
-
-    .message.mine {
-      background: #dcfce7;
-    }
-
-    .message-meta {
-      font-size: 11px;
-      color: var(--muted);
-      margin-bottom: 5px;
-    }
-
-    /* TOAST */
-    #toast {
-      position: fixed;
-      right: 18px;
-      bottom: 18px;
-      z-index: 300;
-      max-width: 350px;
-    }
-
-    .toast {
-      background: #111827;
-      color: #fff;
-      padding: 13px 16px;
-      border-radius: 11px;
-      margin-top: 8px;
-      box-shadow: var(--shadow);
-      font-size: 14px;
-    }
-
-    .toast.success {
-      background: #166534;
-    }
-
-    .toast.error {
-      background: #991b1b;
-    }
-
-    /* FOOTER */
-    footer {
-      background: #111827;
-      color: #d1d5db;
-      margin-top: 55px;
-      padding: 40px 0;
-    }
-
-    .footer-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr;
-      gap: 30px;
-    }
-
-    footer h3 {
-      color: #fff;
-      margin-bottom: 12px;
-    }
-
-    footer p,
-    footer li {
-      font-size: 13px;
-      line-height: 1.8;
-    }
-
-    footer ul {
-      list-style: none;
-    }
-
-    /* RESPONSIVE */
-    @media (max-width: 1000px) {
-      .categories {
-        grid-template-columns: repeat(4, 1fr);
-      }
-
-      .products {
-        grid-template-columns: repeat(3, 1fr);
-      }
-
-      .nav {
-        display: none;
-      }
-    }
-
-    @media (max-width: 750px) {
-      .topbar {
-        flex-wrap: wrap;
-        padding: 10px 0;
-      }
-
-      .search-box {
-        order: 3;
-        flex-basis: 100%;
-      }
-
-      .categories {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .products {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .detail-grid,
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .stats {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .footer-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 470px) {
-      .products {
-        grid-template-columns: 1fr;
-      }
-
-      .hero {
-        padding: 32px 20px;
-      }
-
-      .stats {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .product-image {
-        height: 210px;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IsokoHub — Global Marketplace</title>
+<meta name="description" content="IsokoHub — Global marketplace for products, services, education, art, creators and filmmakers.">
+
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f6f8f7;
+  color:#17201b;
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;border:0}
+a{text-decoration:none;color:inherit}
+
+:root{
+  --green:#08783d;
+  --green2:#075d31;
+  --light:#eaf8f0;
+  --orange:#f0a000;
+  --white:#fff;
+  --gray:#66736c;
+  --border:#e0e6e2;
+  --danger:#c62828;
+}
+
+header{
+  background:#fff;
+  border-bottom:1px solid var(--border);
+  position:sticky;
+  top:0;
+  z-index:100;
+}
+
+.topbar{
+  max-width:1250px;
+  margin:auto;
+  padding:14px 20px;
+  display:flex;
+  align-items:center;
+  gap:18px;
+}
+
+.logo{
+  font-size:30px;
+  font-weight:900;
+  white-space:nowrap;
+  color:var(--green);
+}
+.logo span{color:var(--orange)}
+
+.search{
+  flex:1;
+  display:flex;
+  gap:8px;
+}
+.search input{
+  width:100%;
+  padding:13px 16px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  outline:none;
+  background:#fafafa;
+}
+.search button,
+.primary{
+  background:var(--green);
+  color:white;
+  padding:13px 20px;
+  border-radius:14px;
+  font-weight:700;
+}
+.search button:hover,.primary:hover{background:var(--green2)}
+
+.nav{
+  max-width:1250px;
+  margin:auto;
+  padding:0 20px 12px;
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+}
+.nav button{
+  background:#f1f4f2;
+  padding:9px 13px;
+  border-radius:10px;
+  white-space:nowrap;
+  font-weight:600;
+}
+.nav button:hover{background:var(--light);color:var(--green)}
+
+.auth{
+  display:flex;
+  gap:8px;
+}
+.auth button{
+  padding:12px 18px;
+  border-radius:13px;
+  font-weight:700;
+}
+.loginBtn{background:#f1f2f2}
+.registerBtn{background:var(--green);color:white}
+
+.status{
+  max-width:1250px;
+  margin:0 auto;
+  padding:12px 20px;
+  background:#e9fff3;
+  color:#176c43;
+  border-bottom:1px solid #c5efd7;
+  font-weight:600;
+}
+
+.container{
+  max-width:1250px;
+  margin:auto;
+  padding:25px 20px 70px;
+}
+
+.hero{
+  background:linear-gradient(135deg,#08783d,#17683e);
+  color:white;
+  border-radius:30px;
+  padding:55px 40px;
+  margin-bottom:35px;
+}
+.hero h1{
+  font-size:48px;
+  margin:0 0 20px;
+}
+.hero p{
+  font-size:20px;
+  line-height:1.7;
+  max-width:760px;
+}
+.heroBtns{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:25px;
+}
+.heroBtns button{
+  padding:15px 22px;
+  border-radius:14px;
+  font-weight:800;
+}
+.explore{color:var(--green)}
+.sell{background:#f0f2f1;color:#18201c}
+
+.sectionTitle{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin:35px 0 18px;
+}
+.sectionTitle h2{
+  margin:0;
+  font-size:30px;
+}
+.sectionTitle button{
+  background:none;
+  color:var(--green);
+  font-weight:700;
+}
+
+.categories{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
+}
+.category{
+  background:white;
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:25px 15px;
+  text-align:center;
+  font-weight:800;
+  transition:.2s;
+}
+.category:hover{
+  transform:translateY(-3px);
+  border-color:var(--green);
+}
+.category .icon{font-size:40px;margin-bottom:10px}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:18px;
+}
+.card{
+  background:white;
+  border:1px solid var(--border);
+  border-radius:18px;
+  overflow:hidden;
+  box-shadow:0 3px 12px #00000008;
+}
+.cardImage{
+  height:180px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#eef4f0;
+  font-size:60px;
+}
+.cardBody{padding:16px}
+.card h3{margin:0 0 8px;font-size:18px}
+.price{
+  color:var(--green);
+  font-size:20px;
+  font-weight:900;
+}
+.meta{
+  color:var(--gray);
+  font-size:13px;
+  margin:8px 0;
+}
+.cardActions{
+  display:flex;
+  gap:8px;
+  margin-top:12px;
+}
+.cardActions button{
+  flex:1;
+  padding:10px;
+  border-radius:10px;
+  font-weight:700;
+}
+.cartBtn{background:var(--green);color:white}
+.saveBtn{background:#f0f2f1}
+
+.features{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+  margin-top:35px;
+}
+.feature{
+  background:white;
+  padding:25px;
+  border-radius:18px;
+  border:1px solid var(--border);
+}
+.feature h3{color:var(--green)}
+
+footer{
+  background:#10251a;
+  color:white;
+  padding:45px 20px;
+}
+.footerGrid{
+  max-width:1250px;
+  margin:auto;
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr 1fr;
+  gap:30px;
+}
+footer h3{margin-top:0}
+footer p{color:#c7d5cd}
+footer button{
+  display:block;
+  background:none;
+  color:#d9e8df;
+  padding:6px 0;
+  text-align:left;
+}
+
+/* MODALS */
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:#0008;
+  z-index:500;
+  padding:20px;
+  overflow:auto;
+}
+.modal.active{display:flex;align-items:center;justify-content:center}
+.modalBox{
+  background:white;
+  width:min(650px,100%);
+  max-height:90vh;
+  overflow:auto;
+  border-radius:22px;
+  padding:25px;
+  position:relative;
+}
+.close{
+  position:absolute;
+  right:15px;
+  top:12px;
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  background:#eee;
+  font-size:20px;
+}
+.formGroup{margin-bottom:14px}
+.formGroup label{
+  display:block;
+  font-weight:700;
+  margin-bottom:6px;
+}
+.formGroup input,
+.formGroup select,
+.formGroup textarea{
+  width:100%;
+  padding:12px;
+  border:1px solid var(--border);
+  border-radius:11px;
+}
+.formGroup textarea{min-height:100px}
+
+.tabs{
+  display:flex;
+  gap:7px;
+  overflow:auto;
+  margin-bottom:20px;
+}
+.tabs button{
+  padding:10px 14px;
+  border-radius:10px;
+  background:#edf1ef;
+  white-space:nowrap;
+}
+.tabs button.active{
+  background:var(--green);
+  color:white;
+}
+
+.panel{
+  background:white;
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:20px;
+  margin-bottom:18px;
+}
+
+.statGrid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+}
+.stat{
+  background:#f2f8f4;
+  padding:20px;
+  border-radius:15px;
+}
+.stat strong{
+  display:block;
+  font-size:28px;
+  color:var(--green);
+  margin-top:7px;
+}
+
+.drawer{
+  display:none;
+}
+.drawer.active{
+  display:block;
+}
+
+.tableWrap{overflow:auto}
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+th,td{
+  padding:12px;
+  border-bottom:1px solid var(--border);
+  text-align:left;
+  white-space:nowrap;
+}
+
+.empty{
+  text-align:center;
+  padding:40px;
+  color:var(--gray);
+}
+
+.notice{
+  padding:13px;
+  border-radius:12px;
+  background:#fff7df;
+  color:#765700;
+  margin-bottom:15px;
+}
+
+.success{
+  padding:13px;
+  border-radius:12px;
+  background:#e8f8ef;
+  color:#176b42;
+}
+
+.error{
+  padding:13px;
+  border-radius:12px;
+  background:#ffecec;
+  color:#9d2222;
+}
+
+@media(max-width:900px){
+  .topbar{flex-wrap:wrap}
+  .search{order:3;flex-basis:100%}
+  .categories{grid-template-columns:repeat(2,1fr)}
+  .grid{grid-template-columns:repeat(2,1fr)}
+  .features{grid-template-columns:1fr}
+  .footerGrid{grid-template-columns:1fr 1fr}
+  .statGrid{grid-template-columns:repeat(2,1fr)}
+  .hero h1{font-size:38px}
+}
+
+@media(max-width:550px){
+  .topbar{padding:12px}
+  .logo{font-size:25px}
+  .auth button{padding:10px}
+  .container{padding:18px 14px 60px}
+  .hero{padding:32px 24px;border-radius:22px}
+  .hero h1{font-size:34px}
+  .hero p{font-size:17px}
+  .categories{grid-template-columns:repeat(2,1fr)}
+  .grid{grid-template-columns:1fr}
+  .footerGrid{grid-template-columns:1fr}
+}
+</style>
 </head>
 
 <body>
 
 <header>
-  <div class="container topbar">
-    <div class="logo" onclick="goHome()" style="cursor:pointer">
-      Isoko<span>Hub</span>
-    </div>
+  <div class="topbar">
+    <div class="logo">Isoko<span>Hub</span></div>
 
-    <form class="search-box" id="searchForm">
-      <input
-        id="searchInput"
-        type="search"
-        placeholder="Search products, services or sellers..."
-        autocomplete="off"
-      >
-      <button class="btn btn-primary" type="submit">Search</button>
+    <form class="search" id="searchForm">
+      <input id="searchInput"
+             type="search"
+             placeholder="Search products, services or sellers..."
+             autocomplete="off">
+      <button type="submit">Search</button>
     </form>
 
-    <nav class="nav">
-      <button onclick="goHome()">Home</button>
-      <button onclick="openSaved()">Saved <span id="savedBadge" class="badge">0</span></button>
-      <button onclick="openCart()">Cart <span id="cartBadge" class="badge">0</span></button>
-      <button onclick="openOrders()">Orders</button>
-      <button onclick="openMessages()">Messages</button>
-      <button onclick="openProfile()">Profile</button>
-      <button onclick="openSell()">Sell</button>
-      <button id="adminNav" class="hidden" onclick="openAdmin()">Admin</button>
-    </nav>
-
-    <div id="authButtons">
-      <button class="btn btn-light" onclick="openAuth('login')">Login</button>
-      <button class="btn btn-primary" onclick="openAuth('register')">Register</button>
+    <div class="auth" id="authArea">
+      <button class="loginBtn" onclick="openModal('loginModal')">Login</button>
+      <button class="registerBtn" onclick="openModal('registerModal')">Register</button>
     </div>
+  </div>
 
-    <div id="userButtons" class="hidden">
-      <button class="btn btn-light" onclick="openProfile()" id="userNameButton">
-        Account
-      </button>
-    </div>
+  <div class="nav">
+    <button onclick="showSection('home')">🏠 Home</button>
+    <button onclick="showSection('saved')">❤️ Saved</button>
+    <button onclick="showSection('cart')">🛒 Cart <span id="cartCount">0</span></button>
+    <button onclick="showSection('orders')">📦 Orders</button>
+    <button onclick="showSection('messages')">💬 Messages</button>
+    <button onclick="openModal('sellModal')">🛍️ Sell</button>
+    <button onclick="showProfile()">👤 Profile</button>
+    <button id="adminNav" style="display:none" onclick="showAdmin()">⚙️ Admin</button>
   </div>
 </header>
 
-<div class="status-bar">
-  <div class="container status-inner">
-    <span id="statusText">Connecting to IsokoHub...</span>
-    <span>🌍 Global Marketplace</span>
-  </div>
+<div class="status" id="status">
+  Connecting to IsokoHub API + D1 database...
 </div>
 
 <main class="container">
 
-  <!-- HERO -->
-  <section class="hero" id="homeSection">
+<!-- HOME -->
+<section id="homeSection">
+
+  <div class="hero">
     <h1>Welcome to IsokoHub 🌍</h1>
     <p>
-      A global marketplace connecting buyers, sellers, teachers, artists,
-      creators, filmmakers and service providers.
+      A global marketplace connecting buyers, sellers, teachers,
+      artists, creators, filmmakers and service providers.
     </p>
 
-    <div class="hero-actions">
-      <button class="btn btn-secondary" onclick="scrollToMarketplace()">
-        Explore Marketplace
-      </button>
-
-      <button class="btn btn-light" onclick="openSell()">
-        Start Selling
-      </button>
+    <div class="heroBtns">
+      <button class="explore" onclick="scrollToProducts()">Explore Marketplace</button>
+      <button class="sell" onclick="openModal('sellModal')">Start Selling</button>
     </div>
-  </section>
+  </div>
 
-  <!-- CATEGORIES -->
-  <section>
-    <div class="section-head">
-      <h2>Shop by Category</h2>
+  <div class="sectionTitle">
+    <h2>Shop by Category</h2>
+    <button onclick="loadProducts()">View All</button>
+  </div>
+
+  <div class="categories">
+    <div class="category" onclick="filterCategory('Electronics')">
+      <div class="icon">📱</div>Electronics
     </div>
-
-    <div id="categories" class="categories"></div>
-  </section>
-
-  <!-- MARKETPLACE -->
-  <section id="marketplace">
-    <div class="section-head">
-      <h2>Marketplace</h2>
-      <span id="productCount" style="color:var(--muted);font-size:13px"></span>
+    <div class="category" onclick="filterCategory('Fashion')">
+      <div class="icon">👕</div>Fashion
     </div>
+    <div class="category" onclick="filterCategory('Home')">
+      <div class="icon">🏠</div>Home
+    </div>
+    <div class="category" onclick="filterCategory('Education')">
+      <div class="icon">📚</div>Education
+    </div>
+    <div class="category" onclick="filterCategory('Art & Creative')">
+      <div class="icon">🎨</div>Art & Creative
+    </div>
+    <div class="category" onclick="filterCategory('Film & Entertainment')">
+      <div class="icon">🎬</div>Film & Entertainment
+    </div>
+    <div class="category" onclick="filterCategory('Services')">
+      <div class="icon">🛠️</div>Services
+    </div>
+    <div class="category" onclick="filterCategory('Digital')">
+      <div class="icon">💻</div>Digital Products
+    </div>
+  </div>
 
-    <div class="filters">
-      <input
-        id="marketSearch"
-        type="search"
-        placeholder="Search marketplace..."
-      >
+  <div class="sectionTitle" id="productsTitle">
+    <h2>Featured Products & Services</h2>
+    <button onclick="loadProducts()">Refresh</button>
+  </div>
 
-      <select id="categoryFilter">
-        <option value="">All Categories</option>
-      </select>
+  <div id="products" class="grid">
+    <div class="empty">Loading marketplace...</div>
+  </div>
 
-      <select id="countryFilter">
-        <option value="">All Countries</option>
-        <option value="Rwanda">Rwanda</option>
-        <option value="Uganda">Uganda</option>
-        <option value="Kenya">Kenya</option>
-        <option value="Tanzania">Tanzania</option>
-        <option value="Burundi">Burundi</option>
-        <option value="DR Congo">DR Congo</option>
-        <option value="Nigeria">Nigeria</option>
-        <option value="Ghana">Ghana</option>
-        <option value="South Africa">South Africa</option>
-        <option value="United States">United States</option>
-        <option value="United Kingdom">United Kingdom</option>
-      </select>
-
-      <button class="btn btn-light" onclick="resetFilters()">Reset</button>
+  <div class="features">
+    <div class="feature">
+      <h3>🌍 Global Marketplace</h3>
+      <p>Buy and sell products and services from different countries.</p>
     </div>
 
-    <div id="products" class="products"></div>
-  </section>
+    <div class="feature">
+      <h3>💰 Earn on IsokoHub</h3>
+      <p>Sell products, courses, creative work and professional services.</p>
+    </div>
+
+    <div class="feature">
+      <h3>🚀 Grow Your Business</h3>
+      <p>Promote your products and reach more customers.</p>
+    </div>
+  </div>
+
+</section>
+
+<!-- SAVED -->
+<section id="savedSection" class="drawer">
+  <div class="sectionTitle">
+    <h2>❤️ Saved Items</h2>
+  </div>
+  <div id="savedProducts" class="grid"></div>
+</section>
+
+<!-- CART -->
+<section id="cartSection" class="drawer">
+  <div class="sectionTitle">
+    <h2>🛒 Shopping Cart</h2>
+  </div>
+  <div id="cartItems"></div>
+</section>
+
+<!-- ORDERS -->
+<section id="ordersSection" class="drawer">
+  <div class="sectionTitle">
+    <h2>📦 My Orders</h2>
+  </div>
+  <div id="ordersList" class="panel">
+    Login to view your orders.
+  </div>
+</section>
+
+<!-- MESSAGES -->
+<section id="messagesSection" class="drawer">
+  <div class="sectionTitle">
+    <h2>💬 Messages</h2>
+  </div>
+  <div class="panel">
+    <p>Your buyer/seller conversations will appear here.</p>
+    <button class="primary" onclick="openModal('messageModal')">New Message</button>
+  </div>
+</section>
+
+<!-- PROFILE -->
+<section id="profileSection" class="drawer">
+  <div class="sectionTitle">
+    <h2>👤 My Profile</h2>
+  </div>
+  <div id="profileBox" class="panel"></div>
+</section>
+
+<!-- ADMIN -->
+<section id="adminSection" class="drawer">
+
+  <div class="sectionTitle">
+    <h2>⚙️ IsokoHub Admin Dashboard</h2>
+  </div>
+
+  <div class="tabs">
+    <button class="active" onclick="adminTab('overview',this)">Overview</button>
+    <button onclick="adminTab('users',this)">Users</button>
+    <button onclick="adminTab('sellers',this)">Sellers</button>
+    <button onclick="adminTab('products',this)">Products</button>
+    <button onclick="adminTab('orders',this)">Orders</button>
+    <button onclick="adminTab('payments',this)">Payments</button>
+    <button onclick="adminTab('categories',this)">Categories</button>
+    <button onclick="adminTab('reports',this)">Reports</button>
+    <button onclick="adminTab('reviews',this)">Reviews</button>
+  </div>
+
+  <div id="adminContent"></div>
+
+</section>
 
 </main>
 
 <footer>
-  <div class="container footer-grid">
+  <div class="footerGrid">
+
     <div>
       <h3>IsokoHub 🌍</h3>
       <p>
-        Your global marketplace for products, education, art,
-        entertainment and professional services.
+        A global marketplace connecting buyers, sellers,
+        teachers, artists, creators, filmmakers and service providers.
       </p>
     </div>
 
     <div>
       <h3>Marketplace</h3>
-      <ul>
-        <li>Electronics</li>
-        <li>Fashion</li>
-        <li>Home</li>
-        <li>Education</li>
-        <li>Art & Creative</li>
-      </ul>
+      <button onclick="showSection('home')">Products</button>
+      <button onclick="showSection('home')">Services</button>
+      <button onclick="showSection('home')">Education</button>
+      <button onclick="showSection('home')">Creative</button>
     </div>
 
     <div>
-      <h3>IsokoHub</h3>
-      <ul>
-        <li>Film & Entertainment</li>
-        <li>Services</li>
-        <li>Sell on IsokoHub</li>
-        <li>Global Marketplace</li>
-      </ul>
+      <h3>Account</h3>
+      <button onclick="openModal('loginModal')">Login</button>
+      <button onclick="openModal('registerModal')">Register</button>
+      <button onclick="showProfile()">Profile</button>
+      <button onclick="showSection('orders')">Orders</button>
     </div>
+
+    <div>
+      <h3>Sell on IsokoHub</h3>
+      <button onclick="openModal('sellModal')">Start Selling</button>
+      <button onclick="openModal('sellModal')">Add Product</button>
+      <button onclick="openModal('sellModal')">Offer Service</button>
+    </div>
+
+  </div>
+
+  <div style="max-width:1250px;margin:30px auto 0;border-top:1px solid #294236;padding-top:20px">
+    © 2026 IsokoHub — Global Marketplace
   </div>
 </footer>
 
-<!-- TOAST -->
-<div id="toast"></div>
 
-<!-- AUTH MODAL -->
-<div id="authModal" class="modal hidden" onclick="outsideClose(event, 'authModal')">
-  <div class="modal-box" style="max-width:480px">
-    <div class="modal-header">
-      <h3 id="authTitle">Login</h3>
-      <button class="close" onclick="closeModal('authModal')">×</button>
-    </div>
+<!-- LOGIN -->
+<div class="modal" id="loginModal">
+  <div class="modalBox">
+    <button class="close" onclick="closeModal('loginModal')">×</button>
 
-    <div class="modal-content">
+    <h2>Login to IsokoHub</h2>
 
-      <div class="auth-tabs">
-        <button id="loginTab" onclick="openAuth('login')">Login</button>
-        <button id="registerTab" onclick="openAuth('register')">Register</button>
+    <div id="loginMessage"></div>
+
+    <form id="loginForm">
+      <div class="formGroup">
+        <label>Email</label>
+        <input id="loginEmail" type="email" required>
       </div>
 
-      <form id="loginForm">
-        <div class="form-group">
-          <label>Email</label>
-          <input id="loginEmail" type="email" required>
-        </div>
-
-        <br>
-
-        <div class="form-group">
-          <label>Password</label>
-          <input id="loginPassword" type="password" required>
-        </div>
-
-        <div class="form-actions">
-          <button class="btn btn-primary" type="submit">
-            Login
-          </button>
-        </div>
-      </form>
-
-      <form id="registerForm" class="hidden">
-        <div class="form-grid">
-
-          <div class="form-group">
-            <label>Name</label>
-            <input id="registerName" required>
-          </div>
-
-          <div class="form-group">
-            <label>Email</label>
-            <input id="registerEmail" type="email" required>
-          </div>
-
-          <div class="form-group">
-            <label>Password</label>
-            <input id="registerPassword" type="password" minlength="6" required>
-          </div>
-
-          <div class="form-group">
-            <label>Phone</label>
-            <input id="registerPhone">
-          </div>
-
-          <div class="form-group">
-            <label>Country</label>
-            <input id="registerCountry" value="Rwanda">
-          </div>
-
-          <div class="form-group">
-            <label>District / City</label>
-            <input id="registerDistrict">
-          </div>
-        </div>
-
-        <div class="form-actions">
-          <button class="btn btn-primary" type="submit">
-            Create Account
-          </button>
-        </div>
-      </form>
-
-    </div>
-  </div>
-</div>
-
-<!-- PRODUCT DETAIL MODAL -->
-<div id="productModal" class="modal hidden" onclick="outsideClose(event, 'productModal')">
-  <div class="modal-box">
-    <div class="modal-header">
-      <h3>Product Details</h3>
-      <button class="close" onclick="closeModal('productModal')">×</button>
-    </div>
-
-    <div id="productDetail" class="modal-content"></div>
-  </div>
-</div>
-
-<!-- CART MODAL -->
-<div id="cartModal" class="modal hidden" onclick="outsideClose(event, 'cartModal')">
-  <div class="modal-box">
-    <div class="modal-header">
-      <h3>🛒 My Cart</h3>
-      <button class="close" onclick="closeModal('cartModal')">×</button>
-    </div>
-
-    <div class="modal-content">
-      <div id="cartItems"></div>
-      <div id="cartSummary"></div>
-    </div>
-  </div>
-</div>
-
-<!-- CHECKOUT MODAL -->
-<div id="checkoutModal" class="modal hidden" onclick="outsideClose(event, 'checkoutModal')">
-  <div class="modal-box" style="max-width:600px">
-    <div class="modal-header">
-      <h3>Checkout</h3>
-      <button class="close" onclick="closeModal('checkoutModal')">×</button>
-    </div>
-
-    <div class="modal-content">
-      <form id="checkoutForm">
-
-        <div class="form-grid">
-          <div class="form-group full">
-            <label>Delivery Address</label>
-            <textarea id="deliveryAddress" required></textarea>
-          </div>
-
-          <div class="form-group">
-            <label>Country</label>
-            <input id="deliveryCountry" value="Rwanda" required>
-          </div>
-
-          <div class="form-group">
-            <label>District / City</label>
-            <input id="deliveryDistrict" required>
-          </div>
-
-          <div class="form-group full">
-            <label>Phone</label>
-            <input id="deliveryPhone" required>
-          </div>
-        </div>
-
-        <div id="checkoutTotal" style="margin-top:18px;font-weight:900"></div>
-
-        <div class="form-actions">
-          <button class="btn btn-primary" type="submit">
-            Place Order
-          </button>
-          <button class="btn btn-light" type="button" onclick="closeModal('checkoutModal')">
-            Cancel
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<!-- SELL MODAL -->
-<div id="sellModal" class="modal hidden" onclick="outsideClose(event, 'sellModal')">
-  <div class="modal-box">
-    <div class="modal-header">
-      <h3>Sell on IsokoHub</h3>
-      <button class="close" onclick="closeModal('sellModal')">×</button>
-    </div>
-
-    <div class="modal-content">
-
-      <div id="sellLoginNotice" class="empty hidden">
-        Please login or register before selling.
-        <br><br>
-        <button class="btn btn-primary" onclick="closeModal('sellModal');openAuth('login')">
-          Login
-        </button>
+      <div class="formGroup">
+        <label>Password</label>
+        <input id="loginPassword" type="password" required>
       </div>
 
-      <form id="sellForm">
-        <div class="form-grid">
+      <button class="primary" style="width:100%">Login</button>
+    </form>
 
-          <div class="form-group full">
-            <label>Product / Service Title</label>
-            <input id="sellTitle" required>
-          </div>
-
-          <div class="form-group">
-            <label>Category</label>
-            <select id="sellCategory" required></select>
-          </div>
-
-          <div class="form-group">
-            <label>Price</label>
-            <input id="sellPrice" type="number" min="0" required>
-          </div>
-
-          <div class="form-group">
-            <label>Currency</label>
-            <input id="sellCurrency" value="RWF" required>
-          </div>
-
-          <div class="form-group">
-            <label>Stock</label>
-            <input id="sellStock" type="number" min="1" value="1" required>
-          </div>
-
-          <div class="form-group">
-            <label>Brand</label>
-            <input id="sellBrand">
-          </div>
-
-          <div class="form-group">
-            <label>Model</label>
-            <input id="sellModel">
-          </div>
-
-          <div class="form-group">
-            <label>Condition</label>
-            <select id="sellCondition">
-              <option value="">Select condition</option>
-              <option value="new">New</option>
-              <option value="used">Used</option>
-              <option value="refurbished">Refurbished</option>
-              <option value="has crack">Has crack</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>Country</label>
-            <input id="sellCountry" value="Rwanda">
-          </div>
-
-          <div class="form-group">
-            <label>District / City</label>
-            <input id="sellDistrict">
-          </div>
-
-          <div class="form-group">
-            <label>Storage</label>
-            <input id="sellStorage" placeholder="e.g. 256GB">
-          </div>
-
-          <div class="form-group">
-            <label>RAM</label>
-            <input id="sellRam" placeholder="e.g. 8GB">
-          </div>
-
-          <div class="form-group full">
-            <label>Image URL</label>
-            <input id="sellImage" placeholder="https://...">
-          </div>
-
-          <div class="form-group full">
-            <label>Description</label>
-            <textarea id="sellDescription" required></textarea>
-          </div>
-
-          <div class="form-group full">
-            <label>Specifications</label>
-            <textarea id="sellSpecs" placeholder="Additional specifications..."></textarea>
-          </div>
-
-          <div class="form-group">
-            <label>
-              <input id="sellNegotiable" type="checkbox">
-              Price negotiable
-            </label>
-          </div>
-
-        </div>
-
-        <div class="form-actions">
-          <button class="btn btn-primary" type="submit">
-            Publish Listing
-          </button>
-        </div>
-      </form>
-
-    </div>
+    <p>
+      Don't have an account?
+      <button onclick="closeModal('loginModal');openModal('registerModal')">
+        Register
+      </button>
+    </p>
   </div>
 </div>
 
-<!-- SAVED MODAL -->
-<div id="savedModal" class="modal hidden" onclick="outsideClose(event, 'savedModal')">
-  <div class="modal-box">
-    <div class="modal-header">
-      <h3>❤️ Saved Products</h3>
-      <button class="close" onclick="closeModal('savedModal')">×</button>
-    </div>
 
-    <div class="modal-content">
-      <div id="savedProducts" class="products"></div>
-    </div>
-  </div>
-</div>
+<!-- REGISTER -->
+<div class="modal" id="registerModal">
+  <div class="modalBox">
+    <button class="close" onclick="closeModal('registerModal')">×</button>
 
-<!-- ORDERS MODAL -->
-<div id="ordersModal" class="modal hidden" onclick="outsideClose(event, 'ordersModal')">
-  <div class="modal-box">
-    <div class="modal-header">
-      <h3>📦 My Orders</h3>
-      <button class="close" onclick="closeModal('ordersModal')">×</button>
-    </div>
+    <h2>Create IsokoHub Account</h2>
 
-    <div class="modal-content">
-      <div id="ordersContent"></div>
-    </div>
-  </div>
-</div>
+    <div id="registerMessage"></div>
 
-<!-- MESSAGES MODAL -->
-<div id="messagesModal" class="modal hidden" onclick="outsideClose(event, 'messagesModal')">
-  <div class="modal-box">
-    <div class="modal-header">
-      <h3>💬 Messages</h3>
-      <button class="close" onclick="closeModal('messagesModal')">×</button>
-    </div>
+    <form id="registerForm">
 
-    <div class="modal-content">
-
-      <div id="messagesList" class="messages-list"></div>
-
-      <form id="messageForm">
-        <div class="form-grid">
-
-          <div class="form-group">
-            <label>Receiver User ID</label>
-            <input id="messageReceiver" type="number" required>
-          </div>
-
-          <div class="form-group">
-            <label>Product ID (optional)</label>
-            <input id="messageProduct" type="number">
-          </div>
-
-          <div class="form-group full">
-            <label>Message</label>
-            <textarea id="messageText" required></textarea>
-          </div>
-
-        </div>
-
-        <div class="form-actions">
-          <button class="btn btn-primary" type="submit">
-            Send Message
-          </button>
-        </div>
-      </form>
-
-    </div>
-  </div>
-</div>
-
-<!-- PROFILE MODAL -->
-<div id="profileModal" class="modal hidden" onclick="outsideClose(event, 'profileModal')">
-  <div class="modal-box">
-    <div class="modal-header">
-      <h3>👤 Profile</h3>
-      <button class="close" onclick="closeModal('profileModal')">×</button>
-    </div>
-
-    <div class="modal-content">
-
-      <div id="profileLoginNotice" class="empty hidden">
-        You are not logged in.
-        <br><br>
-        <button class="btn btn-primary" onclick="closeModal('profileModal');openAuth('login')">
-          Login
-        </button>
+      <div class="formGroup">
+        <label>Full Name</label>
+        <input id="regName" required>
       </div>
 
-      <form id="profileForm">
-        <div class="form-grid">
-
-          <div class="form-group">
-            <label>Name</label>
-            <input id="profileName" required>
-          </div>
-
-          <div class="form-group">
-            <label>Email</label>
-            <input id="profileEmail" disabled>
-          </div>
-
-          <div class="form-group">
-            <label>Phone</label>
-            <input id="profilePhone">
-          </div>
-
-          <div class="form-group">
-            <label>Country</label>
-            <input id="profileCountry">
-          </div>
-
-          <div class="form-group">
-            <label>District / City</label>
-            <input id="profileDistrict">
-          </div>
-
-          <div class="form-group">
-            <label>Avatar URL</label>
-            <input id="profileAvatar">
-          </div>
-
-          <div class="form-group full">
-            <label>Bio</label>
-            <textarea id="profileBio"></textarea>
-          </div>
-
-        </div>
-
-        <div class="form-actions">
-          <button class="btn btn-primary" type="submit">
-            Save Profile
-          </button>
-
-          <button class="btn btn-light" type="button" onclick="openSellerDashboard()">
-            My Listings
-          </button>
-
-          <button class="btn btn-danger" type="button" onclick="logout()">
-            Logout
-          </button>
-        </div>
-      </form>
-
-    </div>
-  </div>
-</div>
-
-<!-- SELLER DASHBOARD -->
-<div id="sellerModal" class="modal hidden" onclick="outsideClose(event, 'sellerModal')">
-  <div class="modal-box">
-    <div class="modal-header">
-      <h3>🏪 Seller Dashboard</h3>
-      <button class="close" onclick="closeModal('sellerModal')">×</button>
-    </div>
-
-    <div class="modal-content">
-      <div class="section-head">
-        <h3>My Products</h3>
-        <button class="btn btn-primary" onclick="closeModal('sellerModal');openSell()">
-          + New Listing
-        </button>
+      <div class="formGroup">
+        <label>Email</label>
+        <input id="regEmail" type="email" required>
       </div>
 
-      <div id="sellerProducts"></div>
-    </div>
-  </div>
-</div>
-
-<!-- ADMIN MODAL -->
-<div id="adminModal" class="modal hidden" onclick="outsideClose(event, 'adminModal')">
-  <div class="modal-box" style="width:min(1100px,100%)">
-    <div class="modal-header">
-      <h3>⚙️ IsokoHub Admin Dashboard</h3>
-      <button class="close" onclick="closeModal('adminModal')">×</button>
-    </div>
-
-    <div class="modal-content">
-
-      <div class="dashboard-tabs">
-        <button class="active" onclick="adminTab('overview', this)">Overview</button>
-        <button onclick="adminTab('users', this)">Users</button>
-        <button onclick="adminTab('products', this)">Products</button>
-        <button onclick="adminTab('orders', this)">Orders</button>
-        <button onclick="adminTab('categories', this)">Categories</button>
+      <div class="formGroup">
+        <label>Phone</label>
+        <input id="regPhone">
       </div>
 
-      <div id="adminOverview"></div>
-      <div id="adminUsers" class="hidden"></div>
-      <div id="adminProducts" class="hidden"></div>
-      <div id="adminOrders" class="hidden"></div>
-      <div id="adminCategories" class="hidden"></div>
+      <div class="formGroup">
+        <label>Country</label>
+        <input id="regCountry" value="Rwanda">
+      </div>
 
-    </div>
+      <div class="formGroup">
+        <label>Password</label>
+        <input id="regPassword" type="password" minlength="6" required>
+      </div>
+
+      <button class="primary" style="width:100%">Create Account</button>
+    </form>
   </div>
 </div>
+
+
+<!-- SELL -->
+<div class="modal" id="sellModal">
+  <div class="modalBox">
+
+    <button class="close" onclick="closeModal('sellModal')">×</button>
+
+    <h2>🛍️ Sell on IsokoHub</h2>
+
+    <div class="notice">
+      Add a product, service, course, creative work or other offer.
+    </div>
+
+    <div class="formGroup">
+      <label>Type</label>
+      <select id="sellType">
+        <option>Product</option>
+        <option>Service</option>
+        <option>Course</option>
+        <option>Digital Product</option>
+        <option>Creative Service</option>
+        <option>Film Production</option>
+      </select>
+    </div>
+
+    <div class="formGroup">
+      <label>Title</label>
+      <input id="sellTitle" placeholder="Example: Professional Photography Service">
+    </div>
+
+    <div class="formGroup">
+      <label>Category</label>
+      <select id="sellCategory">
+        <option>Electronics</option>
+        <option>Fashion</option>
+        <option>Home</option>
+        <option>Education</option>
+        <option>Art & Creative</option>
+        <option>Film & Entertainment</option>
+        <option>Services</option>
+        <option>Digital</option>
+      </select>
+    </div>
+
+    <div class="formGroup">
+      <label>Price</label>
+      <input id="sellPrice" type="number">
+    </div>
+
+    <div class="formGroup">
+      <label>Currency</label>
+      <select id="sellCurrency">
+        <option>RWF</option>
+        <option>USD</option>
+        <option>EUR</option>
+        <option>KES</option>
+        <option>UGX</option>
+        <option>TZS</option>
+      </select>
+    </div>
+
+    <div class="formGroup">
+      <label>Country</label>
+      <input id="sellCountry" value="Rwanda">
+    </div>
+
+    <div class="formGroup">
+      <label>District / Location</label>
+      <input id="sellDistrict">
+    </div>
+
+    <div class="formGroup">
+      <label>Description / Specifications</label>
+      <textarea id="sellSpecs"></textarea>
+    </div>
+
+    <button class="primary" style="width:100%" onclick="submitProduct()">
+      Publish on IsokoHub
+    </button>
+
+    <div id="sellMessage" style="margin-top:12px"></div>
+
+  </div>
+</div>
+
+
+<!-- MESSAGE -->
+<div class="modal" id="messageModal">
+  <div class="modalBox">
+
+    <button class="close" onclick="closeModal('messageModal')">×</button>
+
+    <h2>💬 New Message</h2>
+
+    <div class="formGroup">
+      <label>Recipient</label>
+      <input id="messageRecipient">
+    </div>
+
+    <div class="formGroup">
+      <label>Message</label>
+      <textarea id="messageText"></textarea>
+    </div>
+
+    <button class="primary" onclick="sendMessage()">Send Message</button>
+
+  </div>
+</div>
+
 
 <script>
-  /*
-   * ============================================================
-   * ISOKOHUB FRONTEND
-   * API + D1
-   * Uses same origin as Cloudflare Worker Assets
-   * ============================================================
-   */
+/* =========================
+   ISOKOHUB FRONTEND
+========================= */
 
-  const API_BASE = window.location.origin;
+const API = window.location.origin + "/api";
 
-  let currentUser = null;
-  let currentProducts = [];
-  let savedIds = new Set();
-  let cart = JSON.parse(localStorage.getItem("isokohub_cart") || "[]");
-  let categories = [];
-  let selectedProduct = null;
-  let pendingMessageReceiver = null;
-  let pendingMessageProduct = null;
+let products = [];
+let cart = JSON.parse(localStorage.getItem("isokohub_cart") || "[]");
+let saved = JSON.parse(localStorage.getItem("isokohub_saved") || "[]");
+let currentUser = JSON.parse(localStorage.getItem("isokohub_user") || "null");
 
-  /* ------------------------------------------------------------
-     HELPERS
-  ------------------------------------------------------------ */
+function saveLocal(){
+  localStorage.setItem("isokohub_cart",JSON.stringify(cart));
+  localStorage.setItem("isokohub_saved",JSON.stringify(saved));
+}
 
-  function escapeHtml(value) {
-    return String(value ?? "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
+async function api(path,options={}){
+  const token = localStorage.getItem("isokohub_token");
+
+  const headers = {
+    "Content-Type":"application/json",
+    ...(options.headers || {})
+  };
+
+  if(token){
+    headers.Authorization = "Bearer " + token;
   }
 
-  function safeImageUrl(url) {
-    if (!url) return "";
-    try {
-      const parsed = new URL(url, window.location.origin);
-      if (parsed.protocol === "http:" || parsed.protocol === "https:") {
-        return parsed.href;
-      }
-    } catch (e) {}
-    return "";
-  }
-
-  function formatPrice(price, currency = "RWF") {
-    const amount = Number(price || 0);
-
-    try {
-      return new Intl.NumberFormat("en-US", {
-        maximumFractionDigits: 0
-      }).format(amount) + " " + currency;
-    } catch (e) {
-      return amount + " " + currency;
-    }
-  }
-
-  function toast(message, type = "") {
-    const box = document.createElement("div");
-    box.className = "toast " + type;
-    box.textContent = message;
-
-    document.getElementById("toast").appendChild(box);
-
-    setTimeout(() => {
-      box.remove();
-    }, 3500);
-  }
-
-  function openModal(id) {
-    document.getElementById(id).classList.remove("hidden");
-    document.body.style.overflow = "hidden";
-  }
-
-  function closeModal(id) {
-    document.getElementById(id).classList.add("hidden");
-
-    if (!document.querySelector(".modal:not(.hidden)")) {
-      document.body.style.overflow = "";
-    }
-  }
-
-  function outsideClose(event, id) {
-    if (event.target.id === id) {
-      closeModal(id);
-    }
-  }
-
-  function authHeaders() {
-    const token = localStorage.getItem("isokohub_token");
-
-    return token
-      ? {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer " + token
-        }
-      : {
-          "Content-Type": "application/json"
-        };
-  }
-
-  async function api(path, options = {}) {
-    const response = await fetch(API_BASE + path, {
-      ...options,
-      headers: {
-        ...authHeaders(),
-        ...(options.headers || {})
-      }
-    });
-
-    let data = {};
-
-    try {
-      data = await response.json();
-    } catch (e) {}
-
-    if (!response.ok) {
-      throw new Error(
-        data.error ||
-        data.message ||
-        ("Request failed: " + response.status)
-      );
-    }
-
-    return data;
-  }
-
-  function requireLogin() {
-    if (!currentUser) {
-      toast("Please login first.", "error");
-      openAuth("login");
-      return false;
-    }
-
-    return true;
-  }
-
-  function saveCart() {
-    localStorage.setItem("isokohub_cart", JSON.stringify(cart));
-    updateBadges();
-  }
-
-  function updateBadges() {
-    const cartCount = cart.reduce(
-      (sum, item) => sum + Number(item.quantity || 1),
-      0
-    );
-
-    document.getElementById("cartBadge").textContent = cartCount;
-    document.getElementById("savedBadge").textContent = savedIds.size;
-  }
-
-  /* ------------------------------------------------------------
-     BACKEND
-  ------------------------------------------------------------ */
-
-  async function checkBackend() {
-    const status = document.getElementById("statusText");
-
-    try {
-      const data = await api("/api/health");
-
-      if (data.database === "connected") {
-        status.textContent = "Connected ✓ IsokoHub API + D1 database";
-      } else {
-        status.textContent = "API connected, but D1 database needs attention";
-      }
-    } catch (error) {
-      status.textContent = "Backend connection failed — check Cloudflare API/D1";
-      console.error(error);
-    }
-  }
-
-  /* ------------------------------------------------------------
-     AUTH
-  ------------------------------------------------------------ */
-
-  function openAuth(type = "login") {
-    openModal("authModal");
-
-    const login = type === "login";
-
-    document.getElementById("authTitle").textContent =
-      login ? "Login to IsokoHub" : "Create IsokoHub Account";
-
-    document.getElementById("loginForm").classList.toggle("hidden", !login);
-    document.getElementById("registerForm").classList.toggle("hidden", login);
-
-    document.getElementById("loginTab").classList.toggle("active", login);
-    document.getElementById("registerTab").classList.toggle("active", !login);
-  }
-
-  document.getElementById("loginForm").addEventListener("submit", async function(e) {
-    e.preventDefault();
-
-    try {
-      const data = await api("/api/login", {
-        method: "POST",
-        body: JSON.stringify({
-          email: document.getElementById("loginEmail").value.trim(),
-          password: document.getElementById("loginPassword").value
-        })
-      });
-
-      if (data.token) {
-        localStorage.setItem("isokohub_token", data.token);
-      }
-
-      currentUser = data.user || null;
-
-      closeModal("authModal");
-      await afterLogin();
-
-      toast("Welcome back!", "success");
-
-    } catch (error) {
-      toast(error.message, "error");
-    }
+  const response = await fetch(API + path,{
+    ...options,
+    headers
   });
 
-  document.getElementById("registerForm").addEventListener("submit", async function(e) {
-    e.preventDefault();
+  let data={};
 
-    const email = document.getElementById("registerEmail").value.trim();
-    const password = document.getElementById("registerPassword").value;
+  try{
+    data=await response.json();
+  }catch(e){}
 
-    try {
-      await api("/api/register", {
-        method: "POST",
-        body: JSON.stringify({
-          name: document.getElementById("registerName").value.trim(),
-          email,
-          password,
-          phone: document.getElementById("registerPhone").value.trim(),
-          country: document.getElementById("registerCountry").value.trim() || "Rwanda",
-          district: document.getElementById("registerDistrict").value.trim()
-        })
-      });
+  if(!response.ok){
+    throw new Error(data.error || data.message || "Request failed");
+  }
 
-      /*
-       * Registration endpoint does not necessarily return a token.
-       * Login automatically after successful registration.
-       */
-      const loginData = await api("/api/login", {
-        method: "POST",
-        body: JSON.stringify({
-          email,
-          password
-        })
-      });
+  return data;
+}
 
-      if (loginData.token) {
-        localStorage.setItem("isokohub_token", loginData.token);
-      }
 
-      currentUser = loginData.user || null;
+/* =========================
+   CONNECTION
+========================= */
 
-      closeModal("authModal");
-      await afterLogin();
+async function checkConnection(){
 
-      toast("Account created successfully!", "success");
+  const status=document.getElementById("status");
 
-    } catch (error) {
-      toast(error.message, "error");
-    }
-  });
+  try{
 
-  async function loadMe() {
-    const token = localStorage.getItem("isokohub_token");
+    const health=await api("/health");
 
-    if (!token) {
-      currentUser = null;
-      updateAuthUI();
-      return;
+    if(health && health.ok !== false){
+
+      status.innerHTML =
+        "Connected ✓ IsokoHub API + D1 database";
+
+      status.className="status";
+
+    }else{
+
+      status.innerHTML =
+        "API connected, but database status needs attention.";
+
     }
 
-    try {
-      const data = await api("/api/me");
-      currentUser = data.user || data;
-      updateAuthUI();
-    } catch (error) {
-      localStorage.removeItem("isokohub_token");
-      currentUser = null;
-      updateAuthUI();
-    }
+  }catch(error){
+
+    status.innerHTML =
+      "⚠️ Backend connection failed — check Cloudflare Worker/D1 settings.";
+
   }
+}
 
-  async function afterLogin() {
-    updateAuthUI();
-    await loadSaved();
-    updateBadges();
-  }
 
-  function updateAuthUI() {
-    const authButtons = document.getElementById("authButtons");
-    const userButtons = document.getElementById("userButtons");
-    const adminNav = document.getElementById("adminNav");
+/* =========================
+   PRODUCTS
+========================= */
 
-    if (currentUser) {
-      authButtons.classList.add("hidden");
-      userButtons.classList.remove("hidden");
+async function loadProducts(query=""){
 
-      document.getElementById("userNameButton").textContent =
-        currentUser.name || "Account";
+  const box=document.getElementById("products");
 
-      if (currentUser.role === "admin") {
-        adminNav.classList.remove("hidden");
-      } else {
-        adminNav.classList.add("hidden");
-      }
-    } else {
-      authButtons.classList.remove("hidden");
-      userButtons.classList.add("hidden");
-      adminNav.classList.add("hidden");
-    }
-  }
+  box.innerHTML='<div class="empty">Loading marketplace...</div>';
 
-  async function logout() {
-    try {
-      await api("/api/logout", {
-        method: "POST"
-      });
-    } catch (e) {}
+  try{
 
-    localStorage.removeItem("isokohub_token");
+    let url="/products?limit=50";
 
-    currentUser = null;
-    savedIds = new Set();
-
-    updateAuthUI();
-    updateBadges();
-
-    closeModal("profileModal");
-
-    toast("You have been logged out.", "success");
-  }
-
-  /* ------------------------------------------------------------
-     CATEGORIES
-  ------------------------------------------------------------ */
-
-  const fallbackCategories = [
-    { name: "Electronics", icon: "📱", description: "Phones, laptops and electronics" },
-    { name: "Fashion", icon: "👕", description: "Fashion and clothing" },
-    { name: "Home", icon: "🏠", description: "Home and household products" },
-    { name: "Education", icon: "📚", description: "Courses and teachers" },
-    { name: "Art & Creative", icon: "🎨", description: "Artists and creatives" },
-    { name: "Film & Entertainment", icon: "🎬", description: "Film and entertainment" },
-    { name: "Services", icon: "🛠️", description: "Professional services" }
-  ];
-
-  async function loadCategories() {
-    try {
-      const data = await api("/api/categories");
-      categories = Array.isArray(data) ? data : (data.categories || []);
-
-      if (!categories.length) {
-        categories = fallbackCategories;
-      }
-    } catch (error) {
-      categories = fallbackCategories;
+    if(query){
+      url+="&search="+encodeURIComponent(query);
     }
 
-    renderCategories();
-    populateCategorySelects();
+    const data=await api(url);
+
+    products =
+      Array.isArray(data)
+      ? data
+      : (data.products || data.data || []);
+
+    renderProducts(products);
+
+  }catch(error){
+
+    box.innerHTML=
+      '<div class="empty">No products available yet.</div>';
+
+  }
+}
+
+
+function renderProducts(list){
+
+  const box=document.getElementById("products");
+
+  if(!list.length){
+
+    box.innerHTML=
+      '<div class="empty">No products or services found.</div>';
+
+    return;
   }
 
-  function renderCategories() {
-    const container = document.getElementById("categories");
+  box.innerHTML=list.map((p,index)=>{
 
-    container.innerHTML = categories.map(category => `
-      <div
-        class="category-card"
-        onclick="selectCategory('${escapeHtml(category.name).replace(/'/g, "\\'")}')"
-      >
-        <span class="category-icon">${escapeHtml(category.icon || "🛍️")}</span>
-        <strong>${escapeHtml(category.name)}</strong>
-      </div>
-    `).join("");
-  }
+    const id=p.id ?? index;
 
-  function populateCategorySelects() {
-    const filter = document.getElementById("categoryFilter");
-    const sell = document.getElementById("sellCategory");
+    const title=p.title || p.name || "IsokoHub Offer";
 
-    const options = categories.map(c =>
-      `<option value="${escapeHtml(c.name)}">${escapeHtml(c.name)}</option>`
-    ).join("");
+    const price=p.price != null
+      ? Number(p.price).toLocaleString()+" "+(p.currency||"RWF")
+      : "Contact seller";
 
-    filter.innerHTML = `<option value="">All Categories</option>${options}`;
-    sell.innerHTML = `<option value="">Select Category</option>${options}`;
-  }
+    let icon="🛍️";
 
-  function selectCategory(category) {
-    document.getElementById("categoryFilter").value = category;
-    scrollToMarketplace();
-    loadProducts();
-  }
+    const cat=(p.category||"").toLowerCase();
 
-  /* ------------------------------------------------------------
-     PRODUCTS
-  ------------------------------------------------------------ */
-
-  async function loadProducts() {
-    const container = document.getElementById("products");
-
-    container.innerHTML = `<div class="empty" style="grid-column:1/-1">Loading marketplace...</div>`;
-
-    const params = new URLSearchParams();
-
-    const search =
-      document.getElementById("marketSearch").value.trim();
-
-    const category =
-      document.getElementById("categoryFilter").value;
-
-    const country =
-      document.getElementById("countryFilter").value;
-
-    if (search) params.set("search", search);
-    if (category) params.set("category", category);
-    if (country) params.set("country", country);
-
-    params.set("limit", "100");
-
-    try {
-      const data = await api("/api/products?" + params.toString());
-
-      currentProducts = Array.isArray(data)
-        ? data
-        : (data.products || []);
-
-      renderProducts(currentProducts);
-
-    } catch (error) {
-      container.innerHTML = `
-        <div class="empty" style="grid-column:1/-1">
-          Could not load products.<br><br>
-          ${escapeHtml(error.message)}
-        </div>
-      `;
-    }
-  }
-
-  function renderProducts(products, targetId = "products") {
-    const container = document.getElementById(targetId);
-
-    if (!products.length) {
-      container.innerHTML = `
-        <div class="empty" style="grid-column:1/-1">
-          No products found.
-        </div>
-      `;
-
-      if (targetId === "products") {
-        document.getElementById("productCount").textContent = "0 products";
-      }
-
-      return;
-    }
-
-    if (targetId === "products") {
-      document.getElementById("productCount").textContent =
-        products.length + " product" + (products.length === 1 ? "" : "s");
-    }
-
-    container.innerHTML = products.map(productCard).join("");
-  }
-
-  function productCard(product) {
-    const image = safeImageUrl(product.image_url);
-
-    const saved = savedIds.has(Number(product.id));
+    if(cat.includes("elect"))icon="📱";
+    else if(cat.includes("fashion"))icon="👕";
+    else if(cat.includes("home"))icon="🏠";
+    else if(cat.includes("education"))icon="📚";
+    else if(cat.includes("art"))icon="🎨";
+    else if(cat.includes("film"))icon="🎬";
+    else if(cat.includes("service"))icon="🛠️";
+    else if(cat.includes("digital"))icon="💻";
 
     return `
-      <article class="product">
+      <article class="card">
 
-        <div class="product-image">
-
+        <div class="cardImage">
           ${
-            image
-              ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(product.title)}" loading="lazy">`
-              : `<div class="product-placeholder">🛍️</div>`
-          }
-
-          <button
-            class="save-btn ${saved ? "saved" : ""}"
-            onclick="toggleSaved(${Number(product.id)})"
-            title="Save product"
-          >
-            ${saved ? "♥" : "♡"}
-          </button>
-
-        </div>
-
-        <div class="product-body">
-
-          <div class="product-category">
-            ${escapeHtml(product.category || "Marketplace")}
-          </div>
-
-          <div class="product-title">
-            ${escapeHtml(product.title)}
-          </div>
-
-          <div class="product-description">
-            ${escapeHtml(product.description || "Available on IsokoHub.")}
-          </div>
-
-          <div class="price">
-            ${formatPrice(product.price, product.currency)}
-          </div>
-
-          <div class="seller">
-            👤 ${escapeHtml(product.seller_name || "IsokoHub Seller")}
-            ${product.country ? " · 🌍 " + escapeHtml(product.country) : ""}
-          </div>
-
-          <div class="product-actions">
-
-            <button
-              class="btn btn-light"
-              onclick="viewProduct(${Number(product.id)})"
-            >
-              View
-            </button>
-
-            <button
-              class="btn btn-primary"
-              onclick="addToCart(${Number(product.id)})"
-            >
-              Add to Cart
-            </button>
-
-          </div>
-
-        </div>
-      </article>
-    `;
-  }
-
-  async function viewProduct(id) {
-    try {
-      const data = await api("/api/products/" + id);
-
-      selectedProduct = data.product || data;
-
-      if (!selectedProduct || !selectedProduct.id) {
-        throw new Error("Product not found");
-      }
-
-      renderProductDetail();
-      openModal("productModal");
-
-    } catch (error) {
-      toast(error.message, "error");
-    }
-  }
-
-  function renderProductDetail() {
-    const p = selectedProduct;
-
-    const image = safeImageUrl(p.image_url);
-    const saved = savedIds.has(Number(p.id));
-
-    document.getElementById("productDetail").innerHTML = `
-      <div class="detail-grid">
-
-        <div class="detail-image">
-          ${
-            image
-              ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(p.title)}">`
-              : `<div class="product-placeholder">🛍️</div>`
+            p.image_url
+            ? `<img src="${escapeHtml(p.image_url)}"
+                    style="width:100%;height:100%;object-fit:cover"
+                    onerror="this.style.display='none'">`
+            : icon
           }
         </div>
 
-        <div class="detail-info">
+        <div class="cardBody">
 
-          <div class="product-category">
+          <h3>${escapeHtml(title)}</h3>
+
+          <div class="price">${escapeHtml(price)}</div>
+
+          <div class="meta">
             ${escapeHtml(p.category || "Marketplace")}
           </div>
 
-          <h2>${escapeHtml(p.title)}</h2>
-
-          <div class="price">
-            ${formatPrice(p.price, p.currency)}
+          <div class="meta">
+            📍 ${escapeHtml(p.district || p.country || "Global")}
           </div>
 
-          <p>
-            ${escapeHtml(p.description || "No description available.")}
-          </p>
-
-          <div class="specs">
-
-            <div class="spec">
-              <strong>Seller:</strong><br>
-              ${escapeHtml(p.seller_name || "Seller")}
-            </div>
-
-            <div class="spec">
-              <strong>Country:</strong><br>
-              ${escapeHtml(p.country || "N/A")}
-            </div>
-
-            <div class="spec">
-              <strong>District:</strong><br>
-              ${escapeHtml(p.district || "N/A")}
-            </div>
-
-            <div class="spec">
-              <strong>Stock:</strong><br>
-              ${escapeHtml(p.stock ?? "N/A")}
-            </div>
-
-            <div class="spec">
-              <strong>Condition:</strong><br>
-              ${escapeHtml(p.condition || "N/A")}
-            </div>
-
-            <div class="spec">
-              <strong>Brand:</strong><br>
-              ${escapeHtml(p.brand || "N/A")}
-            </div>
-
-            <div class="spec">
-              <strong>Model:</strong><br>
-              ${escapeHtml(p.model || "N/A")}
-            </div>
-
-            <div class="spec">
-              <strong>Views:</strong><br>
-              ${escapeHtml(p.views ?? 0)}
-            </div>
-
+          <div class="meta">
+            ${escapeHtml(
+              p.seller_name ||
+              p.seller ||
+              "IsokoHub Seller"
+            )}
           </div>
 
-          ${
-            p.specs
-              ? `<p><strong>Specifications:</strong><br>${escapeHtml(p.specs)}</p>`
-              : ""
-          }
+          <div class="cardActions">
 
-          <div class="form-actions">
-
-            <button
-              class="btn btn-primary"
-              onclick="addToCart(${Number(p.id)})"
-            >
-              🛒 Add to Cart
+            <button class="cartBtn"
+              onclick="addToCart(${id})">
+              🛒 Cart
             </button>
 
-            <button
-              class="btn btn-secondary"
-              onclick="buyNow(${Number(p.id)})"
-            >
-              Buy Now
-            </button>
-
-            <button
-              class="btn btn-light"
-              onclick="toggleSaved(${Number(p.id)})"
-            >
-              ${saved ? "♥ Saved" : "♡ Save"}
-            </button>
-
-            <button
-              class="btn btn-light"
-              onclick="messageSeller(${Number(p.seller_id)}, ${Number(p.id)})"
-            >
-              💬 Message Seller
+            <button class="saveBtn"
+              onclick="toggleSaved(${id})">
+              ❤️
             </button>
 
           </div>
 
         </div>
-      </div>
+
+      </article>
     `;
+
+  }).join("");
+}
+
+
+function addToCart(id){
+
+  const product=products.find(p=>
+    String(p.id)===String(id)
+  );
+
+  if(!product)return;
+
+  cart.push(product);
+
+  saveLocal();
+
+  updateCartCount();
+
+  alert("Added to cart ✓");
+}
+
+
+function toggleSaved(id){
+
+  const product=products.find(p=>
+    String(p.id)===String(id)
+  );
+
+  if(!product)return;
+
+  const exists=saved.some(p=>
+    String(p.id)===String(id)
+  );
+
+  if(exists){
+
+    saved=saved.filter(p=>
+      String(p.id)!==String(id)
+    );
+
+  }else{
+
+    saved.push(product);
+
   }
 
-  function resetFilters() {
-    document.getElementById("marketSearch").value = "";
-    document.getElementById("categoryFilter").value = "";
-    document.getElementById("countryFilter").value = "";
+  saveLocal();
 
-    loadProducts();
+  alert(exists
+    ? "Removed from Saved"
+    : "Saved ✓"
+  );
+
+}
+
+
+function updateCartCount(){
+
+  document.getElementById("cartCount").textContent=
+    cart.length;
+}
+
+
+function renderCart(){
+
+  const box=document.getElementById("cartItems");
+
+  if(!cart.length){
+
+    box.innerHTML=
+      '<div class="panel empty">Your cart is empty.</div>';
+
+    return;
   }
 
-  function scrollToMarketplace() {
-    document.getElementById("marketplace").scrollIntoView({
-      behavior: "smooth"
-    });
-  }
+  let total=0;
 
-  function goHome() {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
-
-    loadProducts();
-  }
-
-  document.getElementById("searchForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-
-    document.getElementById("marketSearch").value =
-      document.getElementById("searchInput").value.trim();
-
-    scrollToMarketplace();
-    loadProducts();
+  cart.forEach(p=>{
+    total += Number(p.price || 0);
   });
 
-  document.getElementById("marketSearch").addEventListener("input", debounce(loadProducts, 450));
-  document.getElementById("categoryFilter").addEventListener("change", loadProducts);
-  document.getElementById("countryFilter").addEventListener("change", loadProducts);
+  box.innerHTML=`
 
-  function debounce(fn, delay) {
-    let timer;
+    <div class="panel">
 
-    return function() {
-      clearTimeout(timer);
+      ${cart.map((p,i)=>`
 
-      timer = setTimeout(() => {
-        fn();
-      }, delay);
-    };
-  }
-
-  /* ------------------------------------------------------------
-     CART
-  ------------------------------------------------------------ */
-
-  function addToCart(id) {
-    const product = currentProducts.find(
-      p => Number(p.id) === Number(id)
-    ) || (selectedProduct && Number(selectedProduct.id) === Number(id)
-      ? selectedProduct
-      : null);
-
-    if (!product) {
-      /*
-       * Product detail may have come directly from API.
-       * Try fetching it.
-       */
-      api("/api/products/" + id)
-        .then(data => {
-          const p = data.product || data;
-          addProductToCart(p);
-        })
-        .catch(error => toast(error.message, "error"));
-
-      return;
-    }
-
-    addProductToCart(product);
-  }
-
-  function addProductToCart(product) {
-    const id = Number(product.id);
-
-    const existing = cart.find(
-      item => Number(item.id) === id
-    );
-
-    if (existing) {
-      existing.quantity = Math.min(
-        Number(existing.quantity || 1) + 1,
-        Number(product.stock || 999999)
-      );
-    } else {
-      cart.push({
-        id,
-        title: product.title,
-        price: Number(product.price || 0),
-        currency: product.currency || "RWF",
-        image_url: product.image_url || "",
-        stock: Number(product.stock || 1),
-        quantity: 1
-      });
-    }
-
-    saveCart();
-    toast("Added to cart.", "success");
-  }
-
-  function removeFromCart(id) {
-    cart = cart.filter(
-      item => Number(item.id) !== Number(id)
-    );
-
-    saveCart();
-    renderCart();
-  }
-
-  function changeCartQuantity(id, change) {
-    const item = cart.find(
-      x => Number(x.id) === Number(id)
-    );
-
-    if (!item) return;
-
-    item.quantity = Number(item.quantity || 1) + change;
-
-    if (item.quantity <= 0) {
-      removeFromCart(id);
-      return;
-    }
-
-    if (item.stock) {
-      item.quantity = Math.min(
-        item.quantity,
-        Number(item.stock)
-      );
-    }
-
-    saveCart();
-    renderCart();
-  }
-
-  function cartTotal() {
-    return cart.reduce(
-      (sum, item) =>
-        sum + Number(item.price || 0) * Number(item.quantity || 1),
-      0
-    );
-  }
-
-  function renderCart() {
-    const container = document.getElementById("cartItems");
-    const summary = document.getElementById("cartSummary");
-
-    if (!cart.length) {
-      container.innerHTML = `
-        <div class="empty">
-          Your cart is empty.
-          <br><br>
-          Find something you like and add it to your cart.
-        </div>
-      `;
-
-      summary.innerHTML = "";
-      return;
-    }
-
-    container.innerHTML = cart.map(item => {
-      const image = safeImageUrl(item.image_url);
-
-      return `
-        <div class="cart-item">
-
-          <div class="cart-thumb">
-            ${
-              image
-                ? `<img src="${escapeHtml(image)}" alt="">`
-                : `🛍️`
-            }
-          </div>
+        <div style="
+          display:flex;
+          justify-content:space-between;
+          align-items:center;
+          gap:15px;
+          padding:15px 0;
+          border-bottom:1px solid var(--border)
+        ">
 
           <div>
-            <strong>${escapeHtml(item.title)}</strong>
-
-            <div style="color:var(--primary);font-weight:800;margin-top:4px">
-              ${formatPrice(item.price, item.currency)}
-            </div>
-
-            <div class="quantity">
-              <button onclick="changeCartQuantity(${item.id}, -1)">−</button>
-              <strong>${item.quantity}</strong>
-              <button onclick="changeCartQuantity(${item.id}, 1)">+</button>
-              <button
-                class="btn btn-danger"
-                style="padding:5px 8px;margin-left:5px"
-                onclick="removeFromCart(${item.id})"
-              >
-                Remove
-              </button>
+            <strong>${escapeHtml(p.title || "Product")}</strong>
+            <div class="meta">
+              ${Number(p.price||0).toLocaleString()}
+              ${p.currency||"RWF"}
             </div>
           </div>
 
-          <strong>
-            ${formatPrice(
-              Number(item.price) * Number(item.quantity),
-              item.currency
-            )}
-          </strong>
+          <button
+            class="saveBtn"
+            onclick="removeCart(${i})">
+            Remove
+          </button>
 
         </div>
-      `;
-    }).join("");
 
-    const currency = cart[0].currency || "RWF";
+      `).join("")}
 
-    summary.innerHTML = `
-      <div class="cart-total">
-        Total: ${formatPrice(cartTotal(), currency)}
-      </div>
+      <h3>
+        Total:
+        ${total.toLocaleString()} RWF
+      </h3>
 
-      <div class="form-actions" style="justify-content:flex-end">
-        <button class="btn btn-light" onclick="cart=[];saveCart();renderCart()">
-          Clear Cart
-        </button>
+      <button class="primary"
+        onclick="checkout()">
+        Proceed to Checkout
+      </button>
 
-        <button class="btn btn-primary" onclick="openCheckout()">
-          Proceed to Checkout
-        </button>
-      </div>
-    `;
+    </div>
+  `;
+}
+
+
+function removeCart(i){
+
+  cart.splice(i,1);
+
+  saveLocal();
+
+  updateCartCount();
+
+  renderCart();
+
+}
+
+
+function checkout(){
+
+  if(!currentUser){
+
+    openModal("loginModal");
+
+    alert("Please login before checkout.");
+
+    return;
   }
 
-  function openCart() {
-    renderCart();
-    openModal("cartModal");
-  }
+  alert(
+    "Checkout is ready. Payment integration can be connected to your preferred payment provider."
+  );
+}
 
-  async function buyNow(id) {
-    if (!requireLogin()) return;
 
-    addToCart(id);
+/* =========================
+   SEARCH
+========================= */
 
-    closeModal("productModal");
+document.getElementById("searchForm")
+.addEventListener("submit",function(e){
 
-    setTimeout(() => {
-      openCheckout();
-    }, 100);
-  }
+  e.preventDefault();
 
-  /* ------------------------------------------------------------
-     CHECKOUT / ORDERS
-  ------------------------------------------------------------ */
+  const q=
+    document.getElementById("searchInput").value.trim();
 
-  function openCheckout() {
-    if (!requireLogin()) return;
+  showSection("home");
 
-    if (!cart.length) {
-      toast("Your cart is empty.", "error");
-      return;
-    }
+  loadProducts(q);
 
-    closeModal("cartModal");
+});
 
-    if (currentUser) {
-      document.getElementById("deliveryPhone").value =
-        currentUser.phone || "";
 
-      document.getElementById("deliveryCountry").value =
-        currentUser.country || "Rwanda";
+function filterCategory(category){
 
-      document.getElementById("deliveryDistrict").value =
-        currentUser.district || "";
-    }
+  document.getElementById("searchInput").value=category;
 
-    document.getElementById("checkoutTotal").textContent =
-      "Order total: " +
-      formatPrice(
-        cartTotal(),
-        cart[0]?.currency || "RWF"
-      );
+  loadProducts(category);
 
-    openModal("checkoutModal");
-  }
+  scrollToProducts();
 
-  document.getElementById("checkoutForm").addEventListener("submit", async function(e) {
-    e.preventDefault();
+}
 
-    if (!requireLogin()) return;
 
-    if (!cart.length) {
-      toast("Cart is empty.", "error");
-      return;
-    }
+function scrollToProducts(){
 
-    const deliveryAddress =
-      document.getElementById("deliveryAddress").value.trim();
+  document.getElementById("productsTitle")
+    .scrollIntoView({behavior:"smooth"});
 
-    const deliveryCountry =
-      document.getElementById("deliveryCountry").value.trim();
+}
 
-    const deliveryDistrict =
-      document.getElementById("deliveryDistrict").value.trim();
 
-    const deliveryPhone =
-      document.getElementById("deliveryPhone").value.trim();
+/* =========================
+   AUTH
+========================= */
 
-    const successful = [];
+document.getElementById("loginForm")
+.addEventListener("submit",async function(e){
 
-    try {
-      for (const item of cart) {
-        const productData = await api("/api/products/" + item.id);
+  e.preventDefault();
 
-        const product =
-          productData.product || productData;
+  const message=document.getElementById("loginMessage");
 
-        await api("/api/orders", {
-          method: "POST",
-          body: JSON.stringify({
-            product_id: Number(item.id),
-            quantity: Number(item.quantity),
-            delivery_address: deliveryAddress,
-            delivery_country: deliveryCountry,
-            delivery_district: deliveryDistrict,
-            delivery_phone: deliveryPhone
-          })
-        });
+  message.innerHTML="";
 
-        successful.push(item.id);
-      }
+  try{
 
-      cart = cart.filter(
-        item => !successful.includes(item.id)
-      );
+    const data=await api("/login",{
+      method:"POST",
+      body:JSON.stringify({
 
-      saveCart();
+        email:document.getElementById("loginEmail").value,
 
-      closeModal("checkoutModal");
+        password:document.getElementById("loginPassword").value
 
-      toast("Order placed successfully! 📦", "success");
-
-      document.getElementById("checkoutForm").reset();
-
-      loadProducts();
-
-    } catch (error) {
-      toast(
-        "Some orders could not be completed: " + error.message,
-        "error"
-      );
-    }
-  });
-
-  async function openOrders() {
-    if (!requireLogin()) return;
-
-    openModal("ordersModal");
-
-    const container = document.getElementById("ordersContent");
-
-    container.innerHTML = `
-      <div class="empty">Loading orders...</div>
-    `;
-
-    try {
-      const data = await api("/api/orders");
-
-      const orders =
-        Array.isArray(data)
-          ? data
-          : (data.orders || []);
-
-      if (!orders.length) {
-        container.innerHTML = `
-          <div class="empty">
-            You do not have any orders yet.
-          </div>
-        `;
-
-        return;
-      }
-
-      container.innerHTML = `
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Order</th>
-                <th>Product</th>
-                <th>Quantity</th>
-                <th>Total</th>
-                <th>Status</th>
-                <th>Payment</th>
-                <th>Date</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              ${orders.map(order => `
-                <tr>
-                  <td>#${escapeHtml(order.id)}</td>
-                  <td>${escapeHtml(order.product_title || "Product")}</td>
-                  <td>${escapeHtml(order.quantity)}</td>
-                  <td>${formatPrice(order.total_price, order.currency)}</td>
-                  <td>${escapeHtml(order.status)}</td>
-                  <td>${escapeHtml(order.payment_status)}</td>
-                  <td>${escapeHtml(order.created_at || "")}</td>
-                </tr>
-              `).join("")}
-            </tbody>
-          </table>
-        </div>
-      `;
-
-    } catch (error) {
-      container.innerHTML = `
-        <div class="empty">
-          ${escapeHtml(error.message)}
-        </div>
-      `;
-    }
-  }
-
-  /* ------------------------------------------------------------
-     SAVED PRODUCTS
-  ------------------------------------------------------------ */
-
-  async function loadSaved() {
-    if (!currentUser) {
-      savedIds = new Set();
-      updateBadges();
-      return;
-    }
-
-    try {
-      const data = await api("/api/saved");
-
-      const saved =
-        Array.isArray(data)
-          ? data
-          : (data.saved || data.products || []);
-
-      savedIds = new Set(
-        saved.map(item =>
-          Number(item.product_id || item.id)
-        )
-      );
-
-      updateBadges();
-
-    } catch (error) {
-      console.error("Saved:", error);
-    }
-  }
-
-  async function toggleSaved(id) {
-    if (!requireLogin()) return;
-
-    const numericId = Number(id);
-
-    try {
-      if (savedIds.has(numericId)) {
-        await api("/api/saved/" + numericId, {
-          method: "DELETE"
-        });
-
-        savedIds.delete(numericId);
-
-        toast("Removed from Saved.", "success");
-
-      } else {
-        await api("/api/saved", {
-          method: "POST",
-          body: JSON.stringify({
-            product_id: numericId
-          })
-        });
-
-        savedIds.add(numericId);
-
-        toast("Saved successfully.", "success");
-      }
-
-      updateBadges();
-      renderProducts(currentProducts);
-
-      if (
-        selectedProduct &&
-        Number(selectedProduct.id) === numericId &&
-        !document.getElementById("productModal").classList.contains("hidden")
-      ) {
-        renderProductDetail();
-      }
-
-    } catch (error) {
-      toast(error.message, "error");
-    }
-  }
-
-  async function openSaved() {
-    if (!requireLogin()) return;
-
-    await loadSaved();
-
-    openModal("savedModal");
-
-    const container =
-      document.getElementById("savedProducts");
-
-    const savedProducts =
-      currentProducts.filter(p =>
-        savedIds.has(Number(p.id))
-      );
-
-    if (savedProducts.length) {
-      renderProducts(savedProducts, "savedProducts");
-      return;
-    }
-
-    /*
-     * If saved products are not currently in the marketplace list,
-     * fetch marketplace again and match them.
-     */
-    try {
-      const data = await api("/api/products?limit=100");
-
-      const products =
-        Array.isArray(data)
-          ? data
-          : (data.products || []);
-
-      const matches =
-        products.filter(p =>
-          savedIds.has(Number(p.id))
-        );
-
-      renderProducts(matches, "savedProducts");
-
-    } catch (error) {
-      container.innerHTML = `
-        <div class="empty" style="grid-column:1/-1">
-          ${escapeHtml(error.message)}
-        </div>
-      `;
-    }
-  }
-
-  /* ------------------------------------------------------------
-     MESSAGES
-  ------------------------------------------------------------ */
-
-  function messageSeller(receiverId, productId = null) {
-    if (!requireLogin()) return;
-
-    pendingMessageReceiver = receiverId;
-    pendingMessageProduct = productId;
-
-    closeModal("productModal");
-
-    openMessages();
-
-    setTimeout(() => {
-      document.getElementById("messageReceiver").value =
-        receiverId || "";
-
-      document.getElementById("messageProduct").value =
-        productId || "";
-    }, 100);
-  }
-
-  async function openMessages() {
-    if (!requireLogin()) return;
-
-    openModal("messagesModal");
-
-    await loadMessages();
-  }
-
-  async function loadMessages() {
-    const container =
-      document.getElementById("messagesList");
-
-    container.innerHTML =
-      `<div class="empty">Loading messages...</div>`;
-
-    try {
-      const data = await api("/api/messages");
-
-      const messages =
-        Array.isArray(data)
-          ? data
-          : (data.messages || []);
-
-      if (!messages.length) {
-        container.innerHTML = `
-          <div class="empty">
-            No messages yet.
-          </div>
-        `;
-
-        return;
-      }
-
-      container.innerHTML = messages.map(message => {
-        const mine =
-          Number(message.sender_id) === Number(currentUser.id);
-
-        return `
-          <div class="message ${mine ? "mine" : ""}">
-            <div class="message-meta">
-              ${mine ? "You" : "User #" + escapeHtml(message.sender_id)}
-              →
-              ${mine ? "User #" + escapeHtml(message.receiver_id) : "You"}
-              ${message.created_at ? " · " + escapeHtml(message.created_at) : ""}
-            </div>
-
-            <div>${escapeHtml(message.message)}</div>
-
-            ${
-              message.product_id
-                ? `<small>Product #${escapeHtml(message.product_id)}</small>`
-                : ""
-            }
-          </div>
-        `;
-      }).join("");
-
-    } catch (error) {
-      container.innerHTML = `
-        <div class="empty">
-          ${escapeHtml(error.message)}
-        </div>
-      `;
-    }
-  }
-
-  document.getElementById("messageForm").addEventListener("submit", async function(e) {
-    e.preventDefault();
-
-    if (!requireLogin()) return;
-
-    try {
-      await api("/api/messages", {
-        method: "POST",
-        body: JSON.stringify({
-          receiver_id: Number(
-            document.getElementById("messageReceiver").value
-          ),
-          product_id:
-            document.getElementById("messageProduct").value
-              ? Number(document.getElementById("messageProduct").value)
-              : null,
-          message:
-            document.getElementById("messageText").value.trim()
-        })
-      });
-
-      document.getElementById("messageText").value = "";
-
-      toast("Message sent.", "success");
-
-      await loadMessages();
-
-    } catch (error) {
-      toast(error.message, "error");
-    }
-  });
-
-  /* ------------------------------------------------------------
-     PROFILE
-  ------------------------------------------------------------ */
-
-  async function openProfile() {
-    openModal("profileModal");
-
-    const notice =
-      document.getElementById("profileLoginNotice");
-
-    const form =
-      document.getElementById("profileForm");
-
-    if (!currentUser) {
-      notice.classList.remove("hidden");
-      form.classList.add("hidden");
-      return;
-    }
-
-    notice.classList.add("hidden");
-    form.classList.remove("hidden");
-
-    try {
-      const data = await api("/api/me");
-      currentUser = data.user || data;
-
-      document.getElementById("profileName").value =
-        currentUser.name || "";
-
-      document.getElementById("profileEmail").value =
-        currentUser.email || "";
-
-      document.getElementById("profilePhone").value =
-        currentUser.phone || "";
-
-      document.getElementById("profileCountry").value =
-        currentUser.country || "";
-
-      document.getElementById("profileDistrict").value =
-        currentUser.district || "";
-
-      document.getElementById("profileAvatar").value =
-        currentUser.avatar_url || "";
-
-      document.getElementById("profileBio").value =
-        currentUser.bio || "";
-
-    } catch (error) {
-      toast(error.message, "error");
-    }
-  }
-
-  document.getElementById("profileForm").addEventListener("submit", async function(e) {
-    e.preventDefault();
-
-    if (!requireLogin()) return;
-
-    try {
-      const data = await api("/api/me", {
-        method: "PATCH",
-        body: JSON.stringify({
-          name: document.getElementById("profileName").value.trim(),
-          phone: document.getElementById("profilePhone").value.trim(),
-          country: document.getElementById("profileCountry").value.trim(),
-          district: document.getElementById("profileDistrict").value.trim(),
-          avatar_url: document.getElementById("profileAvatar").value.trim(),
-          bio: document.getElementById("profileBio").value.trim()
-        })
-      });
-
-      currentUser = data.user || data;
-
-      updateAuthUI();
-
-      toast("Profile updated.", "success");
-
-    } catch (error) {
-      toast(error.message, "error");
-    }
-  });
-
-  /* ------------------------------------------------------------
-     SELL
-  ------------------------------------------------------------ */
-
-  function openSell() {
-    openModal("sellModal");
-
-    if (!currentUser) {
-      document.getElementById("sellLoginNotice").classList.remove("hidden");
-      document.getElementById("sellForm").classList.add("hidden");
-      return;
-    }
-
-    document.getElementById("sellLoginNotice").classList.add("hidden");
-    document.getElementById("sellForm").classList.remove("hidden");
-
-    document.getElementById("sellCountry").value =
-      currentUser.country || "Rwanda";
-
-    document.getElementById("sellDistrict").value =
-      currentUser.district || "";
-  }
-
-  document.getElementById("sellForm").addEventListener("submit", async function(e) {
-    e.preventDefault();
-
-    if (!requireLogin()) return;
-
-    try {
-      await api("/api/products", {
-        method: "POST",
-        body: JSON.stringify({
-          title: document.getElementById("sellTitle").value.trim(),
-          category: document.getElementById("sellCategory").value,
-          description: document.getElementById("sellDescription").value.trim(),
-          price: Number(document.getElementById("sellPrice").value),
-          currency: document.getElementById("sellCurrency").value.trim() || "RWF",
-          stock: Number(document.getElementById("sellStock").value || 1),
-          brand: document.getElementById("sellBrand").value.trim(),
-          model: document.getElementById("sellModel").value.trim(),
-          condition: document.getElementById("sellCondition").value,
-          country: document.getElementById("sellCountry").value.trim(),
-          district: document.getElementById("sellDistrict").value.trim(),
-          storage: document.getElementById("sellStorage").value.trim(),
-          ram: document.getElementById("sellRam").value.trim(),
-          image_url: document.getElementById("sellImage").value.trim(),
-          specs: document.getElementById("sellSpecs").value.trim(),
-          negotiable:
-            document.getElementById("sellNegotiable").checked ? 1 : 0
-        })
-      });
-
-      document.getElementById("sellForm").reset();
-
-      closeModal("sellModal");
-
-      toast("Your listing has been published! 🎉", "success");
-
-      await loadProducts();
-
-    } catch (error) {
-      toast(error.message, "error");
-    }
-  });
-
-  /* ------------------------------------------------------------
-     SELLER DASHBOARD
-  ------------------------------------------------------------ */
-
-  async function openSellerDashboard() {
-    if (!requireLogin()) return;
-
-    closeModal("profileModal");
-
-    openModal("sellerModal");
-
-    const container =
-      document.getElementById("sellerProducts");
-
-    container.innerHTML =
-      `<div class="empty">Loading your listings...</div>`;
-
-    try {
-      const data = await api("/api/seller/products");
-
-      const products =
-        Array.isArray(data)
-          ? data
-          : (data.products || []);
-
-      if (!products.length) {
-        container.innerHTML = `
-          <div class="empty">
-            You have no listings yet.
-            <br><br>
-            <button class="btn btn-primary" onclick="closeModal('sellerModal');openSell()">
-              Create Your First Listing
-            </button>
-          </div>
-        `;
-
-        return;
-      }
-
-      container.innerHTML = `
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Product</th>
-                <th>Price</th>
-                <th>Stock</th>
-                <th>Status</th>
-                <th>Views</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              ${products.map(p => `
-                <tr>
-                  <td>#${escapeHtml(p.id)}</td>
-                  <td>${escapeHtml(p.title)}</td>
-                  <td>${formatPrice(p.price, p.currency)}</td>
-                  <td>${escapeHtml(p.stock)}</td>
-                  <td>${escapeHtml(p.status)}</td>
-                  <td>${escapeHtml(p.views || 0)}</td>
-
-                  <td>
-                    <button
-                      class="btn btn-light"
-                      onclick="viewProduct(${Number(p.id)})"
-                    >
-                      View
-                    </button>
-
-                    <button
-                      class="btn btn-danger"
-                      onclick="deleteMyProduct(${Number(p.id)})"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              `).join("")}
-            </tbody>
-          </table>
-        </div>
-      `;
-
-    } catch (error) {
-      container.innerHTML = `
-        <div class="empty">
-          ${escapeHtml(error.message)}
-        </div>
-      `;
-    }
-  }
-
-  async function deleteMyProduct(id) {
-    if (!confirm("Delete this listing?")) return;
-
-    try {
-      await api("/api/products/" + id, {
-        method: "DELETE"
-      });
-
-      toast("Listing deleted.", "success");
-
-      await openSellerDashboard();
-      await loadProducts();
-
-    } catch (error) {
-      toast(error.message, "error");
-    }
-  }
-
-  /* ------------------------------------------------------------
-     ADMIN
-  ------------------------------------------------------------ */
-
-  async function openAdmin() {
-    if (!requireLogin()) return;
-
-    if (currentUser.role !== "admin") {
-      toast("Admin access required.", "error");
-      return;
-    }
-
-    openModal("adminModal");
-
-    await adminTab("overview");
-  }
-
-  async function adminTab(tab, button = null) {
-    if (!currentUser || currentUser.role !== "admin") {
-      toast("Admin access required.", "error");
-      return;
-    }
-
-    document.querySelectorAll(".dashboard-tabs button")
-      .forEach(btn => btn.classList.remove("active"));
-
-    if (button) {
-      button.classList.add("active");
-    } else {
-      document.querySelector(".dashboard-tabs button")
-        ?.classList.add("active");
-    }
-
-    const sections = [
-      "adminOverview",
-      "adminUsers",
-      "adminProducts",
-      "adminOrders",
-      "adminCategories"
-    ];
-
-    sections.forEach(id => {
-      document.getElementById(id).classList.add("hidden");
+      })
     });
 
-    const target = document.getElementById(
-      "admin" + tab.charAt(0).toUpperCase() + tab.slice(1)
-    );
+    const token=
+      data.token ||
+      data.session_token ||
+      data.access_token;
 
-    target.classList.remove("hidden");
+    if(token){
 
-    if (tab === "overview") {
-      await loadAdminOverview();
+      localStorage.setItem(
+        "isokohub_token",
+        token
+      );
+
     }
 
-    if (tab === "users") {
-      await loadAdminUsers();
+    currentUser=
+      data.user ||
+      data.account ||
+      null;
+
+    if(currentUser){
+
+      localStorage.setItem(
+        "isokohub_user",
+        JSON.stringify(currentUser)
+      );
+
     }
 
-    if (tab === "products") {
-      await loadAdminProducts();
-    }
+    closeModal("loginModal");
 
-    if (tab === "orders") {
-      await loadAdminOrders();
-    }
+    updateAuthUI();
 
-    if (tab === "categories") {
-      await loadAdminCategories();
-    }
+    alert("Login successful ✓");
+
+  }catch(error){
+
+    message.innerHTML=
+      `<div class="error">${escapeHtml(error.message)}</div>`;
+
   }
 
-  async function loadAdminOverview() {
-    const container =
-      document.getElementById("adminOverview");
+});
 
-    container.innerHTML =
-      `<div class="empty">Loading dashboard...</div>`;
 
-    try {
-      const data = await api("/api/admin/stats");
+document.getElementById("registerForm")
+.addEventListener("submit",async function(e){
 
-      const stats = data.stats || data;
+  e.preventDefault();
 
-      container.innerHTML = `
-        <div class="stats">
+  const message=
+    document.getElementById("registerMessage");
 
-          <div class="stat">
-            <small>Total Users</small>
-            <strong>${escapeHtml(stats.users ?? 0)}</strong>
-          </div>
+  message.innerHTML="";
 
-          <div class="stat">
-            <small>Sellers</small>
-            <strong>${escapeHtml(stats.sellers ?? 0)}</strong>
-          </div>
+  try{
 
-          <div class="stat">
-            <small>Products</small>
-            <strong>${escapeHtml(stats.products ?? 0)}</strong>
-          </div>
+    await api("/register",{
+      method:"POST",
+      body:JSON.stringify({
 
-          <div class="stat">
-            <small>Orders</small>
-            <strong>${escapeHtml(stats.orders ?? 0)}</strong>
-          </div>
+        name:
+          document.getElementById("regName").value,
 
-        </div>
+        email:
+          document.getElementById("regEmail").value,
 
-        <div class="empty">
-          IsokoHub Admin Dashboard is connected to D1.
-        </div>
-      `;
+        phone:
+          document.getElementById("regPhone").value,
 
-    } catch (error) {
-      container.innerHTML = `
-        <div class="empty">
-          ${escapeHtml(error.message)}
-        </div>
-      `;
-    }
+        country:
+          document.getElementById("regCountry").value,
+
+        password:
+          document.getElementById("regPassword").value
+
+      })
+    });
+
+    message.innerHTML=
+      '<div class="success">Account created successfully ✓ You can now login.</div>';
+
+    document.getElementById("registerForm").reset();
+
+  }catch(error){
+
+    message.innerHTML=
+      `<div class="error">${escapeHtml(error.message)}</div>`;
+
   }
 
-  async function loadAdminUsers() {
-    const container =
-      document.getElementById("adminUsers");
+});
 
-    container.innerHTML =
-      `<div class="empty">Loading users...</div>`;
 
-    try {
-      const data = await api("/api/admin/users");
+function updateAuthUI(){
 
-      const users =
-        Array.isArray(data)
-          ? data
-          : (data.users || []);
+  const area=document.getElementById("authArea");
 
-      container.innerHTML = `
-        <div class="table-wrap">
+  if(currentUser){
+
+    area.innerHTML=`
+
+      <button class="loginBtn"
+        onclick="showProfile()">
+        👤 ${escapeHtml(currentUser.name || "Profile")}
+      </button>
+
+      <button class="registerBtn"
+        onclick="logout()">
+        Logout
+      </button>
+
+    `;
+
+    if(
+      currentUser.role==="admin" ||
+      currentUser.role==="administrator"
+    ){
+
+      document.getElementById("adminNav")
+        .style.display="block";
+
+    }
+
+  }else{
+
+    area.innerHTML=`
+
+      <button class="loginBtn"
+        onclick="openModal('loginModal')">
+        Login
+      </button>
+
+      <button class="registerBtn"
+        onclick="openModal('registerModal')">
+        Register
+      </button>
+
+    `;
+
+  }
+
+}
+
+
+function logout(){
+
+  localStorage.removeItem("isokohub_token");
+  localStorage.removeItem("isokohub_user");
+
+  currentUser=null;
+
+  updateAuthUI();
+
+  showSection("home");
+
+  alert("Logged out.");
+
+}
+
+
+/* =========================
+   SELL
+========================= */
+
+async function submitProduct(){
+
+  const message=document.getElementById("sellMessage");
+
+  if(!localStorage.getItem("isokohub_token")){
+
+    message.innerHTML=
+      '<div class="error">Please login before publishing.</div>';
+
+    return;
+
+  }
+
+  const payload={
+
+    title:
+      document.getElementById("sellTitle").value,
+
+    category:
+      document.getElementById("sellCategory").value,
+
+    price:
+      Number(document.getElementById("sellPrice").value || 0),
+
+    currency:
+      document.getElementById("sellCurrency").value,
+
+    country:
+      document.getElementById("sellCountry").value,
+
+    district:
+      document.getElementById("sellDistrict").value,
+
+    specs:
+      document.getElementById("sellSpecs").value,
+
+    status:"active",
+
+    stock:1,
+
+    negotiable:1
+
+  };
+
+  if(!payload.title){
+
+    message.innerHTML=
+      '<div class="error">Enter a title.</div>';
+
+    return;
+
+  }
+
+  try{
+
+    await api("/products",{
+      method:"POST",
+      body:JSON.stringify(payload)
+    });
+
+    message.innerHTML=
+      '<div class="success">Published successfully ✓</div>';
+
+    document.getElementById("sellTitle").value="";
+    document.getElementById("sellPrice").value="";
+    document.getElementById("sellSpecs").value="";
+
+    loadProducts();
+
+  }catch(error){
+
+    message.innerHTML=
+      `<div class="error">${escapeHtml(error.message)}</div>`;
+
+  }
+
+}
+
+
+/* =========================
+   PROFILE
+========================= */
+
+async function showProfile(){
+
+  showSection("profile");
+
+  const box=document.getElementById("profileBox");
+
+  if(!currentUser){
+
+    box.innerHTML=`
+
+      <div class="empty">
+
+        <h3>You are not logged in.</h3>
+
+        <button class="primary"
+          onclick="openModal('loginModal')">
+          Login
+        </button>
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+  box.innerHTML=`
+
+    <h2>${escapeHtml(currentUser.name || "User")}</h2>
+
+    <p>📧 ${escapeHtml(currentUser.email || "")}</p>
+
+    <p>🌍 ${escapeHtml(currentUser.country || "Global")}</p>
+
+    <p>👤 Role: ${escapeHtml(currentUser.role || "buyer")}</p>
+
+    <button class="primary"
+      onclick="logout()">
+      Logout
+    </button>
+
+  `;
+
+}
+
+
+/* =========================
+   ORDERS
+========================= */
+
+async function loadOrders(){
+
+  const box=document.getElementById("ordersList");
+
+  if(!currentUser){
+
+    box.innerHTML=
+      "Login to view your orders.";
+
+    return;
+
+  }
+
+  try{
+
+    const data=await api("/orders");
+
+    const orders=
+      Array.isArray(data)
+      ? data
+      : (data.orders || data.data || []);
+
+    if(!orders.length){
+
+      box.innerHTML=
+        '<div class="empty">No orders yet.</div>';
+
+      return;
+
+    }
+
+    box.innerHTML=orders.map(o=>`
+
+      <div style="
+        padding:15px;
+        border-bottom:1px solid var(--border)
+      ">
+
+        <strong>Order #${escapeHtml(String(o.id || ""))}</strong>
+
+        <div class="meta">
+          Status: ${escapeHtml(o.status || "pending")}
+        </div>
+
+      </div>
+
+    `).join("");
+
+  }catch(error){
+
+    box.innerHTML=
+      '<div class="notice">Orders API is ready when orders exist.</div>';
+
+  }
+
+}
+
+
+/* =========================
+   MESSAGES
+========================= */
+
+async function sendMessage(){
+
+  const recipient=
+    document.getElementById("messageRecipient").value;
+
+  const text=
+    document.getElementById("messageText").value;
+
+  if(!recipient || !text){
+
+    alert("Enter recipient and message.");
+
+    return;
+
+  }
+
+  try{
+
+    await api("/messages",{
+      method:"POST",
+      body:JSON.stringify({
+        recipient,
+        message:text
+      })
+    });
+
+    closeModal("messageModal");
+
+    alert("Message sent ✓");
+
+  }catch(error){
+
+    alert(error.message);
+
+  }
+
+}
+
+
+/* =========================
+   ADMIN
+========================= */
+
+function showAdmin(){
+
+  if(!currentUser){
+
+    openModal("loginModal");
+
+    return;
+
+  }
+
+  showSection("admin");
+
+  adminTab("overview");
+
+}
+
+
+function adminTab(tab,button){
+
+  document.querySelectorAll(".tabs button")
+    .forEach(b=>b.classList.remove("active"));
+
+  if(button)button.classList.add("active");
+
+  const box=document.getElementById("adminContent");
+
+  if(tab==="overview"){
+
+    box.innerHTML=`
+
+      <div class="statGrid">
+
+        <div class="stat">
+          👥 Users
+          <strong>—</strong>
+        </div>
+
+        <div class="stat">
+          🛍️ Products
+          <strong>${products.length}</strong>
+        </div>
+
+        <div class="stat">
+          📦 Orders
+          <strong>—</strong>
+        </div>
+
+        <div class="stat">
+          💰 Revenue
+          <strong>—</strong>
+        </div>
+
+      </div>
+
+      <div class="panel" style="margin-top:20px">
+
+        <h3>IsokoHub Business Opportunities</h3>
+
+        <p>💰 Marketplace commissions</p>
+        <p>📢 Paid product promotion</p>
+        <p>⭐ Premium seller accounts</p>
+        <p>📣 Advertising</p>
+        <p>🚚 Delivery services</p>
+        <p>🎓 Paid courses</p>
+        <p>🎨 Creative services</p>
+        <p>🎬 Film production services</p>
+        <p>💻 Digital products</p>
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+  if(tab==="users"){
+
+    box.innerHTML=`
+
+      <div class="panel">
+
+        <h3>👥 Users Management</h3>
+
+        <p>
+          Manage buyers, sellers, teachers,
+          artists and service providers.
+        </p>
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+  if(tab==="sellers"){
+
+    box.innerHTML=`
+
+      <div class="panel">
+
+        <h3>🛍️ Sellers</h3>
+
+        <p>Seller management dashboard.</p>
+
+        <button class="primary"
+          onclick="openModal('sellModal')">
+          Add Product
+        </button>
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+  if(tab==="products"){
+
+    box.innerHTML=`
+
+      <div class="panel">
+
+        <h3>📦 Product Management</h3>
+
+        <div class="tableWrap">
+
           <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Country</th>
-                <th>Active</th>
-                <th>Created</th>
-              </tr>
-            </thead>
 
-            <tbody>
-              ${users.map(user => `
-                <tr>
-                  <td>${escapeHtml(user.id)}</td>
-                  <td>${escapeHtml(user.name)}</td>
-                  <td>${escapeHtml(user.email)}</td>
-                  <td>${escapeHtml(user.role)}</td>
-                  <td>${escapeHtml(user.country || "")}</td>
-                  <td>${user.is_active ? "Yes" : "No"}</td>
-                  <td>${escapeHtml(user.created_at || "")}</td>
-                </tr>
-              `).join("")}
-            </tbody>
-          </table>
-        </div>
-      `;
-
-    } catch (error) {
-      container.innerHTML =
-        `<div class="empty">${escapeHtml(error.message)}</div>`;
-    }
-  }
-
-  async function loadAdminProducts() {
-    const container =
-      document.getElementById("adminProducts");
-
-    container.innerHTML =
-      `<div class="empty">Loading products...</div>`;
-
-    try {
-      const data = await api("/api/admin/products");
-
-      const products =
-        Array.isArray(data)
-          ? data
-          : (data.products || []);
-
-      container.innerHTML = `
-        <div class="table-wrap">
-          <table>
             <thead>
               <tr>
                 <th>ID</th>
                 <th>Title</th>
-                <th>Seller</th>
                 <th>Category</th>
                 <th>Price</th>
-                <th>Stock</th>
-                <th>Status</th>
-                <th>Actions</th>
               </tr>
             </thead>
 
             <tbody>
-              ${products.map(p => `
-                <tr>
-                  <td>${escapeHtml(p.id)}</td>
-                  <td>${escapeHtml(p.title)}</td>
-                  <td>${escapeHtml(p.seller_name || p.seller_id)}</td>
-                  <td>${escapeHtml(p.category)}</td>
-                  <td>${formatPrice(p.price, p.currency)}</td>
-                  <td>${escapeHtml(p.stock)}</td>
-                  <td>${escapeHtml(p.status)}</td>
 
-                  <td>
-                    <button
-                      class="btn btn-light"
-                      onclick="viewProduct(${Number(p.id)})"
-                    >
-                      View
-                    </button>
+              ${
+                products.map(p=>`
 
-                    <button
-                      class="btn btn-danger"
-                      onclick="adminDeleteProduct(${Number(p.id)})"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              `).join("")}
+                  <tr>
+                    <td>${escapeHtml(String(p.id||""))}</td>
+                    <td>${escapeHtml(p.title||"")}</td>
+                    <td>${escapeHtml(p.category||"")}</td>
+                    <td>
+                      ${Number(p.price||0).toLocaleString()}
+                      ${escapeHtml(p.currency||"RWF")}
+                    </td>
+                  </tr>
+
+                `).join("")
+              }
+
             </tbody>
+
           </table>
-        </div>
-      `;
 
-    } catch (error) {
-      container.innerHTML =
-        `<div class="empty">${escapeHtml(error.message)}</div>`;
-    }
-  }
-
-  async function adminDeleteProduct(id) {
-    if (!confirm("Delete this product?")) return;
-
-    try {
-      await api("/api/products/" + id, {
-        method: "DELETE"
-      });
-
-      toast("Product deleted.", "success");
-
-      await loadAdminProducts();
-      await loadProducts();
-
-    } catch (error) {
-      toast(error.message, "error");
-    }
-  }
-
-  async function loadAdminOrders() {
-    const container =
-      document.getElementById("adminOrders");
-
-    container.innerHTML =
-      `<div class="empty">Loading orders...</div>`;
-
-    try {
-      const data = await api("/api/admin/orders");
-
-      const orders =
-        Array.isArray(data)
-          ? data
-          : (data.orders || []);
-
-      container.innerHTML = `
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Buyer</th>
-                <th>Product</th>
-                <th>Total</th>
-                <th>Status</th>
-                <th>Payment</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              ${orders.map(order => `
-                <tr>
-                  <td>#${escapeHtml(order.id)}</td>
-                  <td>${escapeHtml(order.buyer_name || order.buyer_id)}</td>
-                  <td>${escapeHtml(order.product_title || order.product_id)}</td>
-                  <td>${formatPrice(order.total_price, order.currency)}</td>
-                  <td>${escapeHtml(order.status)}</td>
-                  <td>${escapeHtml(order.payment_status)}</td>
-
-                  <td>
-                    <button
-                      class="btn btn-light"
-                      onclick="updateAdminOrder(${Number(order.id)})"
-                    >
-                      Update
-                    </button>
-                  </td>
-                </tr>
-              `).join("")}
-            </tbody>
-          </table>
-        </div>
-      `;
-
-    } catch (error) {
-      container.innerHTML =
-        `<div class="empty">${escapeHtml(error.message)}</div>`;
-    }
-  }
-
-  async function updateAdminOrder(id) {
-    const status = prompt(
-      "Order status:\n\npending / confirmed / shipped / delivered / cancelled",
-      "confirmed"
-    );
-
-    if (!status) return;
-
-    const payment = prompt(
-      "Payment status:\n\nunpaid / paid / failed",
-      "paid"
-    );
-
-    if (!payment) return;
-
-    try {
-      await api("/api/admin/orders/" + id, {
-        method: "PATCH",
-        body: JSON.stringify({
-          status,
-          payment_status: payment
-        })
-      });
-
-      toast("Order updated.", "success");
-
-      await loadAdminOrders();
-
-    } catch (error) {
-      toast(error.message, "error");
-    }
-  }
-
-  async function loadAdminCategories() {
-    const container =
-      document.getElementById("adminCategories");
-
-    container.innerHTML =
-      `<div class="empty">Loading categories...</div>`;
-
-    try {
-      const data = await api("/api/admin/categories");
-
-      const list =
-        Array.isArray(data)
-          ? data
-          : (data.categories || []);
-
-      container.innerHTML = `
-        <div style="margin-bottom:20px">
-          <form id="adminCategoryForm" class="form-grid">
-
-            <div class="form-group">
-              <label>Category Name</label>
-              <input id="adminCategoryName" required>
-            </div>
-
-            <div class="form-group">
-              <label>Icon</label>
-              <input id="adminCategoryIcon" placeholder="🛍️">
-            </div>
-
-            <div class="form-group full">
-              <label>Description</label>
-              <input id="adminCategoryDescription">
-            </div>
-
-            <div class="form-actions" style="grid-column:1/-1">
-              <button class="btn btn-primary" type="submit">
-                Add Category
-              </button>
-            </div>
-
-          </form>
         </div>
 
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Icon</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Active</th>
-              </tr>
-            </thead>
+      </div>
 
-            <tbody>
-              ${list.map(c => `
-                <tr>
-                  <td>${escapeHtml(c.id)}</td>
-                  <td>${escapeHtml(c.icon || "")}</td>
-                  <td>${escapeHtml(c.name)}</td>
-                  <td>${escapeHtml(c.description || "")}</td>
-                  <td>${c.is_active ? "Yes" : "No"}</td>
-                </tr>
-              `).join("")}
-            </tbody>
-          </table>
+    `;
+
+    return;
+
+  }
+
+  if(tab==="orders"){
+
+    box.innerHTML=`
+
+      <div class="panel">
+
+        <h3>📦 Orders Management</h3>
+
+        <p>Monitor orders, status and fulfillment.</p>
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+  if(tab==="payments"){
+
+    box.innerHTML=`
+
+      <div class="panel">
+
+        <h3>💰 Payments & Revenue</h3>
+
+        <p>Marketplace commissions</p>
+        <p>Seller payments</p>
+        <p>Premium subscriptions</p>
+        <p>Promoted listings</p>
+        <p>Advertising revenue</p>
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+  if(tab==="categories"){
+
+    box.innerHTML=`
+
+      <div class="panel">
+
+        <h3>📚 Categories</h3>
+
+        <div class="categories">
+
+          <div class="category">📱 Electronics</div>
+          <div class="category">👕 Fashion</div>
+          <div class="category">🏠 Home</div>
+          <div class="category">📚 Education</div>
+          <div class="category">🎨 Art & Creative</div>
+          <div class="category">🎬 Film & Entertainment</div>
+          <div class="category">🛠️ Services</div>
+          <div class="category">💻 Digital</div>
+
         </div>
-      `;
 
-      document.getElementById("adminCategoryForm")
-        .addEventListener("submit", addAdminCategory);
+      </div>
 
-    } catch (error) {
-      container.innerHTML =
-        `<div class="empty">${escapeHtml(error.message)}</div>`;
-    }
+    `;
+
+    return;
+
   }
 
-  async function addAdminCategory(e) {
-    e.preventDefault();
+  if(tab==="reports"){
 
-    try {
-      await api("/api/admin/categories", {
-        method: "POST",
-        body: JSON.stringify({
-          name:
-            document.getElementById("adminCategoryName").value.trim(),
+    box.innerHTML=`
 
-          description:
-            document.getElementById("adminCategoryDescription").value.trim(),
+      <div class="panel">
 
-          icon:
-            document.getElementById("adminCategoryIcon").value.trim()
-        })
-      });
+        <h3>📊 Reports</h3>
 
-      toast("Category added.", "success");
+        <p>Sales reports</p>
+        <p>Revenue reports</p>
+        <p>User growth</p>
+        <p>Popular categories</p>
+        <p>Seller performance</p>
 
-      await loadAdminCategories();
-      await loadCategories();
+      </div>
 
-    } catch (error) {
-      toast(error.message, "error");
-    }
+    `;
+
+    return;
+
   }
 
-  /* ------------------------------------------------------------
-     KEYBOARD
-  ------------------------------------------------------------ */
+  if(tab==="reviews"){
 
-  document.addEventListener("keydown", function(e) {
-    if (e.key === "Escape") {
-      document.querySelectorAll(".modal:not(.hidden)")
-        .forEach(modal => modal.classList.add("hidden"));
+    box.innerHTML=`
 
-      document.body.style.overflow = "";
-    }
+      <div class="panel">
+
+        <h3>⭐ Reviews</h3>
+
+        <p>Monitor marketplace reviews and seller ratings.</p>
+
+      </div>
+
+    `;
+
+  }
+
+}
+
+
+/* =========================
+   NAVIGATION
+========================= */
+
+function showSection(name){
+
+  const sections=[
+    "home",
+    "saved",
+    "cart",
+    "orders",
+    "messages",
+    "profile",
+    "admin"
+  ];
+
+  sections.forEach(s=>{
+
+    const el=document.getElementById(s+"Section");
+
+    if(el)el.classList.remove("drawer");
+
   });
 
-  /* ------------------------------------------------------------
-     INITIALIZE
-  ------------------------------------------------------------ */
+  sections.forEach(s=>{
 
-  async function bootstrap() {
-    updateBadges();
+    const el=document.getElementById(s+"Section");
 
-    await checkBackend();
+    if(el){
 
-    await loadCategories();
+      if(s===name){
 
-    await loadMe();
+        el.classList.remove("drawer");
 
-    await loadSaved();
+      }else{
 
-    updateAuthUI();
+        el.classList.add("drawer");
 
-    await loadProducts();
+      }
 
-    updateBadges();
+    }
+
+  });
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+  if(name==="cart")renderCart();
+  if(name==="saved")renderSaved();
+  if(name==="orders")loadOrders();
+
+}
+
+
+function renderSaved(){
+
+  const box=document.getElementById("savedProducts");
+
+  if(!saved.length){
+
+    box.innerHTML=
+      '<div class="empty">No saved items.</div>';
+
+    return;
+
   }
 
-  bootstrap();
+  box.innerHTML=saved.map(p=>`
+
+    <article class="card">
+
+      <div class="cardImage">❤️</div>
+
+      <div class="cardBody">
+
+        <h3>${escapeHtml(p.title||"Saved item")}</h3>
+
+        <div class="price">
+          ${Number(p.price||0).toLocaleString()}
+          ${escapeHtml(p.currency||"RWF")}
+        </div>
+
+        <button class="cartBtn"
+          style="width:100%;margin-top:10px"
+          onclick="addToCart(${p.id})">
+          🛒 Add to Cart
+        </button>
+
+      </div>
+
+    </article>
+
+  `).join("");
+
+}
+
+
+function showProfileSection(){
+  showSection("profile");
+  showProfile();
+}
+
+
+/* =========================
+   MODALS
+========================= */
+
+function openModal(id){
+
+  document.getElementById(id)
+    .classList.add("active");
+
+}
+
+
+function closeModal(id){
+
+  document.getElementById(id)
+    .classList.remove("active");
+
+}
+
+
+/* =========================
+   HELPERS
+========================= */
+
+function escapeHtml(value){
+
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+  updateAuthUI();
+
+  updateCartCount();
+
+  checkConnection();
+
+  loadProducts();
+
+});
 </script>
 
 </body>
