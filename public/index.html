@@ -1,1 +1,1290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IsokoHub — Global Marketplace</title>
+  <meta name="description" content="IsokoHub is a global marketplace connecting buyers, sellers, teachers, artists, creators, filmmakers and service providers.">
 
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f5f7fb;
+      color: #172033;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .topbar {
+      background: #ffffff;
+      border-bottom: 1px solid #e5e7eb;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header {
+      max-width: 1250px;
+      margin: auto;
+      min-height: 70px;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .logo {
+      font-size: 26px;
+      font-weight: 800;
+      color: #0b7a4b;
+      white-space: nowrap;
+    }
+
+    .logo span {
+      color: #172033;
+    }
+
+    .search {
+      flex: 1;
+      display: flex;
+      max-width: 650px;
+      margin: auto;
+    }
+
+    .search input {
+      width: 100%;
+      border: 1px solid #d7dce5;
+      border-right: 0;
+      border-radius: 10px 0 0 10px;
+      padding: 12px 14px;
+      outline: none;
+      background: #fafbfc;
+    }
+
+    .search input:focus {
+      border-color: #0b7a4b;
+    }
+
+    .search button {
+      border: 0;
+      background: #0b7a4b;
+      color: white;
+      padding: 0 20px;
+      border-radius: 0 10px 10px 0;
+      font-weight: 700;
+    }
+
+    .nav {
+      display: flex;
+      gap: 7px;
+      align-items: center;
+    }
+
+    .nav button {
+      border: 0;
+      background: transparent;
+      padding: 9px 10px;
+      border-radius: 8px;
+      color: #394150;
+    }
+
+    .nav button:hover {
+      background: #eef7f2;
+      color: #0b7a4b;
+    }
+
+    .mobile-menu {
+      display: none;
+      border: 1px solid #ddd;
+      background: white;
+      padding: 8px 11px;
+      border-radius: 8px;
+      font-size: 20px;
+    }
+
+    .status {
+      max-width: 1250px;
+      margin: 10px auto 0;
+      padding: 0 18px;
+    }
+
+    .status-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      background: #fff;
+      border: 1px solid #e3e7ed;
+      font-size: 13px;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #999;
+    }
+
+    .dot.connected {
+      background: #16a34a;
+    }
+
+    .dot.error {
+      background: #dc2626;
+    }
+
+    .hero {
+      max-width: 1250px;
+      margin: 22px auto;
+      padding: 45px 35px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #0b7a4b, #14532d);
+      color: white;
+    }
+
+    .hero h1 {
+      font-size: 42px;
+      margin-bottom: 12px;
+      max-width: 760px;
+    }
+
+    .hero p {
+      font-size: 17px;
+      line-height: 1.6;
+      max-width: 760px;
+      opacity: .95;
+    }
+
+    .hero-actions {
+      margin-top: 23px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .hero-actions button {
+      border: 0;
+      padding: 12px 19px;
+      border-radius: 9px;
+      font-weight: 700;
+    }
+
+    .primary {
+      background: white;
+      color: #0b7a4b;
+    }
+
+    .secondary {
+      background: rgba(255,255,255,.15);
+      color: white;
+      border: 1px solid rgba(255,255,255,.4) !important;
+    }
+
+    .section {
+      max-width: 1250px;
+      margin: 28px auto;
+      padding: 0 18px;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      gap: 10px;
+    }
+
+    .section-head h2 {
+      font-size: 23px;
+    }
+
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 12px;
+    }
+
+    .category {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 18px 10px;
+      text-align: center;
+      transition: .2s;
+    }
+
+    .category:hover {
+      transform: translateY(-2px);
+      border-color: #0b7a4b;
+      box-shadow: 0 4px 15px rgba(0,0,0,.06);
+    }
+
+    .category-icon {
+      font-size: 29px;
+      margin-bottom: 9px;
+    }
+
+    .category-name {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 17px;
+    }
+
+    .filter-row select,
+    .filter-row input {
+      border: 1px solid #d8dde6;
+      background: white;
+      padding: 10px 12px;
+      border-radius: 8px;
+      outline: none;
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .product {
+      background: white;
+      border: 1px solid #e3e7ed;
+      border-radius: 13px;
+      overflow: hidden;
+      transition: .2s;
+    }
+
+    .product:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 7px 22px rgba(0,0,0,.08);
+    }
+
+    .product-image {
+      height: 180px;
+      background: #eef1f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 55px;
+      overflow: hidden;
+    }
+
+    .product-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .product-body {
+      padding: 14px;
+    }
+
+    .product-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 7px;
+      line-height: 1.3;
+    }
+
+    .price {
+      color: #0b7a4b;
+      font-weight: 800;
+      font-size: 17px;
+      margin-bottom: 7px;
+    }
+
+    .meta {
+      font-size: 12px;
+      color: #697386;
+      margin-bottom: 11px;
+    }
+
+    .product-actions {
+      display: flex;
+      gap: 7px;
+    }
+
+    .product-actions button {
+      flex: 1;
+      padding: 9px 7px;
+      border-radius: 7px;
+      border: 1px solid #dce1e8;
+      background: white;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .product-actions .cart {
+      background: #0b7a4b;
+      color: white;
+      border-color: #0b7a4b;
+    }
+
+    .empty {
+      background: white;
+      border: 1px dashed #ccd2dc;
+      border-radius: 12px;
+      padding: 35px;
+      text-align: center;
+      color: #697386;
+      grid-column: 1/-1;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 35px;
+      color: #697386;
+      grid-column: 1/-1;
+    }
+
+    .footer {
+      margin-top: 50px;
+      background: #172033;
+      color: white;
+      padding: 35px 18px;
+    }
+
+    .footer-inner {
+      max-width: 1250px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .footer p {
+      color: #c7ced9;
+      font-size: 13px;
+      margin-top: 7px;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.5);
+      z-index: 500;
+      padding: 20px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-box {
+      background: white;
+      width: 100%;
+      max-width: 460px;
+      border-radius: 14px;
+      padding: 23px;
+      max-height: 90vh;
+      overflow: auto;
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 17px;
+    }
+
+    .close {
+      border: 0;
+      background: #f0f2f5;
+      border-radius: 7px;
+      padding: 6px 10px;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    .form-group input {
+      width: 100%;
+      border: 1px solid #d5dae3;
+      padding: 11px;
+      border-radius: 8px;
+      outline: none;
+    }
+
+    .form-submit {
+      width: 100%;
+      border: 0;
+      background: #0b7a4b;
+      color: white;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 700;
+      margin-top: 5px;
+    }
+
+    @media (max-width: 1000px) {
+      .category-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .products {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 700px) {
+      .header {
+        flex-wrap: wrap;
+      }
+
+      .mobile-menu {
+        display: block;
+      }
+
+      .nav {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .nav.open {
+        display: flex;
+      }
+
+      .nav button {
+        text-align: left;
+      }
+
+      .search {
+        order: 3;
+        flex-basis: 100%;
+      }
+
+      .hero {
+        margin: 15px 12px;
+        padding: 30px 22px;
+      }
+
+      .hero h1 {
+        font-size: 30px;
+      }
+
+      .section {
+        padding: 0 12px;
+      }
+
+      .category-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .products {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+
+      .product-image {
+        height: 145px;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .products {
+        grid-template-columns: 1fr;
+      }
+
+      .logo {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="topbar">
+    <div class="header">
+
+      <button class="mobile-menu" id="menuBtn">☰</button>
+
+      <div class="logo">Isoko<span>Hub</span></div>
+
+      <form class="search" id="searchForm">
+        <input
+          type="search"
+          id="searchInput"
+          placeholder="Search products, services or sellers..."
+          autocomplete="off"
+        >
+        <button type="submit">Search</button>
+      </form>
+
+      <nav class="nav" id="nav">
+        <button onclick="goHome()">Home</button>
+        <button onclick="showLogin()">Login</button>
+        <button onclick="showRegister()">Register</button>
+        <button onclick="showCart()">🛒 Cart <span id="cartCount">0</span></button>
+        <button onclick="showSell()">Sell</button>
+        <button onclick="showProfile()">Profile</button>
+      </nav>
+
+    </div>
+  </header>
+
+  <div class="status">
+    <div class="status-box">
+      <span class="dot" id="statusDot"></span>
+      <span id="statusText">Connecting to IsokoHub backend...</span>
+    </div>
+  </div>
+
+  <main>
+
+    <section class="hero">
+      <h1>Welcome to IsokoHub 🌍</h1>
+      <p>
+        A global marketplace connecting buyers, sellers, teachers,
+        artists, creators, filmmakers and service providers.
+      </p>
+
+      <div class="hero-actions">
+        <button class="primary" onclick="scrollToProducts()">Explore Marketplace</button>
+        <button class="secondary" onclick="showSell()">Start Selling</button>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Shop by Category</h2>
+      </div>
+
+      <div class="category-grid" id="categories">
+
+        <button class="category" onclick="filterCategory('Electronics')">
+          <div class="category-icon">📱</div>
+          <div class="category-name">Electronics</div>
+        </button>
+
+        <button class="category" onclick="filterCategory('Fashion')">
+          <div class="category-icon">👕</div>
+          <div class="category-name">Fashion</div>
+        </button>
+
+        <button class="category" onclick="filterCategory('Home')">
+          <div class="category-icon">🏠</div>
+          <div class="category-name">Home</div>
+        </button>
+
+        <button class="category" onclick="filterCategory('Education')">
+          <div class="category-icon">📚</div>
+          <div class="category-name">Education</div>
+        </button>
+
+        <button class="category" onclick="filterCategory('Art & Creative')">
+          <div class="category-icon">🎨</div>
+          <div class="category-name">Art & Creative</div>
+        </button>
+
+        <button class="category" onclick="filterCategory('Film & Entertainment')">
+          <div class="category-icon">🎬</div>
+          <div class="category-name">Film & Entertainment</div>
+        </button>
+
+        <button class="category" onclick="filterCategory('Services')">
+          <div class="category-icon">🛠️</div>
+          <div class="category-name">Services</div>
+        </button>
+
+      </div>
+    </section>
+
+    <section class="section" id="marketplace">
+
+      <div class="section-head">
+        <h2>Marketplace</h2>
+        <button onclick="loadProducts()" style="border:0;background:white;padding:9px 12px;border-radius:8px;">
+          🔄 Refresh
+        </button>
+      </div>
+
+      <div class="filter-row">
+
+        <select id="categoryFilter" onchange="loadProducts()">
+          <option value="">All Categories</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Fashion">Fashion</option>
+          <option value="Home">Home</option>
+          <option value="Education">Education</option>
+          <option value="Art & Creative">Art & Creative</option>
+          <option value="Film & Entertainment">Film & Entertainment</option>
+          <option value="Services">Services</option>
+        </select>
+
+        <select id="countryFilter" onchange="loadProducts()">
+          <option value="">All Countries</option>
+          <option value="Rwanda">Rwanda</option>
+          <option value="Kenya">Kenya</option>
+          <option value="Uganda">Uganda</option>
+          <option value="Tanzania">Tanzania</option>
+          <option value="Nigeria">Nigeria</option>
+          <option value="Ghana">Ghana</option>
+          <option value="South Africa">South Africa</option>
+          <option value="United States">United States</option>
+          <option value="United Kingdom">United Kingdom</option>
+        </select>
+
+      </div>
+
+      <div class="products" id="products">
+        <div class="loading">Loading products...</div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <strong>IsokoHub 🌍</strong>
+        <p>Global marketplace for products, services and creativity.</p>
+      </div>
+
+      <div>
+        <strong>Connect</strong>
+        <p>Buy • Sell • Learn • Create • Serve</p>
+      </div>
+
+      <div>
+        <strong>© 2026 IsokoHub</strong>
+        <p>Built for a global community.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- LOGIN MODAL -->
+  <div class="modal" id="loginModal">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h2>Login</h2>
+        <button class="close" onclick="closeModals()">✕</button>
+      </div>
+
+      <form id="loginForm">
+
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="loginEmail" required>
+        </div>
+
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="loginPassword" required>
+        </div>
+
+        <button class="form-submit" type="submit">Login</button>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- REGISTER MODAL -->
+  <div class="modal" id="registerModal">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h2>Create Account</h2>
+        <button class="close" onclick="closeModals()">✕</button>
+      </div>
+
+      <form id="registerForm">
+
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="registerName" required>
+        </div>
+
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="registerEmail" required>
+        </div>
+
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="registerPassword" minlength="6" required>
+        </div>
+
+        <div class="form-group">
+          <label>Country</label>
+          <input type="text" id="registerCountry" value="Rwanda" required>
+        </div>
+
+        <button class="form-submit" type="submit">Create Account</button>
+
+      </form>
+    </div>
+  </div>
+
+  <script>
+    /*
+      IsokoHub Frontend
+      API requests use the same domain:
+      /api/health
+      /api/config
+      /api/products
+      /api/categories
+      /api/login
+      /api/register
+    */
+
+    const API_BASE = window.location.origin;
+
+    let cart = JSON.parse(localStorage.getItem("isokohub_cart") || "[]");
+    let currentProducts = [];
+
+    function apiUrl(path) {
+      return API_BASE + path;
+    }
+
+    async function api(path, options = {}) {
+      const token = localStorage.getItem("isokohub_token");
+
+      const headers = {
+        "Content-Type": "application/json",
+        ...(options.headers || {})
+      };
+
+      if (token) {
+        headers.Authorization = "Bearer " + token;
+      }
+
+      const response = await fetch(apiUrl(path), {
+        ...options,
+        headers
+      });
+
+      let data;
+
+      try {
+        data = await response.json();
+      } catch {
+        data = {};
+      }
+
+      if (!response.ok) {
+        throw new Error(
+          data.error ||
+          data.message ||
+          "Request failed: HTTP " + response.status
+        );
+      }
+
+      return data;
+    }
+
+    async function checkBackend() {
+      const dot = document.getElementById("statusDot");
+      const text = document.getElementById("statusText");
+
+      try {
+        const data = await api("/api/health");
+
+        dot.className = "dot connected";
+
+        if (data.database === "connected") {
+          text.textContent = "Connected ✓ IsokoHub API + D1 database";
+        } else {
+          text.textContent = "API connected ✓ — D1 database: " +
+            (data.database || "checking");
+        }
+
+      } catch (error) {
+        dot.className = "dot error";
+        text.textContent =
+          "Backend connection failed — check Cloudflare Worker/D1 settings";
+
+        console.error("Health check:", error);
+      }
+    }
+
+    async function loadProducts() {
+      const container = document.getElementById("products");
+
+      const search =
+        document.getElementById("searchInput").value.trim();
+
+      const category =
+        document.getElementById("categoryFilter").value;
+
+      const country =
+        document.getElementById("countryFilter").value;
+
+      container.innerHTML =
+        '<div class="loading">Loading products...</div>';
+
+      try {
+
+        const params = new URLSearchParams();
+
+        if (search) params.set("search", search);
+        if (category) params.set("category", category);
+        if (country) params.set("country", country);
+
+        params.set("limit", "50");
+
+        const data = await api(
+          "/api/products?" + params.toString()
+        );
+
+        currentProducts =
+          Array.isArray(data) ? data :
+          Array.isArray(data.products) ? data.products :
+          [];
+
+        renderProducts(currentProducts);
+
+      } catch (error) {
+
+        console.error("Products:", error);
+
+        container.innerHTML = `
+          <div class="empty">
+            <h3>Products could not be loaded</h3>
+            <p style="margin-top:8px;">
+              ${escapeHtml(error.message)}
+            </p>
+            <button
+              onclick="loadProducts()"
+              style="margin-top:15px;padding:10px 15px;border:0;border-radius:8px;background:#0b7a4b;color:white;"
+            >
+              Try Again
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    function renderProducts(products) {
+      const container = document.getElementById("products");
+
+      if (!products.length) {
+        container.innerHTML = `
+          <div class="empty">
+            <h3>No products found</h3>
+            <p style="margin-top:7px;">
+              Try another category or search term.
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = products.map((product, index) => {
+
+        const title =
+          product.title ||
+          product.name ||
+          "IsokoHub Product";
+
+        const price =
+          product.price !== undefined &&
+          product.price !== null
+            ? formatPrice(product.price, product.currency)
+            : "Price on request";
+
+        const location =
+          product.district ||
+          product.location ||
+          product.country ||
+          "Global";
+
+        const seller =
+          product.seller_name ||
+          product.seller ||
+          "IsokoHub Seller";
+
+        const image =
+          product.image_url ||
+          product.image ||
+          "";
+
+        const category =
+          product.category ||
+          "Marketplace";
+
+        const icon = categoryIcon(category);
+
+        return `
+          <article class="product">
+
+            <div class="product-image">
+              ${
+                image
+                  ? `<img src="${escapeAttribute(image)}" alt="${escapeAttribute(title)}">`
+                  : icon
+              }
+            </div>
+
+            <div class="product-body">
+
+              <div class="product-title">
+                ${escapeHtml(title)}
+              </div>
+
+              <div class="price">
+                ${escapeHtml(price)}
+              </div>
+
+              <div class="meta">
+                📍 ${escapeHtml(location)}
+                <br>
+                👤 ${escapeHtml(seller)}
+              </div>
+
+              <div class="meta">
+                ${escapeHtml(category)}
+              </div>
+
+              <div class="product-actions">
+
+                <button
+                  onclick="viewProduct(${index})"
+                >
+                  View
+                </button>
+
+                <button
+                  class="cart"
+                  onclick="addToCart(${index})"
+                >
+                  🛒 Add
+                </button>
+
+              </div>
+
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function categoryIcon(category) {
+      const value = String(category).toLowerCase();
+
+      if (value.includes("electronic")) return "📱";
+      if (value.includes("fashion")) return "👕";
+      if (value.includes("home")) return "🏠";
+      if (value.includes("education")) return "📚";
+      if (value.includes("art")) return "🎨";
+      if (value.includes("film")) return "🎬";
+      if (value.includes("service")) return "🛠️";
+
+      return "🛍️";
+    }
+
+    function formatPrice(value, currency) {
+      const number = Number(value);
+
+      if (Number.isNaN(number)) {
+        return String(value);
+      }
+
+      const curr = currency || "RWF";
+
+      return new Intl.NumberFormat("en-US", {
+        maximumFractionDigits: 0
+      }).format(number) + " " + curr;
+    }
+
+    function addToCart(index) {
+      const product = currentProducts[index];
+
+      if (!product) return;
+
+      cart.push(product);
+
+      localStorage.setItem(
+        "isokohub_cart",
+        JSON.stringify(cart)
+      );
+
+      updateCartCount();
+
+      alert("Added to cart ✓");
+    }
+
+    function updateCartCount() {
+      document.getElementById("cartCount").textContent =
+        cart.length;
+    }
+
+    function showCart() {
+      if (!cart.length) {
+        alert("Your cart is empty.");
+        return;
+      }
+
+      const names = cart.map(
+        item => item.title || item.name || "Product"
+      );
+
+      alert(
+        "Your Cart:\n\n" +
+        names.join("\n") +
+        "\n\nCart items: " + cart.length
+      );
+    }
+
+    function viewProduct(index) {
+      const p = currentProducts[index];
+
+      if (!p) return;
+
+      const title =
+        p.title || p.name || "Product";
+
+      const description =
+        p.description ||
+        p.specs ||
+        "No additional description available.";
+
+      alert(
+        title +
+        "\n\n" +
+        formatPrice(p.price, p.currency) +
+        "\n\n" +
+        description
+      );
+    }
+
+    function filterCategory(category) {
+      document.getElementById("categoryFilter").value =
+        category;
+
+      scrollToProducts();
+      loadProducts();
+    }
+
+    function scrollToProducts() {
+      document
+        .getElementById("marketplace")
+        .scrollIntoView({
+          behavior: "smooth"
+        });
+    }
+
+    function goHome() {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
+
+    function showLogin() {
+      closeModals();
+      document
+        .getElementById("loginModal")
+        .classList.add("show");
+    }
+
+    function showRegister() {
+      closeModals();
+      document
+        .getElementById("registerModal")
+        .classList.add("show");
+    }
+
+    function showSell() {
+      if (!localStorage.getItem("isokohub_token")) {
+        alert("Please login or create an account before selling.");
+        showLogin();
+        return;
+      }
+
+      alert(
+        "Seller dashboard is connected to the IsokoHub account system."
+      );
+    }
+
+    function showProfile() {
+      if (!localStorage.getItem("isokohub_token")) {
+        showLogin();
+        return;
+      }
+
+      alert("You are logged in to IsokoHub.");
+    }
+
+    function closeModals() {
+      document
+        .querySelectorAll(".modal")
+        .forEach(modal =>
+          modal.classList.remove("show")
+        );
+    }
+
+    document
+      .getElementById("menuBtn")
+      .addEventListener("click", () => {
+        document
+          .getElementById("nav")
+          .classList.toggle("open");
+      });
+
+    document
+      .getElementById("searchForm")
+      .addEventListener("submit", event => {
+        event.preventDefault();
+        scrollToProducts();
+        loadProducts();
+      });
+
+    document
+      .getElementById("loginForm")
+      .addEventListener("submit", async event => {
+
+        event.preventDefault();
+
+        const email =
+          document.getElementById("loginEmail").value.trim();
+
+        const password =
+          document.getElementById("loginPassword").value;
+
+        try {
+
+          const data = await api("/api/login", {
+            method: "POST",
+            body: JSON.stringify({
+              email,
+              password
+            })
+          });
+
+          const token =
+            data.token ||
+            data.session_token ||
+            data.session;
+
+          if (token) {
+            localStorage.setItem(
+              "isokohub_token",
+              token
+            );
+          }
+
+          closeModals();
+
+          alert("Login successful ✓");
+
+        } catch (error) {
+          alert("Login failed: " + error.message);
+        }
+      });
+
+    document
+      .getElementById("registerForm")
+      .addEventListener("submit", async event => {
+
+        event.preventDefault();
+
+        const name =
+          document.getElementById("registerName").value.trim();
+
+        const email =
+          document.getElementById("registerEmail").value.trim();
+
+        const password =
+          document.getElementById("registerPassword").value;
+
+        const country =
+          document.getElementById("registerCountry").value.trim();
+
+        try {
+
+          const data = await api("/api/register", {
+            method: "POST",
+            body: JSON.stringify({
+              name,
+              email,
+              password,
+              country
+            })
+          });
+
+          const token =
+            data.token ||
+            data.session_token ||
+            data.session;
+
+          if (token) {
+            localStorage.setItem(
+              "isokohub_token",
+              token
+            );
+          }
+
+          closeModals();
+
+          alert("Account created successfully ✓");
+
+        } catch (error) {
+          alert("Registration failed: " + error.message);
+        }
+      });
+
+    document
+      .querySelectorAll(".modal")
+      .forEach(modal => {
+        modal.addEventListener("click", event => {
+          if (event.target === modal) {
+            closeModals();
+          }
+        });
+      });
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function escapeAttribute(value) {
+      return escapeHtml(value);
+    }
+
+    updateCartCount();
+    checkBackend();
+    loadProducts();
+  </script>
+
+</body>
+</html>
