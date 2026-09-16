@@ -36,10 +36,6 @@ const SERVICE_CATEGORIES = [
   "Other Services"
 ];
 
-/*
-  Global country list.
-  Used by /api/countries and frontend dropdowns.
-*/
 const COUNTRIES = [
   "Afghanistan","Albania","Algeria","Andorra","Angola",
   "Antigua and Barbuda","Argentina","Armenia","Australia",
@@ -84,235 +80,93 @@ const COUNTRIES = [
 ];
 
 const SERVICE_KEYWORDS = [
-  "service",
-  "consultant",
-  "consulting",
-  "engineer",
-  "engineering",
-  "developer",
-  "development",
-  "designer",
-  "design",
-  "teacher",
-  "teaching",
-  "tutor",
-  "education",
-  "course",
-  "training",
-  "photography",
-  "photographer",
-  "videography",
-  "video",
-  "film",
-  "filmmaker",
-  "producer",
-  "marketing",
-  "lawyer",
-  "legal",
-  "accountant",
-  "accounting",
-  "finance",
-  "doctor",
-  "health",
-  "therapy",
-  "fitness",
-  "beauty",
-  "salon",
-  "barber",
-  "restaurant",
-  "hotel",
-  "event",
-  "transport",
-  "driver",
-  "delivery",
-  "logistics",
-  "travel",
-  "tourism",
-  "agriculture",
-  "construction",
-  "plumber",
-  "plumbing",
-  "electrician",
-  "cleaning",
-  "mechanic",
-  "repair",
-  "installation",
-  "branding",
-  "social media",
-  "tax",
-  "chef",
-  "catering",
-  "shipping",
-  "warehouse",
-  "courier",
-  "factory",
-  "machine",
-  "manufacturing",
-  "freelance",
-  "job",
-  "jobs",
-  "software",
-  "website",
-  "app",
-  "mobile app"
+  "service","consultant","consulting","engineer","engineering",
+  "developer","development","designer","design","teacher",
+  "teaching","tutor","education","course","training",
+  "photography","photographer","videography","video","film",
+  "filmmaker","producer","marketing","lawyer","legal",
+  "accountant","accounting","finance","doctor","health",
+  "therapy","fitness","beauty","salon","barber","restaurant",
+  "hotel","event","transport","driver","delivery","logistics",
+  "travel","tourism","agriculture","construction","plumber",
+  "plumbing","electrician","cleaning","mechanic","repair",
+  "installation","branding","social media","tax","chef",
+  "catering","shipping","warehouse","courier","factory",
+  "machine","manufacturing","freelance","job","jobs",
+  "software","website","app","mobile app"
 ];
 
 const SERVICE_MAP = {
   "Business & Professional": [
-    "business",
-    "consultant",
-    "consulting",
-    "management",
-    "professional"
+    "business","consultant","consulting","management","professional"
   ],
   "Engineering": [
-    "engineer",
-    "engineering"
+    "engineer","engineering"
   ],
   "IT & Technology": [
-    "software",
-    "developer",
-    "development",
-    "website",
-    "app",
-    "technology",
-    "programming",
-    "computer",
-    "it support"
+    "software","developer","development","website","app",
+    "technology","programming","computer","it support"
   ],
   "Construction & Property": [
-    "construction",
-    "builder",
-    "building",
-    "architect",
-    "property",
-    "real estate"
+    "construction","builder","building","architect",
+    "property","real estate"
   ],
   "Education & Teachers": [
-    "teacher",
-    "teaching",
-    "tutor",
-    "education",
-    "course",
-    "training",
-    "lesson"
+    "teacher","teaching","tutor","education",
+    "course","training","lesson"
   ],
   "Art & Creative": [
-    "artist",
-    "art",
-    "design",
-    "designer",
-    "graphic",
-    "creative",
-    "photography",
-    "photographer"
+    "artist","art","design","designer","graphic",
+    "creative","photography","photographer"
   ],
   "Film & Entertainment": [
-    "film",
-    "filmmaker",
-    "producer",
-    "videography",
-    "video",
-    "actor",
-    "entertainment"
+    "film","filmmaker","producer","videography",
+    "video","actor","entertainment"
   ],
   "Marketing & Communication": [
-    "marketing",
-    "branding",
-    "advertising",
-    "social media",
-    "communication",
-    "copywriter"
+    "marketing","branding","advertising","social media",
+    "communication","copywriter"
   ],
   "Automotive & Transport": [
-    "car",
-    "automotive",
-    "mechanic",
-    "driver",
-    "transport",
-    "vehicle"
+    "car","automotive","mechanic","driver","transport","vehicle"
   ],
   "Agriculture & Environment": [
-    "agriculture",
-    "farming",
-    "farmer",
-    "environment",
-    "gardening"
+    "agriculture","farming","farmer","environment","gardening"
   ],
   "Home Services": [
-    "plumber",
-    "plumbing",
-    "electrician",
-    "cleaning",
-    "cleaner",
-    "home repair",
-    "installation"
+    "plumber","plumbing","electrician","cleaning",
+    "cleaner","home repair","installation"
   ],
   "Legal & Finance": [
-    "lawyer",
-    "legal",
-    "accountant",
-    "accounting",
-    "finance",
-    "tax",
-    "audit"
+    "lawyer","legal","accountant","accounting",
+    "finance","tax","audit"
   ],
   "Health & Wellness": [
-    "doctor",
-    "health",
-    "therapy",
-    "fitness",
-    "wellness"
+    "doctor","health","therapy","fitness","wellness"
   ],
   "Beauty & Personal Care": [
-    "beauty",
-    "salon",
-    "barber",
-    "hair",
-    "makeup"
+    "beauty","salon","barber","hair","makeup"
   ],
   "Food & Hospitality": [
-    "restaurant",
-    "hotel",
-    "chef",
-    "catering",
-    "food",
-    "hospitality"
+    "restaurant","hotel","chef","catering","food","hospitality"
   ],
   "Events": [
-    "event",
-    "events",
-    "wedding",
-    "party"
+    "event","events","wedding","party"
   ],
   "Logistics": [
-    "logistics",
-    "delivery",
-    "shipping",
-    "warehouse",
-    "courier"
+    "logistics","delivery","shipping","warehouse","courier"
   ],
   "Travel & Tourism": [
-    "travel",
-    "tourism",
-    "tour",
-    "hotel"
+    "travel","tourism","tour","hotel"
   ],
   "Industrial & Manufacturing": [
-    "factory",
-    "machine",
-    "manufacturing",
-    "industrial"
+    "factory","machine","manufacturing","industrial"
   ],
   "Jobs & Freelance": [
-    "job",
-    "jobs",
-    "freelance",
-    "freelancer"
+    "job","jobs","freelance","freelancer"
   ],
   "Services": [
-    "service",
-    "services"
+    "service","services"
   ],
   "Other Services": []
 };
@@ -529,11 +383,6 @@ export default {
       });
     }
 
-    /*
-      IMPORTANT:
-      productMatch is declared here once so GET / PUT / DELETE
-      can all safely use it.
-    */
     const productMatch =
       path.match(/^\/api\/products\/(\d+)$/);
 
@@ -543,7 +392,10 @@ export default {
          HEALTH
       ===================================================== */
 
-      if (path === "/api/health" && method === "GET") {
+      if (
+        path === "/api/health" &&
+        method === "GET"
+      ) {
         let database = "not_connected";
         let ok = false;
         let error = null;
@@ -576,7 +428,10 @@ export default {
          CONFIG
       ===================================================== */
 
-      if (path === "/api/config" && method === "GET") {
+      if (
+        path === "/api/config" &&
+        method === "GET"
+      ) {
         return json({
           ok: true,
           environment: "production",
@@ -590,10 +445,6 @@ export default {
         });
       }
 
-
-      /*
-        Everything below this point requires D1.
-      */
       const db = requireDB(env);
 
 
@@ -601,7 +452,10 @@ export default {
          COUNTRIES
       ===================================================== */
 
-      if (path === "/api/countries" && method === "GET") {
+      if (
+        path === "/api/countries" &&
+        method === "GET"
+      ) {
         const q = normalize(
           url.searchParams.get("search")
         );
@@ -714,7 +568,8 @@ export default {
           const s = `%${search}%`;
 
           binds.push(
-            s,s,s,s,s,s,s,s
+            s, s, s, s,
+            s, s, s, s
           );
         }
 
@@ -785,6 +640,11 @@ export default {
           }, 404);
         }
 
+        /*
+          views is optional.
+          If the locked schema does not have this column,
+          product viewing must still continue normally.
+        */
         try {
           await db.prepare(`
             UPDATE products
@@ -793,12 +653,7 @@ export default {
           `)
             .bind(id)
             .run();
-        } catch {
-          /*
-            Keep product viewing working even if the
-            locked schema does not expose a writable views column.
-          */
-        }
+        } catch {}
 
         return json({
           ok: true,
@@ -877,9 +732,6 @@ export default {
           binds.push(`%${provider}%`);
         }
 
-        /*
-          Search across all relevant fields.
-        */
         if (search) {
           sql += `
             AND (
@@ -895,7 +747,8 @@ export default {
           const s = `%${search}%`;
 
           binds.push(
-            s,s,s,s,s,s
+            s, s, s,
+            s, s, s
           );
         }
 
@@ -919,7 +772,10 @@ export default {
               )
             );
 
-        if (online === "true" || online === "1") {
+        if (
+          online === "true" ||
+          online === "1"
+        ) {
           services = services.filter(p => {
             const text = productText(p);
 
@@ -998,7 +854,8 @@ export default {
 
         if (existing) {
           return json({
-            error: "An account with this email already exists"
+            error:
+              "An account with this email already exists"
           }, 409);
         }
 
@@ -1074,7 +931,8 @@ export default {
 
         if (!email || !password) {
           return json({
-            error: "Email and password are required"
+            error:
+              "Email and password are required"
           }, 400);
         }
 
@@ -1091,7 +949,8 @@ export default {
 
         if (!user) {
           return json({
-            error: "Invalid email or password"
+            error:
+              "Invalid email or password"
           }, 401);
         }
 
@@ -1103,7 +962,8 @@ export default {
           user.password_hash
         ) {
           return json({
-            error: "Invalid email or password"
+            error:
+              "Invalid email or password"
           }, 401);
         }
 
@@ -1259,6 +1119,7 @@ export default {
 
       /* =====================================================
          CREATE PRODUCT / SERVICE
+         FIXED: NO "views" COLUMN IN INSERT
       ===================================================== */
 
       if (
@@ -1365,7 +1226,8 @@ export default {
 
         if (price < 0) {
           return json({
-            error: "Price cannot be negative"
+            error:
+              "Price cannot be negative"
           }, 400);
         }
 
@@ -1380,6 +1242,12 @@ export default {
           }, 400);
         }
 
+        /*
+          IMPORTANT:
+          "views" removed from this INSERT.
+          This keeps product creation compatible
+          with the locked schema.
+        */
         const result =
           await db.prepare(`
             INSERT INTO products
@@ -1401,13 +1269,12 @@ export default {
                 image_url,
                 specs,
                 negotiable,
-                status,
-                views
+                status
               )
             VALUES
               (
                 ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                ?, ?, ?, ?, ?, ?, ?, 'active', 0
+                ?, ?, ?, ?, ?, ?, ?, 'active'
               )
           `)
             .bind(
@@ -1435,7 +1302,8 @@ export default {
           ok: true,
           message:
             "Product/service published successfully",
-          id: result.meta?.last_row_id
+          id:
+            result.meta?.last_row_id
         }, 201);
       }
 
@@ -1503,7 +1371,10 @@ export default {
 
         const price =
           body.price !== undefined
-            ? number(body.price, existing.price)
+            ? number(
+                body.price,
+                existing.price
+              )
             : existing.price;
 
         const currency =
@@ -1513,7 +1384,10 @@ export default {
 
         const stock =
           body.stock !== undefined
-            ? number(body.stock, existing.stock)
+            ? number(
+                body.stock,
+                existing.stock
+              )
             : existing.stock;
 
         const brand =
@@ -1617,7 +1491,8 @@ export default {
 
         return json({
           ok: true,
-          message: "Product updated successfully"
+          message:
+            "Product updated successfully"
         });
       }
 
@@ -1664,10 +1539,6 @@ export default {
           }, 403);
         }
 
-        /*
-          Soft-delete by changing status.
-          This keeps historical order relationships safe.
-        */
         await db.prepare(`
           UPDATE products
           SET status = 'inactive'
@@ -1678,7 +1549,8 @@ export default {
 
         return json({
           ok: true,
-          message: "Product removed successfully"
+          message:
+            "Product removed successfully"
         });
       }
 
@@ -1717,7 +1589,8 @@ export default {
 
         return json({
           ok: true,
-          saved: rows.results || []
+          saved:
+            rows.results || []
         });
       }
 
@@ -1747,7 +1620,8 @@ export default {
 
         if (!productId) {
           return json({
-            error: "product_id is required"
+            error:
+              "product_id is required"
           }, 400);
         }
 
@@ -1762,7 +1636,8 @@ export default {
 
         if (!product) {
           return json({
-            error: "Product not found"
+            error:
+              "Product not found"
           }, 404);
         }
 
@@ -1806,7 +1681,9 @@ export default {
       ===================================================== */
 
       const savedMatch =
-        path.match(/^\/api\/saved\/(\d+)$/);
+        path.match(
+          /^\/api\/saved\/(\d+)$/
+        );
 
       if (
         savedMatch &&
@@ -1834,7 +1711,8 @@ export default {
 
         return json({
           ok: true,
-          message: "Removed from saved"
+          message:
+            "Removed from saved"
         });
       }
 
@@ -1881,7 +1759,8 @@ export default {
 
         return json({
           ok: true,
-          orders: rows.results || []
+          orders:
+            rows.results || []
         });
       }
 
@@ -1922,7 +1801,8 @@ export default {
 
         if (!productId) {
           return json({
-            error: "product_id is required"
+            error:
+              "product_id is required"
           }, 400);
         }
 
@@ -1939,7 +1819,8 @@ export default {
 
         if (!product) {
           return json({
-            error: "Product is not available"
+            error:
+              "Product is not available"
           }, 404);
         }
 
@@ -1948,7 +1829,8 @@ export default {
           Number(user.id)
         ) {
           return json({
-            error: "You cannot order your own listing"
+            error:
+              "You cannot order your own listing"
           }, 400);
         }
 
@@ -1957,7 +1839,8 @@ export default {
           quantity
         ) {
           return json({
-            error: "Not enough stock available"
+            error:
+              "Not enough stock available"
           }, 400);
         }
 
@@ -1970,9 +1853,6 @@ export default {
         const commission =
           total * COMMISSION_RATE;
 
-        /*
-          Keep the stock update guarded.
-        */
         const stockUpdate =
           await db.prepare(`
             UPDATE products
@@ -1995,12 +1875,12 @@ export default {
           ) < 1
         ) {
           return json({
-            error: "Stock is no longer available"
+            error:
+              "Stock is no longer available"
           }, 409);
         }
 
         try {
-
           const result =
             await db.prepare(`
               INSERT INTO orders
@@ -2035,7 +1915,8 @@ export default {
 
           return json({
             ok: true,
-            message: "Order placed successfully",
+            message:
+              "Order placed successfully",
             order_id:
               result.meta?.last_row_id,
             total,
@@ -2046,9 +1927,6 @@ export default {
 
         } catch (e) {
 
-          /*
-            Restore stock if order insertion fails.
-          */
           await db.prepare(`
             UPDATE products
             SET stock = stock + ?
@@ -2103,7 +1981,8 @@ export default {
 
         return json({
           ok: true,
-          messages: rows.results || []
+          messages:
+            rows.results || []
         });
       }
 
@@ -2140,13 +2019,15 @@ export default {
 
         if (!receiverId) {
           return json({
-            error: "receiver_id is required"
+            error:
+              "receiver_id is required"
           }, 400);
         }
 
         if (!message) {
           return json({
-            error: "Message is required"
+            error:
+              "Message is required"
           }, 400);
         }
 
@@ -2155,7 +2036,8 @@ export default {
           Number(user.id)
         ) {
           return json({
-            error: "You cannot message yourself"
+            error:
+              "You cannot message yourself"
           }, 400);
         }
 
@@ -2171,7 +2053,8 @@ export default {
 
         if (!receiver) {
           return json({
-            error: "Recipient not found"
+            error:
+              "Recipient not found"
           }, 404);
         }
 
@@ -2195,8 +2078,10 @@ export default {
 
         return json({
           ok: true,
-          message: "Message sent",
-          id: result.meta?.last_row_id
+          message:
+            "Message sent",
+          id:
+            result.meta?.last_row_id
         }, 201);
       }
 
@@ -2227,7 +2112,8 @@ export default {
 
         return json({
           ok: true,
-          products: rows.results || []
+          products:
+            rows.results || []
         });
       }
 
@@ -2286,11 +2172,17 @@ export default {
           ok: true,
           stats: {
             products:
-              Number(productCount?.count || 0),
+              Number(
+                productCount?.count || 0
+              ),
             orders:
-              Number(orderCount?.count || 0),
+              Number(
+                orderCount?.count || 0
+              ),
             paid_sales:
-              Number(sales?.total || 0)
+              Number(
+                sales?.total || 0
+              )
           }
         });
       }
@@ -2325,10 +2217,15 @@ export default {
             FROM users
           `).first();
 
+        /*
+          FIXED:
+          NULL seller_id values are excluded explicitly.
+        */
         const sellers =
           await db.prepare(`
             SELECT COUNT(DISTINCT seller_id) AS count
             FROM products
+            WHERE seller_id IS NOT NULL
           `).first();
 
         const products =
@@ -2408,20 +2305,28 @@ export default {
           stats: {
             users:
               Number(users?.count || 0),
+
             sellers:
               Number(sellers?.count || 0),
+
             products:
               Number(products?.count || 0),
+
             orders:
               Number(orders?.count || 0),
+
             revenue:
               Number(revenue?.total || 0),
+
             commission:
               Number(commission?.total || 0),
+
             messages:
               Number(messages?.count || 0),
+
             countries:
               Number(countries?.count || 0),
+
             services:
               serviceCount
           }
@@ -2454,7 +2359,8 @@ export default {
 
         return json({
           ok: true,
-          users: rows.results || []
+          users:
+            rows.results || []
         });
       }
 
@@ -2490,7 +2396,8 @@ export default {
 
         return json({
           ok: true,
-          sellers: rows.results || []
+          sellers:
+            rows.results || []
         });
       }
 
@@ -2518,7 +2425,8 @@ export default {
 
         return json({
           ok: true,
-          products: rows.results || []
+          products:
+            rows.results || []
         });
       }
 
@@ -2554,7 +2462,8 @@ export default {
 
         return json({
           ok: true,
-          orders: rows.results || []
+          orders:
+            rows.results || []
         });
       }
 
@@ -2709,7 +2618,8 @@ export default {
         return json({
           ok: true,
           services,
-          count: services.length
+          count:
+            services.length
         });
       }
 
@@ -2806,7 +2716,6 @@ export default {
 
       /* =====================================================
          ADMIN REVIEWS
-         Locked schema has no reviews table.
       ===================================================== */
 
       if (
@@ -2876,7 +2785,8 @@ export default {
 
         return json({
           ok: true,
-          categories: rows.results || []
+          categories:
+            rows.results || []
         });
       }
 
@@ -2901,7 +2811,8 @@ export default {
 
         if (!name) {
           return json({
-            error: "Category name is required"
+            error:
+              "Category name is required"
           }, 400);
         }
 
@@ -2917,7 +2828,8 @@ export default {
 
         if (existing) {
           return json({
-            error: "Category already exists"
+            error:
+              "Category already exists"
           }, 409);
         }
 
@@ -2936,8 +2848,10 @@ export default {
 
         return json({
           ok: true,
-          message: "Category created",
-          id: result.meta?.last_row_id
+          message:
+            "Category created",
+          id:
+            result.meta?.last_row_id
         }, 201);
       }
 
@@ -3018,6 +2932,7 @@ export default {
               id
             )
             .run();
+
         } else {
           return json({
             error:
@@ -3027,7 +2942,8 @@ export default {
 
         return json({
           ok: true,
-          message: "Order updated"
+          message:
+            "Order updated"
         });
       }
 
@@ -3070,29 +2986,26 @@ export default {
 
         if (!target) {
           return json({
-            error: "User not found"
+            error:
+              "User not found"
           }, 404);
         }
 
-        let role =
+        const role =
           body.role !== undefined
             ? String(body.role)
             : target.role;
 
-        let isActive =
+        const isActive =
           body.is_active !== undefined
             ? (body.is_active ? 1 : 0)
             : target.is_active;
 
-        let isVerified =
+        const isVerified =
           body.is_verified !== undefined
             ? (body.is_verified ? 1 : 0)
             : target.is_verified;
 
-        /*
-          Prevent admin from accidentally
-          disabling their own account.
-        */
         if (
           Number(id) ===
             Number(admin.id) &&
@@ -3122,7 +3035,8 @@ export default {
 
         return json({
           ok: true,
-          message: "User updated"
+          message:
+            "User updated"
         });
       }
 
@@ -3155,7 +3069,8 @@ export default {
 
         if (!status) {
           return json({
-            error: "status is required"
+            error:
+              "status is required"
           }, 400);
         }
 
@@ -3172,7 +3087,8 @@ export default {
 
         return json({
           ok: true,
-          message: "Product status updated"
+          message:
+            "Product status updated"
         });
       }
 
@@ -3298,14 +3214,15 @@ export default {
         return json({
           ok: true,
           services,
-          count: services.length,
+          count:
+            services.length,
           global: true
         });
       }
 
 
       /* =====================================================
-         FALLBACK TO CLOUDFLARE ASSETS
+         CLOUDFLARE ASSETS
       ===================================================== */
 
       if (
@@ -3316,7 +3233,8 @@ export default {
       }
 
       return json({
-        error: "API route not found",
+        error:
+          "API route not found",
         path
       }, 404);
 
