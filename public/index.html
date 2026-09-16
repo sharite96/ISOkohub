@@ -2025,6 +2025,3382 @@ document.addEventListener("DOMContentLoaded",async function(){
   await checkConnection();
   await loadProducts();
 });
+<script>
+const API = window.location.origin + "/api";
+
+let products = [];
+let cart = JSON.parse(localStorage.getItem("isokohub_cart") || "[]");
+let saved = JSON.parse(localStorage.getItem("isokohub_saved") || "[]");
+let currentUser = JSON.parse(localStorage.getItem("isokohub_user") || "null");
+
+const MARKET_CATEGORIES = [
+  "Electronics",
+  "Fashion",
+  "Home",
+  "Education",
+  "Art & Creative",
+  "Film & Entertainment",
+  "Services",
+  "Digital Products",
+  "Real Estate",
+  "Transport & Delivery",
+  "Technology & IT",
+  "Marketing & Advertising",
+  "Business & Professional",
+  "Construction & Home Services",
+  "Beauty & Personal Care",
+  "Food & Catering",
+  "Events",
+  "Jobs & Freelance"
+];
+
+function escapeHtml(value){
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+function categoryIcon(category){
+  const icons = {
+    "Electronics":"📱",
+    "Fashion":"👕",
+    "Home":"🏠",
+    "Education":"📚",
+    "Art & Creative":"🎨",
+    "Film & Entertainment":"🎬",
+    "Services":"🛠️",
+    "Digital Products":"💻",
+    "Real Estate":"🏢",
+    "Transport & Delivery":"🚚",
+    "Technology & IT":"💡",
+    "Marketing & Advertising":"📣",
+    "Business & Professional":"💼",
+    "Construction & Home Services":"🏗️",
+    "Beauty & Personal Care":"💄",
+    "Food & Catering":"🍽️",
+    "Events":"🎉",
+    "Jobs & Freelance":"🧑‍💻"
+  };
+
+  return icons[category] || "🛍️";
+}
+
+async function api(path, options = {}){
+  const headers = {
+    "Content-Type":"application/json",
+    ...(options.headers || {})
+  };
+
+  const token = localStorage.getItem("isokohub_token");
+
+  if(token){
+    headers.Authorization = "Bearer " + token;
+  }
+
+  const response = await fetch(API + path,{
+    ...options,
+    headers
+  });
+
+  let data = {};
+
+  try{
+    data = await response.json();
+  }catch{
+    data = {};
+  }
+
+  if(!response.ok){
+    throw new Error(
+      data.error ||
+      data.message ||
+      `Request failed (${response.status})`
+    );
+  }
+
+  return data;
+}
+
+function setStatus(message,type=""){
+  const el = document.getElementById("status");
+
+  el.textContent = message;
+
+  el.className =
+    type === "ok"
+      ? "statusOk"
+      : type === "error"
+        ? "statusError"
+        : "";
+}
+
+async function checkConnection(){
+  try{
+    const data = await api("/health");
+
+    if(data.ok && data.database === "connected"){
+      setStatus(
+        "Connected ✓ IsokoHub API + D1 database",
+        "ok"
+      );
+    }else{
+      setStatus(
+        "API connected, but D1 database needs attention",
+        "error"
+      );
+    }
+
+  }catch(error){
+    console.error(error);
+
+    setStatus(
+      "Backend connection failed — check Cloudflare D1/API settings",
+      "error"
+    );
+  }
+}
+
+/* ==================================================
+   CATEGORIES
+================================================== */
+
+function renderCategories(){
+  const box = document.getElementById("categories");
+  const select = document.getElementById("sellCategory");
+
+  box.innerHTML = MARKET_CATEGORIES.map(category => `
+    <button
+      class="category"
+      onclick='filterCategory(${JSON.stringify(category)})'
+    >
+      <span class="icon">${categoryIcon(category)}</span>
+      <strong>${escapeHtml(category)}</strong>
+    </button>
+  `).join("");
+
+  select.innerHTML = MARKET_CATEGORIES.map(category => `
+    <option value="${escapeHtml(category)}">
+      ${escapeHtml(category)}
+    </option>
+  `).join("");
+}
+
+/* ==================================================
+   PRODUCTS
+================================================== */
+
+async function loadProducts(query=""){
+  try{
+    let url = "/products?limit=100";
+
+    if(query){
+      url += "&search=" + encodeURIComponent(query);
+    }
+
+    const data = await api(url);
+
+    products = Array.isArray(data)
+      ? data
+      : (data.products || data.results || []);
+
+    renderProducts(products);
+
+  }catch(error){
+    console.error(error);
+
+    document.getElementById("products").innerHTML = `
+      <div class="empty">
+        <h3>Unable to load marketplace</h3>
+        <p>${escapeHtml(error.message)}</p>
+        <button class="btn" onclick="loadProducts()">
+          Try Again
+        </button>
+      </div>
+    `;
+  }
+}
+
+function renderProducts(list){
+  const box = document.getElementById("products");
+
+  if(!list.length){
+    box.innerHTML = `
+      <div class="empty">
+        <h3>No products found</h3>
+        <p>Try another search or choose another category.</p>
+      </div>
+    `;
+    return;
+  }
+
+  box.innerHTML = list.map(product => {
+    const id = Number(product.id);
+    const title = product.title || "Untitled";
+    const category = product.category || "Services";
+    const price = Number(product.price || 0);
+    const currency = product.currency || "RWF";
+    const country = product.country || "Global";
+    const district = product.district || "";
+    const seller =
+      product.seller_name ||
+      product.seller ||
+      "IsokoHub Seller";
+
+    const image =
+      product.image_url ||
+      product.image ||
+      "";
+
+    return `
+      <article class="product">
+
+        <div class="productImage">
+          ${
+            image
+              ? `
+                <img
+                  src="${escapeHtml(image)}"
+                  alt="${escapeHtml(title)}"
+                  onerror="this.style.display='none';this.parentElement.innerHTML='${categoryIcon(category)}'"
+                >
+              `
+              : categoryIcon(category)
+          }
+        </div>
+
+        <div class="productBody">
+
+          <h3>${escapeHtml(title)}</h3>
+
+          <div class="price">
+            ${price.toLocaleString()}
+            ${escapeHtml(currency)}
+          </div>
+
+          <div class="meta">
+            📂 ${escapeHtml(category)}
+          </div>
+
+          <div class="meta">
+            📍 ${escapeHtml(
+              [district,country]
+                .filter(Boolean)
+                .join(", ")
+            )}
+          </div>
+
+          <div class="meta">
+            👤 ${escapeHtml(seller)}
+          </div>
+
+          <div class="productActions">
+            <button onclick="addToCart(${id})">
+              🛒 Cart
+            </button>
+
+            <button onclick="toggleSaved(${id})">
+              ❤️ Save
+            </button>
+          </div>
+
+        </div>
+
+      </article>
+    `;
+  }).join("");
+}
+
+function findProduct(id){
+  return products.find(
+    product => Number(product.id) === Number(id)
+  );
+}
+
+async function filterCategory(category){
+  document.getElementById("searchInput").value = category;
+
+  try{
+    const data = await api(
+      "/products?limit=100&category=" +
+      encodeURIComponent(category)
+    );
+
+    products = Array.isArray(data)
+      ? data
+      : (data.products || data.results || []);
+
+    renderProducts(products);
+    scrollToProducts();
+
+  }catch(error){
+    await loadProducts(category);
+    scrollToProducts();
+  }
+}
+
+function scrollToProducts(){
+  const section =
+    document.getElementById("productsSection");
+
+  if(section){
+    section.scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
+  }
+}
+
+/* ==================================================
+   CART
+================================================== */
+
+function addToCart(id){
+  const product = findProduct(id);
+
+  if(!product){
+    alert("Product not found.");
+    return;
+  }
+
+  if(
+    cart.some(
+      item => Number(item.id) === Number(id)
+    )
+  ){
+    alert("This item is already in your cart.");
+    return;
+  }
+
+  cart.push(product);
+
+  localStorage.setItem(
+    "isokohub_cart",
+    JSON.stringify(cart)
+  );
+
+  updateCartCount();
+
+  alert("Added to cart ✓");
+}
+
+function removeFromCart(id){
+  cart = cart.filter(
+    item => Number(item.id) !== Number(id)
+  );
+
+  localStorage.setItem(
+    "isokohub_cart",
+    JSON.stringify(cart)
+  );
+
+  updateCartCount();
+  renderCart();
+}
+
+function updateCartCount(){
+  document.getElementById("cartCount").textContent =
+    cart.length;
+}
+
+function renderCart(){
+  const box =
+    document.getElementById("cartItems");
+
+  if(!cart.length){
+    box.innerHTML = `
+      <div class="empty">
+        <h3>Your cart is empty</h3>
+        <p>Add products or services from the marketplace.</p>
+        <button
+          class="btn"
+          onclick="showSection('home')"
+        >
+          Explore Marketplace
+        </button>
+      </div>
+    `;
+    return;
+  }
+
+  let total = 0;
+
+  cart.forEach(item => {
+    total += Number(item.price || 0);
+  });
+
+  const currencies = [
+    ...new Set(
+      cart.map(
+        item => item.currency || "RWF"
+      )
+    )
+  ];
+
+  box.innerHTML = cart.map(item => `
+    <div class="cartItem">
+
+      <div>
+        <strong>
+          ${escapeHtml(item.title || "Item")}
+        </strong>
+
+        <div class="meta">
+          ${escapeHtml(item.category || "")}
+        </div>
+
+        <div class="price">
+          ${Number(item.price || 0).toLocaleString()}
+          ${escapeHtml(item.currency || "RWF")}
+        </div>
+      </div>
+
+      <button
+        class="btn danger"
+        onclick="removeFromCart(${Number(item.id)})"
+      >
+        Remove
+      </button>
+
+    </div>
+  `).join("");
+
+  if(currencies.length > 1){
+    box.innerHTML += `
+      <div class="empty">
+        <strong>Multiple currencies</strong>
+        <p>
+          Checkout contains different currencies.
+        </p>
+      </div>
+    `;
+  }
+
+  box.innerHTML += `
+    <div class="cartTotal">
+      <span>Total</span>
+      <span>
+        ${total.toLocaleString()}
+        ${escapeHtml(currencies[0] || "RWF")}
+      </span>
+    </div>
+
+    <div style="margin-top:15px">
+      <button
+        class="btn"
+        onclick="checkout()"
+      >
+        Proceed to Checkout
+      </button>
+    </div>
+  `;
+}
+
+async function checkout(){
+  if(!currentUser){
+    alert("Please login before checkout.");
+    openModal("loginModal");
+    return;
+  }
+
+  if(!cart.length){
+    alert("Your cart is empty.");
+    return;
+  }
+
+  const item = cart[0];
+
+  const confirmed = confirm(
+    "Create order for:\n\n" +
+    item.title +
+    "\n\nPrice: " +
+    Number(item.price || 0).toLocaleString() +
+    " " +
+    (item.currency || "RWF")
+  );
+
+  if(!confirmed){
+    return;
+  }
+
+  try{
+    const data = await api("/orders",{
+      method:"POST",
+      body:JSON.stringify({
+        product_id:Number(item.id),
+        quantity:1
+      })
+    });
+
+    cart = cart.filter(
+      x => Number(x.id) !== Number(item.id)
+    );
+
+    localStorage.setItem(
+      "isokohub_cart",
+      JSON.stringify(cart)
+    );
+
+    updateCartCount();
+    renderCart();
+
+    alert(
+      "Order created successfully ✓\n" +
+      "Order #" +
+      (data.orderId || "")
+    );
+
+    showSection("orders");
+
+  }catch(error){
+    alert(
+      "Checkout failed: " +
+      error.message
+    );
+  }
+}
+
+/* ==================================================
+   SAVED
+================================================== */
+
+function updateSavedCount(){
+  document.getElementById("savedCount").textContent =
+    saved.length;
+}
+
+function toggleSaved(id){
+  const exists = saved.some(
+    item => Number(item.id) === Number(id)
+  );
+
+  if(exists){
+    saved = saved.filter(
+      item => Number(item.id) !== Number(id)
+    );
+  }else{
+    const product = findProduct(id);
+
+    if(product){
+      saved.push(product);
+    }
+  }
+
+  localStorage.setItem(
+    "isokohub_saved",
+    JSON.stringify(saved)
+  );
+
+  updateSavedCount();
+
+  alert(
+    exists
+      ? "Removed from Saved."
+      : "Saved ✓"
+  );
+}
+
+function renderSaved(){
+  const box =
+    document.getElementById("savedProducts");
+
+  if(!saved.length){
+    box.innerHTML = `
+      <div class="empty">
+        <h3>No saved items</h3>
+        <p>
+          Save products and services you want
+          to find later.
+        </p>
+      </div>
+    `;
+    return;
+  }
+
+  box.innerHTML = `
+    <div class="products">
+
+      ${saved.map(product => `
+        <article class="product">
+
+          <div class="productImage">
+            ${categoryIcon(product.category)}
+          </div>
+
+          <div class="productBody">
+
+            <h3>
+              ${escapeHtml(product.title)}
+            </h3>
+
+            <div class="price">
+              ${Number(product.price || 0).toLocaleString()}
+              ${escapeHtml(product.currency || "RWF")}
+            </div>
+
+            <div class="productActions">
+
+              <button
+                onclick="addToCart(${Number(product.id)})"
+              >
+                🛒 Cart
+              </button>
+
+              <button
+                onclick="
+                  toggleSaved(${Number(product.id)});
+                  renderSaved();
+                "
+              >
+                Remove
+              </button>
+
+            </div>
+
+          </div>
+
+        </article>
+      `).join("")}
+
+    </div>
+  `;
+}
+
+/* ==================================================
+   SEARCH
+================================================== */
+
+document
+  .getElementById("searchForm")
+  .addEventListener(
+    "submit",
+    async function(event){
+      event.preventDefault();
+
+      const query =
+        document
+          .getElementById("searchInput")
+          .value
+          .trim();
+
+      showSection("home");
+
+      await loadProducts(query);
+
+      scrollToProducts();
+    }
+  );
+
+/* ==================================================
+   LOGIN
+================================================== */
+
+document
+  .getElementById("loginForm")
+  .addEventListener(
+    "submit",
+    async function(event){
+
+      event.preventDefault();
+
+      const message =
+        document.getElementById(
+          "loginMessage"
+        );
+
+      message.textContent = "";
+
+      try{
+
+        const data = await api("/login",{
+          method:"POST",
+          body:JSON.stringify({
+            email:
+              document
+                .getElementById("loginEmail")
+                .value
+                .trim(),
+
+            password:
+              document
+                .getElementById("loginPassword")
+                .value
+          })
+        });
+
+        if(data.token){
+          localStorage.setItem(
+            "isokohub_token",
+            data.token
+          );
+        }
+
+        currentUser =
+          data.user ||
+          data.account ||
+          null;
+
+        localStorage.setItem(
+          "isokohub_user",
+          JSON.stringify(currentUser)
+        );
+
+        updateAuthUI();
+
+        closeModal("loginModal");
+
+        alert("Login successful ✓");
+
+        if(isAdmin()){
+          document.getElementById(
+            "adminNav"
+          ).style.display = "inline-block";
+        }
+
+      }catch(error){
+        message.textContent =
+          error.message;
+      }
+    }
+  );
+
+/* ==================================================
+   REGISTER
+================================================== */
+
+document
+  .getElementById("registerForm")
+  .addEventListener(
+    "submit",
+    async function(event){
+
+      event.preventDefault();
+
+      const message =
+        document.getElementById(
+          "registerMessage"
+        );
+
+      message.textContent = "";
+
+      try{
+
+        const data = await api("/register",{
+          method:"POST",
+
+          body:JSON.stringify({
+
+            name:
+              document
+                .getElementById("registerName")
+                .value
+                .trim(),
+
+            email:
+              document
+                .getElementById("registerEmail")
+                .value
+                .trim(),
+
+            phone:
+              document
+                .getElementById("registerPhone")
+                .value
+                .trim(),
+
+            country:
+              document
+                .getElementById("registerCountry")
+                .value
+                .trim() ||
+              "Rwanda",
+
+            password:
+              document
+                .getElementById("registerPassword")
+                .value
+
+          })
+        });
+
+        /*
+          Current backend returns userId,
+          not a login token.
+          Therefore registration is followed
+          by normal login.
+        */
+
+        closeModal("registerModal");
+
+        document
+          .getElementById("registerForm")
+          .reset();
+
+        alert(
+          "Account created successfully ✓\n" +
+          "Please login."
+        );
+
+        openModal("loginModal");
+
+      }catch(error){
+        message.textContent =
+          error.message;
+      }
+    }
+  );
+
+/* ==================================================
+   AUTH
+================================================== */
+
+function isAdmin(){
+  return !!currentUser &&
+    String(currentUser.role || "")
+      .toLowerCase() === "admin";
+}
+
+function updateAuthUI(){
+
+  const area =
+    document.getElementById("authArea");
+
+  const adminNav =
+    document.getElementById("adminNav");
+
+  if(currentUser){
+
+    const name =
+      currentUser.name ||
+      currentUser.email ||
+      "User";
+
+    area.innerHTML = `
+      <span style="font-weight:700">
+        Hi, ${escapeHtml(name)}
+      </span>
+
+      <button
+        class="btn secondary"
+        onclick="logout()"
+      >
+        Logout
+      </button>
+    `;
+
+    adminNav.style.display =
+      isAdmin()
+        ? "inline-block"
+        : "none";
+
+  }else{
+
+    area.innerHTML = `
+      <button
+        class="btn secondary"
+        onclick="openModal('loginModal')"
+      >
+        Login
+      </button>
+
+      <button
+        class="btn"
+        onclick="openModal('registerModal')"
+      >
+        Register
+      </button>
+    `;
+
+    adminNav.style.display = "none";
+  }
+}
+
+async function restoreSession(){
+
+  const token =
+    localStorage.getItem(
+      "isokohub_token"
+    );
+
+  if(!token){
+    currentUser = null;
+    updateAuthUI();
+    return;
+  }
+
+  try{
+
+    const data =
+      await api("/me");
+
+    if(data.user){
+
+      currentUser = data.user;
+
+      localStorage.setItem(
+        "isokohub_user",
+        JSON.stringify(currentUser)
+      );
+
+    }else{
+      throw new Error("Session expired");
+    }
+
+  }catch(error){
+
+    localStorage.removeItem(
+      "isokohub_token"
+    );
+
+    localStorage.removeItem(
+      "isokohub_user"
+    );
+
+    currentUser = null;
+  }
+
+  updateAuthUI();
+}
+
+async function logout(){
+
+  try{
+
+    if(
+      localStorage.getItem(
+        "isokohub_token"
+      )
+    ){
+      await api("/logout",{
+        method:"POST"
+      });
+    }
+
+  }catch(error){
+    console.warn(error);
+  }
+
+  localStorage.removeItem(
+    "isokohub_token"
+  );
+
+  localStorage.removeItem(
+    "isokohub_user"
+  );
+
+  currentUser = null;
+
+  updateAuthUI();
+
+  showSection("home");
+
+  alert("Logged out.");
+}
+
+/* ==================================================
+   SELL
+================================================== */
+
+document
+  .getElementById("sellForm")
+  .addEventListener(
+    "submit",
+    submitProduct
+  );
+
+async function submitProduct(event){
+
+  event.preventDefault();
+
+  if(
+    !currentUser ||
+    !localStorage.getItem(
+      "isokohub_token"
+    )
+  ){
+    alert(
+      "Please login before selling."
+    );
+
+    closeModal("sellModal");
+    openModal("loginModal");
+
+    return;
+  }
+
+  const message =
+    document.getElementById(
+      "sellMessage"
+    );
+
+  message.textContent = "";
+
+  try{
+
+    await api("/products",{
+      method:"POST",
+
+      body:JSON.stringify({
+
+        title:
+          document
+            .getElementById("sellTitle")
+            .value
+            .trim(),
+
+        category:
+          document
+            .getElementById("sellCategory")
+            .value,
+
+        price:
+          Number(
+            document
+              .getElementById("sellPrice")
+              .value || 0
+          ),
+
+        currency:
+          document
+            .getElementById("sellCurrency")
+            .value,
+
+        country:
+          document
+            .getElementById("sellCountry")
+            .value
+            .trim() ||
+          "Rwanda",
+
+        district:
+          document
+            .getElementById("sellDistrict")
+            .value
+            .trim(),
+
+        specs:
+          document
+            .getElementById("sellSpecs")
+            .value
+            .trim(),
+
+        status:"active",
+        stock:1,
+        negotiable:1
+
+      })
+    });
+
+    closeModal("sellModal");
+
+    document
+      .getElementById("sellForm")
+      .reset();
+
+    document
+      .getElementById("sellCountry")
+      .value = "Rwanda";
+
+    alert(
+      "Listing published successfully ✓"
+    );
+
+    await loadProducts();
+
+  }catch(error){
+
+    message.textContent =
+      error.message;
+  }
+}
+
+/* ==================================================
+   PROFILE
+================================================== */
+
+async function showProfile(){
+
+  const box =
+    document.getElementById(
+      "profileBox"
+    );
+
+  if(!currentUser){
+
+    box.innerHTML = `
+      <div class="empty">
+
+        <h3>You are not logged in</h3>
+
+        <button
+          class="btn"
+          onclick="openModal('loginModal')"
+        >
+          Login
+        </button>
+
+      </div>
+    `;
+
+    return;
+  }
+
+  box.innerHTML = `
+    <div class="adminPanel">
+
+      <h3>
+        ${escapeHtml(
+          currentUser.name || "User"
+        )}
+      </h3>
+
+      <p>
+        <strong>Email:</strong>
+        ${escapeHtml(
+          currentUser.email || ""
+        )}
+      </p>
+
+      <p>
+        <strong>Phone:</strong>
+        ${escapeHtml(
+          currentUser.phone ||
+          "Not provided"
+        )}
+      </p>
+
+      <p>
+        <strong>Country:</strong>
+        ${escapeHtml(
+          currentUser.country || ""
+        )}
+      </p>
+
+      <p>
+        <strong>District:</strong>
+        ${escapeHtml(
+          currentUser.district ||
+          "Not provided"
+        )}
+      </p>
+
+      <p>
+        <strong>Role:</strong>
+        ${escapeHtml(
+          currentUser.role ||
+          "buyer"
+        )}
+      </p>
+
+      ${
+        isAdmin()
+          ? `
+            <button
+              class="btn"
+              onclick="showAdmin()"
+            >
+              ⚙️ Open Admin Dashboard
+            </button>
+          `
+          : ""
+      }
+
+      <button
+        class="btn danger"
+        onclick="logout()"
+      >
+        Logout
+      </button>
+
+    </div>
+  `;
+}
+
+/* ==================================================
+   ORDERS
+================================================== */
+
+async function loadOrders(){
+
+  const box =
+    document.getElementById(
+      "ordersList"
+    );
+
+  if(!currentUser){
+
+    box.innerHTML = `
+      <div class="empty">
+
+        <h3>Please login</h3>
+
+        <button
+          class="btn"
+          onclick="openModal('loginModal')"
+        >
+          Login
+        </button>
+
+      </div>
+    `;
+
+    return;
+  }
+
+  box.innerHTML =
+    `<div class="empty">Loading orders...</div>`;
+
+  try{
+
+    const data =
+      await api("/orders");
+
+    const orders =
+      Array.isArray(data)
+        ? data
+        : (
+          data.orders ||
+          data.results ||
+          []
+        );
+
+    if(!orders.length){
+
+      box.innerHTML = `
+        <div class="empty">
+
+          <h3>No orders yet</h3>
+
+          <p>
+            Your orders will appear here.
+          </p>
+
+        </div>
+      `;
+
+      return;
+    }
+
+    box.innerHTML =
+      orders.map(order => `
+        <div class="orderItem">
+
+          <strong>
+            Order #${escapeHtml(order.id)}
+          </strong>
+
+          <div class="meta">
+            Product:
+            ${escapeHtml(
+              order.product_title ||
+              "Product"
+            )}
+          </div>
+
+          <div class="meta">
+            Status:
+            ${escapeHtml(
+              order.status ||
+              "pending"
+            )}
+          </div>
+
+          <div class="meta">
+            Payment:
+            ${escapeHtml(
+              order.payment_status ||
+              "unpaid"
+            )}
+          </div>
+
+          <div class="price">
+            ${Number(
+              order.total_price ||
+              order.total ||
+              order.amount ||
+              0
+            ).toLocaleString()}
+            ${escapeHtml(
+              order.currency ||
+              "RWF"
+            )}
+          </div>
+
+        </div>
+      `).join("");
+
+  }catch(error){
+
+    box.innerHTML = `
+      <div class="empty">
+
+        <h3>
+          Orders could not be loaded
+        </h3>
+
+        <p>
+          ${escapeHtml(
+            error.message
+          )}
+        </p>
+
+      </div>
+    `;
+  }
+}
+
+/* ==================================================
+   MESSAGES
+================================================== */
+
+async function loadMessages(){
+
+  const box =
+    document.querySelector(
+      "#messagesSection .empty"
+    );
+
+  if(!currentUser){
+    return;
+  }
+
+  try{
+
+    const data =
+      await api("/messages");
+
+    const messages =
+      data.messages || [];
+
+    if(!messages.length){
+      return;
+    }
+
+    const container =
+      document.getElementById(
+        "messagesSection"
+      );
+
+    let list =
+      document.getElementById(
+        "messageList"
+      );
+
+    if(!list){
+
+      list =
+        document.createElement("div");
+
+      list.id = "messageList";
+
+      container.appendChild(list);
+    }
+
+    list.innerHTML =
+      messages.map(message => `
+        <div class="messageItem">
+
+          <strong>
+            ${escapeHtml(
+              message.sender_name ||
+              "User"
+            )}
+          </strong>
+
+          <div>
+            ${escapeHtml(
+              message.message
+            )}
+          </div>
+
+          <div class="meta">
+            ${escapeHtml(
+              message.created_at ||
+              ""
+            )}
+          </div>
+
+        </div>
+      `).join("");
+
+  }catch(error){
+    console.warn(
+      "Messages:",
+      error.message
+    );
+  }
+}
+
+document
+  .getElementById("messageForm")
+  .addEventListener(
+    "submit",
+    async function(event){
+
+      event.preventDefault();
+
+      const status =
+        document.getElementById(
+          "messageStatus"
+        );
+
+      status.textContent = "";
+
+      if(!currentUser){
+
+        status.textContent =
+          "Please login first.";
+
+        return;
+      }
+
+      try{
+
+        await api("/messages",{
+          method:"POST",
+
+          body:JSON.stringify({
+
+            receiver_id:
+              Number(
+                document
+                  .getElementById(
+                    "messageRecipient"
+                  )
+                  .value
+              ),
+
+            message:
+              document
+                .getElementById(
+                  "messageText"
+                )
+                .value
+                .trim()
+
+          })
+        });
+
+        closeModal("messageModal");
+
+        document
+          .getElementById("messageForm")
+          .reset();
+
+        alert("Message sent ✓");
+
+        await loadMessages();
+
+      }catch(error){
+
+        status.textContent =
+          error.message;
+      }
+    }
+  );
+
+/* ==================================================
+   ADMIN
+================================================== */
+
+function showAdmin(){
+
+  if(!isAdmin()){
+
+    alert(
+      "Admin access required."
+    );
+
+    return;
+  }
+
+  showSection("admin");
+
+  adminTab("overview");
+}
+
+async function getAdminData(endpoint){
+
+  try{
+    return await api(endpoint);
+  }catch(error){
+
+    console.warn(
+      "Admin endpoint:",
+      endpoint,
+      error.message
+    );
+
+    return null;
+  }
+}
+
+/* ---------- ADMIN OVERVIEW ---------- */
+
+async function renderAdminOverview(){
+
+  const box =
+    document.getElementById(
+      "adminContent"
+    );
+
+  box.innerHTML =
+    `<div class="empty">Loading dashboard...</div>`;
+
+  const data =
+    await getAdminData(
+      "/admin/stats"
+    );
+
+  if(!data){
+
+    box.innerHTML = `
+      <div class="empty">
+
+        <h3>Admin data unavailable</h3>
+
+        <p>
+          Please check your admin session
+          and Worker API.
+        </p>
+
+      </div>
+    `;
+
+    return;
+  }
+
+  const stats =
+    data.stats || {};
+
+  box.innerHTML = `
+
+    <div class="adminGrid">
+
+      <div class="adminCard">
+        <div>Users</div>
+        <div class="number">
+          ${Number(stats.users || 0).toLocaleString()}
+        </div>
+      </div>
+
+      <div class="adminCard">
+        <div>Sellers</div>
+        <div class="number">
+          ${Number(stats.sellers || 0).toLocaleString()}
+        </div>
+      </div>
+
+      <div class="adminCard">
+        <div>Products</div>
+        <div class="number">
+          ${Number(stats.products || 0).toLocaleString()}
+        </div>
+      </div>
+
+      <div class="adminCard">
+        <div>Services</div>
+        <div class="number">
+          ${Number(stats.services || 0).toLocaleString()}
+        </div>
+      </div>
+
+      <div class="adminCard">
+        <div>Orders</div>
+        <div class="number">
+          ${Number(stats.orders || 0).toLocaleString()}
+        </div>
+      </div>
+
+      <div class="adminCard">
+        <div>Pending Orders</div>
+        <div class="number">
+          ${Number(stats.pending_orders || 0).toLocaleString()}
+        </div>
+      </div>
+
+      <div class="adminCard">
+        <div>Categories</div>
+        <div class="number">
+          ${Number(stats.categories || 0).toLocaleString()}
+        </div>
+      </div>
+
+      <div class="adminCard">
+        <div>Messages</div>
+        <div class="number">
+          ${Number(stats.messages || 0).toLocaleString()}
+        </div>
+      </div>
+
+    </div>
+
+    <div class="adminCard">
+
+      <h3>💰 Marketplace Revenue</h3>
+
+      <p>
+        Paid amount:
+        <strong>
+          ${Number(
+            stats.paid_amount || 0
+          ).toLocaleString()}
+        </strong>
+      </p>
+
+      <p>
+        Commission rate:
+        <strong>
+          ${Number(
+            (stats.commission_rate || 0) * 100
+          ).toFixed(1)}%
+        </strong>
+      </p>
+
+      <p>
+        Estimated commission:
+        <strong>
+          ${Number(
+            stats.estimated_commission || 0
+          ).toLocaleString()}
+        </strong>
+      </p>
+
+    </div>
+
+    <div style="margin-top:15px">
+
+      <button
+        class="btn"
+        onclick="adminTab('users')"
+      >
+        👥 Users
+      </button>
+
+      <button
+        class="btn"
+        onclick="adminTab('sellers')"
+      >
+        🛍️ Sellers
+      </button>
+
+      <button
+        class="btn"
+        onclick="adminTab('products')"
+      >
+        📦 Products
+      </button>
+
+      <button
+        class="btn"
+        onclick="adminTab('orders')"
+      >
+        📋 Orders
+      </button>
+
+    </div>
+  `;
+}
+
+/* ---------- ADMIN USERS ---------- */
+
+async function renderAdminUsers(){
+
+  const box =
+    document.getElementById(
+      "adminContent"
+    );
+
+  box.innerHTML =
+    `<div class="empty">Loading users...</div>`;
+
+  const data =
+    await getAdminData(
+      "/admin/users"
+    );
+
+  if(!data){
+
+    box.innerHTML = `
+      <div class="empty">
+        Unable to load users.
+      </div>
+    `;
+
+    return;
+  }
+
+  const users =
+    data.users || [];
+
+  box.innerHTML = `
+
+    <h3>👥 Users</h3>
+
+    <div class="adminTableWrap">
+
+      <table class="adminTable">
+
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Country</th>
+            <th>Verified</th>
+            <th>Active</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          ${
+            users.length
+              ? users.map(user => `
+
+                <tr>
+
+                  <td>
+                    ${escapeHtml(user.id)}
+                  </td>
+
+                  <td>
+                    ${escapeHtml(user.name)}
+                  </td>
+
+                  <td>
+                    ${escapeHtml(user.email)}
+                  </td>
+
+                  <td>
+                    <select
+                      id="role_${Number(user.id)}"
+                    >
+                      ${[
+                        "buyer",
+                        "seller",
+                        "admin"
+                      ].map(role => `
+                        <option
+                          value="${role}"
+                          ${
+                            String(user.role) === role
+                              ? "selected"
+                              : ""
+                          }
+                        >
+                          ${role}
+                        </option>
+                      `).join("")}
+                    </select>
+                  </td>
+
+                  <td>
+                    ${escapeHtml(
+                      user.country || ""
+                    )}
+                  </td>
+
+                  <td>
+                    ${
+                      Number(user.is_verified)
+                        ? "✓"
+                        : "—"
+                    }
+                  </td>
+
+                  <td>
+                    ${
+                      Number(user.is_active)
+                        ? "✓"
+                        : "✕"
+                    }
+                  </td>
+
+                  <td>
+
+                    <button
+                      class="btn"
+                      onclick="
+                        updateAdminUser(
+                          ${Number(user.id)},
+                          ${Number(user.is_active) ? 0 : 1},
+                          ${Number(user.is_verified) ? 0 : 1}
+                        )
+                      "
+                    >
+                      ${
+                        Number(user.is_active)
+                          ? "Deactivate"
+                          : "Activate"
+                      }
+                    </button>
+
+                    <button
+                      class="btn secondary"
+                      onclick="
+                        saveAdminUserRole(
+                          ${Number(user.id)}
+                        )
+                      "
+                    >
+                      Save Role
+                    </button>
+
+                  </td>
+
+                </tr>
+
+              `).join("")
+              : `
+                <tr>
+                  <td colspan="8">
+                    No users found.
+                  </td>
+                </tr>
+              `
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+  `;
+}
+
+async function updateAdminUser(
+  id,
+  is_active,
+  is_verified
+){
+
+  try{
+
+    await api(
+      "/admin/users/" + id,
+      {
+        method:"PATCH",
+
+        body:JSON.stringify({
+          is_active,
+          is_verified
+        })
+      }
+    );
+
+    alert(
+      "User status updated ✓"
+    );
+
+    await renderAdminUsers();
+
+  }catch(error){
+
+    alert(
+      "User update failed: " +
+      error.message
+    );
+  }
+}
+
+async function saveAdminUserRole(id){
+
+  const select =
+    document.getElementById(
+      "role_" + id
+    );
+
+  if(!select){
+    return;
+  }
+
+  try{
+
+    await api(
+      "/admin/users/" + id,
+      {
+        method:"PATCH",
+
+        body:JSON.stringify({
+          role:select.value
+        })
+      }
+    );
+
+    alert(
+      "User role updated ✓"
+    );
+
+    await renderAdminUsers();
+
+  }catch(error){
+
+    alert(
+      "Role update failed: " +
+      error.message
+    );
+  }
+}
+
+/* ---------- ADMIN SELLERS ---------- */
+
+async function renderAdminSellers(){
+
+  const box =
+    document.getElementById(
+      "adminContent"
+    );
+
+  box.innerHTML =
+    `<div class="empty">Loading sellers...</div>`;
+
+  const data =
+    await getAdminData(
+      "/admin/sellers"
+    );
+
+  if(!data){
+
+    box.innerHTML = `
+      <div class="empty">
+        Unable to load sellers.
+      </div>
+    `;
+
+    return;
+  }
+
+  const sellers =
+    data.sellers || [];
+
+  box.innerHTML = `
+
+    <h3>🛍️ Sellers & Service Providers</h3>
+
+    <div class="adminTableWrap">
+
+      <table class="adminTable">
+
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Country</th>
+            <th>Products</th>
+            <th>Orders</th>
+            <th>Paid Sales</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          ${
+            sellers.length
+              ? sellers.map(seller => `
+
+                <tr>
+
+                  <td>
+                    ${escapeHtml(seller.id)}
+                  </td>
+
+                  <td>
+                    ${escapeHtml(seller.name)}
+                  </td>
+
+                  <td>
+                    ${escapeHtml(seller.email)}
+                  </td>
+
+                  <td>
+                    ${escapeHtml(
+                      seller.country || ""
+                    )}
+                  </td>
+
+                  <td>
+                    ${Number(
+                      seller.product_count || 0
+                    )}
+                  </td>
+
+                  <td>
+                    ${Number(
+                      seller.order_count || 0
+                    )}
+                  </td>
+
+                  <td>
+                    ${Number(
+                      seller.paid_sales || 0
+                    ).toLocaleString()}
+                  </td>
+
+                </tr>
+
+              `).join("")
+              : `
+                <tr>
+                  <td colspan="7">
+                    No sellers found.
+                  </td>
+                </tr>
+              `
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+  `;
+}
+
+/* ---------- ADMIN PRODUCTS ---------- */
+
+async function renderAdminProducts(){
+
+  const box =
+    document.getElementById(
+      "adminContent"
+    );
+
+  box.innerHTML =
+    `<div class="empty">Loading products...</div>`;
+
+  const data =
+    await getAdminData(
+      "/admin/products"
+    );
+
+  if(!data){
+
+    box.innerHTML = `
+      <div class="empty">
+        Unable to load products.
+      </div>
+    `;
+
+    return;
+  }
+
+  const list =
+    data.products || [];
+
+  box.innerHTML = `
+
+    <h3>📦 Products & Services</h3>
+
+    <div class="adminTableWrap">
+
+      <table class="adminTable">
+
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Seller</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          ${
+            list.length
+              ? list.map(product => `
+
+                <tr>
+
+                  <td>
+                    ${escapeHtml(product.id)}
+                  </td>
+
+                  <td>
+                    ${escapeHtml(product.title)}
+                  </td>
+
+                  <td>
+                    ${escapeHtml(
+                      product.seller_name ||
+                      ""
+                    )}
+                  </td>
+
+                  <td>
+                    ${escapeHtml(
+                      product.category ||
+                      ""
+                    )}
+                  </td>
+
+                  <td>
+                    ${Number(
+                      product.price || 0
+                    ).toLocaleString()}
+                    ${escapeHtml(
+                      product.currency ||
+                      "RWF"
+                    )}
+                  </td>
+
+                  <td>
+                    ${escapeHtml(
+                      product.status ||
+                      "active"
+                    )}
+                  </td>
+
+                  <td>
+
+                    <select
+                      onchange="
+                        updateAdminProductStatus(
+                          ${Number(product.id)},
+                          this.value
+                        )
+                      "
+                    >
+
+                      ${[
+                        "active",
+                        "inactive",
+                        "sold",
+                        "pending",
+                        "rejected"
+                      ].map(status => `
+                        <option
+                          value="${status}"
+                          ${
+                            product.status === status
+                              ? "selected"
+                              : ""
+                          }
+                        >
+                          ${status}
+                        </option>
+                      `).join("")}
+
+                    </select>
+
+                  </td>
+
+                </tr>
+
+              `).join("")
+              : `
+                <tr>
+                  <td colspan="7">
+                    No products found.
+                  </td>
+                </tr>
+              `
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+  `;
+}
+
+async function updateAdminProductStatus(
+  id,
+  status
+){
+
+  try{
+
+    await api(
+      "/admin/products/" + id,
+      {
+        method:"PATCH",
+
+        body:JSON.stringify({
+          status
+        })
+      }
+    );
+
+    alert(
+      "Product status updated ✓"
+    );
+
+    await renderAdminProducts();
+
+    await loadProducts();
+
+  }catch(error){
+
+    alert(
+      "Product update failed: " +
+      error.message
+    );
+  }
+}
+
+/* ---------- ADMIN ORDERS ---------- */
+
+async function renderAdminOrders(){
+
+  const box =
+    document.getElementById(
+      "adminContent"
+    );
+
+  box.innerHTML =
+    `<div class="empty">Loading orders...</div>`;
+
+  const data =
+    await getAdminData(
+      "/admin/orders"
+    );
+
+  if(!data){
+
+    box.innerHTML = `
+      <div class="empty">
+        Unable to load orders.
+      </div>
+    `;
+
+    return;
+  }
+
+  const orders =
+    data.orders || [];
+
+  box.innerHTML = `
+
+    <h3>📦 Orders</h3>
+
+    <div class="adminTableWrap">
+
+      <table class="adminTable">
+
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Product</th>
+            <th>Buyer</th>
+            <th>Seller</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Payment</th>
+            <th>Save</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          ${
+            orders.length
+              ? orders.map(order => `
+
+                <tr>
+
+                  <td>
+                    ${escapeHtml(order.id)}
+                  </td>
+
+                  <td>
+                    ${escapeHtml(
+                      order.product_title ||
+                      ""
+                    )}
+                  </td>
+
+                  <td>
+                    ${escapeHtml(
+                      order.buyer_name ||
+                      ""
+                    )}
+                  </td>
+
+                  <td>
+                    ${escapeHtml(
+                      order.seller_name ||
+                      ""
+                    )}
+                  </td>
+
+                  <td>
+                    ${Number(
+                      order.total_price || 0
+                    ).toLocaleString()}
+                    ${escapeHtml(
+                      order.currency ||
+                      "RWF"
+                    )}
+                  </td>
+
+                  <td>
+
+                    <select
+                      id="order_status_${Number(order.id)}"
+                    >
+
+                      ${[
+                        "pending",
+                        "confirmed",
+                        "processing",
+                        "shipped",
+                        "delivered",
+                        "cancelled",
+                        "completed"
+                      ].map(status => `
+                        <option
+                          value="${status}"
+                          ${
+                            order.status === status
+                              ? "selected"
+                              : ""
+                          }
+                        >
+                          ${status}
+                        </option>
+                      `).join("")}
+
+                    </select>
+
+                  </td>
+
+                  <td>
+
+                    <select
+                      id="order_payment_${Number(order.id)}"
+                    >
+
+                      ${[
+                        "unpaid",
+                        "paid",
+                        "failed",
+                        "refunded"
+                      ].map(status => `
+                        <option
+                          value="${status}"
+                          ${
+                            order.payment_status === status
+                              ? "selected"
+                              : ""
+                          }
+                        >
+                          ${status}
+                        </option>
+                      `).join("")}
+
+                    </select>
+
+                  </td>
+
+                  <td>
+
+                    <button
+                      class="btn"
+                      onclick="
+                        updateAdminOrder(
+                          ${Number(order.id)}
+                        )
+                      "
+                    >
+                      Save
+                    </button>
+
+                  </td>
+
+                </tr>
+
+              `).join("")
+              : `
+                <tr>
+                  <td colspan="8">
+                    No orders found.
+                  </td>
+                </tr>
+              `
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+  `;
+}
+
+async function updateAdminOrder(id){
+
+  const status =
+    document.getElementById(
+      "order_status_" + id
+    ).value;
+
+  const payment_status =
+    document.getElementById(
+      "order_payment_" + id
+    ).value;
+
+  try{
+
+    await api(
+      "/admin/orders/" + id,
+      {
+        method:"PATCH",
+
+        body:JSON.stringify({
+          status,
+          payment_status
+        })
+      }
+    );
+
+    alert(
+      "Order updated ✓"
+    );
+
+    await renderAdminOrders();
+
+  }catch(error){
+
+    alert(
+      "Order update failed: " +
+      error.message
+    );
+  }
+}
+
+/* ---------- ADMIN PAYMENTS ---------- */
+
+async function renderAdminPayments(){
+
+  const box =
+    document.getElementById(
+      "adminContent"
+    );
+
+  box.innerHTML =
+    `<div class="empty">Loading payments...</div>`;
+
+  const data =
+    await getAdminData(
+      "/admin/payments"
+    );
+
+  if(!data){
+
+    box.innerHTML = `
+      <div class="empty">
+        Unable to load payments.
+      </div>
+    `;
+
+    return;
+  }
+
+  const summary =
+    data.summary || {};
+
+  const payments =
+    data.payments || [];
+
+  box.innerHTML = `
+
+    <h3>💳 Payments</h3>
+
+    <div class="adminGrid">
+
+      <div class="adminCard">
+        <div>Paid Amount</div>
+        <div class="number">
+          ${Number(
+            summary.paid_amount || 0
+          ).toLocaleString()}
+        </div>
+      </div>
+
+      <div class="adminCard">
+        <div>Commission</div>
+        <div class="number">
+          ${Number(
+            summary.estimated_commission || 0
+          ).toLocaleString()}
+        </div>
+      </div>
+
+      <div class="adminCard">
+        <div>Commission Rate</div>
+        <div class="number">
+          ${Number(
+            (summary.commission_rate || 0) * 100
+          ).toFixed(1)}%
+        </div>
+      </div>
+
+    </div>
+
+    <div class="adminTableWrap">
+
+      <table class="adminTable">
+
+        <thead>
+          <tr>
+            <th>Order</th>
+            <th>Product</th>
+            <th>Buyer</th>
+            <th>Seller</th>
+            <th>Amount</th>
+            <th>Payment</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          ${
+            payments.length
+              ? payments.map(payment => `
+
+                <tr>
+
+                  <td>
+                    #${escapeHtml(
+                      payment.order_id
+                    )}
+                  </td>
+
+                  <td>
+                    ${escapeHtml(
+                      payment.product_title ||
+                      ""
+                    )}
+                  </td>
+
+                  <td>
+                    ${escapeHtml(
+                      payment.buyer_name ||
+                      ""
+                    )}
+                  </td>
+
+                  <td>
+                    ${escapeHtml(
+                      payment.seller_name ||
+                      ""
+                    )}
+                  </td>
+
+                  <td>
+                    ${Number(
+                      payment.total_price || 0
+                    ).toLocaleString()}
+                    ${escapeHtml(
+                      payment.currency ||
+                      "RWF"
+                    )}
+                  </td>
+
+                  <td>
+                    ${escapeHtml(
+                      payment.payment_status ||
+                      "unpaid"
+                    )}
+                  </td>
+
+                </tr>
+
+              `).join("")
+              : `
+                <tr>
+                  <td colspan="6">
+                    No payment records found.
+                  </td>
+                </tr>
+              `
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+  `;
+}
+
+/* ---------- ADMIN CATEGORIES ---------- */
+
+async function renderAdminCategories(){
+
+  const box =
+    document.getElementById(
+      "adminContent"
+    );
+
+  box.innerHTML =
+    `<div class="empty">Loading categories...</div>`;
+
+  const data =
+    await getAdminData(
+      "/admin/categories"
+    );
+
+  if(!data){
+
+    box.innerHTML = `
+      <div class="empty">
+        Unable to load categories.
+      </div>
+    `;
+
+    return;
+  }
+
+  const categories =
+    data.categories || [];
+
+  box.innerHTML = `
+
+    <h3>🗂️ Marketplace Categories</h3>
+
+    <div class="categories">
+
+      ${
+        categories.length
+          ? categories.map(category => `
+
+            <div class="category">
+
+              <span class="icon">
+                ${escapeHtml(
+                  category.icon ||
+                  categoryIcon(
+                    category.name
+                  )
+                )}
+              </span>
+
+              <strong>
+                ${escapeHtml(
+                  category.name
+                )}
+              </strong>
+
+              ${
+                category.description
+                  ? `
+                    <small class="muted">
+                      ${escapeHtml(
+                        category.description
+                      )}
+                    </small>
+                  `
+                  : ""
+              }
+
+            </div>
+
+          `).join("")
+          : `
+            ${MARKET_CATEGORIES.map(category => `
+              <div class="category">
+
+                <span class="icon">
+                  ${categoryIcon(category)}
+                </span>
+
+                <strong>
+                  ${escapeHtml(category)}
+                </strong>
+
+              </div>
+            `).join("")}
+          `
+      }
+
+    </div>
+
+    <div style="margin-top:20px">
+
+      <h3>Add Category</h3>
+
+      <form
+        onsubmit="createAdminCategory(event)"
+      >
+
+        <div class="formRow">
+
+          <div class="formGroup">
+            <label>Name</label>
+            <input
+              id="newCategoryName"
+              required
+            >
+          </div>
+
+          <div class="formGroup">
+            <label>Icon</label>
+            <input
+              id="newCategoryIcon"
+              placeholder="🛍️"
+            >
+          </div>
+
+        </div>
+
+        <div class="formGroup">
+
+          <label>Description</label>
+
+          <input
+            id="newCategoryDescription"
+          >
+
+        </div>
+
+        <button
+          class="btn"
+          type="submit"
+        >
+          Add Category
+        </button>
+
+      </form>
+
+    </div>
+  `;
+}
+
+async function createAdminCategory(event){
+
+  event.preventDefault();
+
+  try{
+
+    await api(
+      "/admin/categories",
+      {
+        method:"POST",
+
+        body:JSON.stringify({
+
+          name:
+            document
+              .getElementById(
+                "newCategoryName"
+              )
+              .value
+              .trim(),
+
+          description:
+            document
+              .getElementById(
+                "newCategoryDescription"
+              )
+              .value
+              .trim(),
+
+          icon:
+            document
+              .getElementById(
+                "newCategoryIcon"
+              )
+              .value
+              .trim()
+
+        })
+      }
+    );
+
+    alert(
+      "Category created ✓"
+    );
+
+    await renderAdminCategories();
+
+  }catch(error){
+
+    alert(
+      "Category creation failed: " +
+      error.message
+    );
+  }
+}
+
+/* ---------- ADMIN REPORTS ---------- */
+
+async function renderAdminReports(){
+
+  const box =
+    document.getElementById(
+      "adminContent"
+    );
+
+  box.innerHTML =
+    `<div class="empty">Loading reports...</div>`;
+
+  const data =
+    await getAdminData(
+      "/admin/reports"
+    );
+
+  if(!data){
+
+    box.innerHTML = `
+      <div class="empty">
+        Unable to load reports.
+      </div>
+    `;
+
+    return;
+  }
+
+  const reports =
+    data.reports || {};
+
+  box.innerHTML = `
+
+    <h3>📊 Reports</h3>
+
+    <h4>Users by Country</h4>
+
+    ${renderReportTable(
+      reports.users_by_country || [],
+      ["country","users"]
+    )}
+
+    <h4>Products by Category</h4>
+
+    ${renderReportTable(
+      reports.products_by_category || [],
+      ["category","products"]
+    )}
+
+    <h4>Orders by Status</h4>
+
+    ${renderReportTable(
+      reports.orders_by_status || [],
+      ["status","orders"]
+    )}
+
+    <h4>Payments</h4>
+
+    ${renderReportTable(
+      reports.payments || [],
+      ["payment_status","payments","amount"]
+    )}
+
+    <h4>Top Products</h4>
+
+    ${renderReportTable(
+      reports.top_products || [],
+      ["id","title","category","views","order_count","sales"]
+    )}
+
+  `;
+}
+
+function renderReportTable(rows,columns){
+
+  if(!rows.length){
+    return `
+      <div class="empty">
+        No data available.
+      </div>
+    `;
+  }
+
+  return `
+    <div class="adminTableWrap">
+
+      <table class="adminTable">
+
+        <thead>
+
+          <tr>
+
+            ${columns.map(column => `
+              <th>
+                ${escapeHtml(column)}
+              </th>
+            `).join("")}
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          ${rows.map(row => `
+            <tr>
+
+              ${columns.map(column => `
+                <td>
+                  ${escapeHtml(
+                    row[column] ?? ""
+                  )}
+                </td>
+              `).join("")}
+
+            </tr>
+          `).join("")}
+
+        </tbody>
+
+      </table>
+
+    </div>
+  `;
+}
+
+/* ---------- ADMIN REVIEWS ---------- */
+
+async function renderAdminReviews(){
+
+  const box =
+    document.getElementById(
+      "adminContent"
+    );
+
+  const data =
+    await getAdminData(
+      "/admin/reviews"
+    );
+
+  box.innerHTML = `
+
+    <h3>⭐ Reviews</h3>
+
+    <div class="empty">
+
+      <h3>Reviews Management</h3>
+
+      <p>
+        ${
+          data?.supported
+            ? "Reviews are available."
+            : "Reviews are not stored yet because the locked schema.sql has no reviews table."
+        }
+      </p>
+
+    </div>
+  `;
+}
+
+/* ---------- ADMIN PROMOTIONS ---------- */
+
+async function renderAdminPromotions(){
+
+  const box =
+    document.getElementById(
+      "adminContent"
+    );
+
+  const data =
+    await getAdminData(
+      "/admin/promotions"
+    );
+
+  box.innerHTML = `
+
+    <h3>📣 Promotions & Advertising</h3>
+
+    <div class="features">
+
+      <div class="feature">
+
+        <h3>🚀 Boost Listing</h3>
+
+        <p>
+          Paid promotion for products
+          and services.
+        </p>
+
+        <button
+          class="btn"
+          onclick="adminPromotionInfo()"
+        >
+          Manage
+        </button>
+
+      </div>
+
+      <div class="feature">
+
+        <h3>⭐ Premium Sellers</h3>
+
+        <p>
+          Premium marketplace accounts.
+        </p>
+
+        <button
+          class="btn"
+          onclick="adminPromotionInfo()"
+        >
+          Manage
+        </button>
+
+      </div>
+
+      <div class="feature">
+
+        <h3>📢 Advertising</h3>
+
+        <p>
+          Advertising spaces for businesses.
+        </p>
+
+        <button
+          class="btn"
+          onclick="adminPromotionInfo()"
+        >
+          Manage
+        </button>
+
+      </div>
+
+    </div>
+
+    <div class="empty" style="margin-top:15px">
+
+      ${
+        data?.supported
+          ? "Promotion system connected."
+          : "Promotion records require a promotions table in the locked schema.sql."
+      }
+
+    </div>
+  `;
+}
+
+function adminPromotionInfo(){
+
+  alert(
+    "Promotion/advertising database tables are not included in the locked schema.sql. The Admin interface is ready, but persistent promotion records require those tables."
+  );
+}
+
+/* ---------- ADMIN SETTINGS ---------- */
+
+function renderAdminSettings(){
+
+  const box =
+    document.getElementById(
+      "adminContent"
+    );
+
+  box.innerHTML = `
+
+    <h3>⚙️ Marketplace Settings</h3>
+
+    <div class="features">
+
+      <div class="feature">
+
+        <h3>🌍 Global Marketplace</h3>
+
+        <p>
+          IsokoHub is configured as a
+          multi-country marketplace.
+        </p>
+
+      </div>
+
+      <div class="feature">
+
+        <h3>💰 Commission</h3>
+
+        <p>
+          Current configured commission:
+          <strong>5%</strong>
+        </p>
+
+      </div>
+
+      <div class="feature">
+
+        <h3>💳 Payments</h3>
+
+        <p>
+          Orders and payment statuses
+          are stored in D1.
+        </p>
+
+      </div>
+
+      <div class="feature">
+
+        <h3>🔐 Security</h3>
+
+        <p>
+          Admin routes require an
+          authenticated admin account.
+        </p>
+
+      </div>
+
+      <div class="feature">
+
+        <h3>🚚 Delivery</h3>
+
+        <p>
+          Delivery information is
+          supported on orders.
+        </p>
+
+      </div>
+
+    </div>
+  `;
+}
+
+/* ==================================================
+   ADMIN TAB ROUTER
+================================================== */
+
+async function adminTab(tab){
+
+  if(!isAdmin()){
+
+    alert(
+      "Admin access required."
+    );
+
+    return;
+  }
+
+  document
+    .querySelectorAll(
+      ".adminTabs button"
+    )
+    .forEach(button => {
+
+      button.classList.remove(
+        "active"
+      );
+
+      if(
+        button.textContent
+          .trim()
+          .toLowerCase()
+          .startsWith(
+            tab.toLowerCase()
+          )
+      ){
+        button.classList.add(
+          "active"
+        );
+      }
+    });
+
+  switch(tab){
+
+    case "overview":
+      await renderAdminOverview();
+      break;
+
+    case "users":
+      await renderAdminUsers();
+      break;
+
+    case "sellers":
+      await renderAdminSellers();
+      break;
+
+    case "products":
+      await renderAdminProducts();
+      break;
+
+    case "orders":
+      await renderAdminOrders();
+      break;
+
+    case "payments":
+      await renderAdminPayments();
+      break;
+
+    case "categories":
+      await renderAdminCategories();
+      break;
+
+    case "promotions":
+      await renderAdminPromotions();
+      break;
+
+    case "reports":
+      await renderAdminReports();
+      break;
+
+    case "reviews":
+      await renderAdminReviews();
+      break;
+
+    case "settings":
+      renderAdminSettings();
+      break;
+
+    default:
+      await renderAdminOverview();
+  }
+}
+
+/* ==================================================
+   NAVIGATION
+================================================== */
+
+function showSection(name){
+
+  document
+    .querySelectorAll(".drawer")
+    .forEach(section => {
+      section.classList.remove(
+        "active"
+      );
+    });
+
+  const section =
+    document.getElementById(
+      name + "Section"
+    );
+
+  if(section){
+    section.classList.add(
+      "active"
+    );
+  }
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+  if(name === "cart"){
+    renderCart();
+  }
+
+  if(name === "saved"){
+    renderSaved();
+  }
+
+  if(name === "orders"){
+    loadOrders();
+  }
+
+  if(name === "messages"){
+    loadMessages();
+  }
+
+  if(name === "profile"){
+    showProfile();
+  }
+
+  if(name === "admin"){
+    if(isAdmin()){
+      adminTab("overview");
+    }
+  }
+}
+
+/* ==================================================
+   MODALS
+================================================== */
+
+function openModal(id){
+
+  const modal =
+    document.getElementById(id);
+
+  if(modal){
+    modal.classList.add(
+      "active"
+    );
+  }
+}
+
+function closeModal(id){
+
+  const modal =
+    document.getElementById(id);
+
+  if(modal){
+    modal.classList.remove(
+      "active"
+    );
+  }
+}
+
+document
+  .querySelectorAll(".modal")
+  .forEach(modal => {
+
+    modal.addEventListener(
+      "click",
+      function(event){
+
+        if(
+          event.target === modal
+        ){
+          modal.classList.remove(
+            "active"
+          );
+        }
+
+      }
+    );
+
+  });
+
+document.addEventListener(
+  "keydown",
+  function(event){
+
+    if(event.key === "Escape"){
+
+      document
+        .querySelectorAll(
+          ".modal.active"
+        )
+        .forEach(modal => {
+
+          modal.classList.remove(
+            "active"
+          );
+
+        });
+    }
+
+  }
+);
+
+/* ==================================================
+   START APPLICATION
+================================================== */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  async function(){
+
+    renderCategories();
+
+    updateCartCount();
+
+    updateSavedCount();
+
+    await restoreSession();
+
+    await checkConnection();
+
+    await loadProducts();
+
+  }
+);
 </script>
 
 </body>
