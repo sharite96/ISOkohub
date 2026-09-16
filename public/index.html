@@ -1,4281 +1,3057 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>IsokoHub — Global Marketplace</title>
-<meta name="description" content="IsokoHub — global marketplace connecting buyers, sellers, teachers, artists, creators, filmmakers, professionals and service providers.">
-
-<style>
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  margin:0;
-  font-family:Arial,Helvetica,sans-serif;
-  background:#f8fafc;
-  color:#0f172a;
-}
-button,input,select,textarea{font:inherit}
-button{cursor:pointer}
-a{text-decoration:none;color:inherit}
-
-:root{
-  --primary:#2563eb;
-  --primary-dark:#1d4ed8;
-  --success:#16a34a;
-  --danger:#dc2626;
-  --warning:#d97706;
-  --muted:#64748b;
-  --border:#e2e8f0;
-  --panel:#fff;
-  --dark:#0f172a;
-}
-
-header{
-  position:sticky;
-  top:0;
-  z-index:50;
-  background:#fff;
-  border-bottom:1px solid var(--border);
-  box-shadow:0 2px 12px rgba(15,23,42,.05);
-}
-
-.topbar{
-  max-width:1400px;
-  margin:auto;
-  padding:14px 18px;
-  display:flex;
-  gap:16px;
-  align-items:center;
-  flex-wrap:wrap;
-}
-
-.logo{
-  font-size:24px;
-  font-weight:900;
-  white-space:nowrap;
-}
-
-.search{
-  flex:1;
-  min-width:220px;
-  display:flex;
-  gap:8px;
-}
-
-.search input{
-  flex:1;
-  padding:11px 14px;
-  border:1px solid var(--border);
-  border-radius:10px;
-  outline:none;
-}
-
-.search input:focus{
-  border-color:var(--primary);
-}
-
-.authArea{
-  display:flex;
-  gap:8px;
-}
-
-.btn{
-  border:0;
-  border-radius:9px;
-  padding:10px 15px;
-  background:var(--primary);
-  color:#fff;
-  font-weight:700;
-}
-
-.btn:hover{background:var(--primary-dark)}
-.btn.secondary{
-  background:#e2e8f0;
-  color:#0f172a;
-}
-.btn.secondary:hover{background:#cbd5e1}
-.btn.success{background:var(--success)}
-.btn.danger{background:var(--danger)}
-.btn.warning{background:var(--warning)}
-.btn.small{
-  padding:7px 10px;
-  font-size:13px;
-}
-
-nav{
-  max-width:1400px;
-  margin:auto;
-  padding:0 18px 12px;
-  display:flex;
-  gap:7px;
-  overflow-x:auto;
-}
-
-nav button{
-  border:0;
-  background:#f1f5f9;
-  color:#334155;
-  padding:8px 11px;
-  border-radius:8px;
-  white-space:nowrap;
-}
-
-nav button:hover{
-  background:#dbeafe;
-  color:#1d4ed8;
-}
-
-main{
-  max-width:1400px;
-  margin:auto;
-  padding:20px 18px 50px;
-}
-
-.status{
-  padding:12px 15px;
-  border-radius:10px;
-  background:#eff6ff;
-  color:#1e40af;
-  margin-bottom:20px;
-  font-weight:600;
-}
-
-.status.ok{
-  background:#f0fdf4;
-  color:#166534;
-}
-
-.status.error{
-  background:#fef2f2;
-  color:#991b1b;
-}
-
-.hero{
-  background:linear-gradient(135deg,#1d4ed8,#2563eb,#0ea5e9);
-  color:#fff;
-  border-radius:18px;
-  padding:45px 30px;
-  margin-bottom:25px;
-}
-
-.hero h1{
-  margin:0 0 12px;
-  font-size:clamp(32px,6vw,58px);
-}
-
-.hero p{
-  max-width:800px;
-  font-size:18px;
-  line-height:1.6;
-  margin:0 0 20px;
-}
-
-.heroActions{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-}
-
-.hero .secondary{
-  background:rgba(255,255,255,.18);
-  color:#fff;
-}
-
-.section{
-  margin:30px 0;
-  scroll-margin-top:130px;
-}
-
-.sectionHead{
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-  align-items:center;
-  flex-wrap:wrap;
-  margin-bottom:14px;
-}
-
-.sectionHead h2,
-.sectionHead h3{
-  margin:0;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:15px;
-}
-
-.card{
-  background:#fff;
-  border:1px solid var(--border);
-  border-radius:13px;
-  padding:16px;
-  box-shadow:0 2px 8px rgba(15,23,42,.04);
-}
-
-.card:hover{
-  box-shadow:0 7px 20px rgba(15,23,42,.08);
-}
-
-.categoryCard{
-  text-align:center;
-  padding:20px 14px;
-}
-
-.categoryCard button{
-  width:100%;
-  border:0;
-  background:transparent;
-}
-
-.categoryIcon{
-  font-size:34px;
-  margin-bottom:8px;
-}
-
-.muted{
-  color:var(--muted);
-}
-
-.price{
-  color:#15803d;
-  font-size:18px;
-  font-weight:800;
-}
-
-.productImage{
-  width:100%;
-  height:190px;
-  object-fit:cover;
-  border-radius:10px;
-  background:#f1f5f9;
-}
-
-.productTitle{
-  font-weight:800;
-  margin:12px 0 7px;
-}
-
-.meta{
-  font-size:13px;
-  color:var(--muted);
-  line-height:1.6;
-}
-
-.cardActions{
-  display:flex;
-  gap:7px;
-  flex-wrap:wrap;
-  margin-top:13px;
-}
-
-.empty{
-  padding:25px;
-  text-align:center;
-  color:var(--muted);
-  background:#fff;
-  border:1px dashed var(--border);
-  border-radius:12px;
-}
-
-.panel{
-  background:#fff;
-  border:1px solid var(--border);
-  border-radius:13px;
-  padding:18px;
-}
-
-.formGrid{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:14px;
-}
-
-.field{
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-}
-
-.field.full{
-  grid-column:1/-1;
-}
-
-.field label{
-  font-weight:700;
-  font-size:14px;
-}
-
-.field input,
-.field select,
-.field textarea{
-  width:100%;
-  border:1px solid var(--border);
-  border-radius:9px;
-  padding:10px 12px;
-  background:#fff;
-  outline:none;
-}
-
-.field textarea{
-  min-height:100px;
-  resize:vertical;
-}
-
-.field input:focus,
-.field select:focus,
-.field textarea:focus{
-  border-color:var(--primary);
-}
-
-.tableWrap{
-  overflow-x:auto;
-  background:#fff;
-  border:1px solid var(--border);
-  border-radius:12px;
-}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-  min-width:720px;
-}
-
-th,td{
-  padding:11px;
-  border-bottom:1px solid var(--border);
-  text-align:left;
-  font-size:14px;
-}
-
-th{
-  background:#f8fafc;
-  font-weight:800;
-}
-
-.stats{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-  gap:12px;
-}
-
-.stat{
-  background:#fff;
-  border:1px solid var(--border);
-  border-radius:12px;
-  padding:16px;
-}
-
-.stat strong{
-  display:block;
-  font-size:26px;
-  margin-top:6px;
-}
-
-.adminTabs{
-  display:flex;
-  gap:7px;
-  overflow-x:auto;
-  padding-bottom:12px;
-}
-
-.adminTabs button{
-  border:1px solid var(--border);
-  background:#f8fafc;
-  border-radius:8px;
-  padding:9px 12px;
-  white-space:nowrap;
-}
-
-.adminTabs button.active{
-  background:var(--primary);
-  color:#fff;
-}
-
-.adminPanel{display:none}
-.adminPanel.active{display:block}
-
-.hidden{display:none!important}
-
-footer{
-  background:#0f172a;
-  color:#cbd5e1;
-  margin-top:40px;
-}
-
-.footerGrid{
-  max-width:1400px;
-  margin:auto;
-  padding:40px 18px;
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:25px;
-}
-
-footer h3{
-  color:#fff;
-}
-
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(15,23,42,.6);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  padding:15px;
-  z-index:100;
-}
-
-.modal.active{display:flex}
-
-.modalBox{
-  width:min(520px,100%);
-  max-height:90vh;
-  overflow:auto;
-  background:#fff;
-  border-radius:15px;
-  padding:22px;
-  position:relative;
-}
-
-.close{
-  position:absolute;
-  right:15px;
-  top:12px;
-  border:0;
-  background:#f1f5f9;
-  width:34px;
-  height:34px;
-  border-radius:50%;
-  font-size:20px;
-}
-
-.message{
-  margin-top:10px;
-  padding:10px;
-  border-radius:8px;
-  background:#f1f5f9;
-}
-
-.message.error{
-  background:#fef2f2;
-  color:#991b1b;
-}
-
-.message.success{
-  background:#f0fdf4;
-  color:#166534;
-}
-
-@media(max-width:700px){
-  .topbar{
-    padding:11px;
-  }
-
-  main{
-    padding:15px 11px 40px;
-  }
-
-  .hero{
-    padding:30px 20px;
-  }
-
-  .formGrid{
-    grid-template-columns:1fr;
-  }
-
-  .field.full{
-    grid-column:auto;
-  }
-
-  .authArea{
-    width:100%;
-  }
-
-  .authArea .btn{
-    flex:1;
-  }
-}
-</style>
-</head>
-
-<body>
-
-<header>
-  <div class="topbar">
-    <div class="logo">IsokoHub 🌍</div>
-
-    <form class="search" id="searchForm">
-      <input
-        id="searchInput"
-        type="search"
-        placeholder="Search products, services, teachers, creators..."
-      >
-      <button class="btn" type="submit">Search</button>
-    </form>
-
-    <div class="authArea" id="authArea">
-      <button class="btn secondary" onclick="openModal('loginModal')">Login</button>
-      <button class="btn" onclick="openModal('registerModal')">Register</button>
-    </div>
-  </div>
-
-  <nav>
-    <button onclick="showSection('home')">🏠 Home</button>
-    <button onclick="showSection('saved')">❤️ Saved <span id="savedCount">0</span></button>
-    <button onclick="showSection('cart')">🛒 Cart <span id="cartCount">0</span></button>
-    <button onclick="showSection('orders')">📦 Orders</button>
-    <button onclick="showSection('messages')">💬 Messages</button>
-    <button onclick="showSection('sell')">➕ Sell</button>
-    <button onclick="showSection('profile')">👤 Profile</button>
-    <button onclick="showSection('services')">🛠️ Services</button>
-    <button onclick="showSection('education')">📚 Education</button>
-    <button onclick="showSection('creators')">🎨 Creators</button>
-    <button onclick="showSection('business')">💼 Business</button>
-    <button onclick="showSection('work')">💻 Work</button>
-    <button id="adminNav" class="hidden" onclick="showSection('admin')">⚙️ Admin</button>
-  </nav>
-</header>
-
-<main>
-
-<div id="connectionStatus" class="status">
-  ⏳ Connecting to IsokoHub API + D1 database...
-</div>
-
-<!-- HOME -->
-<section id="home" class="section">
-
-  <div class="hero">
-    <h1>Welcome to IsokoHub 🌍</h1>
-
-    <p>
-      A global marketplace connecting buyers, sellers, teachers,
-      artists, creators, filmmakers, professionals and service providers.
-    </p>
-
-    <div class="heroActions">
-      <button class="btn" onclick="scrollToProducts()">Explore Marketplace</button>
-      <button class="btn secondary" onclick="showSection('sell')">Start Selling</button>
-      <button class="btn secondary" onclick="showSection('services')">Explore Services</button>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="sectionHead">
-      <h2>Explore IsokoHub</h2>
-    </div>
-
-    <div class="grid">
-
-      <div class="card categoryCard">
-        <button onclick="scrollToProducts()">
-          <div class="categoryIcon">🛍️</div>
-          <strong>Marketplace</strong>
-          <p class="muted">Products from sellers around the world.</p>
-        </button>
-      </div>
-
-      <div class="card categoryCard">
-        <button onclick="filterCategory('Education & Teachers')">
-          <div class="categoryIcon">📚</div>
-          <strong>Education</strong>
-          <p class="muted">Courses, teachers and educational services.</p>
-        </button>
-      </div>
-
-      <div class="card categoryCard">
-        <button onclick="filterCategory('Art & Creative')">
-          <div class="categoryIcon">🎨</div>
-          <strong>Art & Creative</strong>
-          <p class="muted">Artists, designers, photographers and creators.</p>
-        </button>
-      </div>
-
-      <div class="card categoryCard">
-        <button onclick="showSection('services')">
-          <div class="categoryIcon">🛠️</div>
-          <strong>Services</strong>
-          <p class="muted">Professional services for individuals and businesses.</p>
-        </button>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- CATEGORIES -->
-  <div class="section">
-    <div class="sectionHead">
-      <h2>Shop by Category</h2>
-    </div>
-
-    <div id="categoriesGrid" class="grid">
-      <div class="empty">Loading categories...</div>
-    </div>
-  </div>
-
-  <!-- PRODUCTS -->
-  <div id="productsSection" class="section">
-    <div class="sectionHead">
-      <h2>Marketplace Products</h2>
-      <button class="btn secondary small" onclick="loadProducts()">Refresh</button>
-    </div>
-
-    <div id="productsGrid" class="grid">
-      <div class="empty">Loading products...</div>
-    </div>
-  </div>
-
-</section>
-
-<!-- SERVICES -->
-<section id="services" class="section">
-  <div class="sectionHead">
-    <h2>🛠️ Services</h2>
-    <button class="btn secondary small" onclick="loadServices()">Refresh</button>
-  </div>
-
-  <div class="panel">
-    <p class="muted">
-      Find professional services, teachers, engineers, developers,
-      designers, businesses, creatives and service providers globally.
-    </p>
-
-    <form id="serviceSearchForm" class="formGrid">
-
-      <div class="field">
-        <label>Service</label>
-        <input id="serviceSearch" placeholder="e.g. engineer, photographer, lawyer">
-      </div>
-
-      <div class="field">
-        <label>Country</label>
-        <select id="serviceCountry">
-          <option value="">All countries</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label>Service Category</label>
-        <select id="serviceCategory">
-          <option value="">All services</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label>City / District</label>
-        <input id="serviceCity" placeholder="e.g. Kigali">
-      </div>
-
-      <div class="field">
-        <label>Provider</label>
-        <input id="serviceProvider" placeholder="Provider name">
-      </div>
-
-      <div class="field">
-        <button class="btn" type="submit">Search Services</button>
-      </div>
-
-    </form>
-  </div>
-
-  <div id="servicesGrid" class="grid" style="margin-top:15px">
-    <div class="empty">Loading services...</div>
-  </div>
-</section>
-
-<!-- SAVED -->
-<section id="saved" class="section">
-  <div class="sectionHead">
-    <h2>❤️ Saved Products</h2>
-    <button class="btn secondary small" onclick="loadSaved()">Refresh</button>
-  </div>
-
-  <div id="savedGrid">
-    <div class="empty">No saved products yet.</div>
-  </div>
-</section>
-
-<!-- CART -->
-<section id="cart" class="section">
-  <div class="sectionHead">
-    <h2>🛒 Shopping Cart</h2>
-    <button class="btn secondary small" onclick="renderCart()">Refresh</button>
-  </div>
-
-  <div id="cartGrid"></div>
-
-  <div id="cartSummary" class="hidden panel" style="margin-top:20px">
-    <div style="display:flex;justify-content:space-between;gap:10px">
-      <strong>Total</strong>
-      <strong id="cartTotal" class="price">0</strong>
-    </div>
-
-    <div style="margin-top:15px">
-      <button class="btn success" onclick="checkoutCart()">
-        Checkout
-      </button>
-    </div>
-  </div>
-</section>
-
-<!-- ORDERS -->
-<section id="orders" class="section">
-  <div class="sectionHead">
-    <h2>📦 My Orders</h2>
-    <button class="btn secondary small" onclick="loadOrders()">Refresh</button>
-  </div>
-
-  <div id="ordersContent">
-    <div class="empty">Login to view your orders.</div>
-  </div>
-</section>
-
-<!-- MESSAGES -->
-<section id="messages" class="section">
-  <div class="sectionHead">
-    <h2>💬 Messages</h2>
-    <button class="btn small" onclick="openModal('messageModal')">New Message</button>
-  </div>
-
-  <div id="messagesContent">
-    <div class="empty">Login to view your messages.</div>
-  </div>
-</section>
-
-<!-- SELL -->
-<section id="sell" class="section">
-  <div class="sectionHead">
-    <h2>➕ Sell on IsokoHub</h2>
-  </div>
-
-  <div class="panel">
-    <p class="muted">
-      Add a product or professional service to the global IsokoHub marketplace.
-    </p>
-
-    <form id="sellForm" class="formGrid">
-
-      <div class="field full">
-        <label>Title *</label>
-        <input id="sellTitle" required placeholder="Product or service title">
-      </div>
-
-      <div class="field">
-        <label>Category *</label>
-        <select id="sellCategory" required></select>
-      </div>
-
-      <div class="field">
-        <label>Price *</label>
-        <input id="sellPrice" type="number" min="0" step="0.01" required>
-      </div>
-
-      <div class="field">
-        <label>Currency</label>
-        <input id="sellCurrency" value="RWF">
-      </div>
-
-      <div class="field">
-        <label>Stock</label>
-        <input id="sellStock" type="number" min="0" value="1">
-      </div>
-
-      <div class="field">
-        <label>Condition</label>
-        <select id="sellCondition">
-          <option value="new">New</option>
-          <option value="used">Used</option>
-          <option value="has crack">Has crack</option>
-          <option value="refurbished">Refurbished</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label>Country</label>
-        <select id="sellCountry">
-          <option value="Rwanda">Rwanda</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label>City / District</label>
-        <input id="sellDistrict" placeholder="e.g. Gasabo">
-      </div>
-
-      <div class="field">
-        <label>Brand</label>
-        <input id="sellBrand">
-      </div>
-
-      <div class="field">
-        <label>Model</label>
-        <input id="sellModel">
-      </div>
-
-      <div class="field">
-        <label>Storage</label>
-        <input id="sellStorage" placeholder="e.g. 256GB">
-      </div>
-
-      <div class="field">
-        <label>RAM</label>
-        <input id="sellRam" placeholder="e.g. 8GB">
-      </div>
-
-      <div class="field full">
-        <label>Image URL</label>
-        <input id="sellImage" type="url" placeholder="https://...">
-      </div>
-
-      <div class="field full">
-        <label>Description</label>
-        <textarea id="sellDescription"></textarea>
-      </div>
-
-      <div class="field full">
-        <label>Specifications</label>
-        <textarea id="sellSpecs" placeholder="Additional specifications"></textarea>
-      </div>
-
-      <div class="field">
-        <label>Negotiable</label>
-        <select id="sellNegotiable">
-          <option value="0">No</option>
-          <option value="1">Yes</option>
-        </select>
-      </div>
-
-      <div class="field full">
-        <button class="btn" type="submit">Publish on IsokoHub</button>
-      </div>
-
-    </form>
-
-    <div id="sellMessage"></div>
-  </div>
-</section>
-
-<!-- SELLER DASHBOARD -->
-<section id="seller" class="section">
-  <div class="sectionHead">
-    <h2>Seller Dashboard</h2>
-    <button class="btn secondary small" onclick="loadSellerDashboard()">Refresh</button>
-  </div>
-
-  <div id="sellerStats" class="stats"></div>
-
-  <div class="sectionHead" style="margin-top:20px">
-    <h3>My Products</h3>
-  </div>
-
-  <div id="sellerProducts">
-    <div class="empty">Login as a seller to view your products.</div>
-  </div>
-</section>
-
-<!-- PROFILE -->
-<section id="profile" class="section">
-  <div class="sectionHead">
-    <h2>👤 My Profile</h2>
-    <button class="btn secondary small" onclick="loadProfile()">Refresh</button>
-  </div>
-
-  <div id="profileContent">
-    <div class="empty">Login to view your profile.</div>
-  </div>
-</section>
-
-<!-- EDUCATION -->
-<section id="education" class="section">
-  <div class="sectionHead">
-    <h2>📚 Education</h2>
-  </div>
-
-  <div class="panel">
-    <p>
-      Find teachers, tutors, courses, training and educational services
-      from providers around the world.
-    </p>
-    <button class="btn" onclick="filterCategory('Education & Teachers')">
-      Explore Education
-    </button>
-  </div>
-</section>
-
-<!-- CREATORS -->
-<section id="creators" class="section">
-  <div class="sectionHead">
-    <h2>🎨 Creators</h2>
-  </div>
-
-  <div class="panel">
-    <p>
-      Discover artists, graphic designers, photographers, videographers,
-      fashion designers and other creative professionals.
-    </p>
-    <button class="btn" onclick="filterCategory('Art & Creative')">
-      Explore Creators
-    </button>
-  </div>
-</section>
-
-<!-- BUSINESS -->
-<section id="business" class="section">
-  <div class="sectionHead">
-    <h2>💼 Business & Professional</h2>
-  </div>
-
-  <div class="panel">
-    <p>
-      Business consultants, professional services, management,
-      accounting and other business providers.
-    </p>
-    <button class="btn" onclick="filterCategory('Business & Professional')">
-      Explore Business Services
-    </button>
-  </div>
-</section>
-
-<!-- WORK -->
-<section id="work" class="section">
-  <div class="sectionHead">
-    <h2>💻 Jobs & Freelance</h2>
-  </div>
-
-  <div class="panel">
-    <p>
-      Discover freelance professionals, remote work services,
-      jobs and digital skills.
-    </p>
-    <button class="btn" onclick="filterCategory('Jobs & Freelance')">
-      Explore Work
-    </button>
-  </div>
-</section>
-
-<!-- ADMIN -->
-<section id="admin" class="section">
-  <div class="sectionHead">
-    <div>
-      <h2>⚙️ IsokoHub Admin Dashboard</h2>
-      <p class="muted">
-        Administration connected to the current D1 schema and Worker API.
-      </p>
-    </div>
-
-    <button class="btn secondary small" onclick="loadAdminOverview()">
-      Refresh
-    </button>
-  </div>
-
-  <div class="adminTabs">
-    <button data-admin-tab="overview" onclick="adminTab('overview')">Overview</button>
-    <button data-admin-tab="users" onclick="adminTab('users')">Users</button>
-    <button data-admin-tab="sellers" onclick="adminTab('sellers')">Sellers</button>
-    <button data-admin-tab="products" onclick="adminTab('products')">Products</button>
-    <button data-admin-tab="orders" onclick="adminTab('orders')">Orders</button>
-    <button data-admin-tab="payments" onclick="adminTab('payments')">Payments</button>
-    <button data-admin-tab="categories" onclick="adminTab('categories')">Categories</button>
-    <button data-admin-tab="services" onclick="adminTab('services')">Services</button>
-    <button data-admin-tab="reports" onclick="adminTab('reports')">Reports</button>
-    <button data-admin-tab="reviews" onclick="adminTab('reviews')">Reviews</button>
-    <button data-admin-tab="promotions" onclick="adminTab('promotions')">Promotions</button>
-    <button data-admin-tab="ads" onclick="adminTab('ads')">Ads</button>
-  </div>
-
-  <div id="admin-overview" class="adminPanel active">
-    <div class="sectionHead"><h3>Overview</h3></div>
-    <div id="adminStats" class="stats"></div>
-
-    <div class="sectionHead" style="margin-top:20px">
-      <h3>System Configuration</h3>
-    </div>
-
-    <div id="adminConfig" class="panel">Loading...</div>
-  </div>
-
-  <div id="admin-users" class="adminPanel">
-    <div class="sectionHead">
-      <h3>Users</h3>
-      <button class="btn secondary small" onclick="loadAdminUsers()">Refresh</button>
-    </div>
-    <div id="adminUsers"></div>
-  </div>
-
-  <div id="admin-sellers" class="adminPanel">
-    <div class="sectionHead">
-      <h3>Sellers</h3>
-      <button class="btn secondary small" onclick="loadAdminSellers()">Refresh</button>
-    </div>
-    <div id="adminSellers"></div>
-  </div>
-
-  <div id="admin-products" class="adminPanel">
-    <div class="sectionHead">
-      <h3>Products</h3>
-      <button class="btn secondary small" onclick="loadAdminProducts()">Refresh</button>
-    </div>
-    <div id="adminProducts"></div>
-  </div>
-
-  <div id="admin-orders" class="adminPanel">
-    <div class="sectionHead">
-      <h3>Orders</h3>
-      <button class="btn secondary small" onclick="loadAdminOrders()">Refresh</button>
-    </div>
-    <div id="adminOrders"></div>
-  </div>
-
-  <div id="admin-payments" class="adminPanel">
-    <div class="sectionHead">
-      <h3>Payments</h3>
-      <button class="btn secondary small" onclick="loadAdminPayments()">Refresh</button>
-    </div>
-    <div id="adminPayments"></div>
-  </div>
-
-  <div id="admin-categories" class="adminPanel">
-    <div class="sectionHead">
-      <h3>Categories</h3>
-      <button class="btn secondary small" onclick="loadAdminCategories()">Refresh</button>
-    </div>
-
-    <div class="panel" style="margin-bottom:15px">
-      <form id="categoryForm" class="formGrid">
-
-        <div class="field">
-          <label>Category name</label>
-          <input id="newCategoryName" required>
-        </div>
-
-        <div class="field full">
-          <button class="btn" type="submit">Create Category</button>
-        </div>
-
-      </form>
-    </div>
-
-    <div id="adminCategories"></div>
-  </div>
-
-  <div id="admin-services" class="adminPanel">
-    <div class="sectionHead">
-      <h3>Services</h3>
-      <button class="btn secondary small" onclick="loadAdminServices()">Refresh</button>
-    </div>
-    <div id="adminServices"></div>
-  </div>
-
-  <div id="admin-reports" class="adminPanel">
-    <div class="sectionHead">
-      <h3>Reports</h3>
-      <button class="btn secondary small" onclick="loadAdminReports()">Refresh</button>
-    </div>
-    <div id="adminReports"></div>
-  </div>
-
-  <div id="admin-reviews" class="adminPanel">
-    <div class="panel">
-      <h3>Reviews</h3>
-      <div id="adminReviews"></div>
-    </div>
-  </div>
-
-  <div id="admin-promotions" class="adminPanel">
-    <div class="panel">
-      <h3>Promotions</h3>
-      <div id="adminPromotions"></div>
-    </div>
-  </div>
-
-  <div id="admin-ads" class="adminPanel">
-    <div class="panel">
-      <h3>Advertising</h3>
-      <div id="adminAds"></div>
-    </div>
-  </div>
-
-</section>
-
-</main>
-
-<footer>
-  <div class="footerGrid">
-
-    <div>
-      <h3>IsokoHub 🌍</h3>
-      <p>
-        Global marketplace connecting buyers, sellers, teachers,
-        artists, creators, filmmakers and service providers.
-      </p>
-    </div>
-
-    <div>
-      <h3>Marketplace</h3>
-      <p onclick="scrollToProducts()">Products</p>
-      <p onclick="showSection('services')">Services</p>
-      <p onclick="showSection('education')">Education</p>
-      <p onclick="showSection('creators')">Creators</p>
-    </div>
-
-    <div>
-      <h3>Account</h3>
-      <p onclick="showSection('profile')">Profile</p>
-      <p onclick="showSection('orders')">Orders</p>
-      <p onclick="showSection('messages')">Messages</p>
-      <p onclick="showSection('saved')">Saved</p>
-    </div>
-
-    <div>
-      <h3>Sell</h3>
-      <p onclick="showSection('sell')">Sell Products</p>
-      <p onclick="showSection('services')">Professional Services</p>
-      <p onclick="showSection('seller')">Seller Dashboard</p>
-    </div>
-
-  </div>
-</footer>
-
-<!-- LOGIN MODAL -->
-<div id="loginModal" class="modal">
-  <div class="modalBox">
-    <button class="close" onclick="closeModal('loginModal')">×</button>
-
-    <h2>Login to IsokoHub</h2>
-
-    <form id="loginForm">
-
-      <div class="field">
-        <label>Email</label>
-        <input id="loginEmail" type="email" required>
-      </div>
-
-      <div class="field" style="margin-top:12px">
-        <label>Password</label>
-        <input id="loginPassword" type="password" required>
-      </div>
-
-      <div style="margin-top:15px">
-        <button class="btn" type="submit">Login</button>
-      </div>
-
-    </form>
-
-    <div id="loginMessage"></div>
-  </div>
-</div>
-
-<!-- REGISTER MODAL -->
-<div id="registerModal" class="modal">
-  <div class="modalBox">
-    <button class="close" onclick="closeModal('registerModal')">×</button>
-
-    <h2>Create IsokoHub Account</h2>
-
-    <form id="registerForm">
-
-      <div class="field">
-        <label>Name *</label>
-        <input id="registerName" required>
-      </div>
-
-      <div class="field" style="margin-top:12px">
-        <label>Email *</label>
-        <input id="registerEmail" type="email" required>
-      </div>
-
-      <div class="field" style="margin-top:12px">
-        <label>Password *</label>
-        <input id="registerPassword" type="password" minlength="6" required>
-      </div>
-
-      <div class="field" style="margin-top:12px">
-        <label>Country</label>
-        <select id="registerCountry"></select>
-      </div>
-
-      <div class="field" style="margin-top:12px">
-        <label>Account Type</label>
-        <select id="registerRole">
-          <option value="buyer">Buyer</option>
-          <option value="seller">Seller</option>
-        </select>
-      </div>
-
-      <div style="margin-top:15px">
-        <button class="btn" type="submit">Register</button>
-      </div>
-
-    </form>
-
-    <div id="registerMessage"></div>
-  </div>
-</div>
-
-<!-- MESSAGE MODAL -->
-<div id="messageModal" class="modal">
-  <div class="modalBox">
-    <button class="close" onclick="closeModal('messageModal')">×</button>
-
-    <h2>Send Message</h2>
-
-    <form id="messageForm">
-
-      <div class="field">
-        <label>Receiver User ID *</label>
-        <input id="messageReceiver" required>
-      </div>
-
-      <div class="field" style="margin-top:12px">
-        <label>Product ID</label>
-        <input id="messageProduct">
-      </div>
-
-      <div class="field" style="margin-top:12px">
-        <label>Message *</label>
-        <textarea id="messageText" required></textarea>
-      </div>
-
-      <div style="margin-top:15px">
-        <button class="btn" type="submit">Send</button>
-      </div>
-
-    </form>
-
-    <div id="messageFormResult"></div>
-  </div>
-</div>
-
-<script>
-/* =========================================================
-   ISOKOHUB FRONTEND CONFIG
-   ========================================================= */
-
-const API_BASE = "/api";
-
-let currentUser = null;
-let categories = [];
-let countries = [];
-let serviceCategories = [];
-
-let cart = JSON.parse(
-  localStorage.getItem("isokohub_cart") || "[]"
-);
-
-/* =========================================================
-   HELPERS
-   ========================================================= */
-
-const $ = id => document.getElementById(id);
-
-const escapeHTML = value =>
-  String(value ?? "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-
-const money = (value,currency="RWF") =>
-  `${Number(value || 0).toLocaleString()} ${escapeHTML(currency || "")}`;
-
-const showMessage = (element,message,type="") => {
-  const el = typeof element === "string" ? $(element) : element;
-  if (!el) return;
-  el.className = `message ${type}`;
-  el.textContent = message;
+const CORS = {
+"Access-Control-Allow-Origin": "*",
+"Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+"Access-Control-Allow-Headers": "Content-Type, Authorization",
+"Access-Control-Max-Age": "86400"
 };
 
-const authHeaders = () => {
-  const token = localStorage.getItem("isokohub_token");
+const COMMISSION_RATE = 0.05;
 
-  return token
-    ? {
-        "Content-Type":"application/json",
-        "Authorization":`Bearer ${token}`
-      }
-    : {
-        "Content-Type":"application/json"
-      };
+/* =========================================================
+ISOKOHUB GLOBAL CONFIGURATION
+========================================================= */
+
+const SERVICE_CATEGORIES = [
+"Business & Professional",
+"Engineering",
+"IT & Technology",
+"Construction & Property",
+"Education & Teachers",
+"Art & Creative",
+"Film & Entertainment",
+"Marketing & Communication",
+"Automotive & Transport",
+"Agriculture & Environment",
+"Home Services",
+"Legal & Finance",
+"Health & Wellness",
+"Beauty & Personal Care",
+"Food & Hospitality",
+"Events",
+"Logistics",
+"Travel & Tourism",
+"Industrial & Manufacturing",
+"Jobs & Freelance",
+"Services",
+"Other Services"
+];
+
+/* 193 UN MEMBER STATES */
+const COUNTRIES = [
+"Afghanistan","Albania","Algeria","Andorra","Angola",
+"Antigua and Barbuda","Argentina","Armenia","Australia",
+"Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh",
+"Barbados","Belarus","Belgium","Belize","Benin","Bhutan",
+"Bolivia","Bosnia and Herzegovina","Botswana","Brazil",
+"Brunei","Bulgaria","Burkina Faso","Burundi","Cabo Verde",
+"Cambodia","Cameroon","Canada","Central African Republic",
+"Chad","Chile","China","Colombia","Comoros","Congo",
+"Costa Rica","Côte d'Ivoire","Croatia","Cuba","Cyprus",
+"Czechia","Democratic Republic of the Congo","Denmark",
+"Djibouti","Dominica","Dominican Republic","Ecuador",
+"Egypt","El Salvador","Equatorial Guinea","Eritrea",
+"Estonia","Eswatini","Ethiopia","Fiji","Finland","France",
+"Gabon","Gambia","Georgia","Germany","Ghana","Greece",
+"Grenada","Guatemala","Guinea","Guinea-Bissau","Guyana",
+"Haiti","Honduras","Hungary","Iceland","India","Indonesia",
+"Iran","Iraq","Ireland","Israel","Italy","Jamaica","Japan",
+"Jordan","Kazakhstan","Kenya","Kiribati","Kuwait","Kyrgyzstan",
+"Laos","Latvia","Lebanon","Lesotho","Liberia","Libya",
+"Liechtenstein","Lithuania","Luxembourg","Madagascar",
+"Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands",
+"Mauritania","Mauritius","Mexico","Micronesia","Moldova",
+"Monaco","Mongolia","Montenegro","Morocco","Mozambique",
+"Myanmar","Namibia","Nauru","Nepal","Netherlands",
+"New Zealand","Nicaragua","Niger","Nigeria","North Korea",
+"North Macedonia","Norway","Oman","Pakistan","Palau","Panama",
+"Papua New Guinea","Paraguay","Peru","Philippines","Poland",
+"Portugal","Qatar","Romania","Russia","Rwanda",
+"Saint Kitts and Nevis","Saint Lucia",
+"Saint Vincent and the Grenadines","Samoa","San Marino",
+"Sao Tome and Principe","Saudi Arabia","Senegal","Serbia",
+"Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia",
+"Solomon Islands","Somalia","South Africa","South Korea",
+"South Sudan","Spain","Sri Lanka","Sudan","Suriname","Sweden",
+"Switzerland","Syria","Tajikistan","Tanzania","Thailand",
+"Timor-Leste","Togo","Tonga","Trinidad and Tobago","Tunisia",
+"Türkiye","Turkmenistan","Tuvalu","Uganda","Ukraine",
+"United Arab Emirates","United Kingdom","United States",
+"Uruguay","Uzbekistan","Vanuatu","Venezuela","Vietnam",
+"Yemen","Zambia","Zimbabwe"
+];
+
+const SERVICE_KEYWORDS = [
+"service","services","consultant","consulting","engineer",
+"engineering","developer","development","designer","design",
+"repair","installation","construction","architect","architecture",
+"teacher","teaching","tutor","course","training","education",
+"photographer","photography","videographer","video","film",
+"filmmaker","actor","producer","marketing","advertising",
+"lawyer","legal","accounting","accountant","finance","insurance",
+"doctor","clinic","health","wellness","beauty","salon","barber",
+"makeup","catering","restaurant","hotel","event","wedding",
+"transport","driver","delivery","logistics","travel","tour",
+"agriculture","farming","industrial","manufacturing","freelance",
+"job","professional","business","software","website","app",
+"plumbing","electrician","cleaning","moving","mechanic",
+"branding","social media","tax","therapy","fitness","chef",
+"hospitality","shipping","warehouse","courier","safari",
+"factory","machine","production","remote","work"
+];
+
+/* =========================================================
+HELPERS
+========================================================= */
+
+const json = (data, status = 200) =>
+new Response(JSON.stringify(data), {
+status,
+headers: {
+...CORS,
+"Content-Type": "application/json; charset=utf-8"
+}
+});
+
+const readJSON = async request => {
+try {
+return await request.json();
+} catch {
+return {};
+}
 };
 
-async function api(path,options={}){
+const sha256 = async value => {
+const data = new TextEncoder().encode(String(value));
+const hash = await crypto.subtle.digest("SHA-256", data);
 
-  const response = await fetch(
-    `${API_BASE}${path}`,
-    {
-      ...options,
-      headers:{
-        ...authHeaders(),
-        ...(options.headers || {})
-      }
-    }
-  );
+return [...new Uint8Array(hash)]
+.map(x => x.toString(16).padStart(2, "0"))
+.join("");
+};
 
-  let data = {};
+const normalize = value =>
+String(value ?? "")
+.trim()
+.toLowerCase();
 
-  try{
-    data = await response.json();
-  }catch{}
+const number = (value, fallback = 0) => {
+const n = Number(value);
+return Number.isFinite(n) ? n : fallback;
+};
 
-  if(!response.ok){
-    throw new Error(
-      data.error ||
-      data.message ||
-      `Request failed (${response.status})`
-    );
-  }
+const limitValue = value => {
+const n = Math.floor(number(value, 24));
+return Math.min(Math.max(n, 1), 100);
+};
 
-  return data;
+const tokenFromRequest = request => {
+const auth = request.headers.get("Authorization") || "";
+
+if (!auth.startsWith("Bearer ")) {
+return null;
 }
+
+return auth.slice(7).trim() || null;
+};
+
+const requireDB = env => {
+if (!env?.DB) {
+throw new Error("D1 database binding DB is not available.");
+}
+};
+
+const safeUser = user => {
+if (!user) return null;
+
+return {
+id: user.id,
+name: user.name,
+email: user.email,
+country: user.country,
+role: user.role,
+is_active: user.is_active,
+is_verified: user.is_verified,
+created_at: user.created_at
+};
+};
+
+const authenticate = async (request, env) => {
+const token = tokenFromRequest(request);
+
+if (!token) return null;
+
+const tokenHash = await sha256(token);
+
+const result = await env.DB.prepare(  SELECT   s.id AS session_id,   s.user_id AS user_id,   s.expires_at,   u.id AS id,   u.name,   u.email,   u.country,   u.role,   u.is_active,   u.is_verified,   u.created_at   FROM sessions s   JOIN users u   ON u.id = s.user_id   WHERE s.token_hash = ?   AND s.expires_at > datetime('now')   AND u.is_active = 1   LIMIT 1  ).bind(tokenHash).first();
+
+return result || null;
+};
+
+const requireUser = async (request, env) => {
+requireDB(env);
+
+const user = await authenticate(request, env);
+
+if (!user) {
+throw new Error("UNAUTHORIZED");
+}
+
+return user;
+};
+
+const requireAdmin = async (request, env) => {
+const user = await requireUser(request, env);
+
+if (user.role !== "admin") {
+throw new Error("ADMIN_ONLY");
+}
+
+return user;
+};
 
 /* =========================================================
-   NAVIGATION
-   ========================================================= */
+SERVICE DETECTION
+========================================================= */
 
-function showSection(id){
+const productText = product =>
+normalize(  ${product?.title || ""}   ${product?.category || ""}   ${product?.description || ""}   ${product?.specs || ""}   ${product?.brand || ""}   ${product?.model || ""}  );
 
-  const section = $(id);
+const isServiceProduct = product => {
+const category = normalize(product?.category);
 
-  if(!section){
-    return;
-  }
-
-  document
-    .querySelectorAll("main > .section")
-    .forEach(el => el.classList.remove("active-section"));
-
-  section.scrollIntoView({
-    behavior:"smooth",
-    block:"start"
-  });
-
-  if(id === "saved") loadSaved();
-  if(id === "orders") loadOrders();
-  if(id === "messages") loadMessages();
-  if(id === "profile") loadProfile();
-  if(id === "seller") loadSellerDashboard();
-  if(id === "admin") loadAdminOverview();
+if (
+SERVICE_CATEGORIES.some(
+c => normalize(c) === category
+)
+) {
+return true;
 }
 
-function scrollToProducts(){
-  $("productsSection").scrollIntoView({
-    behavior:"smooth"
-  });
-}
+const text = productText(product);
 
-function filterCategory(category){
-
-  $("searchInput").value = "";
-
-  showSection("home");
-
-  loadProducts({
-    category
-  });
-
-  setTimeout(() => {
-    $("productsSection").scrollIntoView({
-      behavior:"smooth"
-    });
-  },100);
-}
-
-/* =========================================================
-   MODALS
-   ========================================================= */
-
-function openModal(id){
-  $(id)?.classList.add("active");
-}
-
-function closeModal(id){
-  $(id)?.classList.remove("active");
-}
-
-document.querySelectorAll(".modal").forEach(modal => {
-
-  modal.addEventListener("click",event => {
-
-    if(event.target === modal){
-      modal.classList.remove("active");
-    }
-
-  });
-
-});
-
-/* =========================================================
-   CONNECTION
-   ========================================================= */
-
-async function checkConnection(){
-
-  try{
-
-    const data = await api("/health");
-
-    if(data.ok){
-
-      $("connectionStatus").className = "status ok";
-
-      $("connectionStatus").textContent =
-        "✅ IsokoHub API + D1 database connected.";
-
-    }else{
-
-      throw new Error("Database is not connected.");
-
-    }
-
-  }catch(error){
-
-    $("connectionStatus").className = "status error";
-
-    $("connectionStatus").textContent =
-      "❌ Backend connection failed — check Cloudflare D1/API settings.";
-
-    console.error(error);
-
-  }
-
-}
-
-/* =========================================================
-   CONFIG
-   ========================================================= */
-
-async function loadConfig(){
-
-  try{
-
-    const data = await api("/config");
-
-    $("adminConfig").innerHTML = `
-      <div class="meta">
-        <strong>Platform:</strong>
-        ${escapeHTML(data.platform)}
-        <br>
-
-        <strong>Database:</strong>
-        ${escapeHTML(data.database)}
-        <br>
-
-        <strong>Assets:</strong>
-        ${escapeHTML(data.assets)}
-        <br>
-
-        <strong>Marketplace:</strong>
-        ${escapeHTML(data.marketplace)}
-        <br>
-
-        <strong>Countries:</strong>
-        ${escapeHTML(data.countries)}
-        <br>
-
-        <strong>Service Platform:</strong>
-        ${data.service_platform ? "Enabled" : "Disabled"}
-        <br>
-
-        <strong>Commission:</strong>
-        ${(Number(data.commission_rate || 0) * 100).toFixed(1)}%
-      </div>
-    `;
-
-  }catch(error){
-
-    $("adminConfig").textContent = error.message;
-
-  }
-
-}
-
-/* =========================================================
-   COUNTRIES
-   ========================================================= */
-
-async function loadCountries(){
-
-  try{
-
-    const data = await api("/countries");
-
-    countries = data.countries || [];
-
-    const selects = [
-      $("registerCountry"),
-      $("sellCountry"),
-      $("serviceCountry")
-    ];
-
-    selects.forEach(select => {
-
-      if(!select) return;
-
-      const current = select.value;
-
-      select.innerHTML = "";
-
-      if(
-        select.id === "serviceCountry"
-      ){
-
-        const option =
-          document.createElement("option");
-
-        option.value = "";
-        option.textContent = "All countries";
-
-        select.appendChild(option);
-
-      }
-
-      countries.forEach(country => {
-
-        const option =
-          document.createElement("option");
-
-        option.value = country;
-        option.textContent = country;
-
-        select.appendChild(option);
-
-      });
-
-      if(
-        countries.includes(current)
-      ){
-        select.value = current;
-      }
-
-    });
-
-    if($("registerCountry")){
-      $("registerCountry").value = "Rwanda";
-    }
-
-    if($("sellCountry")){
-      $("sellCountry").value = currentUser?.country || "Rwanda";
-    }
-
-  }catch(error){
-
-    console.error("Countries:",error);
-
-  }
-
-}
-
-/* =========================================================
-   SERVICE CATEGORIES
-   ========================================================= */
-
-async function loadServiceCategories(){
-
-  try{
-
-    const data =
-      await api("/service-categories");
-
-    serviceCategories =
-      data.categories || [];
-
-    const serviceSelect =
-      $("serviceCategory");
-
-    if(serviceSelect){
-
-      serviceSelect.innerHTML =
-        `<option value="">All services</option>`;
-
-      serviceCategories.forEach(category => {
-
-        const option =
-          document.createElement("option");
-
-        option.value = category;
-        option.textContent = category;
-
-        serviceSelect.appendChild(option);
-
-      });
-
-    }
-
-  }catch(error){
-
-    console.error("Service categories:",error);
-
-  }
-
-}
-
-/* =========================================================
-   CATEGORIES
-   ========================================================= */
-
-async function loadCategories(){
-
-  try{
-
-    const data =
-      await api("/categories");
-
-    categories =
-      data.categories || [];
-
-    renderCategories();
-
-    populateSellCategories();
-
-  }catch(error){
-
-    $("categoriesGrid").innerHTML =
-      `<div class="empty">${escapeHTML(error.message)}</div>`;
-
-  }
-
-}
-
-function renderCategories(){
-
-  if(!categories.length){
-
-    $("categoriesGrid").innerHTML =
-      `<div class="empty">No active categories yet.</div>`;
-
-    return;
-  }
-
-  $("categoriesGrid").innerHTML =
-    categories.map(category => {
-
-      const name =
-        category.name || "Category";
-
-      return `
-        <div class="card categoryCard">
-          <button onclick="filterCategory('${escapeHTML(name).replace(/'/g,"&#039;")}')">
-            <div class="categoryIcon">
-              ${escapeHTML(category.icon || "📦")}
-            </div>
-
-            <strong>
-              ${escapeHTML(name)}
-            </strong>
-
-            <p class="muted">
-              ${escapeHTML(category.description || "Explore this category.")}
-            </p>
-          </button>
-        </div>
-      `;
-
-    }).join("");
-
-}
-
-function populateSellCategories(){
-
-  const select = $("sellCategory");
-
-  if(!select) return;
-
-  select.innerHTML =
-    `<option value="">Select category</option>`;
-
-  const names = [
-    ...categories.map(x => x.name).filter(Boolean),
-    ...serviceCategories
-  ];
-
-  [...new Set(names)].forEach(name => {
-
-    const option =
-      document.createElement("option");
-
-    option.value = name;
-    option.textContent = name;
-
-    select.appendChild(option);
-
-  });
-
-}
-
-/* =========================================================
-   PRODUCTS
-   ========================================================= */
-
-async function loadProducts(filters={}){
-
-  try{
-
-    const params =
-      new URLSearchParams();
-
-    if(filters.search){
-      params.set("search",filters.search);
-    }
-
-    if(filters.category){
-      params.set("category",filters.category);
-    }
-
-    if(filters.country){
-      params.set("country",filters.country);
-    }
-
-    params.set("limit","100");
-
-    const data =
-      await api(`/products?${params.toString()}`);
-
-    renderProducts(
-      $("productsGrid"),
-      data.products || []
-    );
-
-  }catch(error){
-
-    $("productsGrid").innerHTML =
-      `<div class="empty">${escapeHTML(error.message)}</div>`;
-
-  }
-
-}
-
-function renderProducts(container,products){
-
-  if(!products.length){
-
-    container.innerHTML =
-      `<div class="empty">No products found.</div>`;
-
-    return;
-  }
-
-  container.innerHTML =
-    products.map(product => productCard(product)).join("");
-
-}
-
-function productCard(product){
-
-  const image =
-    product.image_url ||
-    "data:image/svg+xml;charset=UTF-8," +
-    encodeURIComponent(`
-      <svg xmlns="http://www.w3.org/2000/svg" width="600" height="400">
-        <rect width="100%" height="100%" fill="#f1f5f9"/>
-        <text x="50%" y="50%" text-anchor="middle"
-        dominant-baseline="middle"
-        font-family="Arial" font-size="28"
-        fill="#64748b">IsokoHub</text>
-      </svg>
-    `);
-
-  return `
-    <article class="card">
-
-      <img
-        class="productImage"
-        src="${escapeHTML(image)}"
-        alt="${escapeHTML(product.title)}"
-        onerror="this.src='data:image/svg+xml;charset=UTF-8,${encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' width='600' height='400'><rect width='100%' height='100%' fill='#f1f5f9'/><text x='50%' y='50%' text-anchor='middle' dominant-baseline='middle' font-family='Arial' font-size='28' fill='#64748b'>IsokoHub</text></svg>")}'"
-      >
-
-      <div class="productTitle">
-        ${escapeHTML(product.title)}
-      </div>
-
-      <div class="price">
-        ${money(product.price,product.currency)}
-      </div>
-
-      <div class="meta">
-        📂 ${escapeHTML(product.category || "Other")}
-        <br>
-        🌍 ${escapeHTML(product.country || product.seller_country || "Global")}
-        ${product.district ? `<br>📍 ${escapeHTML(product.district)}` : ""}
-        <br>
-        👤 ${escapeHTML(product.seller_name || "Seller")}
-        ${product.seller_verified ? " ✓" : ""}
-      </div>
-
-      ${
-        product.description
-        ? `<p class="muted">${escapeHTML(product.description).slice(0,160)}</p>`
-        : ""
-      }
-
-      <div class="cardActions">
-
-        <button
-          class="btn small"
-          onclick="addToCart(${Number(product.id)})"
-        >
-          🛒 Add to Cart
-        </button>
-
-        <button
-          class="btn secondary small"
-          onclick="saveProduct(${Number(product.id)})"
-        >
-          ❤️ Save
-        </button>
-
-        ${
-          product.seller_id
-          ? `
-            <button
-              class="btn secondary small"
-              onclick="openMessageFor(${Number(product.seller_id)},${Number(product.id)})"
-            >
-              💬 Contact
-            </button>
-          `
-          : ""
-        }
-
-      </div>
-
-    </article>
-  `;
-
-}
-
-/* =========================================================
-   SEARCH
-   ========================================================= */
-
-$("searchForm").addEventListener("submit",event => {
-
-  event.preventDefault();
-
-  const search =
-    $("searchInput").value.trim();
-
-  loadProducts({
-    search
-  });
-
-  scrollToProducts();
-
-  loadServicesFromSearch(search);
-
-});
-
-async function loadServicesFromSearch(search){
-
-  if(!search) return;
-
-  try{
-
-    const data =
-      await api(
-        `/service-search?q=${encodeURIComponent(search)}&limit=100`
-      );
-
-    renderServices(
-      data.services || []
-    );
-
-  }catch(error){
-
-    console.error(error);
-
-  }
-
-}
-
-/* =========================================================
-   SERVICES
-   ========================================================= */
-
-async function loadServices(){
-
-  const search =
-    $("serviceSearch")?.value.trim() || "";
-
-  const category =
-    $("serviceCategory")?.value || "";
-
-  const country =
-    $("serviceCountry")?.value || "";
-
-  const city =
-    $("serviceCity")?.value.trim() || "";
-
-  const provider =
-    $("serviceProvider")?.value.trim() || "";
-
-  const params =
-    new URLSearchParams();
-
-  if(search) params.set("search",search);
-  if(category) params.set("category",category);
-  if(country) params.set("country",country);
-  if(city) params.set("city",city);
-  if(provider) params.set("provider",provider);
-
-  params.set("limit","100");
-
-  try{
-
-    const data =
-      await api(`/services?${params.toString()}`);
-
-    renderServices(
-      data.services || []
-    );
-
-  }catch(error){
-
-    $("servicesGrid").innerHTML =
-      `<div class="empty">${escapeHTML(error.message)}</div>`;
-
-  }
-
-}
-
-function renderServices(services){
-
-  if(!services.length){
-
-    $("servicesGrid").innerHTML =
-      `<div class="empty">No matching services found.</div>`;
-
-    return;
-  }
-
-  $("servicesGrid").innerHTML =
-    services.map(service => `
-
-      <article class="card">
-
-        <div class="categoryIcon">🛠️</div>
-
-        <div class="productTitle">
-          ${escapeHTML(service.title)}
-        </div>
-
-        <div class="price">
-          ${money(service.price,service.currency)}
-        </div>
-
-        <div class="meta">
-          📂 ${escapeHTML(service.category || "Services")}
-          <br>
-          🌍 ${escapeHTML(service.country || service.seller_country || "Global")}
-          ${service.district ? `<br>📍 ${escapeHTML(service.district)}` : ""}
-          <br>
-          👤 ${escapeHTML(service.seller_name || "Provider")}
-          ${service.seller_verified ? " ✓" : ""}
-        </div>
-
-        ${
-          service.description
-          ? `<p class="muted">${escapeHTML(service.description).slice(0,220)}</p>`
-          : ""
-        }
-
-        <div class="cardActions">
-
-          <button
-            class="btn small"
-            onclick="openMessageFor(${Number(service.seller_id || 0)},${Number(service.id)})"
-          >
-            💬 Contact Provider
-          </button>
-
-          <button
-            class="btn secondary small"
-            onclick="addToCart(${Number(service.id)})"
-          >
-            🛒 Add
-          </button>
-
-        </div>
-
-      </article>
-
-    `).join("");
-
-}
-
-$("serviceSearchForm").addEventListener(
-  "submit",
-  event => {
-    event.preventDefault();
-    loadServices();
-  }
+return SERVICE_KEYWORDS.some(keyword =>
+text.includes(normalize(keyword))
 );
+};
 
-/* =========================================================
-   CART
-   ========================================================= */
+const SERVICE_MAP = {
+"business & professional": [
+"business","consult","consulting","professional",
+"management","accounting","accountant"
+],
 
-function saveCart(){
+"engineering": [
+"engineer","engineering","civil","mechanical",
+"electrical","software engineer","structural",
+"chemical","environmental"
+],
 
-  localStorage.setItem(
-    "isokohub_cart",
-    JSON.stringify(cart)
-  );
+"it & technology": [
+"it","technology","software","developer","development",
+"website","web","app","application","computer","cyber",
+"programming","database","cloud","network"
+],
 
-  updateCartCount();
+"construction & property": [
+"construction","architect","architecture","property",
+"building","plumbing","electrician","masonry",
+"carpentry","real estate"
+],
 
+"education & teachers": [
+"teacher","teaching","tutor","education","course",
+"training","school","lesson","language","english"
+],
+
+"art & creative": [
+"artist","graphic","design","designer","photography",
+"photographer","creative","fashion","illustration",
+"logo","painting","craft"
+],
+
+"film & entertainment": [
+"film","filmmaker","actor","producer","video",
+"videographer","entertainment","cinema","production"
+],
+
+"marketing & communication": [
+"marketing","advertising","social media",
+"communication","branding","seo","content"
+],
+
+"automotive & transport": [
+"car","automotive","transport","driver","vehicle",
+"mechanic","motorcycle","truck"
+],
+
+"agriculture & environment": [
+"agriculture","farming","environment","garden",
+"irrigation","livestock","agronomy"
+],
+
+"home services": [
+"cleaning","home","repair","plumbing","electrician",
+"moving","painting","gardening"
+],
+
+"legal & finance": [
+"lawyer","legal","finance","accounting","accountant",
+"tax","insurance","audit"
+],
+
+"health & wellness": [
+"health","doctor","clinic","wellness","fitness",
+"therapy","nutrition","nurse"
+],
+
+"beauty & personal care": [
+"beauty","salon","barber","makeup","hair",
+"spa","nails","personal care"
+],
+
+"food & hospitality": [
+"food","catering","restaurant","hotel","hospitality",
+"chef","cooking","baking"
+],
+
+"events": [
+"event","wedding","party","decoration","dj",
+"ceremony","entertainment"
+],
+
+"logistics": [
+"logistics","delivery","shipping","warehouse",
+"courier","freight","transport"
+],
+
+"travel & tourism": [
+"travel","tour","tourism","hotel","guide",
+"safari","vacation","trip"
+],
+
+"industrial & manufacturing": [
+"industrial","manufacturing","factory","machine",
+"production","fabrication","welding"
+],
+
+"jobs & freelance": [
+"job","freelance","freelancer","remote","work",
+"employment","contract"
+]
+};
+
+const serviceCategoryMatch = (product, category) => {
+if (!category) return true;
+
+const requested = normalize(category);
+const actual = normalize(product?.category);
+
+if (actual === requested) {
+return true;
 }
 
-function updateCartCount(){
+const keywords = SERVICE_MAP[requested] || [];
 
-  const count =
-    cart.reduce(
-      (sum,item) =>
-        sum + Number(item.quantity || 0),
-      0
-    );
-
-  $("cartCount").textContent = count;
-
+if (!keywords.length) {
+return true;
 }
 
-async function addToCart(productId){
+const text = productText(product);
 
-  try{
-
-    const data =
-      await api(`/products/${productId}`);
-
-    const product =
-      data.product;
-
-    const existing =
-      cart.find(
-        item => Number(item.id) === Number(product.id)
-      );
-
-    if(existing){
-
-      existing.quantity++;
-
-    }else{
-
-      cart.push({
-        id:product.id,
-        title:product.title,
-        price:Number(product.price || 0),
-        currency:product.currency || "RWF",
-        image_url:product.image_url || "",
-        quantity:1
-      });
-
-    }
-
-    saveCart();
-    renderCart();
-
-    alert("Added to cart.");
-
-  }catch(error){
-
-    alert(error.message);
-
-  }
-
-}
-
-function removeFromCart(id){
-
-  cart =
-    cart.filter(
-      item => Number(item.id) !== Number(id)
-    );
-
-  saveCart();
-  renderCart();
-
-}
-
-function changeCartQuantity(id,delta){
-
-  const item =
-    cart.find(
-      x => Number(x.id) === Number(id)
-    );
-
-  if(!item) return;
-
-  item.quantity =
-    Math.max(
-      1,
-      Number(item.quantity) + delta
-    );
-
-  saveCart();
-  renderCart();
-
-}
-
-function renderCart(){
-
-  const container =
-    $("cartGrid");
-
-  if(!cart.length){
-
-    container.innerHTML =
-      `<div class="empty">Your cart is empty.</div>`;
-
-    $("cartSummary").classList.add("hidden");
-
-    return;
-  }
-
-  let total = 0;
-
-  container.innerHTML =
-    cart.map(item => {
-
-      const line =
-        Number(item.price || 0) *
-        Number(item.quantity || 1);
-
-      total += line;
-
-      return `
-        <div class="card" style="margin-bottom:10px">
-
-          <div style="display:flex;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap">
-
-            <div>
-              <strong>${escapeHTML(item.title)}</strong>
-
-              <div class="muted">
-                ${money(item.price,item.currency)}
-              </div>
-            </div>
-
-            <div style="display:flex;align-items:center;gap:7px">
-
-              <button
-                class="btn secondary small"
-                onclick="changeCartQuantity(${Number(item.id)},-1)"
-              >−</button>
-
-              <strong>${Number(item.quantity)}</strong>
-
-              <button
-                class="btn secondary small"
-                onclick="changeCartQuantity(${Number(item.id)},1)"
-              >+</button>
-
-              <button
-                class="btn danger small"
-                onclick="removeFromCart(${Number(item.id)})"
-              >Remove</button>
-
-            </div>
-
-          </div>
-
-          <div style="margin-top:10px">
-            <strong>Subtotal:</strong>
-            <span class="price">
-              ${money(line,item.currency)}
-            </span>
-          </div>
-
-        </div>
-      `;
-
-    }).join("");
-
-  $("cartTotal").textContent =
-    money(
-      total,
-      cart[0]?.currency || "RWF"
-    );
-
-  $("cartSummary").classList.remove("hidden");
-
-}
-
-async function checkoutCart(){
-
-  if(!currentUser){
-
-    openModal("loginModal");
-    alert("Please login before checkout.");
-    return;
-
-  }
-
-  if(!cart.length){
-
-    alert("Your cart is empty.");
-    return;
-
-  }
-
-  if(
-    !confirm(
-      "Create orders for all items in your cart?"
-    )
-  ){
-    return;
-  }
-
-  const results = [];
-
-  for(const item of cart){
-
-    try{
-
-      const result =
-        await api("/orders",{
-          method:"POST",
-          body:JSON.stringify({
-            product_id:Number(item.id),
-            quantity:Number(item.quantity)
-          })
-        });
-
-      results.push({
-        ok:true,
-        item,
-        result
-      });
-
-    }catch(error){
-
-      results.push({
-        ok:false,
-        item,
-        error:error.message
-      });
-
-    }
-
-  }
-
-  const failed =
-    results.filter(x => !x.ok);
-
-  const succeeded =
-    results.filter(x => x.ok);
-
-  if(succeeded.length){
-
-    const failedIds =
-      new Set(
-        failed.map(x => Number(x.item.id))
-      );
-
-    cart =
-      cart.filter(
-        item =>
-          failedIds.has(Number(item.id))
-      );
-
-    saveCart();
-    renderCart();
-
-    loadOrders();
-  }
-
-  if(failed.length){
-
-    alert(
-      `${succeeded.length} order(s) created. ` +
-      `${failed.length} item(s) failed.`
-    );
-
-  }else{
-
-    alert("Checkout completed successfully.");
-
-  }
-
-}
-
-/* =========================================================
-   SAVED
-   ========================================================= */
-
-async function saveProduct(productId){
-
-  if(!currentUser){
-
-    openModal("loginModal");
-    return;
-
-  }
-
-  try{
-
-    await api("/saved",{
-      method:"POST",
-      body:JSON.stringify({
-        product_id:Number(productId)
-      })
-    });
-
-    alert("Saved.");
-    loadSaved();
-
-  }catch(error){
-
-    alert(error.message);
-
-  }
-
-}
-
-async function loadSaved(){
-
-  if(!currentUser){
-
-    $("savedGrid").innerHTML =
-      `<div class="empty">Login to view saved products.</div>`;
-
-    $("savedCount").textContent = "0";
-
-    return;
-  }
-
-  try{
-
-    const data =
-      await api("/saved");
-
-    const saved =
-      data.saved || [];
-
-    $("savedCount").textContent =
-      saved.length;
-
-    if(!saved.length){
-
-      $("savedGrid").innerHTML =
-        `<div class="empty">No saved products yet.</div>`;
-
-      return;
-
-    }
-
-    $("savedGrid").innerHTML =
-      `<div class="grid">
-        ${
-          saved.map(item => `
-            <div class="card">
-
-              <div class="productTitle">
-                ${escapeHTML(item.title)}
-              </div>
-
-              <div class="price">
-                ${money(item.price,item.currency)}
-              </div>
-
-              <div class="meta">
-                🌍 ${escapeHTML(item.country || "Global")}
-                ${item.district ? `<br>📍 ${escapeHTML(item.district)}` : ""}
-              </div>
-
-              <div class="cardActions">
-
-                <button
-                  class="btn small"
-                  onclick="addToCart(${Number(item.product_id)})"
-                >
-                  🛒 Cart
-                </button>
-
-                <button
-                  class="btn danger small"
-                  onclick="deleteSaved(${Number(item.product_id)})"
-                >
-                  Remove
-                </button>
-
-              </div>
-
-            </div>
-          `).join("")
-        }
-      </div>`;
-
-  }catch(error){
-
-    $("savedGrid").innerHTML =
-      `<div class="empty">${escapeHTML(error.message)}</div>`;
-
-  }
-
-}
-
-async function deleteSaved(productId){
-
-  try{
-
-    await api(`/saved/${productId}`,{
-      method:"DELETE"
-    });
-
-    loadSaved();
-
-  }catch(error){
-
-    alert(error.message);
-
-  }
-
-}
-
-/* =========================================================
-   ORDERS
-   ========================================================= */
-
-async function loadOrders(){
-
-  if(!currentUser){
-
-    $("ordersContent").innerHTML =
-      `<div class="empty">Login to view your orders.</div>`;
-
-    return;
-  }
-
-  try{
-
-    const data =
-      await api("/orders");
-
-    const orders =
-      data.orders || [];
-
-    if(!orders.length){
-
-      $("ordersContent").innerHTML =
-        `<div class="empty">No orders yet.</div>`;
-
-      return;
-    }
-
-    $("ordersContent").innerHTML = `
-      <div class="tableWrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Product</th>
-              <th>Quantity</th>
-              <th>Total</th>
-              <th>Status</th>
-              <th>Payment</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            ${
-              orders.map(order => `
-                <tr>
-                  <td>${escapeHTML(order.title)}</td>
-                  <td>${Number(order.quantity)}</td>
-                  <td>${money(order.total_amount,order.currency)}</td>
-                  <td>${escapeHTML(order.status)}</td>
-                  <td>${escapeHTML(order.payment_status)}</td>
-                  <td>${escapeHTML(order.created_at)}</td>
-                </tr>
-              `).join("")
-            }
-          </tbody>
-        </table>
-      </div>
-    `;
-
-  }catch(error){
-
-    $("ordersContent").innerHTML =
-      `<div class="empty">${escapeHTML(error.message)}</div>`;
-
-  }
-
-}
-
-/* =========================================================
-   MESSAGES
-   ========================================================= */
-
-async function loadMessages(){
-
-  if(!currentUser){
-
-    $("messagesContent").innerHTML =
-      `<div class="empty">Login to view your messages.</div>`;
-
-    return;
-
-  }
-
-  try{
-
-    const data =
-      await api("/messages");
-
-    const messages =
-      data.messages || [];
-
-    if(!messages.length){
-
-      $("messagesContent").innerHTML =
-        `<div class="empty">No messages yet.</div>`;
-
-      return;
-
-    }
-
-    $("messagesContent").innerHTML =
-      messages.map(message => `
-
-        <div class="card" style="margin-bottom:10px">
-
-          <strong>
-            ${escapeHTML(message.sender_name)}
-            →
-            ${escapeHTML(message.receiver_name)}
-          </strong>
-
-          <p>${escapeHTML(message.message)}</p>
-
-          <div class="meta">
-            ${escapeHTML(message.created_at)}
-          </div>
-
-        </div>
-
-      `).join("");
-
-  }catch(error){
-
-    $("messagesContent").innerHTML =
-      `<div class="empty">${escapeHTML(error.message)}</div>`;
-
-  }
-
-}
-
-function openMessageFor(receiverId,productId){
-
-  if(!receiverId){
-    alert("Provider information is unavailable.");
-    return;
-  }
-
-  $("messageReceiver").value = receiverId;
-  $("messageProduct").value = productId || "";
-
-  openModal("messageModal");
-
-}
-
-/* =========================================================
-   SELL
-   ========================================================= */
-
-$("sellForm").addEventListener(
-  "submit",
-  async event => {
-
-    event.preventDefault();
-
-    if(!currentUser){
-
-      openModal("loginModal");
-
-      showMessage(
-        "sellMessage",
-        "Please login before publishing.",
-        "error"
-      );
-
-      return;
-
-    }
-
-    const body = {
-
-      title:$("sellTitle").value.trim(),
-
-      category:$("sellCategory").value,
-
-      price:Number($("sellPrice").value || 0),
-
-      currency:$("sellCurrency").value.trim() || "RWF",
-
-      stock:Number($("sellStock").value || 1),
-
-      condition:$("sellCondition").value,
-
-      country:$("sellCountry").value || currentUser.country,
-
-      district:$("sellDistrict").value.trim(),
-
-      brand:$("sellBrand").value.trim(),
-
-      model:$("sellModel").value.trim(),
-
-      storage:$("sellStorage").value.trim(),
-
-      ram:$("sellRam").value.trim(),
-
-      image_url:$("sellImage").value.trim(),
-
-      description:$("sellDescription").value.trim(),
-
-      specs:$("sellSpecs").value.trim(),
-
-      negotiable:$("sellNegotiable").value === "1"
-
-    };
-
-    try{
-
-      const result =
-        await api("/products",{
-          method:"POST",
-          body:JSON.stringify(body)
-        });
-
-      showMessage(
-        "sellMessage",
-        `Published successfully. Product ID: ${result.product_id}`,
-        "success"
-      );
-
-      $("sellForm").reset();
-
-      $("sellCurrency").value =
-        currentUser.currency || "RWF";
-
-      $("sellCountry").value =
-        currentUser.country || "Rwanda";
-
-      loadProducts();
-      loadSellerDashboard();
-
-    }catch(error){
-
-      showMessage(
-        "sellMessage",
-        error.message,
-        "error"
-      );
-
-    }
-
-  }
+return keywords.some(keyword =>
+text.includes(normalize(keyword))
 );
+};
 
 /* =========================================================
-   PROFILE
-   ========================================================= */
+MAIN WORKER
+========================================================= */
 
-async function loadProfile(){
+export default {
+async fetch(request, env) {
+const url = new URL(request.url);
+const path = url.pathname;
+const method = request.method.toUpperCase();
 
-  if(!currentUser){
+if (method === "OPTIONS") {  
+  return new Response(null, {  
+    status: 204,  
+    headers: CORS  
+  });  
+}  
 
-    $("profileContent").innerHTML =
-      `<div class="empty">Login to view your profile.</div>`;
+try {  
+  requireDB(env);  
 
-    return;
-  }
+  /* =====================================================  
+     HEALTH  
+     ===================================================== */  
 
-  try{
+  if (path === "/api/health" && method === "GET") {  
+    let database = "connected";  
 
-    const data =
-      await api("/me");
+    try {  
+      await env.DB.prepare("SELECT 1").first();  
+    } catch {  
+      database = "error";  
+    }  
 
-    currentUser =
-      data.user;
+    return json({  
+      ok: database === "connected",  
+      service: "IsokoHub API",  
+      database,  
+      time: new Date().toISOString()  
+    });  
+  }  
 
-    $("profileContent").innerHTML = `
+  /* =====================================================  
+     CONFIG  
+     ===================================================== */  
 
-      <div class="panel">
+  if (path === "/api/config" && method === "GET") {  
+    return json({  
+      production: true,  
+      platform: "cloudflare-workers",  
+      database: "D1",  
+      assets: "Cloudflare Assets",  
+      marketplace: "global",  
+      countries: COUNTRIES.length,  
+      service_platform: true,  
+      service_categories: SERVICE_CATEGORIES.length,  
+      commission_rate: COMMISSION_RATE  
+    });  
+  }  
 
-        <form id="profileForm" class="formGrid">
+  /* =====================================================  
+     COUNTRIES  
+     ===================================================== */  
 
-          <div class="field">
-            <label>Name</label>
-            <input
-              id="profileName"
-              value="${escapeHTML(currentUser.name)}"
-            >
-          </div>
+  if (path === "/api/countries" && method === "GET") {  
+    const search = normalize(  
+      url.searchParams.get("search")  
+    );  
 
-          <div class="field">
-            <label>Email</label>
-            <input
-              value="${escapeHTML(currentUser.email)}"
-              disabled
-            >
-          </div>
+    const countries = search  
+      ? COUNTRIES.filter(country =>  
+          normalize(country).includes(search)  
+        )  
+      : COUNTRIES;  
 
-          <div class="field">
-            <label>Country</label>
-            <select id="profileCountry"></select>
-          </div>
+    return json({  
+      count: countries.length,  
+      countries  
+    });  
+  }  
 
-          <div class="field">
-            <label>Role</label>
-            <input
-              value="${escapeHTML(currentUser.role)}"
-              disabled
-            >
-          </div>
+  /* =====================================================  
+     SERVICE CATEGORIES  
+     ===================================================== */  
 
-          <div class="field full">
-            <button class="btn" type="submit">
-              Save Profile
-            </button>
-          </div>
+  if (  
+    path === "/api/service-categories" &&  
+    method === "GET"  
+  ) {  
+    return json({  
+      count: SERVICE_CATEGORIES.length,  
+      categories: SERVICE_CATEGORIES  
+    });  
+  }  
 
-        </form>
+  /* =====================================================  
+     DATABASE CATEGORIES  
+     ===================================================== */  
 
-        <div id="profileMessage"></div>
+  if (  
+    path === "/api/categories" &&  
+    method === "GET"  
+  ) {  
+    const result = await env.DB.prepare(`  
+      SELECT *  
+      FROM categories  
+      WHERE is_active = 1  
+      ORDER BY name ASC  
+    `).all();  
 
-      </div>
-    `;
+    return json({  
+      categories: result.results || []  
+    });  
+  }  
 
-    const select =
-      $("profileCountry");
+  /* =====================================================  
+     PRODUCTS  
+     ===================================================== */  
 
-    countries.forEach(country => {
+  if (  
+    path === "/api/products" &&  
+    method === "GET"  
+  ) {  
+    const search =  
+      url.searchParams.get("search") || "";  
 
-      const option =
-        document.createElement("option");
+    const category =  
+      url.searchParams.get("category") || "";  
 
-      option.value = country;
-      option.textContent = country;
+    const country =  
+      url.searchParams.get("country") || "";  
 
-      select.appendChild(option);
+    const limit =  
+      limitValue(  
+        url.searchParams.get("limit")  
+      );  
 
-    });
+    const conditions = [  
+      "p.status = 'active'",  
+      "u.is_active = 1"  
+    ];  
 
-    select.value =
-      currentUser.country || "Rwanda";
+    const params = [];  
 
-    $("profileForm").addEventListener(
-      "submit",
-      updateProfile
-    );
+    if (search) {  
+      conditions.push(`  
+        (  
+          p.title LIKE ?  
+          OR p.description LIKE ?  
+          OR p.category LIKE ?  
+          OR p.brand LIKE ?  
+          OR p.model LIKE ?  
+          OR p.specs LIKE ?  
+        )  
+      `);  
 
-  }catch(error){
+      const q = `%${search}%`;  
 
-    $("profileContent").innerHTML =
-      `<div class="empty">${escapeHTML(error.message)}</div>`;
+      params.push(  
+        q,q,q,q,q,q  
+      );  
+    }  
 
-  }
+    if (category) {  
+      conditions.push(  
+        "p.category LIKE ?"  
+      );  
 
+      params.push(  
+        `%${category}%`  
+      );  
+    }  
+
+    if (country) {  
+      conditions.push(  
+        "p.country LIKE ?"  
+      );  
+
+      params.push(  
+        `%${country}%`  
+      );  
+    }  
+
+    params.push(limit);  
+
+    const result = await env.DB.prepare(`  
+      SELECT  
+        p.*,  
+        u.name AS seller_name,  
+        u.email AS seller_email,  
+        u.country AS seller_country,  
+        u.is_verified AS seller_verified  
+      FROM products p  
+      LEFT JOIN users u  
+        ON u.id = p.seller_id  
+      WHERE ${conditions.join(" AND ")}  
+      ORDER BY p.created_at DESC  
+      LIMIT ?  
+    `)  
+      .bind(...params)  
+      .all();  
+
+    return json({  
+      products: result.results || [],  
+      count: (result.results || []).length,  
+      global: true  
+    });  
+  }  
+
+  /* =====================================================  
+     SINGLE PRODUCT  
+     ===================================================== */  
+
+  const productMatch =  
+    path.match(/^\/api\/products\/(\d+)$/);  
+
+  if (  
+    productMatch &&  
+    method === "GET"  
+  ) {  
+    const id = productMatch[1];  
+
+    const product =  
+      await env.DB.prepare(`  
+        SELECT  
+          p.*,  
+          u.name AS seller_name,  
+          u.email AS seller_email,  
+          u.country AS seller_country,  
+          u.is_verified AS seller_verified  
+        FROM products p  
+        LEFT JOIN users u  
+          ON u.id = p.seller_id  
+        WHERE p.id = ?  
+        LIMIT 1  
+      `)  
+        .bind(id)  
+        .first();  
+
+    if (!product) {  
+      return json({  
+        error: "Product not found."  
+      }, 404);  
+    }  
+
+    try {  
+      await env.DB.prepare(`  
+        UPDATE products  
+        SET views = COALESCE(views, 0) + 1  
+        WHERE id = ?  
+      `)  
+        .bind(id)  
+        .run();  
+    } catch {}  
+
+    return json({  
+      product  
+    });  
+  }  
+
+  /* =====================================================  
+     GLOBAL SERVICES  
+     ===================================================== */  
+
+  if (  
+    path === "/api/services" &&  
+    method === "GET"  
+  ) {  
+    const search =  
+      normalize(  
+        url.searchParams.get("search")  
+      );  
+
+    const category =  
+      url.searchParams.get("category") || "";  
+
+    const country =  
+      url.searchParams.get("country") || "";  
+
+    const city =  
+      url.searchParams.get("city") ||  
+      url.searchParams.get("district") ||  
+      "";  
+
+    const provider =  
+      url.searchParams.get("provider") ||  
+      url.searchParams.get("seller") ||  
+      "";  
+
+    const online =  
+      normalize(  
+        url.searchParams.get("online")  
+      );  
+
+    const limit =  
+      limitValue(  
+        url.searchParams.get("limit")  
+      );  
+
+    const conditions = [  
+      "p.status = 'active'",  
+      "u.is_active = 1"  
+    ];  
+
+    const params = [];  
+
+    if (country) {  
+      conditions.push(  
+        "p.country LIKE ?"  
+      );  
+
+      params.push(  
+        `%${country}%`  
+      );  
+    }  
+
+    if (city) {  
+      conditions.push(  
+        "p.district LIKE ?"  
+      );  
+
+      params.push(  
+        `%${city}%`  
+      );  
+    }  
+
+    if (provider) {  
+      conditions.push(  
+        "u.name LIKE ?"  
+      );  
+
+      params.push(  
+        `%${provider}%`  
+      );  
+    }  
+
+    /*  
+      IMPORTANT:  
+      Search is performed against all major product fields.  
+      This supports searches such as:  
+      engineer  
+      photographer  
+      lawyer  
+      teacher  
+      web developer  
+      business consultant  
+      driver  
+      filmmaker  
+      etc.  
+    */  
+
+    if (search) {  
+      conditions.push(`  
+        (  
+          p.title LIKE ?  
+          OR p.description LIKE ?  
+          OR p.category LIKE ?  
+          OR p.specs LIKE ?  
+          OR p.brand LIKE ?  
+          OR p.model LIKE ?  
+          OR u.name LIKE ?  
+        )  
+      `);  
+
+      const q = `%${search}%`;  
+
+      params.push(  
+        q,q,q,q,q,q,q  
+      );  
+    }  
+
+    /*  
+      Retrieve a larger global pool before JavaScript  
+      service classification.  
+    */  
+
+    const result =  
+      await env.DB.prepare(`  
+        SELECT  
+          p.*,  
+          u.name AS seller_name,  
+          u.email AS seller_email,  
+          u.country AS seller_country,  
+          u.is_verified AS seller_verified  
+        FROM products p  
+        LEFT JOIN users u  
+          ON u.id = p.seller_id  
+        WHERE ${conditions.join(" AND ")}  
+        ORDER BY p.created_at DESC  
+        LIMIT 500  
+      `)  
+        .bind(...params)  
+        .all();  
+
+    let services =  
+      (result.results || [])  
+        .filter(isServiceProduct)  
+        .filter(product =>  
+          serviceCategoryMatch(  
+            product,  
+            category  
+          )  
+        );  
+
+    if (online === "true") {  
+      services =  
+        services.filter(product => {  
+          const text =  
+            productText(product);  
+
+          return (  
+            text.includes("online") ||  
+            text.includes("remote") ||  
+            text.includes("virtual")  
+          );  
+        });  
+    }  
+
+    services =  
+      services.slice(0, limit);  
+
+    return json({  
+      ok: true,  
+      services,  
+      count: services.length,  
+      country:  
+        country || "All countries",  
+      city:  
+        city || "All cities",  
+      category:  
+        category || "All services",  
+      provider:  
+        provider || "All providers",  
+      global: true,  
+      countries: COUNTRIES.length  
+    });  
+  }  
+
+  /* =====================================================  
+     REGISTER  
+     ===================================================== */  
+
+  if (  
+    path === "/api/register" &&  
+    method === "POST"  
+  ) {  
+    const body =  
+      await readJSON(request);  
+
+    const name =  
+      String(body.name || "").trim();  
+
+    const email =  
+      String(body.email || "")  
+        .trim()  
+        .toLowerCase();  
+
+    const password =  
+      String(body.password || "");  
+
+    const country =  
+      String(  
+        body.country || "Rwanda"  
+      ).trim();  
+
+    if (!name || !email || !password) {  
+      return json({  
+        error:  
+          "Name, email and password are required."  
+      }, 400);  
+    }  
+
+    if (password.length < 6) {  
+      return json({  
+        error:  
+          "Password must be at least 6 characters."  
+      }, 400);  
+    }  
+
+    const existing =  
+      await env.DB.prepare(`  
+        SELECT id  
+        FROM users  
+        WHERE email = ?  
+        LIMIT 1  
+      `)  
+        .bind(email)  
+        .first();  
+
+    if (existing) {  
+      return json({  
+        error:  
+          "Email already registered."  
+      }, 409);  
+    }  
+
+    const passwordHash =  
+      await sha256(password);  
+
+    const result =  
+      await env.DB.prepare(`  
+        INSERT INTO users  
+        (  
+          name,  
+          email,  
+          password_hash,  
+          country,  
+          role,  
+          is_active,  
+          is_verified  
+        )  
+        VALUES  
+        (?, ?, ?, ?, 'buyer', 1, 0)  
+      `)  
+        .bind(  
+          name,  
+          email,  
+          passwordHash,  
+          country  
+        )  
+        .run();  
+
+    return json({  
+      ok: true,  
+      user_id:  
+        result.meta.last_row_id  
+    }, 201);  
+  }  
+
+  /* =====================================================  
+     LOGIN  
+     ===================================================== */  
+
+  if (  
+    path === "/api/login" &&  
+    method === "POST"  
+  ) {  
+    const body =  
+      await readJSON(request);  
+
+    const email =  
+      String(body.email || "")  
+        .trim()  
+        .toLowerCase();  
+
+    const password =  
+      String(body.password || "");  
+
+    if (!email || !password) {  
+      return json({  
+        error:  
+          "Email and password are required."  
+      }, 400);  
+    }  
+
+    const user =  
+      await env.DB.prepare(`  
+        SELECT *  
+        FROM users  
+        WHERE email = ?  
+        LIMIT 1  
+      `)  
+        .bind(email)  
+        .first();  
+
+    if (!user) {  
+      return json({  
+        error:  
+          "Invalid email or password."  
+      }, 401);  
+    }  
+
+    if (!user.is_active) {  
+      return json({  
+        error:  
+          "This account is inactive."  
+      }, 403);  
+    }  
+
+    const passwordHash =  
+      await sha256(password);  
+
+    if (  
+      passwordHash !==  
+      user.password_hash  
+    ) {  
+      return json({  
+        error:  
+          "Invalid email or password."  
+      }, 401);  
+    }  
+
+    const rawToken =  
+      crypto.randomUUID() +  
+      "-" +  
+      crypto.randomUUID();  
+
+    const tokenHash =  
+      await sha256(rawToken);  
+
+    const expiresAt =  
+      new Date(  
+        Date.now() +  
+        30 * 24 * 60 * 60 * 1000  
+      ).toISOString();  
+
+    await env.DB.prepare(`  
+      INSERT INTO sessions  
+      (  
+        user_id,  
+        token_hash,  
+        expires_at  
+      )  
+      VALUES (?, ?, ?)  
+    `)  
+      .bind(  
+        user.id,  
+        tokenHash,  
+        expiresAt  
+      )  
+      .run();  
+
+    return json({  
+      ok: true,  
+      token: rawToken,  
+      user: safeUser(user)  
+    });  
+  }  
+
+  /* =====================================================  
+     ME  
+     ===================================================== */  
+
+  if (  
+    path === "/api/me" &&  
+    method === "GET"  
+  ) {  
+    const user =  
+      await requireUser(  
+        request,  
+        env  
+      );  
+
+    return json({  
+      user: safeUser(user)  
+    });  
+  }  
+
+  if (  
+    path === "/api/me" &&  
+    method === "PATCH"  
+  ) {  
+    const user =  
+      await requireUser(  
+        request,  
+        env  
+      );  
+
+    const body =  
+      await readJSON(request);  
+
+    const name =  
+      body.name !== undefined  
+        ? String(body.name).trim()  
+        : user.name;  
+
+    const country =  
+      body.country !== undefined  
+        ? String(body.country).trim()  
+        : user.country;  
+
+    await env.DB.prepare(`  
+      UPDATE users  
+      SET  
+        name = ?,  
+        country = ?  
+      WHERE id = ?  
+    `)  
+      .bind(  
+        name,  
+        country,  
+        user.user_id  
+      )  
+      .run();  
+
+    const updated =  
+      await env.DB.prepare(`  
+        SELECT *  
+        FROM users  
+        WHERE id = ?  
+        LIMIT 1  
+      `)  
+        .bind(user.user_id)  
+        .first();  
+
+    return json({  
+      ok: true,  
+      user: safeUser(updated)  
+    });  
+  }  
+
+  /* =====================================================  
+     LOGOUT  
+     ===================================================== */  
+
+  if (  
+    path === "/api/logout" &&  
+    method === "POST"  
+  ) {  
+    const token =  
+      tokenFromRequest(request);  
+
+    if (token) {  
+      const hash =  
+        await sha256(token);  
+
+      await env.DB.prepare(`  
+        DELETE FROM sessions  
+        WHERE token_hash = ?  
+      `)  
+        .bind(hash)  
+        .run();  
+    }  
+
+    return json({  
+      ok: true  
+    });  
+  }  
+
+  /* =====================================================  
+     CREATE PRODUCT / SERVICE  
+     ===================================================== */  
+
+  if (  
+    path === "/api/products" &&  
+    method === "POST"  
+  ) {  
+    const user =  
+      await requireUser(  
+        request,  
+        env  
+      );  
+
+    const body =  
+      await readJSON(request);  
+
+    const title =  
+      String(  
+        body.title || ""  
+      ).trim();  
+
+    const category =  
+      String(  
+        body.category || "Other"  
+      ).trim();  
+
+    const description =  
+      String(  
+        body.description || ""  
+      ).trim();  
+
+    const price =  
+      number(body.price, 0);  
+
+    const currency =  
+      String(  
+        body.currency || "RWF"  
+      ).trim();  
+
+    const stock =  
+      Math.max(  
+        0,  
+        Math.floor(  
+          number(body.stock, 1)  
+        )  
+      );  
+
+    const country =  
+      String(  
+        body.country ||  
+        user.country ||  
+        "Rwanda"  
+      ).trim();  
+
+    const district =  
+      String(  
+        body.district ||  
+        body.city ||  
+        ""  
+      ).trim();  
+
+    const brand =  
+      String(  
+        body.brand || ""  
+      ).trim();  
+
+    const model =  
+      String(  
+        body.model || ""  
+      ).trim();  
+
+    const storage =  
+      String(  
+        body.storage || ""  
+      ).trim();  
+
+    const ram =  
+      String(  
+        body.ram || ""  
+      ).trim();  
+
+    const imageUrl =  
+      String(  
+        body.image_url || ""  
+      ).trim();  
+
+    const specs =  
+      String(  
+        body.specs || ""  
+      ).trim();  
+
+    const negotiable =  
+      body.negotiable ? 1 : 0;  
+
+    const condition =  
+      String(  
+        body.condition || "new"  
+      ).trim();  
+
+    if (!title) {  
+      return json({  
+        error:  
+          "Title is required."  
+      }, 400);  
+    }  
+
+    const validConditions = [  
+      "new",  
+      "used",  
+      "has crack",  
+      "refurbished"  
+    ];  
+
+    const safeCondition =  
+      validConditions.includes(  
+        condition  
+      )  
+        ? condition  
+        : "new";  
+
+    const result =  
+      await env.DB.prepare(`  
+        INSERT INTO products  
+        (  
+          seller_id,  
+          title,  
+          category,  
+          description,  
+          price,  
+          currency,  
+          stock,  
+          brand,  
+          model,  
+          condition,  
+          country,  
+          district,  
+          storage,  
+          ram,  
+          image_url,  
+          specs,  
+          negotiable,  
+          status,  
+          views  
+        )  
+        VALUES  
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', 0)  
+      `)  
+        .bind(  
+          user.user_id,  
+          title,  
+          category,  
+          description,  
+          price,  
+          currency,  
+          stock,  
+          brand,  
+          model,  
+          safeCondition,  
+          country,  
+          district,  
+          storage,  
+          ram,  
+          imageUrl,  
+          specs,  
+          negotiable  
+        )  
+        .run();  
+
+    return json({  
+      ok: true,  
+      product_id:  
+        result.meta.last_row_id  
+    }, 201);  
+  }  
+
+  /* =====================================================  
+     UPDATE PRODUCT  
+     ===================================================== */  
+
+  if (  
+    productMatch &&  
+    method === "PUT"  
+  ) {  
+    const user =  
+      await requireUser(  
+        request,  
+        env  
+      );  
+
+    const id =  
+      productMatch[1];  
+
+    const product =  
+      await env.DB.prepare(`  
+        SELECT *  
+        FROM products  
+        WHERE id = ?  
+        LIMIT 1  
+      `)  
+        .bind(id)  
+        .first();  
+
+    if (!product) {  
+      return json({  
+        error:  
+          "Product not found."  
+      }, 404);  
+    }  
+
+    if (  
+      String(product.seller_id) !==  
+        String(user.user_id) &&  
+      user.role !== "admin"  
+    ) {  
+      return json({  
+        error:  
+          "Not allowed."  
+      }, 403);  
+    }  
+
+    const body =  
+      await readJSON(request);  
+
+    const fields = [  
+      "title",  
+      "category",  
+      "description",  
+      "price",  
+      "currency",  
+      "stock",  
+      "brand",  
+      "model",  
+      "condition",  
+      "country",  
+      "district",  
+      "storage",  
+      "ram",  
+      "image_url",  
+      "specs",  
+      "negotiable",  
+      "status"  
+    ];  
+
+    const updates = [];  
+    const values = [];  
+
+    for (const field of fields) {  
+      if (body[field] !== undefined) {  
+        updates.push(  
+          `${field} = ?`  
+        );  
+
+        values.push(  
+          body[field]  
+        );  
+      }  
+    }  
+
+    if (!updates.length) {  
+      return json({  
+        error:  
+          "No changes supplied."  
+      }, 400);  
+    }  
+
+    values.push(id);  
+
+    await env.DB.prepare(`  
+      UPDATE products  
+      SET ${updates.join(", ")}  
+      WHERE id = ?  
+    `)  
+      .bind(...values)  
+      .run();  
+
+    return json({  
+      ok: true  
+    });  
+  }  
+
+  /* =====================================================  
+     DELETE PRODUCT  
+     ===================================================== */  
+
+  if (  
+    productMatch &&  
+    method === "DELETE"  
+  ) {  
+    const user =  
+      await requireUser(  
+        request,  
+        env  
+      );  
+
+    const id =  
+      productMatch[1];  
+
+    const product =  
+      await env.DB.prepare(`  
+        SELECT *  
+        FROM products  
+        WHERE id = ?  
+        LIMIT 1  
+      `)  
+        .bind(id)  
+        .first();  
+
+    if (!product) {  
+      return json({  
+        error:  
+          "Product not found."  
+      }, 404);  
+    }  
+
+    if (  
+      String(product.seller_id) !==  
+        String(user.user_id) &&  
+      user.role !== "admin"  
+    ) {  
+      return json({  
+        error:  
+          "Not allowed."  
+      }, 403);  
+    }  
+
+    await env.DB.prepare(`  
+      DELETE FROM products  
+      WHERE id = ?  
+    `)  
+      .bind(id)  
+      .run();  
+
+    return json({  
+      ok: true  
+    });  
+  }  
+
+  /* =====================================================  
+     SAVED  
+     ===================================================== */  
+
+  if (  
+    path === "/api/saved" &&  
+    method === "GET"  
+  ) {  
+    const user =  
+      await requireUser(  
+        request,  
+        env  
+      );  
+
+    const result =  
+      await env.DB.prepare(`  
+        SELECT  
+          sp.*,  
+          p.title,  
+          p.price,  
+          p.currency,  
+          p.image_url,  
+          p.country,  
+          p.district,  
+          p.status  
+        FROM saved_products sp  
+        JOIN products p  
+          ON p.id = sp.product_id  
+        WHERE sp.user_id = ?  
+        ORDER BY sp.created_at DESC  
+      `)  
+        .bind(user.user_id)  
+        .all();  
+
+    return json({  
+      saved:  
+        result.results || []  
+    });  
+  }  
+
+  if (  
+    path === "/api/saved" &&  
+    method === "POST"  
+  ) {  
+    const user =  
+      await requireUser(  
+        request,  
+        env  
+      );  
+
+    const body =  
+      await readJSON(request);  
+
+    const productId =  
+      number(  
+        body.product_id,  
+        0  
+      );  
+
+    if (!productId) {  
+      return json({  
+        error:  
+          "product_id is required."  
+      }, 400);  
+    }  
+
+    await env.DB.prepare(`  
+      INSERT OR IGNORE INTO saved_products  
+      (  
+        user_id,  
+        product_id  
+      )  
+      VALUES (?, ?)  
+    `)  
+      .bind(  
+        user.user_id,  
+        productId  
+      )  
+      .run();  
+
+    return json({  
+      ok: true  
+    });  
+  }  
+
+  const savedMatch =  
+    path.match(  
+      /^\/api\/saved\/(\d+)$/  
+    );  
+
+  if (  
+    savedMatch &&  
+    method === "DELETE"  
+  ) {  
+    const user =  
+      await requireUser(  
+        request,  
+        env  
+      );  
+
+    await env.DB.prepare(`  
+      DELETE FROM saved_products  
+      WHERE user_id = ?  
+        AND product_id = ?  
+    `)  
+      .bind(  
+        user.user_id,  
+        savedMatch[1]  
+      )  
+      .run();  
+
+    return json({  
+      ok: true  
+    });  
+  }  
+
+  /* =====================================================  
+     ORDERS  
+     ===================================================== */  
+
+  if (  
+    path === "/api/orders" &&  
+    method === "GET"  
+  ) {  
+    const user =  
+      await requireUser(  
+        request,  
+        env  
+      );  
+
+    const result =  
+      await env.DB.prepare(`  
+        SELECT  
+          o.*,  
+          p.title,  
+          p.image_url,  
+          p.currency,  
+          buyer.name AS buyer_name,  
+          buyer.email AS buyer_email,  
+          seller.name AS seller_name,  
+          seller.email AS seller_email  
+        FROM orders o  
+        JOIN products p  
+          ON p.id = o.product_id  
+        JOIN users buyer  
+          ON buyer.id = o.buyer_id  
+        JOIN users seller  
+          ON seller.id = p.seller_id  
+        WHERE  
+          o.buyer_id = ?  
+          OR p.seller_id = ?  
+        ORDER BY o.created_at DESC  
+      `)  
+        .bind(  
+          user.user_id,  
+          user.user_id  
+        )  
+        .all();  
+
+    return json({  
+      orders:  
+        result.results || []  
+    });  
+  }  
+
+  if (  
+    path === "/api/orders" &&  
+    method === "POST"  
+  ) {  
+    const user =  
+      await requireUser(  
+        request,  
+        env  
+      );  
+
+    const body =  
+      await readJSON(request);  
+
+    const productId =  
+      number(  
+        body.product_id,  
+        0  
+      );  
+
+    const quantity =  
+      Math.max(  
+        1,  
+        Math.floor(  
+          number(  
+            body.quantity,  
+            1  
+          )  
+        )  
+      );  
+
+    if (!productId) {  
+      return json({  
+        error:  
+          "product_id is required."  
+      }, 400);  
+    }  
+
+    const product =  
+      await env.DB.prepare(`  
+        SELECT *  
+        FROM products  
+        WHERE id = ?  
+          AND status = 'active'  
+        LIMIT 1  
+      `)  
+        .bind(productId)  
+        .first();  
+
+    if (!product) {  
+      return json({  
+        error:  
+          "Product not found or inactive."  
+      }, 404);  
+    }  
+
+    if (  
+      String(product.seller_id) ===  
+      String(user.user_id)  
+    ) {  
+      return json({  
+        error:  
+          "You cannot order your own product."  
+      }, 400);  
+    }  
+
+    if (  
+      number(product.stock) <  
+      quantity  
+    ) {  
+      return json({  
+        error:  
+          "Insufficient stock."  
+      }, 400);  
+    }  
+
+    const total =  
+      number(product.price) *  
+      quantity;  
+
+    const commission =  
+      total *  
+      COMMISSION_RATE;  
+
+    const result =  
+      await env.DB.prepare(`  
+        INSERT INTO orders  
+        (  
+          buyer_id,  
+          product_id,  
+          quantity,  
+          unit_price,  
+          total_amount,  
+          commission_amount,  
+          status,  
+          payment_status  
+        )  
+        VALUES  
+        (?, ?, ?, ?, ?, ?, 'pending', 'unpaid')  
+      `)  
+        .bind(  
+          user.user_id,  
+          productId,  
+          quantity,  
+          product.price,  
+          total,  
+          commission  
+        )  
+        .run();  
+
+    await env.DB.prepare(`  
+      UPDATE products  
+      SET stock = stock - ?  
+      WHERE id = ?  
+    `)  
+      .bind(  
+        quantity,  
+        productId  
+      )  
+      .run();  
+
+    return json({  
+      ok: true,  
+      order_id:  
+        result.meta.last_row_id,  
+      total_amount: total,  
+      commission_amount:  
+        commission  
+    }, 201);  
+  }  
+
+  /* =====================================================  
+     MESSAGES  
+     ===================================================== */  
+
+  if (  
+    path === "/api/messages" &&  
+    method === "GET"  
+  ) {  
+    const user =  
+      await requireUser(  
+        request,  
+        env  
+      );  
+
+    const result =  
+      await env.DB.prepare(`  
+        SELECT  
+          m.*,  
+          sender.name AS sender_name,  
+          receiver.name AS receiver_name  
+        FROM messages m  
+        JOIN users sender  
+          ON sender.id = m.sender_id  
+        JOIN users receiver  
+          ON receiver.id = m.receiver_id  
+        WHERE  
+          m.sender_id = ?  
+          OR m.receiver_id = ?  
+        ORDER BY m.created_at ASC  
+      `)  
+        .bind(  
+          user.user_id,  
+          user.user_id  
+        )  
+        .all();  
+
+    return json({  
+      messages:  
+        result.results || []  
+    });  
+  }  
+
+  if (  
+    path === "/api/messages" &&  
+    method === "POST"  
+  ) {  
+    const user =  
+      await requireUser(  
+        request,  
+        env  
+      );  
+
+    const body =  
+      await readJSON(request);  
+
+    const receiverId =  
+      number(  
+        body.receiver_id,  
+        0  
+      );  
+
+    const message =  
+      String(  
+        body.message || ""  
+      ).trim();  
+
+    if (  
+      !receiverId ||  
+      !message  
+    ) {  
+      return json({  
+        error:  
+          "receiver_id and message are required."  
+      }, 400);  
+    }  
+
+    const result =  
+      await env.DB.prepare(`  
+        INSERT INTO messages  
+        (  
+          sender_id,  
+          receiver_id,  
+          message  
+        )  
+        VALUES (?, ?, ?)  
+      `)  
+        .bind(  
+          user.user_id,  
+          receiverId,  
+          message  
+        )  
+        .run();  
+
+    return json({  
+      ok: true,  
+      message_id:  
+        result.meta.last_row_id  
+    }, 201);  
+  }  
+
+  /* =====================================================  
+     SELLER PRODUCTS  
+     ===================================================== */  
+
+  if (  
+    path === "/api/seller/products" &&  
+    method === "GET"  
+  ) {  
+    const user =  
+      await requireUser(  
+        request,  
+        env  
+      );  
+
+    const result =  
+      await env.DB.prepare(`  
+        SELECT *  
+        FROM products  
+        WHERE seller_id = ?  
+        ORDER BY created_at DESC  
+      `)  
+        .bind(user.user_id)  
+        .all();  
+
+    return json({  
+      products:  
+        result.results || []  
+    });  
+  }  
+
+  /* =====================================================  
+     SELLER STATS  
+     ===================================================== */  
+
+  if (  
+    path === "/api/seller/stats" &&  
+    method === "GET"  
+  ) {  
+    const user =  
+      await requireUser(  
+        request,  
+        env  
+      );  
+
+    const products =  
+      await env.DB.prepare(`  
+        SELECT COUNT(*) AS count  
+        FROM products  
+        WHERE seller_id = ?  
+      `)  
+        .bind(user.user_id)  
+        .first();  
+
+    const orders =  
+      await env.DB.prepare(`  
+        SELECT COUNT(*) AS count  
+        FROM orders o  
+        JOIN products p  
+          ON p.id = o.product_id  
+        WHERE p.seller_id = ?  
+      `)  
+        .bind(user.user_id)  
+        .first();  
+
+    const sales =  
+      await env.DB.prepare(`  
+        SELECT  
+          COALESCE(  
+            SUM(o.total_amount),  
+            0  
+          ) AS total  
+        FROM orders o  
+        JOIN products p  
+          ON p.id = o.product_id  
+        WHERE  
+          p.seller_id = ?  
+          AND o.payment_status = 'paid'  
+      `)  
+        .bind(user.user_id)  
+        .first();  
+
+    return json({  
+      products:  
+        number(products?.count),  
+      orders:  
+        number(orders?.count),  
+      sales:  
+        number(sales?.total)  
+    });  
+  }  
+
+  /* =====================================================  
+     ADMIN STATS  
+     ===================================================== */  
+
+  if (  
+    path === "/api/admin/stats" &&  
+    method === "GET"  
+  ) {  
+    await requireAdmin(  
+      request,  
+      env  
+    );  
+
+    const users =  
+      await env.DB.prepare(`  
+        SELECT COUNT(*) AS count  
+        FROM users  
+      `).first();  
+
+    const sellers =  
+      await env.DB.prepare(`  
+        SELECT  
+          COUNT(DISTINCT seller_id) AS count  
+        FROM products  
+        WHERE seller_id IS NOT NULL  
+      `).first();  
+
+    const products =  
+      await env.DB.prepare(`  
+        SELECT COUNT(*) AS count  
+        FROM products  
+      `).first();  
+
+    const serviceRows =  
+      await env.DB.prepare(`  
+        SELECT  
+          id,  
+          title,  
+          description,  
+          category,  
+          specs,  
+          brand,  
+          model  
+        FROM products  
+        WHERE status = 'active'  
+        LIMIT 2000  
+      `).all();  
+
+    const serviceCount =  
+      (serviceRows.results || [])  
+        .filter(isServiceProduct)  
+        .length;  
+
+    const orders =  
+      await env.DB.prepare(`  
+        SELECT COUNT(*) AS count  
+        FROM orders  
+      `).first();  
+
+    const pendingOrders =  
+      await env.DB.prepare(`  
+        SELECT COUNT(*) AS count  
+        FROM orders  
+        WHERE status = 'pending'  
+      `).first();  
+
+    const paid =  
+      await env.DB.prepare(`  
+        SELECT  
+          COALESCE(  
+            SUM(total_amount),  
+            0  
+          ) AS total,  
+          COALESCE(  
+            SUM(commission_amount),  
+            0  
+          ) AS commission  
+        FROM orders  
+        WHERE payment_status = 'paid'  
+      `).first();  
+
+    const categories =  
+      await env.DB.prepare(`  
+        SELECT COUNT(*) AS count  
+        FROM categories  
+        WHERE is_active = 1  
+      `).first();  
+
+    const messages =  
+      await env.DB.prepare(`  
+        SELECT COUNT(*) AS count  
+        FROM messages  
+      `).first();  
+
+    return json({  
+      users:  
+        number(users?.count),  
+
+      sellers:  
+        number(sellers?.count),  
+
+      products:  
+        number(products?.count),  
+
+      services:  
+        serviceCount,  
+
+      orders:  
+        number(orders?.count),  
+
+      pending_orders:  
+        number(  
+          pendingOrders?.count  
+        ),  
+
+      paid_amount:  
+        number(  
+          paid?.total  
+        ),  
+
+      commission:  
+        number(  
+          paid?.commission  
+        ),  
+
+      categories:  
+        number(  
+          categories?.count  
+        ),  
+
+      messages:  
+        number(  
+          messages?.count  
+        ),  
+
+      countries:  
+        COUNTRIES.length  
+    });  
+  }  
+
+  /* =====================================================  
+     ADMIN USERS  
+     ===================================================== */  
+
+  if (  
+    path === "/api/admin/users" &&  
+    method === "GET"  
+  ) {  
+    await requireAdmin(  
+      request,  
+      env  
+    );  
+
+    const result =  
+      await env.DB.prepare(`  
+        SELECT  
+          id,  
+          name,  
+          email,  
+          country,  
+          role,  
+          is_active,  
+          is_verified,  
+          created_at  
+        FROM users  
+        ORDER BY created_at DESC  
+      `).all();  
+
+    return json({  
+      users:  
+        result.results || []  
+    });  
+  }  
+
+  /* =====================================================  
+     ADMIN SELLERS  
+     ===================================================== */  
+
+  if (  
+    path === "/api/admin/sellers" &&  
+    method === "GET"  
+  ) {  
+    await requireAdmin(  
+      request,  
+      env  
+    );  
+
+    const result =  
+      await env.DB.prepare(`  
+        SELECT  
+          u.id,  
+          u.name,  
+          u.email,  
+          u.country,  
+          u.is_active,  
+          u.is_verified,  
+          COUNT(DISTINCT p.id)  
+            AS product_count,  
+          COUNT(DISTINCT o.id)  
+            AS order_count,  
+          COALESCE(  
+            SUM(  
+              CASE  
+                WHEN o.payment_status = 'paid'  
+                THEN o.total_amount  
+                ELSE 0  
+              END  
+            ),  
+            0  
+          ) AS paid_sales  
+        FROM users u  
+        JOIN products p  
+          ON p.seller_id = u.id  
+        LEFT JOIN orders o  
+          ON o.product_id = p.id  
+        GROUP BY u.id  
+        ORDER BY product_count DESC  
+      `).all();  
+
+    return json({  
+      sellers:  
+        result.results || []  
+    });  
+  }  
+
+  /* =====================================================  
+     ADMIN PRODUCTS  
+     ===================================================== */  
+
+  if (  
+    path === "/api/admin/products" &&  
+    method === "GET"  
+  ) {  
+    await requireAdmin(  
+      request,  
+      env  
+    );  
+
+    const result =  
+      await env.DB.prepare(`  
+        SELECT  
+          p.*,  
+          u.name AS seller_name,  
+          u.email AS seller_email  
+        FROM products p  
+        LEFT JOIN users u  
+          ON u.id = p.seller_id  
+        ORDER BY p.created_at DESC  
+      `).all();  
+
+    return json({  
+      products:  
+        result.results || []  
+    });  
+  }  
+
+  /* =====================================================  
+     ADMIN ORDERS  
+     ===================================================== */  
+
+  if (  
+    path === "/api/admin/orders" &&  
+    method === "GET"  
+  ) {  
+    await requireAdmin(  
+      request,  
+      env  
+    );  
+
+    const result =  
+      await env.DB.prepare(`  
+        SELECT  
+          o.*,  
+          p.title,  
+          buyer.name AS buyer_name,  
+          buyer.email AS buyer_email,  
+          seller.name AS seller_name,  
+          seller.email AS seller_email  
+        FROM orders o  
+        JOIN products p  
+          ON p.id = o.product_id  
+        JOIN users buyer  
+          ON buyer.id = o.buyer_id  
+        JOIN users seller  
+          ON seller.id = p.seller_id  
+        ORDER BY o.created_at DESC  
+      `).all();  
+
+    return json({  
+      orders:  
+        result.results || []  
+    });  
+  }  
+
+  /* =====================================================  
+     ADMIN PAYMENTS  
+     ===================================================== */  
+
+  if (  
+    path === "/api/admin/payments" &&  
+    method === "GET"  
+  ) {  
+    await requireAdmin(  
+      request,  
+      env  
+    );  
+
+    const rows =  
+      await env.DB.prepare(`  
+        SELECT  
+          o.id,  
+          o.product_id,  
+          o.buyer_id,  
+          o.quantity,  
+          o.unit_price,  
+          o.total_amount,  
+          o.commission_amount,  
+          o.status,  
+          o.payment_status,  
+          o.created_at,  
+          p.title,  
+          buyer.name AS buyer_name,  
+          seller.name AS seller_name  
+        FROM orders o  
+        JOIN products p  
+          ON p.id = o.product_id  
+        JOIN users buyer  
+          ON buyer.id = o.buyer_id  
+        JOIN users seller  
+          ON seller.id = p.seller_id  
+        ORDER BY o.created_at DESC  
+      `).all();  
+
+    const summary =  
+      await env.DB.prepare(`  
+        SELECT  
+          COALESCE(  
+            SUM(  
+              CASE  
+                WHEN payment_status = 'paid'  
+                THEN total_amount  
+                ELSE 0  
+              END  
+            ),  
+            0  
+          ) AS paid_amount,  
+
+          COALESCE(  
+            SUM(  
+              CASE  
+                WHEN payment_status = 'paid'  
+                THEN commission_amount  
+                ELSE 0  
+              END  
+            ),  
+            0  
+          ) AS commission  
+        FROM orders  
+      `).first();  
+
+    return json({  
+      payments:  
+        rows.results || [],  
+
+      summary: {  
+        paid_amount:  
+          number(  
+            summary?.paid_amount  
+          ),  
+
+        commission:  
+          number(  
+            summary?.commission  
+          )  
+      }  
+    });  
+  }  
+
+  /* =====================================================  
+     ADMIN SERVICES  
+     ===================================================== */  
+
+  if (  
+    path === "/api/admin/services" &&  
+    method === "GET"  
+  ) {  
+    await requireAdmin(  
+      request,  
+      env  
+    );  
+
+    const search =  
+      normalize(  
+        url.searchParams.get(  
+          "search"  
+        )  
+      );  
+
+    const country =  
+      url.searchParams.get(  
+        "country"  
+      ) || "";  
+
+    const category =  
+      url.searchParams.get(  
+        "category"  
+      ) || "";  
+
+    const rows =  
+      await env.DB.prepare(`  
+        SELECT  
+          p.*,  
+          u.name AS seller_name,  
+          u.email AS seller_email,  
+          u.country AS seller_country,  
+          u.is_verified AS seller_verified  
+        FROM products p  
+        LEFT JOIN users u  
+          ON u.id = p.seller_id  
+        WHERE p.status = 'active'  
+        ORDER BY p.created_at DESC  
+        LIMIT 2000  
+      `).all();  
+
+    let services =  
+      (rows.results || [])  
+        .filter(isServiceProduct);  
+
+    if (search) {  
+      services =  
+        services.filter(product =>  
+          productText(product)  
+            .includes(search)  
+        );  
+    }  
+
+    if (country) {  
+      services =  
+        services.filter(product =>  
+          normalize(  
+            product.country  
+          ).includes(  
+            normalize(country)  
+          )  
+        );  
+    }  
+
+    if (category) {  
+      services =  
+        services.filter(product =>  
+          serviceCategoryMatch(  
+            product,  
+            category  
+          )  
+        );  
+    }  
+
+    return json({  
+      services,  
+      count: services.length,  
+      categories:  
+        SERVICE_CATEGORIES,  
+      countries:  
+        COUNTRIES.length  
+    });  
+  }  
+
+  /* =====================================================  
+     ADMIN REPORTS  
+     ===================================================== */  
+
+  if (  
+    path === "/api/admin/reports" &&  
+    method === "GET"  
+  ) {  
+    await requireAdmin(  
+      request,  
+      env  
+    );  
+
+    const usersByCountry =  
+      await env.DB.prepare(`  
+        SELECT  
+          country,  
+          COUNT(*) AS count  
+        FROM users  
+        GROUP BY country  
+        ORDER BY count DESC  
+      `).all();  
+
+    const productsByCategory =  
+      await env.DB.prepare(`  
+        SELECT  
+          category,  
+          COUNT(*) AS count  
+        FROM products  
+        GROUP BY category  
+        ORDER BY count DESC  
+      `).all();  
+
+    const orderStatuses =  
+      await env.DB.prepare(`  
+        SELECT  
+          status,  
+          COUNT(*) AS count  
+        FROM orders  
+        GROUP BY status  
+      `).all();  
+
+    const paymentStatuses =  
+      await env.DB.prepare(`  
+        SELECT  
+          payment_status,  
+          COUNT(*) AS count  
+        FROM orders  
+        GROUP BY payment_status  
+      `).all();  
+
+    const topProducts =  
+      await env.DB.prepare(`  
+        SELECT  
+          p.id,  
+          p.title,  
+          p.views,  
+          COALESCE(  
+            SUM(o.quantity),  
+            0  
+          ) AS sold_quantity  
+        FROM products p  
+        LEFT JOIN orders o  
+          ON o.product_id = p.id  
+        GROUP BY p.id  
+        ORDER BY sold_quantity DESC  
+        LIMIT 20  
+      `).all();  
+
+    return json({  
+      users_by_country:  
+        usersByCountry.results || [],  
+
+      products_by_category:  
+        productsByCategory.results || [],  
+
+      order_statuses:  
+        orderStatuses.results || [],  
+
+      payment_statuses:  
+        paymentStatuses.results || [],  
+
+      top_products:  
+        topProducts.results || [],  
+
+      global_countries:  
+        COUNTRIES.length  
+    });  
+  }  
+
+  /* =====================================================  
+     ADMIN REVIEWS  
+     ===================================================== */  
+
+  if (  
+    path === "/api/admin/reviews" &&  
+    method === "GET"  
+  ) {  
+    await requireAdmin(  
+      request,  
+      env  
+    );  
+
+    return json({  
+      supported: false,  
+      reviews: [],  
+      message:  
+        "Reviews are prepared in the interface, but the locked schema.sql does not contain a reviews table."  
+    });  
+  }  
+
+  /* =====================================================  
+     ADMIN PROMOTIONS  
+     ===================================================== */  
+
+  if (  
+    path === "/api/admin/promotions" &&  
+    method === "GET"  
+  ) {  
+    await requireAdmin(  
+      request,  
+      env  
+    );  
+
+    return json({  
+      supported: false,  
+      promotions: [],  
+      message:  
+        "Promotions are prepared in the interface, but the locked schema.sql does not contain a promotions table."  
+    });  
+  }  
+
+  /* =====================================================  
+     ADMIN ADS  
+     ===================================================== */  
+
+  if (  
+    path === "/api/admin/ads" &&  
+    method === "GET"  
+  ) {  
+    await requireAdmin(  
+      request,  
+      env  
+    );  
+
+    return json({  
+      supported: false,  
+      ads: [],  
+      message:  
+        "Ads are prepared in the interface, but the locked schema.sql does not contain an ads table."  
+    });  
+  }  
+
+  /* =====================================================  
+     ADMIN CATEGORIES  
+     ===================================================== */  
+
+  if (  
+    path === "/api/admin/categories" &&  
+    method === "GET"  
+  ) {  
+    await requireAdmin(  
+      request,  
+      env  
+    );  
+
+    const result =  
+      await env.DB.prepare(`  
+        SELECT *  
+        FROM categories  
+        ORDER BY name ASC  
+      `).all();  
+
+    return json({  
+      categories:  
+        result.results || []  
+    });  
+  }  
+
+  if (  
+    path === "/api/admin/categories" &&  
+    method === "POST"  
+  ) {  
+    await requireAdmin(  
+      request,  
+      env  
+    );  
+
+    const body =  
+      await readJSON(request);  
+
+    const name =  
+      String(  
+        body.name || ""  
+      ).trim();  
+
+    if (!name) {  
+      return json({  
+        error:  
+          "Category name is required."  
+      }, 400);  
+    }  
+
+    const result =  
+      await env.DB.prepare(`  
+        INSERT INTO categories  
+        (  
+          name,  
+          is_active  
+        )  
+        VALUES (?, 1)  
+      `)  
+        .bind(name)  
+        .run();  
+
+    return json({  
+      ok: true,  
+      category_id:  
+        result.meta.last_row_id  
+    }, 201);  
+  }  
+
+  /* =====================================================  
+     ADMIN UPDATE ORDER  
+     ===================================================== */  
+
+  const adminOrderMatch =  
+    path.match(  
+      /^\/api\/admin\/orders\/(\d+)$/  
+    );  
+
+  if (  
+    adminOrderMatch &&  
+    method === "PATCH"  
+  ) {  
+    await requireAdmin(  
+      request,  
+      env  
+    );  
+
+    const id =  
+      adminOrderMatch[1];  
+
+    const body =  
+      await readJSON(request);  
+
+    const updates = [];  
+    const values = [];  
+
+    if (  
+      body.status !== undefined  
+    ) {  
+      updates.push(  
+        "status = ?"  
+      );  
+
+      values.push(  
+        String(body.status)  
+      );  
+    }  
+
+    if (  
+      body.payment_status !== undefined  
+    ) {  
+      updates.push(  
+        "payment_status = ?"  
+      );  
+
+      values.push(  
+        String(  
+          body.payment_status  
+        )  
+      );  
+    }  
+
+    if (!updates.length) {  
+      return json({  
+        error:  
+          "No changes supplied."  
+      }, 400);  
+    }  
+
+    values.push(id);  
+
+    await env.DB.prepare(`  
+      UPDATE orders  
+      SET ${updates.join(", ")}  
+      WHERE id = ?  
+    `)  
+      .bind(...values)  
+      .run();  
+
+    return json({  
+      ok: true  
+    });  
+  }  
+
+  /* =====================================================  
+     ADMIN UPDATE USER  
+     ===================================================== */  
+
+  const adminUserMatch =  
+    path.match(  
+      /^\/api\/admin\/users\/(\d+)$/  
+    );  
+
+  if (  
+    adminUserMatch &&  
+    method === "PATCH"  
+  ) {  
+    const admin =  
+      await requireAdmin(  
+        request,  
+        env  
+      );  
+
+    const id =  
+      adminUserMatch[1];  
+
+    const body =  
+      await readJSON(request);  
+
+    const updates = [];  
+    const values = [];  
+
+    if (  
+      body.role !== undefined  
+    ) {  
+      const role =  
+        String(body.role);  
+
+      if (  
+        ![  
+          "buyer",  
+          "seller",  
+          "admin"  
+        ].includes(role)  
+      ) {  
+        return json({  
+          error:  
+            "Invalid role."  
+        }, 400);  
+      }  
+
+      updates.push(  
+        "role = ?"  
+      );  
+
+      values.push(role);  
+    }  
+
+    if (  
+      body.is_active !== undefined  
+    ) {  
+      updates.push(  
+        "is_active = ?"  
+      );  
+
+      values.push(  
+        body.is_active ? 1 : 0  
+      );  
+    }  
+
+    if (  
+      body.is_verified !== undefined  
+    ) {  
+      updates.push(  
+        "is_verified = ?"  
+      );  
+
+      values.push(  
+        body.is_verified ? 1 : 0  
+      );  
+    }  
+
+    if (!updates.length) {  
+      return json({  
+        error:  
+          "No changes supplied."  
+      }, 400);  
+    }  
+
+    if (  
+      String(id) ===  
+        String(admin.user_id) &&  
+      body.is_active === false  
+    ) {  
+      return json({  
+        error:  
+          "You cannot deactivate your own admin account."  
+      }, 400);  
+    }  
+
+    values.push(id);  
+
+    await env.DB.prepare(`  
+      UPDATE users  
+      SET ${updates.join(", ")}  
+      WHERE id = ?  
+    `)  
+      .bind(...values)  
+      .run();  
+
+    return json({  
+      ok: true  
+    });  
+  }  
+
+  /* =====================================================  
+     ADMIN UPDATE PRODUCT  
+     ===================================================== */  
+
+  const adminProductMatch =  
+    path.match(  
+      /^\/api\/admin\/products\/(\d+)$/  
+    );  
+
+  if (  
+    adminProductMatch &&  
+    method === "PATCH"  
+  ) {  
+    await requireAdmin(  
+      request,  
+      env  
+    );  
+
+    const id =  
+      adminProductMatch[1];  
+
+    const body =  
+      await readJSON(request);  
+
+    if (  
+      body.status === undefined  
+    ) {  
+      return json({  
+        error:  
+          "status is required."  
+      }, 400);  
+    }  
+
+    await env.DB.prepare(`  
+      UPDATE products  
+      SET status = ?  
+      WHERE id = ?  
+    `)  
+      .bind(  
+        String(body.status),  
+        id  
+      )  
+      .run();  
+
+    return json({  
+      ok: true  
+    });  
+  }  
+
+  /* =====================================================  
+     GLOBAL SERVICE SEARCH  
+     ===================================================== */  
+
+  if (  
+    path === "/api/service-search" &&  
+    method === "GET"  
+  ) {  
+    const search =  
+      url.searchParams.get("q") ||  
+      url.searchParams.get("search") ||  
+      "";  
+
+    const country =  
+      url.searchParams.get(  
+        "country"  
+      ) || "";  
+
+    const city =  
+      url.searchParams.get(  
+        "city"  
+      ) ||  
+      url.searchParams.get(  
+        "district"  
+      ) ||  
+      "";  
+
+    const category =  
+      url.searchParams.get(  
+        "category"  
+      ) || "";  
+
+    const provider =  
+      url.searchParams.get(  
+        "provider"  
+      ) || "";  
+
+    const limit =  
+      limitValue(  
+        url.searchParams.get(  
+          "limit"  
+        )  
+      );  
+
+    const conditions = [  
+      "p.status = 'active'",  
+      "u.is_active = 1"  
+    ];  
+
+    const params = [];  
+
+    if (country) {  
+      conditions.push(  
+        "p.country LIKE ?"  
+      );  
+
+      params.push(  
+        `%${country}%`  
+      );  
+    }  
+
+    if (city) {  
+      conditions.push(  
+        "p.district LIKE ?"  
+      );  
+
+      params.push(  
+        `%${city}%`  
+      );  
+    }  
+
+    if (provider) {  
+      conditions.push(  
+        "u.name LIKE ?"  
+      );  
+
+      params.push(  
+        `%${provider}%`  
+      );  
+    }  
+
+    if (search) {  
+      conditions.push(`  
+        (  
+          p.title LIKE ?  
+          OR p.description LIKE ?  
+          OR p.category LIKE ?  
+          OR p.specs LIKE ?  
+          OR p.brand LIKE ?  
+          OR p.model LIKE ?  
+          OR u.name LIKE ?  
+        )  
+      `);  
+
+      const q =  
+        `%${search}%`;  
+
+      params.push(  
+        q,q,q,q,q,q,q  
+      );  
+    }  
+
+    const result =  
+      await env.DB.prepare(`  
+        SELECT  
+          p.*,  
+          u.name AS seller_name,  
+          u.email AS seller_email,  
+          u.country AS seller_country,  
+          u.is_verified AS seller_verified  
+        FROM products p  
+        LEFT JOIN users u  
+          ON u.id = p.seller_id  
+        WHERE ${conditions.join(" AND ")}  
+        ORDER BY p.created_at DESC  
+        LIMIT 500  
+      `)  
+        .bind(...params)  
+        .all();  
+
+    let services =  
+      (result.results || [])  
+        .filter(isServiceProduct)  
+        .filter(product =>  
+          serviceCategoryMatch(  
+            product,  
+            category  
+          )  
+        );  
+
+    services =  
+      services.slice(0, limit);  
+
+    return json({  
+      ok: true,  
+      services,  
+      count: services.length,  
+
+      query: {  
+        service:  
+          search,  
+
+        country:  
+          country ||  
+          "All countries",  
+
+        city:  
+          city ||  
+          "All cities",  
+
+        category:  
+          category ||  
+          "All service categories",  
+
+        provider:  
+          provider ||  
+          "All providers"  
+      },  
+
+      countries:  
+        COUNTRIES.length,  
+
+      global: true  
+    });  
+  }  
+
+  /* =====================================================  
+     FRONTEND ASSETS  
+     ===================================================== */  
+
+  if (env.ASSETS) {  
+    return env.ASSETS.fetch(request);  
+  }  
+
+  return json({  
+    error:  
+      "Not found"  
+  }, 404);  
+
+} catch (error) {  
+  console.error(  
+    "IsokoHub API error:",  
+    error  
+  );  
+
+  if (  
+    error?.message ===  
+    "UNAUTHORIZED"  
+  ) {  
+    return json({  
+      error:  
+        "Unauthorized"  
+    }, 401);  
+  }  
+
+  if (  
+    error?.message ===  
+    "ADMIN_ONLY"  
+  ) {  
+    return json({  
+      error:  
+        "Admin access required."  
+    }, 403);  
+  }  
+
+  return json({  
+    error:  
+      "Internal server error.",  
+    message:  
+      error?.message ||  
+      "Unknown error"  
+  }, 500);  
 }
 
-async function updateProfile(event){
-
-  event.preventDefault();
-
-  try{
-
-    const data =
-      await api("/me",{
-        method:"PATCH",
-        body:JSON.stringify({
-          name:$("profileName").value.trim(),
-          country:$("profileCountry").value
-        })
-      });
-
-    currentUser =
-      data.user;
-
-    showMessage(
-      "profileMessage",
-      "Profile updated.",
-      "success"
-    );
-
-    updateAuthUI();
-
-  }catch(error){
-
-    showMessage(
-      "profileMessage",
-      error.message,
-      "error"
-    );
-
-  }
-
 }
-
-/* =========================================================
-   SELLER DASHBOARD
-   ========================================================= */
-
-async function loadSellerDashboard(){
-
-  if(!currentUser){
-
-    $("sellerStats").innerHTML = "";
-
-    $("sellerProducts").innerHTML =
-      `<div class="empty">Login as a seller to view your products.</div>`;
-
-    return;
-  }
-
-  try{
-
-    const stats =
-      await api("/seller/stats");
-
-    $("sellerStats").innerHTML = `
-
-      <div class="stat">
-        Products
-        <strong>${Number(stats.products)}</strong>
-      </div>
-
-      <div class="stat">
-        Orders
-        <strong>${Number(stats.orders)}</strong>
-      </div>
-
-      <div class="stat">
-        Paid Sales
-        <strong>${Number(stats.sales).toLocaleString()}</strong>
-      </div>
-
-    `;
-
-    const data =
-      await api("/seller/products");
-
-    const products =
-      data.products || [];
-
-    if(!products.length){
-
-      $("sellerProducts").innerHTML =
-        `<div class="empty">You have not published products yet.</div>`;
-
-      return;
-
-    }
-
-    $("sellerProducts").innerHTML = `
-      <div class="tableWrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Category</th>
-              <th>Price</th>
-              <th>Stock</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            ${
-              products.map(p => `
-                <tr>
-                  <td>${escapeHTML(p.title)}</td>
-                  <td>${escapeHTML(p.category)}</td>
-                  <td>${money(p.price,p.currency)}</td>
-                  <td>${Number(p.stock)}</td>
-                  <td>${escapeHTML(p.status)}</td>
-                  <td>
-                    <button
-                      class="btn danger small"
-                      onclick="deleteProduct(${Number(p.id)})"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              `).join("")
-            }
-          </tbody>
-        </table>
-      </div>
-    `;
-
-  }catch(error){
-
-    $("sellerProducts").innerHTML =
-      `<div class="empty">${escapeHTML(error.message)}</div>`;
-
-  }
-
-}
-
-async function deleteProduct(id){
-
-  if(
-    !confirm(
-      "Delete this product?"
-    )
-  ){
-    return;
-  }
-
-  try{
-
-    await api(`/products/${id}`,{
-      method:"DELETE"
-    });
-
-    loadSellerDashboard();
-    loadProducts();
-
-  }catch(error){
-
-    alert(error.message);
-
-  }
-
-}
-
-/* =========================================================
-   AUTH UI
-   ========================================================= */
-
-function updateAuthUI(){
-
-  const area =
-    $("authArea");
-
-  if(!currentUser){
-
-    area.innerHTML = `
-      <button
-        class="btn secondary"
-        onclick="openModal('loginModal')"
-      >
-        Login
-      </button>
-
-      <button
-        class="btn"
-        onclick="openModal('registerModal')"
-      >
-        Register
-      </button>
-    `;
-
-    $("adminNav").classList.add("hidden");
-
-    return;
-  }
-
-  area.innerHTML = `
-
-    <span
-      style="align-self:center;font-weight:700"
-    >
-      👋 ${escapeHTML(currentUser.name)}
-    </span>
-
-    <button
-      class="btn secondary"
-      onclick="logout()"
-    >
-      Logout
-    </button>
-
-  `;
-
-  if(currentUser.role === "admin"){
-    $("adminNav").classList.remove("hidden");
-  }else{
-    $("adminNav").classList.add("hidden");
-  }
-
-}
-
-async function restoreSession(){
-
-  const token =
-    localStorage.getItem("isokohub_token");
-
-  if(!token){
-
-    updateAuthUI();
-    return;
-
-  }
-
-  try{
-
-    const data =
-      await api("/me");
-
-    currentUser =
-      data.user;
-
-    updateAuthUI();
-
-  }catch{
-
-    localStorage.removeItem("isokohub_token");
-
-    currentUser = null;
-
-    updateAuthUI();
-
-  }
-
-}
-
-/* =========================================================
-   REGISTER
-   ========================================================= */
-
-$("registerForm").addEventListener(
-  "submit",
-  async event => {
-
-    event.preventDefault();
-
-    const role =
-      $("registerRole").value;
-
-    try{
-
-      const result =
-        await api("/register",{
-          method:"POST",
-          body:JSON.stringify({
-
-            name:$("registerName").value.trim(),
-
-            email:$("registerEmail").value.trim(),
-
-            password:$("registerPassword").value,
-
-            country:$("registerCountry").value,
-
-            role
-
-          })
-        });
-
-      showMessage(
-        "registerMessage",
-        `Account created successfully. User ID: ${result.user_id}. You can now login.`,
-        "success"
-      );
-
-      $("registerForm").reset();
-
-      $("registerCountry").value =
-        "Rwanda";
-
-    }catch(error){
-
-      showMessage(
-        "registerMessage",
-        error.message,
-        "error"
-      );
-
-    }
-
-  }
-);
-
-/* =========================================================
-   LOGIN
-   ========================================================= */
-
-$("loginForm").addEventListener(
-  "submit",
-  async event => {
-
-    event.preventDefault();
-
-    try{
-
-      const data =
-        await api("/login",{
-          method:"POST",
-          body:JSON.stringify({
-
-            email:$("loginEmail").value.trim(),
-
-            password:$("loginPassword").value
-
-          })
-        });
-
-      localStorage.setItem(
-        "isokohub_token",
-        data.token
-      );
-
-      currentUser =
-        data.user;
-
-      updateAuthUI();
-
-      closeModal("loginModal");
-
-      showMessage(
-        "loginMessage",
-        "Login successful.",
-        "success"
-      );
-
-      loadSaved();
-      loadOrders();
-      loadMessages();
-      loadProfile();
-      loadSellerDashboard();
-
-      if(currentUser.role === "admin"){
-        loadAdminOverview();
-      }
-
-    }catch(error){
-
-      showMessage(
-        "loginMessage",
-        error.message,
-        "error"
-      );
-
-    }
-
-  }
-);
-
-/* =========================================================
-   LOGOUT
-   ========================================================= */
-
-async function logout(){
-
-  try{
-
-    await api("/logout",{
-      method:"POST"
-    });
-
-  }catch{}
-
-  localStorage.removeItem(
-    "isokohub_token"
-  );
-
-  currentUser = null;
-
-  updateAuthUI();
-
-  $("savedCount").textContent = "0";
-
-  alert("Logged out.");
-
-}
-
-/* =========================================================
-   MESSAGES SEND
-   ========================================================= */
-
-$("messageForm").addEventListener(
-  "submit",
-  async event => {
-
-    event.preventDefault();
-
-    if(!currentUser){
-
-      showMessage(
-        "messageFormResult",
-        "Please login first.",
-        "error"
-      );
-
-      return;
-
-    }
-
-    try{
-
-      await api("/messages",{
-        method:"POST",
-        body:JSON.stringify({
-
-          receiver_id:Number(
-            $("messageReceiver").value
-          ),
-
-          message:$("messageText").value.trim()
-
-        })
-      });
-
-      showMessage(
-        "messageFormResult",
-        "Message sent successfully.",
-        "success"
-      );
-
-      $("messageText").value = "";
-
-      loadMessages();
-
-    }catch(error){
-
-      showMessage(
-        "messageFormResult",
-        error.message,
-        "error"
-      );
-
-    }
-
-  }
-);
-
-/* =========================================================
-   ADMIN TABS
-   ========================================================= */
-
-function adminTab(tab){
-
-  if(
-    !currentUser ||
-    currentUser.role !== "admin"
-  ){
-    alert("Admin access required.");
-    return;
-  }
-
-  document
-    .querySelectorAll(".adminPanel")
-    .forEach(panel =>
-      panel.classList.remove("active")
-    );
-
-  document
-    .querySelectorAll(".adminTabs button")
-    .forEach(button =>
-      button.classList.remove("active")
-    );
-
-  const panel =
-    $(`admin-${tab}`);
-
-  const button =
-    document.querySelector(
-      `[data-admin-tab="${tab}"]`
-    );
-
-  panel?.classList.add("active");
-  button?.classList.add("active");
-
-  if(tab === "overview") loadAdminOverview();
-  if(tab === "users") loadAdminUsers();
-  if(tab === "sellers") loadAdminSellers();
-  if(tab === "products") loadAdminProducts();
-  if(tab === "orders") loadAdminOrders();
-  if(tab === "payments") loadAdminPayments();
-  if(tab === "categories") loadAdminCategories();
-  if(tab === "services") loadAdminServices();
-  if(tab === "reports") loadAdminReports();
-  if(tab === "reviews") loadAdminReviews();
-  if(tab === "promotions") loadAdminPromotions();
-  if(tab === "ads") loadAdminAds();
-
-}
-
-/* =========================================================
-   ADMIN OVERVIEW
-   ========================================================= */
-
-async function loadAdminOverview(){
-
-  if(
-    !currentUser ||
-    currentUser.role !== "admin"
-  ){
-    return;
-  }
-
-  try{
-
-    const data =
-      await api("/admin/stats");
-
-    const cards = [
-
-      ["Users",data.users],
-
-      ["Sellers",data.sellers],
-
-      ["Products",data.products],
-
-      ["Services",data.services],
-
-      ["Orders",data.orders],
-
-      ["Pending Orders",data.pending_orders],
-
-      ["Paid Amount",Number(data.paid_amount).toLocaleString()],
-
-      ["Commission",Number(data.commission).toLocaleString()],
-
-      ["Categories",data.categories],
-
-      ["Messages",data.messages],
-
-      ["Countries",data.countries]
-
-    ];
-
-    $("adminStats").innerHTML =
-      cards.map(item => `
-
-        <div class="stat">
-
-          ${escapeHTML(item[0])}
-
-          <strong>
-            ${escapeHTML(item[1])}
-          </strong>
-
-        </div>
-
-      `).join("");
-
-    loadConfig();
-
-  }catch(error){
-
-    $("adminStats").innerHTML =
-      `<div class="empty">${escapeHTML(error.message)}</div>`;
-
-  }
-
-}
-
-/* =========================================================
-   ADMIN USERS
-   ========================================================= */
-
-async function loadAdminUsers(){
-
-  try{
-
-    const data =
-      await api("/admin/users");
-
-    const users =
-      data.users || [];
-
-    $("adminUsers").innerHTML = `
-
-      <div class="tableWrap">
-
-        <table>
-
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Country</th>
-              <th>Role</th>
-              <th>Active</th>
-              <th>Verified</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-
-          <tbody>
-
-            ${
-              users.map(user => `
-
-                <tr>
-
-                  <td>${Number(user.id)}</td>
-
-                  <td>${escapeHTML(user.name)}</td>
-
-                  <td>${escapeHTML(user.email)}</td>
-
-                  <td>${escapeHTML(user.country)}</td>
-
-                  <td>${escapeHTML(user.role)}</td>
-
-                  <td>${user.is_active ? "Yes" : "No"}</td>
-
-                  <td>${user.is_verified ? "Yes" : "No"}</td>
-
-                  <td>
-
-                    <button
-                      class="btn secondary small"
-                      onclick="toggleUser(${Number(user.id)},${user.is_active ? "false":"true"})"
-                    >
-                      ${user.is_active ? "Deactivate":"Activate"}
-                    </button>
-
-                  </td>
-
-                </tr>
-
-              `).join("")
-            }
-
-          </tbody>
-
-        </table>
-
-      </div>
-    `;
-
-  }catch(error){
-
-    $("adminUsers").innerHTML =
-      `<div class="empty">${escapeHTML(error.message)}</div>`;
-
-  }
-
-}
-
-async function toggleUser(id,isActive){
-
-  try{
-
-    await api(`/admin/users/${id}`,{
-      method:"PATCH",
-      body:JSON.stringify({
-        is_active:isActive
-      })
-    });
-
-    loadAdminUsers();
-
-  }catch(error){
-
-    alert(error.message);
-
-  }
-
-}
-
-/* =========================================================
-   ADMIN SELLERS
-   ========================================================= */
-
-async function loadAdminSellers(){
-
-  try{
-
-    const data =
-      await api("/admin/sellers");
-
-    const sellers =
-      data.sellers || [];
-
-    $("adminSellers").innerHTML = `
-
-      <div class="tableWrap">
-
-        <table>
-
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Country</th>
-              <th>Products</th>
-              <th>Orders</th>
-              <th>Paid Sales</th>
-            </tr>
-          </thead>
-
-          <tbody>
-
-            ${
-              sellers.map(seller => `
-
-                <tr>
-
-                  <td>${Number(seller.id)}</td>
-
-                  <td>${escapeHTML(seller.name)}</td>
-
-                  <td>${escapeHTML(seller.email)}</td>
-
-                  <td>${escapeHTML(seller.country)}</td>
-
-                  <td>${Number(seller.product_count)}</td>
-
-                  <td>${Number(seller.order_count)}</td>
-
-                  <td>${Number(seller.paid_sales).toLocaleString()}</td>
-
-                </tr>
-
-              `).join("")
-            }
-
-          </tbody>
-
-        </table>
-
-      </div>
-
-    `;
-
-  }catch(error){
-
-    $("adminSellers").innerHTML =
-      `<div class="empty">${escapeHTML(error.message)}</div>`;
-
-  }
-
-}
-
-/* =========================================================
-   ADMIN PRODUCTS
-   ========================================================= */
-
-async function loadAdminProducts(){
-
-  try{
-
-    const data =
-      await api("/admin/products");
-
-    const products =
-      data.products || [];
-
-    $("adminProducts").innerHTML = `
-
-      <div class="tableWrap">
-
-        <table>
-
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Title</th>
-              <th>Category</th>
-              <th>Seller</th>
-              <th>Price</th>
-              <th>Stock</th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-
-          <tbody>
-
-            ${
-              products.map(p => `
-
-                <tr>
-
-                  <td>${Number(p.id)}</td>
-
-                  <td>${escapeHTML(p.title)}</td>
-
-                  <td>${escapeHTML(p.category)}</td>
-
-                  <td>${escapeHTML(p.seller_name || "")}</td>
-
-                  <td>${money(p.price,p.currency)}</td>
-
-                  <td>${Number(p.stock)}</td>
-
-                  <td>${escapeHTML(p.status)}</td>
-
-                  <td>
-
-                    <button
-                      class="btn secondary small"
-                      onclick="toggleProductStatus(${Number(p.id)},'${p.status === "active" ? "inactive":"active"}')"
-                    >
-                      ${p.status === "active" ? "Disable":"Activate"}
-                    </button>
-
-                  </td>
-
-                </tr>
-
-              `).join("")
-            }
-
-          </tbody>
-
-        </table>
-
-      </div>
-
-    `;
-
-  }catch(error){
-
-    $("adminProducts").innerHTML =
-      `<div class="empty">${escapeHTML(error.message)}</div>`;
-
-  }
-
-}
-
-async function toggleProductStatus(id,status){
-
-  try{
-
-    await api(`/admin/products/${id}`,{
-      method:"PATCH",
-      body:JSON.stringify({status})
-    });
-
-    loadAdminProducts();
-    loadProducts();
-
-  }catch(error){
-
-    alert(error.message);
-
-  }
-
-}
-
-/* =========================================================
-   ADMIN ORDERS
-   ========================================================= */
-
-async function loadAdminOrders(){
-
-  try{
-
-    const data =
-      await api("/admin/orders");
-
-    const orders =
-      data.orders || [];
-
-    $("adminOrders").innerHTML = `
-
-      <div class="tableWrap">
-
-        <table>
-
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Product</th>
-              <th>Buyer</th>
-              <th>Seller</th>
-              <th>Total</th>
-              <th>Status</th>
-              <th>Payment</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-
-          <tbody>
-
-            ${
-              orders.map(o => `
-
-                <tr>
-
-                  <td>${Number(o.id)}</td>
-
-                  <td>${escapeHTML(o.title)}</td>
-
-                  <td>${escapeHTML(o.buyer_name)}</td>
-
-                  <td>${escapeHTML(o.seller_name)}</td>
-
-                  <td>${money(o.total_amount,o.currency)}</td>
-
-                  <td>${escapeHTML(o.status)}</td>
-
-                  <td>${escapeHTML(o.payment_status)}</td>
-
-                  <td>
-
-                    <button
-                      class="btn small"
-                      onclick="markOrderPaid(${Number(o.id)})"
-                    >
-                      Mark Paid
-                    </button>
-
-                  </td>
-
-                </tr>
-
-              `).join("")
-            }
-
-          </tbody>
-
-        </table>
-
-      </div>
-
-    `;
-
-  }catch(error){
-
-    $("adminOrders").innerHTML =
-      `<div class="empty">${escapeHTML(error.message)}</div>`;
-
-  }
-
-}
-
-async function markOrderPaid(id){
-
-  try{
-
-    await api(`/admin/orders/${id}`,{
-      method:"PATCH",
-      body:JSON.stringify({
-        payment_status:"paid"
-      })
-    });
-
-    loadAdminOrders();
-    loadAdminPayments();
-    loadAdminOverview();
-
-  }catch(error){
-
-    alert(error.message);
-
-  }
-
-}
-
-/* =========================================================
-   ADMIN PAYMENTS
-   ========================================================= */
-
-async function loadAdminPayments(){
-
-  try{
-
-    const data =
-      await api("/admin/payments");
-
-    const summary =
-      data.summary || {};
-
-    const payments =
-      data.payments || [];
-
-    $("adminPayments").innerHTML = `
-
-      <div class="stats" style="margin-bottom:15px">
-
-        <div class="stat">
-          Paid Amount
-          <strong>
-            ${Number(summary.paid_amount || 0).toLocaleString()}
-          </strong>
-        </div>
-
-        <div class="stat">
-          Commission
-          <strong>
-            ${Number(summary.commission || 0).toLocaleString()}
-          </strong>
-        </div>
-
-      </div>
-
-      <div class="tableWrap">
-
-        <table>
-
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Product</th>
-              <th>Buyer</th>
-              <th>Seller</th>
-              <th>Total</th>
-              <th>Commission</th>
-              <th>Payment</th>
-            </tr>
-          </thead>
-
-          <tbody>
-
-            ${
-              payments.map(p => `
-
-                <tr>
-
-                  <td>${Number(p.id)}</td>
-
-                  <td>${escapeHTML(p.title)}</td>
-
-                  <td>${escapeHTML(p.buyer_name)}</td>
-
-                  <td>${escapeHTML(p.seller_name)}</td>
-
-                  <td>${Number(p.total_amount).toLocaleString()}</td>
-
-                  <td>${Number(p.commission_amount).toLocaleString()}</td>
-
-                  <td>${escapeHTML(p.payment_status)}</td>
-
-                </tr>
-
-              `).join("")
-            }
-
-          </tbody>
-
-        </table>
-
-      </div>
-
-    `;
-
-  }catch(error){
-
-    $("adminPayments").innerHTML =
-      `<div class="empty">${escapeHTML(error.message)}</div>`;
-
-  }
-
-}
-
-/* =========================================================
-   ADMIN CATEGORIES
-   ========================================================= */
-
-async function loadAdminCategories(){
-
-  try{
-
-    const data =
-      await api("/admin/categories");
-
-    const rows =
-      data.categories || [];
-
-    $("adminCategories").innerHTML = `
-
-      <div class="tableWrap">
-
-        <table>
-
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Active</th>
-            </tr>
-          </thead>
-
-          <tbody>
-
-            ${
-              rows.map(c => `
-
-                <tr>
-
-                  <td>${Number(c.id)}</td>
-
-                  <td>${escapeHTML(c.name)}</td>
-
-                  <td>${c.is_active ? "Yes":"No"}</td>
-
-                </tr>
-
-              `).join("")
-            }
-
-          </tbody>
-
-        </table>
-
-      </div>
-
-    `;
-
-  }catch(error){
-
-    $("adminCategories").innerHTML =
-      `<div class="empty">${escapeHTML(error.message)}</div>`;
-
-  }
-
-}
-
-$("categoryForm").addEventListener(
-  "submit",
-  async event => {
-
-    event.preventDefault();
-
-    try{
-
-      await api("/admin/categories",{
-        method:"POST",
-        body:JSON.stringify({
-          name:$("newCategoryName").value.trim()
-        })
-      });
-
-      $("categoryForm").reset();
-
-      loadAdminCategories();
-      loadCategories();
-
-    }catch(error){
-
-      alert(error.message);
-
-    }
-
-  }
-);
-
-/* =========================================================
-   ADMIN SERVICES
-   ========================================================= */
-
-async function loadAdminServices(){
-
-  try{
-
-    const data =
-      await api("/admin/services");
-
-    const services =
-      data.services || [];
-
-    $("adminServices").innerHTML = `
-
-      <div class="tableWrap">
-
-        <table>
-
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Service</th>
-              <th>Category</th>
-              <th>Provider</th>
-              <th>Country</th>
-              <th>Price</th>
-            </tr>
-          </thead>
-
-          <tbody>
-
-            ${
-              services.map(s => `
-
-                <tr>
-
-                  <td>${Number(s.id)}</td>
-
-                  <td>${escapeHTML(s.title)}</td>
-
-                  <td>${escapeHTML(s.category)}</td>
-
-                  <td>${escapeHTML(s.seller_name || "")}</td>
-
-                  <td>${escapeHTML(s.country || "")}</td>
-
-                  <td>${money(s.price,s.currency)}</td>
-
-                </tr>
-
-              `).join("")
-            }
-
-          </tbody>
-
-        </table>
-
-      </div>
-
-    `;
-
-  }catch(error){
-
-    $("adminServices").innerHTML =
-      `<div class="empty">${escapeHTML(error.message)}</div>`;
-
-  }
-
-}
-
-/* =========================================================
-   ADMIN REPORTS
-   ========================================================= */
-
-async function loadAdminReports(){
-
-  try{
-
-    const data =
-      await api("/admin/reports");
-
-    $("adminReports").innerHTML = `
-
-      <div class="grid">
-
-        <div class="panel">
-
-          <h3>Users by Country</h3>
-
-          ${
-            (data.users_by_country || [])
-              .slice(0,30)
-              .map(x =>
-                `<p>${escapeHTML(x.country)}: <strong>${Number(x.count)}</strong></p>`
-              ).join("")
-          }
-
-        </div>
-
-        <div class="panel">
-
-          <h3>Products by Category</h3>
-
-          ${
-            (data.products_by_category || [])
-              .map(x =>
-                `<p>${escapeHTML(x.category)}: <strong>${Number(x.count)}</strong></p>`
-              ).join("")
-          }
-
-        </div>
-
-        <div class="panel">
-
-          <h3>Order Statuses</h3>
-
-          ${
-            (data.order_statuses || [])
-              .map(x =>
-                `<p>${escapeHTML(x.status)}: <strong>${Number(x.count)}</strong></p>`
-              ).join("")
-          }
-
-        </div>
-
-        <div class="panel">
-
-          <h3>Payment Statuses</h3>
-
-          ${
-            (data.payment_statuses || [])
-              .map(x =>
-                `<p>${escapeHTML(x.payment_status)}: <strong>${Number(x.count)}</strong></p>`
-              ).join("")
-          }
-
-        </div>
-
-      </div>
-
-      <div class="panel" style="margin-top:15px">
-
-        <h3>Top Products</h3>
-
-        <div class="tableWrap">
-
-          <table>
-
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Product</th>
-                <th>Views</th>
-                <th>Sold</th>
-              </tr>
-            </thead>
-
-            <tbody>
-
-              ${
-                (data.top_products || [])
-                  .map(p => `
-
-                    <tr>
-
-                      <td>${Number(p.id)}</td>
-
-                      <td>${escapeHTML(p.title)}</td>
-
-                      <td>${Number(p.views || 0)}</td>
-
-                      <td>${Number(p.sold_quantity || 0)}</td>
-
-                    </tr>
-
-                  `).join("")
-              }
-
-            </tbody>
-
-          </table>
-
-        </div>
-
-      </div>
-
-    `;
-
-  }catch(error){
-
-    $("adminReports").innerHTML =
-      `<div class="empty">${escapeHTML(error.message)}</div>`;
-
-  }
-
-}
-
-/* =========================================================
-   ADMIN REVIEWS / PROMOTIONS / ADS
-   ========================================================= */
-
-async function loadAdminReviews(){
-
-  try{
-
-    const data =
-      await api("/admin/reviews");
-
-    $("adminReviews").innerHTML = `
-      <p class="muted">
-        ${escapeHTML(data.message || "Reviews are not available yet.")}
-      </p>
-    `;
-
-  }catch(error){
-
-    $("adminReviews").textContent =
-      error.message;
-
-  }
-
-}
-
-async function loadAdminPromotions(){
-
-  try{
-
-    const data =
-      await api("/admin/promotions");
-
-    $("adminPromotions").innerHTML = `
-      <p class="muted">
-        ${escapeHTML(data.message || "Promotions are not available yet.")}
-      </p>
-    `;
-
-  }catch(error){
-
-    $("adminPromotions").textContent =
-      error.message;
-
-  }
-
-}
-
-async function loadAdminAds(){
-
-  try{
-
-    const data =
-      await api("/admin/ads");
-
-    $("adminAds").innerHTML = `
-      <p class="muted">
-        ${escapeHTML(data.message || "Advertising is not available yet.")}
-      </p>
-    `;
-
-  }catch(error){
-
-    $("adminAds").textContent =
-      error.message;
-
-  }
-
-}
-
-/* =========================================================
-   INITIALIZATION
-   ========================================================= */
-
-async function init(){
-
-  updateCartCount();
-
-  await checkConnection();
-
-  await Promise.all([
-    loadCountries(),
-    loadServiceCategories(),
-    loadCategories()
-  ]);
-
-  populateSellCategories();
-
-  await restoreSession();
-
-  await loadProducts();
-
-  await loadServices();
-
-  renderCart();
-
-  if(currentUser){
-
-    loadSaved();
-    loadOrders();
-    loadMessages();
-    loadProfile();
-    loadSellerDashboard();
-
-    if(currentUser.role === "admin"){
-      loadAdminOverview();
-    }
-
-  }
-
-}
-
-init();
-
-</script>
-
-</body>
-</html>
+};
