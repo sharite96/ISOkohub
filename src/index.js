@@ -298,13 +298,14 @@ function serviceCategoryMatch(product, category) {
     return true;
   }
 
+  const matchedCategory =
+    SERVICE_CATEGORIES.find(
+      x => normalize(x) === wanted
+    );
+
   const words =
     SERVICE_MAP[category] ||
-    SERVICE_MAP[
-      SERVICE_CATEGORIES.find(
-        x => normalize(x) === wanted
-      )
-    ] ||
+    SERVICE_MAP[matchedCategory] ||
     [];
 
   const text = productText(product);
@@ -335,7 +336,8 @@ async function authenticate(env, request) {
       u.is_verified,
       u.created_at
     FROM sessions s
-    JOIN users u ON u.id = s.user_id
+    JOIN users u
+      ON u.id = s.user_id
     WHERE s.token_hash = ?
       AND s.expires_at > datetime('now')
       AND u.is_active = 1
@@ -513,7 +515,7 @@ export default {
 
 
       /* =====================================================
-         PRODUCTS - GET LIST
+         PRODUCTS - GET
       ===================================================== */
 
       if (
@@ -574,18 +576,12 @@ export default {
         }
 
         if (category) {
-          sql += `
-            AND p.category LIKE ?
-          `;
-
+          sql += ` AND p.category LIKE ? `;
           binds.push(`%${category}%`);
         }
 
         if (country) {
-          sql += `
-            AND p.country LIKE ?
-          `;
-
+          sql += ` AND p.country LIKE ? `;
           binds.push(`%${country}%`);
         }
 
@@ -640,11 +636,6 @@ export default {
           }, 404);
         }
 
-        /*
-          views is optional.
-          If the locked schema does not have this column,
-          product viewing must still continue normally.
-        */
         try {
           await db.prepare(`
             UPDATE products
@@ -754,7 +745,7 @@ export default {
 
         sql += `
           ORDER BY p.id DESC
-          LIMIT 500
+          LIMIT 2000
         `;
 
         const rows = await db
@@ -1119,7 +1110,6 @@ export default {
 
       /* =====================================================
          CREATE PRODUCT / SERVICE
-         FIXED: NO "views" COLUMN IN INSERT
       ===================================================== */
 
       if (
@@ -1242,12 +1232,6 @@ export default {
           }, 400);
         }
 
-        /*
-          IMPORTANT:
-          "views" removed from this INSERT.
-          This keeps product creation compatible
-          with the locked schema.
-        */
         const result =
           await db.prepare(`
             INSERT INTO products
@@ -1344,7 +1328,7 @@ export default {
         if (
           Number(existing.seller_id) !==
             Number(user.id) &&
-          user.role !== "admin"
+          String(user.role).toLowerCase() !== "admin"
         ) {
           return json({
             error: "Not allowed"
@@ -1532,7 +1516,7 @@ export default {
         if (
           Number(existing.seller_id) !==
             Number(user.id) &&
-          user.role !== "admin"
+          String(user.role).toLowerCase() !== "admin"
         ) {
           return json({
             error: "Not allowed"
@@ -1719,6 +1703,10 @@ export default {
 
       /* =====================================================
          ORDERS - GET
+         SCHEMA:
+         id,buyer_id,product_id,seller_id,quantity,
+         unit_price,total_price,currency,status,
+         payment_status,delivery_*,created_at,updated_at
       ===================================================== */
 
       if (
@@ -1736,7 +1724,6 @@ export default {
             SELECT
               o.*,
               p.title AS product_title,
-              p.currency AS currency,
               buyer.name AS buyer_name,
               seller.name AS seller_name
             FROM orders o
@@ -1745,10 +1732,10 @@ export default {
             JOIN users buyer
               ON buyer.id = o.buyer_id
             JOIN users seller
-              ON seller.id = p.seller_id
+              ON seller.id = o.seller_id
             WHERE
               o.buyer_id = ?
-              OR p.seller_id = ?
+              OR o.seller_id = ?
             ORDER BY o.id DESC
           `)
             .bind(
@@ -1757,10 +1744,17 @@ export default {
             )
             .all();
 
+        const orders =
+          (rows.results || []).map(order => ({
+            ...order,
+            commission:
+              number(order.total_price) *
+              COMMISSION_RATE
+          }));
+
         return json({
           ok: true,
-          orders:
-            rows.results || []
+          orders
         });
       }
 
@@ -1798,6 +1792,35 @@ export default {
               )
             )
           );
+
+        const deliveryAddress =
+          String(
+            body.delivery_address ||
+            body.deliveryAddress ||
+            ""
+          ).trim();
+
+        const deliveryCountry =
+          String(
+            body.delivery_country ||
+            body.deliveryCountry ||
+            user.country ||
+            ""
+          ).trim();
+
+        const deliveryDistrict =
+          String(
+            body.delivery_district ||
+            body.deliveryDistrict ||
+            ""
+          ).trim();
+
+        const deliveryPhone =
+          String(
+            body.delivery_phone ||
+            body.deliveryPhone ||
+            ""
+          ).trim();
 
         if (!productId) {
           return json({
@@ -1847,12 +1870,19 @@ export default {
         const unitPrice =
           number(product.price);
 
-        const total =
+        const totalPrice =
           unitPrice * quantity;
 
-        const commission =
-          total * COMMISSION_RATE;
+        const currency =
+          String(
+            product.currency || "RWF"
+          );
 
+        /*
+          Stock is reduced first.
+          If order insertion fails,
+          stock is restored.
+        */
         const stockUpdate =
           await db.prepare(`
             UPDATE products
@@ -1887,11 +1917,17 @@ export default {
                 (
                   buyer_id,
                   product_id,
+                  seller_id,
                   quantity,
-                  total,
-                  commission,
+                  unit_price,
+                  total_price,
+                  currency,
                   status,
-                  payment_status
+                  payment_status,
+                  delivery_address,
+                  delivery_country,
+                  delivery_district,
+                  delivery_phone
                 )
               VALUES
                 (
@@ -1900,16 +1936,28 @@ export default {
                   ?,
                   ?,
                   ?,
+                  ?,
+                  ?,
                   'pending',
-                  'unpaid'
+                  'unpaid',
+                  ?,
+                  ?,
+                  ?,
+                  ?
                 )
             `)
               .bind(
                 user.id,
                 productId,
+                product.seller_id,
                 quantity,
-                total,
-                commission
+                unitPrice,
+                totalPrice,
+                currency,
+                deliveryAddress,
+                deliveryCountry,
+                deliveryDistrict,
+                deliveryPhone
               )
               .run();
 
@@ -1919,10 +1967,14 @@ export default {
               "Order placed successfully",
             order_id:
               result.meta?.last_row_id,
-            total,
-            commission,
-            currency:
-              product.currency || "RWF"
+            quantity,
+            unit_price:
+              unitPrice,
+            total_price:
+              totalPrice,
+            commission:
+              totalPrice * COMMISSION_RATE,
+            currency
           }, 201);
 
         } catch (e) {
@@ -2144,10 +2196,8 @@ export default {
         const orderCount =
           await db.prepare(`
             SELECT COUNT(*) AS count
-            FROM orders o
-            JOIN products p
-              ON p.id = o.product_id
-            WHERE p.seller_id = ?
+            FROM orders
+            WHERE seller_id = ?
           `)
             .bind(user.id)
             .first();
@@ -2156,14 +2206,12 @@ export default {
           await db.prepare(`
             SELECT
               COALESCE(
-                SUM(o.total),
+                SUM(total_price),
                 0
               ) AS total
-            FROM orders o
-            JOIN products p
-              ON p.id = o.product_id
-            WHERE p.seller_id = ?
-              AND o.payment_status = 'paid'
+            FROM orders
+            WHERE seller_id = ?
+              AND payment_status = 'paid'
           `)
             .bind(user.id)
             .first();
@@ -2182,7 +2230,11 @@ export default {
             paid_sales:
               Number(
                 sales?.total || 0
-              )
+              ),
+            commission:
+              Number(
+                sales?.total || 0
+              ) * COMMISSION_RATE
           }
         });
       }
@@ -2217,15 +2269,15 @@ export default {
             FROM users
           `).first();
 
-        /*
-          FIXED:
-          NULL seller_id values are excluded explicitly.
-        */
         const sellers =
           await db.prepare(`
-            SELECT COUNT(DISTINCT seller_id) AS count
-            FROM products
-            WHERE seller_id IS NOT NULL
+            SELECT COUNT(*) AS count
+            FROM users
+            WHERE id IN (
+              SELECT DISTINCT seller_id
+              FROM products
+              WHERE seller_id IS NOT NULL
+            )
           `).first();
 
         const products =
@@ -2241,22 +2293,16 @@ export default {
             FROM orders
           `).first();
 
+        /*
+          LOCKED SCHEMA uses total_price.
+          Commission is calculated from total_price
+          because orders has no commission column.
+        */
         const revenue =
           await db.prepare(`
             SELECT
               COALESCE(
-                SUM(total),
-                0
-              ) AS total
-            FROM orders
-            WHERE payment_status = 'paid'
-          `).first();
-
-        const commission =
-          await db.prepare(`
-            SELECT
-              COALESCE(
-                SUM(commission),
+                SUM(total_price),
                 0
               ) AS total
             FROM orders
@@ -2300,32 +2346,50 @@ export default {
               .length;
         } catch {}
 
+        const revenueTotal =
+          Number(
+            revenue?.total || 0
+          );
+
         return json({
           ok: true,
           stats: {
             users:
-              Number(users?.count || 0),
+              Number(
+                users?.count || 0
+              ),
 
             sellers:
-              Number(sellers?.count || 0),
+              Number(
+                sellers?.count || 0
+              ),
 
             products:
-              Number(products?.count || 0),
+              Number(
+                products?.count || 0
+              ),
 
             orders:
-              Number(orders?.count || 0),
+              Number(
+                orders?.count || 0
+              ),
 
             revenue:
-              Number(revenue?.total || 0),
+              revenueTotal,
 
             commission:
-              Number(commission?.total || 0),
+              revenueTotal *
+              COMMISSION_RATE,
 
             messages:
-              Number(messages?.count || 0),
+              Number(
+                messages?.count || 0
+              ),
 
             countries:
-              Number(countries?.count || 0),
+              Number(
+                countries?.count || 0
+              ),
 
             services:
               serviceCount
@@ -2444,7 +2508,6 @@ export default {
             SELECT
               o.*,
               p.title AS product_title,
-              p.currency,
               buyer.name AS buyer_name,
               buyer.email AS buyer_email,
               seller.name AS seller_name,
@@ -2455,15 +2518,22 @@ export default {
             JOIN users buyer
               ON buyer.id = o.buyer_id
             JOIN users seller
-              ON seller.id = p.seller_id
+              ON seller.id = o.seller_id
             ORDER BY o.id DESC
             LIMIT 2000
           `).all();
 
+        const orders =
+          (rows.results || []).map(order => ({
+            ...order,
+            commission:
+              number(order.total_price) *
+              COMMISSION_RATE
+          }));
+
         return json({
           ok: true,
-          orders:
-            rows.results || []
+          orders
         });
       }
 
@@ -2482,26 +2552,41 @@ export default {
               o.id,
               o.buyer_id,
               o.product_id,
-              o.total,
-              o.commission,
+              o.seller_id,
+              o.quantity,
+              o.unit_price,
+              o.total_price,
+              o.currency,
               o.status,
               o.payment_status,
+              o.delivery_address,
+              o.delivery_country,
+              o.delivery_district,
+              o.delivery_phone,
               o.created_at,
               p.title AS product_title,
-              p.currency,
-              u.name AS buyer_name,
-              u.email AS buyer_email
+              buyer.name AS buyer_name,
+              buyer.email AS buyer_email,
+              seller.name AS seller_name,
+              seller.email AS seller_email
             FROM orders o
             JOIN products p
               ON p.id = o.product_id
-            JOIN users u
-              ON u.id = o.buyer_id
+            JOIN users buyer
+              ON buyer.id = o.buyer_id
+            JOIN users seller
+              ON seller.id = o.seller_id
             ORDER BY o.id DESC
             LIMIT 2000
           `).all();
 
         const payments =
-          rows.results || [];
+          (rows.results || []).map(order => ({
+            ...order,
+            commission:
+              number(order.total_price) *
+              COMMISSION_RATE
+          }));
 
         const summary = {
           total_orders:
@@ -2526,14 +2611,16 @@ export default {
           total_amount:
             payments.reduce(
               (sum, x) =>
-                sum + number(x.total),
+                sum + number(x.total_price),
               0
             ),
 
           total_commission:
             payments.reduce(
               (sum, x) =>
-                sum + number(x.commission),
+                sum +
+                number(x.total_price) *
+                COMMISSION_RATE,
               0
             )
         };
@@ -2679,7 +2766,7 @@ export default {
               p.title,
               COUNT(o.id) AS orders,
               COALESCE(
-                SUM(o.total),
+                SUM(o.total_price),
                 0
               ) AS sales
             FROM products p
@@ -3072,6 +3159,22 @@ export default {
             error:
               "status is required"
           }, 400);
+        }
+
+        const existing =
+          await db.prepare(`
+            SELECT id
+            FROM products
+            WHERE id = ?
+          `)
+            .bind(id)
+            .first();
+
+        if (!existing) {
+          return json({
+            error:
+              "Product not found"
+          }, 404);
         }
 
         await db.prepare(`
