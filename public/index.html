@@ -1,3057 +1,1095 @@
-const CORS = {
-"Access-Control-Allow-Origin": "*",
-"Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
-"Access-Control-Allow-Headers": "Content-Type, Authorization",
-"Access-Control-Max-Age": "86400"
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IsokoHub — Global Marketplace & Services</title>
+<meta name="description" content="IsokoHub global marketplace for products, services, education, creators, business, work and opportunities worldwide.">
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,Helvetica,sans-serif;background:#f5f7fb;color:#172033;line-height:1.5}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+:root{
+--p:#0b63f6;--pd:#0647b7;--g:#10a36a;--d:#dc3545;
+--dark:#111827;--muted:#667085;--border:#e4e7ec;
+--soft:#eef4ff;--card:#fff;--shadow:0 8px 30px rgba(16,24,40,.08)
+}
+.topbar{background:#111827;color:white;padding:8px 5%;display:flex;justify-content:space-between;font-size:13px}
+header{background:#fff;position:sticky;top:0;z-index:1000;border-bottom:1px solid var(--border)}
+.header{max-width:1450px;margin:auto;padding:12px 18px;display:flex;align-items:center;gap:15px}
+.logo{font-size:24px;font-weight:900;color:var(--p);white-space:nowrap}
+.logo span{color:#111827}
+.search{flex:1;display:flex;border:2px solid var(--p);border-radius:11px;overflow:hidden}
+.search input{flex:1;border:0;outline:0;padding:11px}
+.search button{border:0;background:var(--p);color:#fff;padding:0 18px;font-weight:bold}
+.actions{display:flex;gap:6px}
+.icon{position:relative;border:1px solid var(--border);background:white;border-radius:9px;padding:9px}
+.badge{position:absolute;right:-6px;top:-7px;background:#ef4444;color:#fff;border-radius:50%;font-size:10px;min-width:18px;height:18px;text-align:center;padding-top:2px}
+.btn{border:0;border-radius:9px;background:var(--p);color:#fff;padding:10px 15px;font-weight:700}
+.btn:hover{background:var(--pd)}
+.btn.green{background:var(--g)}
+.btn.red{background:var(--d)}
+.btn.gray{background:#eef2f7;color:#172033}
+.btn.sm{padding:7px 10px;font-size:13px}
+nav{border-top:1px solid #f0f2f5}
+.nav{max-width:1450px;margin:auto;padding:7px 18px;display:flex;gap:4px;overflow-x:auto}
+.nav button{white-space:nowrap;border:0;background:#fff;padding:9px 11px;border-radius:8px;color:#344054;font-weight:600}
+.nav button:hover{background:var(--soft);color:var(--p)}
+.hero{background:linear-gradient(135deg,#0b63f6,#0849bd);color:white;padding:55px 18px}
+.hero-inner{max-width:1200px;margin:auto;text-align:center}
+.hero h1{font-size:clamp(30px,5vw,54px);margin-bottom:12px}
+.hero p{max-width:800px;margin:auto auto 25px;font-size:18px}
+.hero-search{display:flex;max-width:900px;margin:auto;background:#fff;padding:6px;border-radius:14px;gap:6px}
+.hero-search input{flex:1;border:0;outline:0;padding:14px}
+.hero-search select{border:0;border-left:1px solid var(--border);padding:0 10px}
+.hero-search button{border:0;background:#111827;color:#fff;border-radius:9px;padding:0 22px;font-weight:bold}
+.container{max-width:1450px;margin:auto;padding:28px 18px}
+.status{padding:11px 15px;border-radius:9px;margin-bottom:20px;border:1px solid var(--border);background:#fff}
+.status.ok{background:#ecfdf3;color:#087443;border-color:#a7f3d0}
+.status.err{background:#fff1f2;color:#b42318;border-color:#fecdd3}
+.section{margin-bottom:32px}
+.title{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:17px}
+.title h2{font-size:25px}
+.title p{color:var(--muted);font-size:14px}
+.quick{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px}
+.quick button{background:#fff;border:1px solid var(--border);border-radius:13px;padding:17px 10px;box-shadow:var(--shadow)}
+.quick .emoji{font-size:30px}
+.quick strong{display:block;margin-top:7px;font-size:14px}
+.quick small{color:var(--muted)}
+.service-info{background:#fff;border:1px solid var(--border);border-radius:15px;padding:22px;margin-bottom:15px}
+.service-info p{color:var(--muted)}
+.categories{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.cat{background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;gap:12px;align-items:center}
+.cat .i{font-size:28px}
+.cat small{display:block;color:var(--muted)}
+.filters{display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:9px;background:#fff;border:1px solid var(--border);padding:15px;border-radius:14px;margin-bottom:20px}
+.field{width:100%;border:1px solid #d0d5dd;border-radius:9px;padding:10px;background:#fff;outline:0}
+.field:focus{border-color:var(--p)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:17px}
+.card{background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+.pic{height:175px;background:#eef2f6;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.pic img{width:100%;height:100%;object-fit:cover}
+.placeholder{font-size:52px}
+.body{padding:13px}
+.card h3{font-size:16px;margin-bottom:5px}
+.tag{display:inline-block;background:#eef4ff;color:#175cd3;border-radius:20px;padding:3px 8px;font-size:11px;margin:2px}
+.price{font-size:18px;color:var(--p);font-weight:900;margin:7px 0}
+.meta{font-size:12px;color:var(--muted);margin:3px 0}
+.card-actions{display:flex;gap:6px;margin-top:11px}
+.card-actions>*{flex:1}
+.empty{background:#fff;border:1px dashed #cbd5e1;border-radius:14px;padding:40px;text-align:center;color:var(--muted);grid-column:1/-1}
+footer{background:#111827;color:#fff;margin-top:40px}
+.footer{max-width:1450px;margin:auto;padding:35px 18px;display:grid;grid-template-columns:2fr repeat(3,1fr);gap:25px}
+.footer p,.footer li{font-size:13px;color:#cbd5e1;margin:5px 0}
+.footer ul{list-style:none}
+.copy{text-align:center;border-top:1px solid #263244;padding:14px;color:#94a3b8;font-size:12px}
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.62);z-index:2000;display:none;align-items:center;justify-content:center;padding:14px}
+.modal{background:#fff;border-radius:16px;width:min(700px,100%);max-height:93vh;overflow:auto}
+.modal.large{width:min(1050px,100%)}
+.head{display:flex;justify-content:space-between;align-items:center;padding:16px 19px;border-bottom:1px solid var(--border)}
+.close{border:0;background:#f2f4f7;width:34px;height:34px;border-radius:50%;font-size:20px}
+.modal-body{padding:20px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.full{grid-column:1/-1}
+label{font-size:13px;font-weight:bold;display:block;margin-bottom:5px}
+.tabs{display:flex;border-bottom:1px solid var(--border)}
+.tabs button{flex:1;border:0;background:#fff;padding:13px;font-weight:bold}
+.tabs .active{color:var(--p);border-bottom:3px solid var(--p)}
+.cart-row{display:grid;grid-template-columns:75px 1fr auto;gap:12px;align-items:center;border-bottom:1px solid var(--border);padding:11px 0}
+.cart-img{width:75px;height:65px;object-fit:cover;border-radius:8px;background:#eef2f6}
+.total{text-align:right;font-size:21px;font-weight:900;margin-top:14px}
+.table{overflow:auto}
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px;border-bottom:1px solid var(--border);font-size:13px;text-align:left;white-space:nowrap}
+th{background:#f8fafc}
+.admin{display:grid;grid-template-columns:205px 1fr;min-height:500px}
+.admin-side{border-right:1px solid var(--border);padding:10px}
+.admin-side button{display:block;width:100%;border:0;background:#fff;text-align:left;padding:10px;border-radius:8px;margin-bottom:3px}
+.admin-side button:hover{background:var(--soft);color:var(--p)}
+.admin-main{padding:20px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+.stat{background:#fff;border:1px solid var(--border);padding:17px;border-radius:12px}
+.stat small{color:var(--muted)}
+.stat strong{display:block;font-size:25px;margin-top:5px}
+.messages{max-height:400px;overflow:auto}
+.msg{padding:10px;border-bottom:1px solid var(--border)}
+.bubble{display:inline-block;background:#f2f4f7;padding:9px 12px;border-radius:12px;max-width:75%}
+.mine{text-align:right}.mine .bubble{background:#eaf2ff}
+.profile{display:grid;grid-template-columns:140px 1fr;gap:20px}
+.avatar{width:115px;height:115px;border-radius:50%;background:#e8eefb;display:flex;align-items:center;justify-content:center;font-size:43px}
+@media(max-width:900px){
+.header{flex-wrap:wrap}.search{order:3;flex-basis:100%}
+.filters{grid-template-columns:1fr 1fr}.filters input:first-child{grid-column:1/-1}
+.admin{grid-template-columns:1fr}.admin-side{display:flex;overflow-x:auto;border-right:0;border-bottom:1px solid var(--border)}
+.admin-side button{min-width:max-content}.footer{grid-template-columns:1fr 1fr}
+}
+@media(max-width:600px){
+.topbar{display:none}.header{padding:10px}.logo{font-size:20px}
+.hero{padding:35px 12px}.hero-search{display:grid}.hero-search select{border:0;border-top:1px solid var(--border);padding:12px}.hero-search button{padding:13px}
+.container{padding:22px 12px}.filters{grid-template-columns:1fr}.filters input:first-child{grid-column:auto}
+.form-grid,.profile{grid-template-columns:1fr}.full{grid-column:auto}
+.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.pic{height:135px}.body{padding:9px}
+.footer{grid-template-columns:1fr}.price{font-size:16px}
+}
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+<span>🌍 IsokoHub — Global Marketplace</span>
+<span id="apiStatus">Connecting...</span>
+</div>
+
+<header>
+<div class="header">
+<div class="logo" onclick="home()">Isoko<span>Hub</span> 🌍</div>
+
+<form class="search" id="searchForm">
+<input id="searchInput" type="search" placeholder="Search products, services, teachers, creators, jobs...">
+<button>Search</button>
+</form>
+
+<div class="actions">
+<button class="icon" onclick="saved()">❤️<span class="badge" id="savedCount">0</span></button>
+<button class="icon" onclick="cartOpen()">🛒<span class="badge" id="cartCount">0</span></button>
+<button class="icon" onclick="messages()">💬</button>
+<button class="btn sm" id="authBtn" onclick="auth()">Login</button>
+</div>
+</div>
+
+<nav>
+<div class="nav">
+<button onclick="home()">🏠 Home</button>
+<button onclick="services()">🛠️ Services</button>
+<button onclick="education()">📚 Education</button>
+<button onclick="creators()">🎨 Creators</button>
+<button onclick="business()">💼 Business</button>
+<button onclick="work()">💻 Work</button>
+<button onclick="saved()">❤️ Saved</button>
+<button onclick="cartOpen()">🛒 Cart</button>
+<button onclick="orders()">📦 Orders</button>
+<button onclick="messages()">💬 Messages</button>
+<button onclick="sell()">➕ Sell</button>
+<button onclick="profile()">👤 Profile</button>
+<button id="adminBtn" style="display:none" onclick="admin()">🛠️ Admin</button>
+</div>
+</nav>
+</header>
+
+<section class="hero">
+<div class="hero-inner">
+<h1>Find Anything. Buy Anything. Hire Anyone. 🌍</h1>
+<p>IsokoHub connects buyers, sellers, teachers, artists, creators, filmmakers, professionals and service providers worldwide.</p>
+
+<form class="hero-search" id="heroForm">
+<input id="heroInput" placeholder="What product or service are you looking for?">
+<select id="heroCountry"><option value="">🌍 All Countries</option></select>
+<button>🔎 Search</button>
+</form>
+</div>
+</section>
+
+<main class="container">
+
+<div id="status" class="status">Connecting to IsokoHub API...</div>
+
+<section class="section">
+<div class="title">
+<div><h2>Popular Services</h2><p>Find professionals and services worldwide.</p></div>
+<button class="btn sm" onclick="services()">View All</button>
+</div>
+<div id="quick" class="quick"></div>
+</section>
+
+<section class="section">
+<div class="service-info">
+<h2>🛠️ Find the service you need</h2>
+<p>
+Plumber, electrician, software developer, website developer, teacher,
+photographer, filmmaker, lawyer, accountant, engineer, mechanic,
+designer, cleaner, driver, delivery, construction, agriculture,
+beauty, catering, logistics, travel, manufacturing, freelance work
+and many other services.
+</p>
+</div>
+<div id="categories" class="categories"></div>
+</section>
+
+<section>
+<div class="title">
+<div><h2 id="resultTitle">Marketplace</h2><p id="resultSub">Products and services available worldwide.</p></div>
+</div>
+
+<div class="filters">
+<input class="field" id="filterSearch" placeholder="Search anything...">
+<select class="field" id="filterCategory"><option value="">All Categories</option></select>
+<select class="field" id="filterCountry"><option value="">All Countries</option></select>
+<select class="field" id="filterType">
+<option value="">Products + Services</option>
+<option value="service">Services Only</option>
+<option value="product">Products Only</option>
+</select>
+<button class="btn" onclick="filter()">Search</button>
+</div>
+
+<div id="products" class="grid"></div>
+</section>
+
+</main>
+
+<footer>
+<div class="footer">
+<div><h3>IsokoHub 🌍</h3><p>Global marketplace for products, services, education, creative work, business and opportunities.</p></div>
+<div><h4>Marketplace</h4><ul><li>Products</li><li>Services</li><li>Education</li><li>Creators</li><li>Business</li><li>Jobs & Freelance</li></ul></div>
+<div><h4>For Sellers</h4><ul><li>Sell on IsokoHub</li><li>Products</li><li>Orders</li><li>Seller Statistics</li></ul></div>
+<div><h4>Platform</h4><ul><li>Saved</li><li>Messages</li><li>Profile</li><li>Admin</li></ul></div>
+</div>
+<div class="copy">© 2026 IsokoHub. Global marketplace.</div>
+</footer>
+
+
+<!-- AUTH -->
+<div class="overlay" id="authModal">
+<div class="modal">
+<div class="head"><strong>IsokoHub Account</strong><button class="close" onclick="closeM('authModal')">×</button></div>
+<div class="tabs">
+<button id="lt" class="active" onclick="authTab('login')">Login</button>
+<button id="rt" onclick="authTab('register')">Register</button>
+</div>
+<div class="modal-body">
+
+<form id="loginForm">
+<label>Email</label><input class="field" id="loginEmail" type="email" required><br><br>
+<label>Password</label><input class="field" id="loginPassword" type="password" required><br><br>
+<button class="btn" style="width:100%">Login</button>
+</form>
+
+<form id="registerForm" style="display:none">
+<div class="form-grid">
+<div><label>Full Name</label><input class="field" id="regName" required></div>
+<div><label>Email</label><input class="field" id="regEmail" type="email" required></div>
+<div><label>Password</label><input class="field" id="regPassword" type="password" minlength="6" required></div>
+<div><label>Country</label><select class="field" id="regCountry" required></select></div>
+</div><br>
+<button class="btn" style="width:100%">Create Account</button>
+</form>
+
+<div id="authMsg"></div>
+</div>
+</div>
+</div>
+
+
+<!-- PRODUCT -->
+<div class="overlay" id="productModal">
+<div class="modal large">
+<div class="head"><strong id="productTitle">Product</strong><button class="close" onclick="closeM('productModal')">×</button></div>
+<div class="modal-body" id="productDetails"></div>
+</div>
+</div>
+
+
+<!-- CART -->
+<div class="overlay" id="cartModal">
+<div class="modal">
+<div class="head"><strong>🛒 Cart</strong><button class="close" onclick="closeM('cartModal')">×</button></div>
+<div class="modal-body">
+<div id="cartItems"></div>
+<div id="cartTotal" class="total"></div><br>
+<button class="btn green" style="width:100%" onclick="checkout()">Place Order</button>
+</div>
+</div>
+</div>
+
+
+<!-- SAVED -->
+<div class="overlay" id="savedModal">
+<div class="modal large">
+<div class="head"><strong>❤️ Saved Items</strong><button class="close" onclick="closeM('savedModal')">×</button></div>
+<div class="modal-body"><div id="savedItems" class="grid"></div></div>
+</div>
+</div>
+
+
+<!-- ORDERS -->
+<div class="overlay" id="ordersModal">
+<div class="modal large">
+<div class="head"><strong>📦 Orders</strong><button class="close" onclick="closeM('ordersModal')">×</button></div>
+<div class="modal-body"><div id="ordersArea"></div></div>
+</div>
+</div>
+
+
+<!-- MESSAGES -->
+<div class="overlay" id="messagesModal">
+<div class="modal">
+<div class="head"><strong>💬 Messages</strong><button class="close" onclick="closeM('messagesModal')">×</button></div>
+<div class="modal-body">
+<div id="messagesArea" class="messages"></div><br>
+<form id="messageForm">
+<label>Recipient User ID</label><input class="field" id="msgTo" type="number" required><br><br>
+<label>Message</label><textarea class="field" id="msgBody" rows="3" required></textarea><br><br>
+<button class="btn">Send Message</button>
+</form>
+</div>
+</div>
+</div>
+
+
+<!-- PROFILE -->
+<div class="overlay" id="profileModal">
+<div class="modal">
+<div class="head"><strong>👤 Profile</strong><button class="close" onclick="closeM('profileModal')">×</button></div>
+<div class="modal-body" id="profileArea"></div>
+</div>
+</div>
+
+
+<!-- SELL -->
+<div class="overlay" id="sellModal">
+<div class="modal large">
+<div class="head"><strong>➕ Sell / Offer Service</strong><button class="close" onclick="closeM('sellModal')">×</button></div>
+<div class="modal-body">
+
+<form id="sellForm">
+<div class="form-grid">
+
+<div class="full"><label>Title</label><input class="field" id="sellTitle" placeholder="Example: Website Development Service" required></div>
+
+<div><label>Category</label><select class="field" id="sellCategory" required></select></div>
+<div><label>Country</label><select class="field" id="sellCountry" required></select></div>
+
+<div><label>Price</label><input class="field" id="sellPrice" type="number" min="0" required></div>
+<div><label>Currency</label><input class="field" id="sellCurrency" value="RWF" required></div>
+
+<div><label>Stock</label><input class="field" id="sellStock" type="number" min="0" value="1"></div>
+<div><label>Condition</label>
+<select class="field" id="sellCondition">
+<option value="new">New</option>
+<option value="used">Used</option>
+<option value="refurbished">Refurbished</option>
+<option value="has crack">Has crack</option>
+</select></div>
+
+<div><label>District / City</label><input class="field" id="sellDistrict"></div>
+<div><label>Image URL</label><input class="field" id="sellImage" placeholder="https://..."></div>
+
+<div class="full"><label>Description / Specifications</label><textarea class="field" id="sellSpecs" rows="5"></textarea></div>
+</div><br>
+<button class="btn green" style="width:100%">Publish on IsokoHub</button>
+</form>
+<div id="sellMsg"></div>
+
+</div>
+</div>
+</div>
+
+
+<!-- ADMIN -->
+<div class="overlay" id="adminModal">
+<div class="modal large">
+<div class="head"><strong>🛠️ IsokoHub Admin Dashboard</strong><button class="close" onclick="closeM('adminModal')">×</button></div>
+
+<div class="admin">
+<aside class="admin-side">
+<button onclick="adminSection('overview')">📊 Overview</button>
+<button onclick="adminSection('users')">👥 Users</button>
+<button onclick="adminSection('sellers')">🏪 Sellers</button>
+<button onclick="adminSection('products')">📦 Products</button>
+<button onclick="adminSection('orders')">🛒 Orders</button>
+<button onclick="adminSection('payments')">💳 Payments</button>
+<button onclick="adminSection('services')">🛠️ Services</button>
+<button onclick="adminSection('categories')">📚 Categories</button>
+<button onclick="adminSection('reports')">📈 Reports</button>
+</aside>
+<section class="admin-main"><div id="adminContent"></div></section>
+</div>
+</div>
+</div>
+
+
+<script>
+const API=location.origin+"/api";
+
+let user=null;
+let products=[];
+let countries=[];
+let categories=[];
+let serviceCategories=[];
+
+let cartData=JSON.parse(localStorage.getItem("isokohub_cart")||"[]");
+let savedData=JSON.parse(localStorage.getItem("isokohub_saved")||"[]");
+
+const icons={
+"Business & Professional":"💼","Engineering":"⚙️","IT & Technology":"💻",
+"Construction & Property":"🏗️","Education & Teachers":"📚","Art & Creative":"🎨",
+"Film & Entertainment":"🎬","Marketing & Communication":"📣",
+"Automotive & Transport":"🚗","Agriculture & Environment":"🌾",
+"Home Services":"🏠","Legal & Finance":"⚖️","Health & Wellness":"❤️",
+"Beauty & Personal Care":"💇","Food & Hospitality":"🍽️","Events":"🎉",
+"Logistics":"📦","Travel & Tourism":"✈️","Industrial & Manufacturing":"🏭",
+"Jobs & Freelance":"👨‍💻","Services":"🛠️","Other Services":"🔎"
 };
 
-const COMMISSION_RATE = 0.05;
-
-/* =========================================================
-ISOKOHUB GLOBAL CONFIGURATION
-========================================================= */
-
-const SERVICE_CATEGORIES = [
-"Business & Professional",
-"Engineering",
-"IT & Technology",
-"Construction & Property",
-"Education & Teachers",
-"Art & Creative",
-"Film & Entertainment",
-"Marketing & Communication",
-"Automotive & Transport",
-"Agriculture & Environment",
-"Home Services",
-"Legal & Finance",
-"Health & Wellness",
-"Beauty & Personal Care",
-"Food & Hospitality",
-"Events",
-"Logistics",
-"Travel & Tourism",
-"Industrial & Manufacturing",
-"Jobs & Freelance",
-"Services",
-"Other Services"
+const serviceWords=[
+"service","consultant","consulting","engineer","engineering","developer",
+"development","designer","design","teacher","teaching","tutor","education",
+"photography","photographer","videography","video","film","filmmaker",
+"producer","marketing","lawyer","legal","accountant","accounting","finance",
+"doctor","health","therapy","fitness","beauty","salon","barber","restaurant",
+"hotel","event","transport","driver","delivery","logistics","travel","tourism",
+"agriculture","construction","plumber","plumbing","electrician","cleaning",
+"mechanic","repair","installation","branding","social media","tax","chef",
+"catering","shipping","warehouse","courier","factory","machine","manufacturing",
+"freelance","job","jobs","software","website","app","mobile app"
 ];
 
-/* 193 UN MEMBER STATES */
-const COUNTRIES = [
-"Afghanistan","Albania","Algeria","Andorra","Angola",
-"Antigua and Barbuda","Argentina","Armenia","Australia",
-"Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh",
-"Barbados","Belarus","Belgium","Belize","Benin","Bhutan",
-"Bolivia","Bosnia and Herzegovina","Botswana","Brazil",
-"Brunei","Bulgaria","Burkina Faso","Burundi","Cabo Verde",
-"Cambodia","Cameroon","Canada","Central African Republic",
-"Chad","Chile","China","Colombia","Comoros","Congo",
-"Costa Rica","Côte d'Ivoire","Croatia","Cuba","Cyprus",
-"Czechia","Democratic Republic of the Congo","Denmark",
-"Djibouti","Dominica","Dominican Republic","Ecuador",
-"Egypt","El Salvador","Equatorial Guinea","Eritrea",
-"Estonia","Eswatini","Ethiopia","Fiji","Finland","France",
-"Gabon","Gambia","Georgia","Germany","Ghana","Greece",
-"Grenada","Guatemala","Guinea","Guinea-Bissau","Guyana",
-"Haiti","Honduras","Hungary","Iceland","India","Indonesia",
-"Iran","Iraq","Ireland","Israel","Italy","Jamaica","Japan",
-"Jordan","Kazakhstan","Kenya","Kiribati","Kuwait","Kyrgyzstan",
-"Laos","Latvia","Lebanon","Lesotho","Liberia","Libya",
-"Liechtenstein","Lithuania","Luxembourg","Madagascar",
-"Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands",
-"Mauritania","Mauritius","Mexico","Micronesia","Moldova",
-"Monaco","Mongolia","Montenegro","Morocco","Mozambique",
-"Myanmar","Namibia","Nauru","Nepal","Netherlands",
-"New Zealand","Nicaragua","Niger","Nigeria","North Korea",
-"North Macedonia","Norway","Oman","Pakistan","Palau","Panama",
-"Papua New Guinea","Paraguay","Peru","Philippines","Poland",
-"Portugal","Qatar","Romania","Russia","Rwanda",
-"Saint Kitts and Nevis","Saint Lucia",
-"Saint Vincent and the Grenadines","Samoa","San Marino",
-"Sao Tome and Principe","Saudi Arabia","Senegal","Serbia",
-"Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia",
-"Solomon Islands","Somalia","South Africa","South Korea",
-"South Sudan","Spain","Sri Lanka","Sudan","Suriname","Sweden",
-"Switzerland","Syria","Tajikistan","Tanzania","Thailand",
-"Timor-Leste","Togo","Tonga","Trinidad and Tobago","Tunisia",
-"Türkiye","Turkmenistan","Tuvalu","Uganda","Ukraine",
-"United Arab Emirates","United Kingdom","United States",
-"Uruguay","Uzbekistan","Vanuatu","Venezuela","Vietnam",
-"Yemen","Zambia","Zimbabwe"
-];
+function $(x){return document.getElementById(x)}
 
-const SERVICE_KEYWORDS = [
-"service","services","consultant","consulting","engineer",
-"engineering","developer","development","designer","design",
-"repair","installation","construction","architect","architecture",
-"teacher","teaching","tutor","course","training","education",
-"photographer","photography","videographer","video","film",
-"filmmaker","actor","producer","marketing","advertising",
-"lawyer","legal","accounting","accountant","finance","insurance",
-"doctor","clinic","health","wellness","beauty","salon","barber",
-"makeup","catering","restaurant","hotel","event","wedding",
-"transport","driver","delivery","logistics","travel","tour",
-"agriculture","farming","industrial","manufacturing","freelance",
-"job","professional","business","software","website","app",
-"plumbing","electrician","cleaning","moving","mechanic",
-"branding","social media","tax","therapy","fitness","chef",
-"hospitality","shipping","warehouse","courier","safari",
-"factory","machine","production","remote","work"
-];
-
-/* =========================================================
-HELPERS
-========================================================= */
-
-const json = (data, status = 200) =>
-new Response(JSON.stringify(data), {
-status,
-headers: {
-...CORS,
-"Content-Type": "application/json; charset=utf-8"
+function esc(v){
+return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;")
+.replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
 }
+
+function money(v,c="RWF"){
+try{return new Intl.NumberFormat("en-US",{maximumFractionDigits:0}).format(Number(v||0))+" "+c}
+catch(e){return Number(v||0)+" "+c}
+}
+
+function openM(id){$(id).style.display="flex"}
+function closeM(id){$(id).style.display="none"}
+
+function closeAll(){
+document.querySelectorAll(".overlay").forEach(x=>x.style.display="none")
+}
+
+function loginRequired(){
+if(!user){auth();return false}
+return true
+}
+
+async function api(path,opt={}){
+let headers={"Content-Type":"application/json",...(opt.headers||{})};
+let token=localStorage.getItem("isokohub_token");
+if(token)headers.Authorization="Bearer "+token;
+
+let r=await fetch(API+path,{...opt,headers});
+let data={};
+try{data=await r.json()}catch(e){}
+if(!r.ok)throw new Error(data.error||data.message||"Request failed");
+return data;
+}
+
+function updateCounts(){
+$("cartCount").textContent=cartData.length;
+$("savedCount").textContent=savedData.length;
+localStorage.setItem("isokohub_cart",JSON.stringify(cartData));
+localStorage.setItem("isokohub_saved",JSON.stringify(savedData));
+}
+
+async function init(){
+updateCounts();
+bind();
+
+try{
+await api("/config");
+$("apiStatus").textContent="API connected";
+$("status").className="status ok";
+$("status").textContent="✅ IsokoHub API + D1 database connected.";
+}catch(e){
+$("apiStatus").textContent="API connection failed";
+$("status").className="status err";
+$("status").textContent="⚠️ Backend connection failed.";
+}
+
+await countriesLoad();
+await categoriesLoad();
+await servicesLoad();
+await session();
+await loadProducts("?limit=100");
+}
+
+async function countriesLoad(){
+try{
+let d=await api("/countries");
+countries=Array.isArray(d)?d:(d.countries||[]);
+fillCountries();
+}catch(e){console.log(e)}
+}
+
+function fillCountries(){
+["heroCountry","filterCountry","regCountry","sellCountry"].forEach(id=>{
+let s=$(id);if(!s)return;
+let first=s.options[0]?.outerHTML||"";
+s.innerHTML=first;
+countries.forEach(c=>{
+let o=document.createElement("option");
+o.value=c;o.textContent=c;s.appendChild(o)
 });
-
-const readJSON = async request => {
-try {
-return await request.json();
-} catch {
-return {};
-}
-};
-
-const sha256 = async value => {
-const data = new TextEncoder().encode(String(value));
-const hash = await crypto.subtle.digest("SHA-256", data);
-
-return [...new Uint8Array(hash)]
-.map(x => x.toString(16).padStart(2, "0"))
-.join("");
-};
-
-const normalize = value =>
-String(value ?? "")
-.trim()
-.toLowerCase();
-
-const number = (value, fallback = 0) => {
-const n = Number(value);
-return Number.isFinite(n) ? n : fallback;
-};
-
-const limitValue = value => {
-const n = Math.floor(number(value, 24));
-return Math.min(Math.max(n, 1), 100);
-};
-
-const tokenFromRequest = request => {
-const auth = request.headers.get("Authorization") || "";
-
-if (!auth.startsWith("Bearer ")) {
-return null;
+});
 }
 
-return auth.slice(7).trim() || null;
-};
-
-const requireDB = env => {
-if (!env?.DB) {
-throw new Error("D1 database binding DB is not available.");
-}
-};
-
-const safeUser = user => {
-if (!user) return null;
-
-return {
-id: user.id,
-name: user.name,
-email: user.email,
-country: user.country,
-role: user.role,
-is_active: user.is_active,
-is_verified: user.is_verified,
-created_at: user.created_at
-};
-};
-
-const authenticate = async (request, env) => {
-const token = tokenFromRequest(request);
-
-if (!token) return null;
-
-const tokenHash = await sha256(token);
-
-const result = await env.DB.prepare(  SELECT   s.id AS session_id,   s.user_id AS user_id,   s.expires_at,   u.id AS id,   u.name,   u.email,   u.country,   u.role,   u.is_active,   u.is_verified,   u.created_at   FROM sessions s   JOIN users u   ON u.id = s.user_id   WHERE s.token_hash = ?   AND s.expires_at > datetime('now')   AND u.is_active = 1   LIMIT 1  ).bind(tokenHash).first();
-
-return result || null;
-};
-
-const requireUser = async (request, env) => {
-requireDB(env);
-
-const user = await authenticate(request, env);
-
-if (!user) {
-throw new Error("UNAUTHORIZED");
+async function categoriesLoad(){
+try{
+let d=await api("/categories");
+categories=Array.isArray(d)?d:(d.categories||[]);
+fillCategories();
+}catch(e){console.log(e)}
 }
 
-return user;
-};
-
-const requireAdmin = async (request, env) => {
-const user = await requireUser(request, env);
-
-if (user.role !== "admin") {
-throw new Error("ADMIN_ONLY");
+function catName(c){
+return typeof c==="string"?c:(c.name||c.title||c.category||"")
 }
 
-return user;
-};
-
-/* =========================================================
-SERVICE DETECTION
-========================================================= */
-
-const productText = product =>
-normalize(  ${product?.title || ""}   ${product?.category || ""}   ${product?.description || ""}   ${product?.specs || ""}   ${product?.brand || ""}   ${product?.model || ""}  );
-
-const isServiceProduct = product => {
-const category = normalize(product?.category);
-
-if (
-SERVICE_CATEGORIES.some(
-c => normalize(c) === category
-)
-) {
-return true;
+function fillCategories(){
+["filterCategory","sellCategory"].forEach(id=>{
+let s=$(id);if(!s)return;
+s.innerHTML='<option value="">All Categories</option>';
+categories.forEach(c=>{
+let n=catName(c);if(!n)return;
+let o=document.createElement("option");
+o.value=n;o.textContent=n;s.appendChild(o)
+});
+if(id==="sellCategory")s.options[0].textContent="Choose Category";
+});
 }
 
-const text = productText(product);
-
-return SERVICE_KEYWORDS.some(keyword =>
-text.includes(normalize(keyword))
-);
-};
-
-const SERVICE_MAP = {
-"business & professional": [
-"business","consult","consulting","professional",
-"management","accounting","accountant"
-],
-
-"engineering": [
-"engineer","engineering","civil","mechanical",
-"electrical","software engineer","structural",
-"chemical","environmental"
-],
-
-"it & technology": [
-"it","technology","software","developer","development",
-"website","web","app","application","computer","cyber",
-"programming","database","cloud","network"
-],
-
-"construction & property": [
-"construction","architect","architecture","property",
-"building","plumbing","electrician","masonry",
-"carpentry","real estate"
-],
-
-"education & teachers": [
-"teacher","teaching","tutor","education","course",
-"training","school","lesson","language","english"
-],
-
-"art & creative": [
-"artist","graphic","design","designer","photography",
-"photographer","creative","fashion","illustration",
-"logo","painting","craft"
-],
-
-"film & entertainment": [
-"film","filmmaker","actor","producer","video",
-"videographer","entertainment","cinema","production"
-],
-
-"marketing & communication": [
-"marketing","advertising","social media",
-"communication","branding","seo","content"
-],
-
-"automotive & transport": [
-"car","automotive","transport","driver","vehicle",
-"mechanic","motorcycle","truck"
-],
-
-"agriculture & environment": [
-"agriculture","farming","environment","garden",
-"irrigation","livestock","agronomy"
-],
-
-"home services": [
-"cleaning","home","repair","plumbing","electrician",
-"moving","painting","gardening"
-],
-
-"legal & finance": [
-"lawyer","legal","finance","accounting","accountant",
-"tax","insurance","audit"
-],
-
-"health & wellness": [
-"health","doctor","clinic","wellness","fitness",
-"therapy","nutrition","nurse"
-],
-
-"beauty & personal care": [
-"beauty","salon","barber","makeup","hair",
-"spa","nails","personal care"
-],
-
-"food & hospitality": [
-"food","catering","restaurant","hotel","hospitality",
-"chef","cooking","baking"
-],
-
-"events": [
-"event","wedding","party","decoration","dj",
-"ceremony","entertainment"
-],
-
-"logistics": [
-"logistics","delivery","shipping","warehouse",
-"courier","freight","transport"
-],
-
-"travel & tourism": [
-"travel","tour","tourism","hotel","guide",
-"safari","vacation","trip"
-],
-
-"industrial & manufacturing": [
-"industrial","manufacturing","factory","machine",
-"production","fabrication","welding"
-],
-
-"jobs & freelance": [
-"job","freelance","freelancer","remote","work",
-"employment","contract"
-]
-};
-
-const serviceCategoryMatch = (product, category) => {
-if (!category) return true;
-
-const requested = normalize(category);
-const actual = normalize(product?.category);
-
-if (actual === requested) {
-return true;
+async function servicesLoad(){
+try{
+let d=await api("/service-categories");
+serviceCategories=Array.isArray(d)?d:(d.categories||[]);
+}catch(e){
+serviceCategories=Object.keys(icons);
+}
+renderServices();
 }
 
-const keywords = SERVICE_MAP[requested] || [];
+function renderServices(){
+$("quick").innerHTML=serviceCategories.slice(0,12).map(c=>{
+let n=catName(c),i=icons[n]||"🛠️";
+return `<button onclick="serviceSearch(${JSON.stringify(n)})">
+<div class="emoji">${i}</div><strong>${esc(n)}</strong><small>Find services</small>
+</button>`
+}).join("");
 
-if (!keywords.length) {
-return true;
+$("categories").innerHTML=serviceCategories.map(c=>{
+let n=catName(c),i=icons[n]||"🛠️";
+return `<button class="cat" onclick="serviceSearch(${JSON.stringify(n)})">
+<span class="i">${i}</span><span><strong>${esc(n)}</strong><small>Explore services</small></span>
+</button>`
+}).join("");
 }
 
-const text = productText(product);
+async function loadProducts(q="?limit=100"){
+$("products").innerHTML='<div class="empty">🔄 Loading marketplace...</div>';
+try{
+let d=await api("/products"+q);
+products=Array.isArray(d)?d:(d.products||d.items||[]);
+render(products)
+}catch(e){
+$("products").innerHTML=`<div class="empty">❌ ${esc(e.message)}</div>`
+}
+}
 
-return keywords.some(keyword =>
-text.includes(normalize(keyword))
-);
+function isService(p){
+let text=[p.title,p.name,p.category,p.description,p.specs,p.type].join(" ").toLowerCase();
+return serviceWords.some(w=>text.includes(w))
+}
+
+function render(list){
+if(!list.length){
+$("products").innerHTML='<div class="empty">🔎 No results found.<br>Try another product, service, category or country.</div>';
+return;
+}
+$("products").innerHTML=list.map(card).join("")
+}
+
+function card(p){
+let id=p.id;
+let title=p.title||p.name||"Untitled";
+let service=isService(p);
+let img=p.image_url||p.imageUrl||p.image||"";
+let country=p.country||p.seller_country||"";
+let loc=p.district||p.city||p.location||country;
+let seller=p.seller_name||p.sellerName||p.seller||"IsokoHub Seller";
+let saved=savedData.some(x=>String(x.id)===String(id));
+
+return `<article class="card">
+<div class="pic">
+${img?`<img src="${esc(img)}" alt="${esc(title)}" onerror="this.style.display='none'">`
+:`<div class="placeholder">${service?"🛠️":"📦"}</div>`}
+</div>
+<div class="body">
+<h3>${esc(title)}</h3>
+<span class="tag">${service?"SERVICE":"PRODUCT"}</span>
+${p.category?`<span class="tag">${esc(p.category)}</span>`:""}
+<div class="price">${money(p.price,p.currency||"RWF")}</div>
+<div class="meta">👤 ${esc(seller)}</div>
+<div class="meta">🌍 ${esc(country)}</div>
+${loc?`<div class="meta">📍 ${esc(loc)}</div>`:""}
+<div class="card-actions">
+<button class="btn sm" onclick="view(${JSON.stringify(String(id))})">View</button>
+<button class="btn gray sm" onclick="toggleSave(${JSON.stringify(String(id))})">${saved?"❤️":"♡"}</button>
+</div>
+<button class="btn green sm" style="width:100%;margin-top:7px" onclick="addById(${JSON.stringify(String(id))})">
+${service?"Contact / Order":"🛒 Add to Cart"}
+</button>
+</div></article>`
+}
+
+async function search(q="",country=""){
+$("filterSearch").value=q;
+if(country)$("filterCountry").value=country;
+
+let type=$("filterType").value;
+let params=new URLSearchParams();
+if(q)params.set("search",q);
+if(country)params.set("country",country);
+params.set("limit","100");
+
+let endpoint=type==="service"?"/services":"/products";
+try{
+let d=await api(endpoint+"?"+params);
+let r=Array.isArray(d)?d:(d.products||d.services||d.items||[]);
+$("resultTitle").textContent=q?`Search results for "${q}"`:"Marketplace";
+render(r);
+}catch(e){$("products").innerHTML=`<div class="empty">❌ ${esc(e.message)}</div>`}
+}
+
+function filter(){
+let q=$("filterSearch").value.trim();
+let c=$("filterCategory").value;
+let country=$("filterCountry").value;
+let type=$("filterType").value;
+let p=new URLSearchParams();
+if(q)p.set("search",q);
+if(c)p.set("category",c);
+if(country)p.set("country",country);
+p.set("limit","100");
+let endpoint=type==="service"?"/services":"/products";
+loadEndpoint(endpoint+"?"+p)
+}
+
+async function loadEndpoint(url){
+$("products").innerHTML='<div class="empty">🔄 Searching...</div>';
+try{
+let d=await api(url);
+let r=Array.isArray(d)?d:(d.products||d.services||d.items||[]);
+products=r;render(r)
+}catch(e){$("products").innerHTML=`<div class="empty">❌ ${esc(e.message)}</div>`}
+}
+
+function serviceSearch(c){
+$("filterType").value="service";
+$("filterCategory").value="";
+$("filterSearch").value=c;
+$("heroInput").value=c;
+$("searchInput").value=c;
+$("resultTitle").textContent=c;
+$("resultSub").textContent="Services related to "+c;
+search(c);
+document.querySelector("main").scrollIntoView({behavior:"smooth"});
+}
+
+function home(){
+closeAll();
+$("filterSearch").value="";
+$("filterCategory").value="";
+$("filterCountry").value="";
+$("filterType").value="";
+$("resultTitle").textContent="Marketplace";
+$("resultSub").textContent="Products and services available worldwide.";
+loadProducts("?limit=100");
+scrollTo({top:0,behavior:"smooth"})
+}
+
+function services(){
+$("filterType").value="service";
+$("resultTitle").textContent="Global Services";
+$("resultSub").textContent="Find professionals and service providers worldwide.";
+loadEndpoint("/services?limit=100");
+document.querySelector("main").scrollIntoView({behavior:"smooth"})
+}
+
+function education(){serviceSearch("Education & Teachers")}
+function creators(){serviceSearch("Art & Creative")}
+function business(){serviceSearch("Business & Professional")}
+function work(){serviceSearch("Jobs & Freelance")}
+
+
+/* AUTH */
+
+function auth(){openM("authModal");authTab("login")}
+
+function authTab(t){
+$("loginForm").style.display=t==="login"?"block":"none";
+$("registerForm").style.display=t==="register"?"block":"none";
+$("lt").classList.toggle("active",t==="login");
+$("rt").classList.toggle("active",t==="register");
+$("authMsg").textContent=""
+}
+
+async function login(e){
+e.preventDefault();
+try{
+let d=await api("/login",{method:"POST",body:JSON.stringify({
+email:$("loginEmail").value.trim(),password:$("loginPassword").value
+})});
+if(d.token)localStorage.setItem("isokohub_token",d.token);
+user=d.user||null;
+updateUser();
+closeM("authModal");
+}catch(e){$("authMsg").textContent="❌ "+e.message}
+}
+
+async function register(e){
+e.preventDefault();
+try{
+let d=await api("/register",{method:"POST",body:JSON.stringify({
+name:$("regName").value.trim(),
+email:$("regEmail").value.trim(),
+password:$("regPassword").value,
+country:$("regCountry").value
+})});
+if(d.token)localStorage.setItem("isokohub_token",d.token);
+user=d.user||null;
+updateUser();
+closeM("authModal");
+}catch(e){$("authMsg").textContent="❌ "+e.message}
+}
+
+async function session(){
+if(!localStorage.getItem("isokohub_token")){updateUser();return}
+try{
+let d=await api("/me");user=d.user||d;updateUser()
+}catch(e){
+localStorage.removeItem("isokohub_token");user=null;updateUser()
+}
+}
+
+function updateUser(){
+$("authBtn").textContent=user?(user.name||user.email||"Profile"):"Login";
+$("adminBtn").style.display=user?.role==="admin"?"block":"none"
+}
+
+async function logout(){
+try{await api("/logout",{method:"POST"})}catch(e){}
+localStorage.removeItem("isokohub_token");
+user=null;updateUser();closeAll()
+}
+
+
+/* PRODUCT */
+
+async function view(id){
+openM("productModal");
+$("productDetails").innerHTML="🔄 Loading...";
+try{
+let d=await api("/products/"+encodeURIComponent(id));
+let p=d.product||d;
+let img=p.image_url||p.imageUrl||p.image||"";
+$("productTitle").textContent=p.title||"Product";
+$("productDetails").innerHTML=`
+<div class="profile">
+<div>${img?`<img src="${esc(img)}" style="width:100%;max-width:300px;border-radius:12px">`
+:`<div class="pic" style="height:250px">${isService(p)?"🛠️":"📦"}</div>`}</div>
+<div>
+<h2>${esc(p.title||"")}</h2>
+<div class="price">${money(p.price,p.currency||"RWF")}</div>
+<p class="meta">Category: ${esc(p.category||"")}</p>
+<p class="meta">Country: ${esc(p.country||p.seller_country||"")}</p>
+<p class="meta">Location: ${esc(p.district||p.city||"")}</p>
+<p style="margin-top:15px">${esc(p.specs||p.description||"No description available.")}</p>
+<br>
+<button class="btn green" onclick="addById(${JSON.stringify(String(p.id))})">${isService(p)?"Contact / Order Service":"🛒 Add to Cart"}</button>
+<button class="btn gray" onclick="toggleSave(${JSON.stringify(String(p.id))})">❤️ Save</button>
+</div></div>`
+}catch(e){$("productDetails").innerHTML=`❌ ${esc(e.message)}`}
+}
+
+
+/* CART */
+
+async function addById(id){
+let p=products.find(x=>String(x.id)===String(id));
+if(!p){
+try{let d=await api("/products/"+encodeURIComponent(id));p=d.product||d}
+catch(e){alert(e.message);return}
+}
+if(!cartData.some(x=>String(x.id)===String(id))){
+cartData.push(p);updateCounts()
+}
+cartOpen()
+}
+
+function cartOpen(){
+$("cartItems").innerHTML="";
+if(!cartData.length){
+$("cartItems").innerHTML='<div class="empty">🛒 Your cart is empty.</div>';
+$("cartTotal").textContent="";
+openM("cartModal");return
+}
+let total=0;
+$("cartItems").innerHTML=cartData.map((p,i)=>{
+total+=Number(p.price||0);
+let img=p.image_url||p.image||"";
+return `<div class="cart-row">
+${img?`<img class="cart-img" src="${esc(img)}">`:`<div class="cart-img">📦</div>`}
+<div><strong>${esc(p.title||"")}</strong><div class="meta">${money(p.price,p.currency||"RWF")}</div></div>
+<button class="btn red sm" onclick="removeCart(${i})">Remove</button>
+</div>`
+}).join("");
+$("cartTotal").textContent="Total: "+money(total,cartData[0]?.currency||"RWF");
+openM("cartModal")
+}
+
+function removeCart(i){
+cartData.splice(i,1);updateCounts();cartOpen()
+}
+
+async function checkout(){
+if(!loginRequired()||!cartData.length)return;
+try{
+for(let p of cartData){
+await api("/orders",{method:"POST",body:JSON.stringify({product_id:p.id,quantity:1})})
+}
+cartData=[];updateCounts();cartOpen();alert("✅ Order placed successfully.")
+}catch(e){alert("Order failed: "+e.message)}
+}
+
+
+/* SAVED */
+
+async function toggleSave(id){
+if(!loginRequired())return;
+let exists=savedData.some(x=>String(x.id)===String(id));
+try{
+if(exists){
+savedData=savedData.filter(x=>String(x.id)!==String(id));
+try{await api("/saved/"+encodeURIComponent(id),{method:"DELETE"})}catch(e){}
+}else{
+let p=products.find(x=>String(x.id)===String(id));
+if(p)savedData.push(p);
+await api("/saved",{method:"POST",body:JSON.stringify({product_id:id})})
+}
+updateCounts();render(products)
+}catch(e){alert(e.message)}
+}
+
+async function saved(){
+if(!loginRequired())return;
+openM("savedModal");
+$("savedItems").innerHTML="🔄 Loading...";
+try{
+let d=await api("/saved");
+let list=Array.isArray(d)?d:(d.saved||d.items||[]);
+$("savedItems").innerHTML=list.length?list.map(card).join():'<div class="empty">❤️ No saved items.</div>'
+}catch(e){
+$("savedItems").innerHTML=savedData.length?savedData.map(card).join():'<div class="empty">❤️ No saved items.</div>'
+}
+}
+
+
+/* ORDERS */
+
+async function orders(){
+if(!loginRequired())return;
+openM("ordersModal");
+$("ordersArea").innerHTML="🔄 Loading...";
+try{
+let d=await api("/orders");
+let list=Array.isArray(d)?d:(d.orders||d.items||[]);
+if(!list.length){$("ordersArea").innerHTML='<div class="empty">📦 No orders yet.</div>';return}
+$("ordersArea").innerHTML=`<div class="table"><table>
+<tr><th>ID</th><th>Product</th><th>Qty</th><th>Total</th><th>Status</th><th>Payment</th></tr>
+${list.map(o=>`<tr><td>${esc(o.id)}</td><td>${esc(o.product_title||o.title||"")}</td><td>${esc(o.quantity||1)}</td>
+<td>${money(o.total||o.total_amount||0,o.currency||"RWF")}</td><td>${esc(o.status||"")}</td><td>${esc(o.payment_status||"unpaid")}</td></tr>`).join("")}
+</table></div>`
+}catch(e){$("ordersArea").innerHTML=`❌ ${esc(e.message)}`}
+}
+
+
+/* MESSAGES */
+
+async function messages(){
+if(!loginRequired())return;
+openM("messagesModal");
+$("messagesArea").innerHTML="🔄 Loading...";
+try{
+let d=await api("/messages");
+let list=Array.isArray(d)?d:(d.messages||d.items||[]);
+$("messagesArea").innerHTML=list.length?list.map(m=>{
+let mine=String(m.sender_id)===String(user?.id);
+return `<div class="msg ${mine?"mine":""}"><span class="bubble">${esc(m.body||m.message||"")}</span>
+<div class="meta">${esc(m.sender_name||"User "+(m.sender_id||""))}</div></div>`
+}).join(""):'<div class="empty">💬 No messages yet.</div>'
+}catch(e){$("messagesArea").innerHTML=`❌ ${esc(e.message)}`}
+}
+
+async function sendMessage(e){
+e.preventDefault();
+if(!loginRequired())return;
+try{
+await api("/messages",{method:"POST",body:JSON.stringify({
+receiver_id:Number($("msgTo").value),body:$("msgBody").value.trim()
+})});
+$("msgBody").value="";
+messages()
+}catch(e){alert(e.message)}
+}
+
+
+/* PROFILE */
+
+async function profile(){
+if(!loginRequired())return;
+openM("profileModal");
+try{
+let d=await api("/me");user=d.user||d;updateUser();
+$("profileArea").innerHTML=`
+<div class="profile"><div><div class="avatar">👤</div></div>
+<div><h2>${esc(user.name||"IsokoHub User")}</h2>
+<p class="meta">${esc(user.email||"")}</p>
+<p class="meta">🌍 ${esc(user.country||"")}</p>
+<p class="meta">Role: ${esc(user.role||"buyer")}</p><br>
+<button class="btn" onclick="sell()">➕ Sell / Offer Service</button>
+<button class="btn gray" onclick="logout()">Logout</button>
+</div></div>`
+}catch(e){$("profileArea").innerHTML=`❌ ${esc(e.message)}`}
+}
+
+
+/* SELL */
+
+function sell(){
+if(!loginRequired())return;
+openM("sellModal")
+}
+
+async function createProduct(e){
+e.preventDefault();
+try{
+await api("/products",{method:"POST",body:JSON.stringify({
+title:$("sellTitle").value.trim(),
+category:$("sellCategory").value,
+price:Number($("sellPrice").value),
+currency:$("sellCurrency").value.trim()||"RWF",
+stock:Number($("sellStock").value||1),
+condition:$("sellCondition").value,
+country:$("sellCountry").value,
+district:$("sellDistrict").value.trim(),
+image_url:$("sellImage").value.trim(),
+specs:$("sellSpecs").value.trim()
+})});
+$("sellMsg").innerHTML='<p style="color:#087443">✅ Published successfully.</p>';
+$("sellForm").reset();
+await loadProducts("?limit=100")
+}catch(e){$("sellMsg").innerHTML=`<p style="color:#b42318">❌ ${esc(e.message)}</p>`}
+}
+
+
+/* ADMIN */
+
+function admin(){
+if(!loginRequired())return;
+if(user.role!=="admin"){alert("Admin access required.");return}
+openM("adminModal");adminSection("overview")
+}
+
+async function adminSection(section){
+$("adminContent").innerHTML="🔄 Loading...";
+try{
+if(section==="overview"){
+let d=await api("/admin/stats"),s=d.stats||d;
+$("adminContent").innerHTML=`
+<h2>📊 Overview</h2><br><div class="stats">
+${stat("Users",s.users)}${stat("Sellers",s.sellers)}${stat("Products",s.products)}
+${stat("Orders",s.orders)}${stat("Revenue",money(s.revenue||0,"RWF"))}
+${stat("Commission",money(s.commission||0,"RWF"))}
+</div>`;
+return
+}
+
+let map={
+users:"/admin/users",sellers:"/admin/sellers",products:"/admin/products",
+orders:"/admin/orders",payments:"/admin/payments",services:"/admin/services",
+categories:"/admin/categories",reports:"/admin/reports"
 };
 
-/* =========================================================
-MAIN WORKER
-========================================================= */
-
-export default {
-async fetch(request, env) {
-const url = new URL(request.url);
-const path = url.pathname;
-const method = request.method.toUpperCase();
-
-if (method === "OPTIONS") {  
-  return new Response(null, {  
-    status: 204,  
-    headers: CORS  
-  });  
-}  
-
-try {  
-  requireDB(env);  
-
-  /* =====================================================  
-     HEALTH  
-     ===================================================== */  
-
-  if (path === "/api/health" && method === "GET") {  
-    let database = "connected";  
-
-    try {  
-      await env.DB.prepare("SELECT 1").first();  
-    } catch {  
-      database = "error";  
-    }  
-
-    return json({  
-      ok: database === "connected",  
-      service: "IsokoHub API",  
-      database,  
-      time: new Date().toISOString()  
-    });  
-  }  
-
-  /* =====================================================  
-     CONFIG  
-     ===================================================== */  
-
-  if (path === "/api/config" && method === "GET") {  
-    return json({  
-      production: true,  
-      platform: "cloudflare-workers",  
-      database: "D1",  
-      assets: "Cloudflare Assets",  
-      marketplace: "global",  
-      countries: COUNTRIES.length,  
-      service_platform: true,  
-      service_categories: SERVICE_CATEGORIES.length,  
-      commission_rate: COMMISSION_RATE  
-    });  
-  }  
-
-  /* =====================================================  
-     COUNTRIES  
-     ===================================================== */  
-
-  if (path === "/api/countries" && method === "GET") {  
-    const search = normalize(  
-      url.searchParams.get("search")  
-    );  
-
-    const countries = search  
-      ? COUNTRIES.filter(country =>  
-          normalize(country).includes(search)  
-        )  
-      : COUNTRIES;  
-
-    return json({  
-      count: countries.length,  
-      countries  
-    });  
-  }  
-
-  /* =====================================================  
-     SERVICE CATEGORIES  
-     ===================================================== */  
-
-  if (  
-    path === "/api/service-categories" &&  
-    method === "GET"  
-  ) {  
-    return json({  
-      count: SERVICE_CATEGORIES.length,  
-      categories: SERVICE_CATEGORIES  
-    });  
-  }  
-
-  /* =====================================================  
-     DATABASE CATEGORIES  
-     ===================================================== */  
-
-  if (  
-    path === "/api/categories" &&  
-    method === "GET"  
-  ) {  
-    const result = await env.DB.prepare(`  
-      SELECT *  
-      FROM categories  
-      WHERE is_active = 1  
-      ORDER BY name ASC  
-    `).all();  
-
-    return json({  
-      categories: result.results || []  
-    });  
-  }  
-
-  /* =====================================================  
-     PRODUCTS  
-     ===================================================== */  
-
-  if (  
-    path === "/api/products" &&  
-    method === "GET"  
-  ) {  
-    const search =  
-      url.searchParams.get("search") || "";  
-
-    const category =  
-      url.searchParams.get("category") || "";  
-
-    const country =  
-      url.searchParams.get("country") || "";  
-
-    const limit =  
-      limitValue(  
-        url.searchParams.get("limit")  
-      );  
-
-    const conditions = [  
-      "p.status = 'active'",  
-      "u.is_active = 1"  
-    ];  
-
-    const params = [];  
-
-    if (search) {  
-      conditions.push(`  
-        (  
-          p.title LIKE ?  
-          OR p.description LIKE ?  
-          OR p.category LIKE ?  
-          OR p.brand LIKE ?  
-          OR p.model LIKE ?  
-          OR p.specs LIKE ?  
-        )  
-      `);  
-
-      const q = `%${search}%`;  
-
-      params.push(  
-        q,q,q,q,q,q  
-      );  
-    }  
-
-    if (category) {  
-      conditions.push(  
-        "p.category LIKE ?"  
-      );  
-
-      params.push(  
-        `%${category}%`  
-      );  
-    }  
-
-    if (country) {  
-      conditions.push(  
-        "p.country LIKE ?"  
-      );  
-
-      params.push(  
-        `%${country}%`  
-      );  
-    }  
-
-    params.push(limit);  
-
-    const result = await env.DB.prepare(`  
-      SELECT  
-        p.*,  
-        u.name AS seller_name,  
-        u.email AS seller_email,  
-        u.country AS seller_country,  
-        u.is_verified AS seller_verified  
-      FROM products p  
-      LEFT JOIN users u  
-        ON u.id = p.seller_id  
-      WHERE ${conditions.join(" AND ")}  
-      ORDER BY p.created_at DESC  
-      LIMIT ?  
-    `)  
-      .bind(...params)  
-      .all();  
-
-    return json({  
-      products: result.results || [],  
-      count: (result.results || []).length,  
-      global: true  
-    });  
-  }  
-
-  /* =====================================================  
-     SINGLE PRODUCT  
-     ===================================================== */  
-
-  const productMatch =  
-    path.match(/^\/api\/products\/(\d+)$/);  
-
-  if (  
-    productMatch &&  
-    method === "GET"  
-  ) {  
-    const id = productMatch[1];  
-
-    const product =  
-      await env.DB.prepare(`  
-        SELECT  
-          p.*,  
-          u.name AS seller_name,  
-          u.email AS seller_email,  
-          u.country AS seller_country,  
-          u.is_verified AS seller_verified  
-        FROM products p  
-        LEFT JOIN users u  
-          ON u.id = p.seller_id  
-        WHERE p.id = ?  
-        LIMIT 1  
-      `)  
-        .bind(id)  
-        .first();  
-
-    if (!product) {  
-      return json({  
-        error: "Product not found."  
-      }, 404);  
-    }  
-
-    try {  
-      await env.DB.prepare(`  
-        UPDATE products  
-        SET views = COALESCE(views, 0) + 1  
-        WHERE id = ?  
-      `)  
-        .bind(id)  
-        .run();  
-    } catch {}  
-
-    return json({  
-      product  
-    });  
-  }  
-
-  /* =====================================================  
-     GLOBAL SERVICES  
-     ===================================================== */  
-
-  if (  
-    path === "/api/services" &&  
-    method === "GET"  
-  ) {  
-    const search =  
-      normalize(  
-        url.searchParams.get("search")  
-      );  
-
-    const category =  
-      url.searchParams.get("category") || "";  
-
-    const country =  
-      url.searchParams.get("country") || "";  
-
-    const city =  
-      url.searchParams.get("city") ||  
-      url.searchParams.get("district") ||  
-      "";  
-
-    const provider =  
-      url.searchParams.get("provider") ||  
-      url.searchParams.get("seller") ||  
-      "";  
-
-    const online =  
-      normalize(  
-        url.searchParams.get("online")  
-      );  
-
-    const limit =  
-      limitValue(  
-        url.searchParams.get("limit")  
-      );  
-
-    const conditions = [  
-      "p.status = 'active'",  
-      "u.is_active = 1"  
-    ];  
-
-    const params = [];  
-
-    if (country) {  
-      conditions.push(  
-        "p.country LIKE ?"  
-      );  
-
-      params.push(  
-        `%${country}%`  
-      );  
-    }  
-
-    if (city) {  
-      conditions.push(  
-        "p.district LIKE ?"  
-      );  
-
-      params.push(  
-        `%${city}%`  
-      );  
-    }  
-
-    if (provider) {  
-      conditions.push(  
-        "u.name LIKE ?"  
-      );  
-
-      params.push(  
-        `%${provider}%`  
-      );  
-    }  
-
-    /*  
-      IMPORTANT:  
-      Search is performed against all major product fields.  
-      This supports searches such as:  
-      engineer  
-      photographer  
-      lawyer  
-      teacher  
-      web developer  
-      business consultant  
-      driver  
-      filmmaker  
-      etc.  
-    */  
-
-    if (search) {  
-      conditions.push(`  
-        (  
-          p.title LIKE ?  
-          OR p.description LIKE ?  
-          OR p.category LIKE ?  
-          OR p.specs LIKE ?  
-          OR p.brand LIKE ?  
-          OR p.model LIKE ?  
-          OR u.name LIKE ?  
-        )  
-      `);  
-
-      const q = `%${search}%`;  
-
-      params.push(  
-        q,q,q,q,q,q,q  
-      );  
-    }  
-
-    /*  
-      Retrieve a larger global pool before JavaScript  
-      service classification.  
-    */  
-
-    const result =  
-      await env.DB.prepare(`  
-        SELECT  
-          p.*,  
-          u.name AS seller_name,  
-          u.email AS seller_email,  
-          u.country AS seller_country,  
-          u.is_verified AS seller_verified  
-        FROM products p  
-        LEFT JOIN users u  
-          ON u.id = p.seller_id  
-        WHERE ${conditions.join(" AND ")}  
-        ORDER BY p.created_at DESC  
-        LIMIT 500  
-      `)  
-        .bind(...params)  
-        .all();  
-
-    let services =  
-      (result.results || [])  
-        .filter(isServiceProduct)  
-        .filter(product =>  
-          serviceCategoryMatch(  
-            product,  
-            category  
-          )  
-        );  
-
-    if (online === "true") {  
-      services =  
-        services.filter(product => {  
-          const text =  
-            productText(product);  
-
-          return (  
-            text.includes("online") ||  
-            text.includes("remote") ||  
-            text.includes("virtual")  
-          );  
-        });  
-    }  
-
-    services =  
-      services.slice(0, limit);  
-
-    return json({  
-      ok: true,  
-      services,  
-      count: services.length,  
-      country:  
-        country || "All countries",  
-      city:  
-        city || "All cities",  
-      category:  
-        category || "All services",  
-      provider:  
-        provider || "All providers",  
-      global: true,  
-      countries: COUNTRIES.length  
-    });  
-  }  
-
-  /* =====================================================  
-     REGISTER  
-     ===================================================== */  
-
-  if (  
-    path === "/api/register" &&  
-    method === "POST"  
-  ) {  
-    const body =  
-      await readJSON(request);  
-
-    const name =  
-      String(body.name || "").trim();  
-
-    const email =  
-      String(body.email || "")  
-        .trim()  
-        .toLowerCase();  
-
-    const password =  
-      String(body.password || "");  
-
-    const country =  
-      String(  
-        body.country || "Rwanda"  
-      ).trim();  
-
-    if (!name || !email || !password) {  
-      return json({  
-        error:  
-          "Name, email and password are required."  
-      }, 400);  
-    }  
-
-    if (password.length < 6) {  
-      return json({  
-        error:  
-          "Password must be at least 6 characters."  
-      }, 400);  
-    }  
-
-    const existing =  
-      await env.DB.prepare(`  
-        SELECT id  
-        FROM users  
-        WHERE email = ?  
-        LIMIT 1  
-      `)  
-        .bind(email)  
-        .first();  
-
-    if (existing) {  
-      return json({  
-        error:  
-          "Email already registered."  
-      }, 409);  
-    }  
-
-    const passwordHash =  
-      await sha256(password);  
-
-    const result =  
-      await env.DB.prepare(`  
-        INSERT INTO users  
-        (  
-          name,  
-          email,  
-          password_hash,  
-          country,  
-          role,  
-          is_active,  
-          is_verified  
-        )  
-        VALUES  
-        (?, ?, ?, ?, 'buyer', 1, 0)  
-      `)  
-        .bind(  
-          name,  
-          email,  
-          passwordHash,  
-          country  
-        )  
-        .run();  
-
-    return json({  
-      ok: true,  
-      user_id:  
-        result.meta.last_row_id  
-    }, 201);  
-  }  
-
-  /* =====================================================  
-     LOGIN  
-     ===================================================== */  
-
-  if (  
-    path === "/api/login" &&  
-    method === "POST"  
-  ) {  
-    const body =  
-      await readJSON(request);  
-
-    const email =  
-      String(body.email || "")  
-        .trim()  
-        .toLowerCase();  
-
-    const password =  
-      String(body.password || "");  
-
-    if (!email || !password) {  
-      return json({  
-        error:  
-          "Email and password are required."  
-      }, 400);  
-    }  
-
-    const user =  
-      await env.DB.prepare(`  
-        SELECT *  
-        FROM users  
-        WHERE email = ?  
-        LIMIT 1  
-      `)  
-        .bind(email)  
-        .first();  
-
-    if (!user) {  
-      return json({  
-        error:  
-          "Invalid email or password."  
-      }, 401);  
-    }  
-
-    if (!user.is_active) {  
-      return json({  
-        error:  
-          "This account is inactive."  
-      }, 403);  
-    }  
-
-    const passwordHash =  
-      await sha256(password);  
-
-    if (  
-      passwordHash !==  
-      user.password_hash  
-    ) {  
-      return json({  
-        error:  
-          "Invalid email or password."  
-      }, 401);  
-    }  
-
-    const rawToken =  
-      crypto.randomUUID() +  
-      "-" +  
-      crypto.randomUUID();  
-
-    const tokenHash =  
-      await sha256(rawToken);  
-
-    const expiresAt =  
-      new Date(  
-        Date.now() +  
-        30 * 24 * 60 * 60 * 1000  
-      ).toISOString();  
-
-    await env.DB.prepare(`  
-      INSERT INTO sessions  
-      (  
-        user_id,  
-        token_hash,  
-        expires_at  
-      )  
-      VALUES (?, ?, ?)  
-    `)  
-      .bind(  
-        user.id,  
-        tokenHash,  
-        expiresAt  
-      )  
-      .run();  
-
-    return json({  
-      ok: true,  
-      token: rawToken,  
-      user: safeUser(user)  
-    });  
-  }  
-
-  /* =====================================================  
-     ME  
-     ===================================================== */  
-
-  if (  
-    path === "/api/me" &&  
-    method === "GET"  
-  ) {  
-    const user =  
-      await requireUser(  
-        request,  
-        env  
-      );  
-
-    return json({  
-      user: safeUser(user)  
-    });  
-  }  
-
-  if (  
-    path === "/api/me" &&  
-    method === "PATCH"  
-  ) {  
-    const user =  
-      await requireUser(  
-        request,  
-        env  
-      );  
-
-    const body =  
-      await readJSON(request);  
-
-    const name =  
-      body.name !== undefined  
-        ? String(body.name).trim()  
-        : user.name;  
-
-    const country =  
-      body.country !== undefined  
-        ? String(body.country).trim()  
-        : user.country;  
-
-    await env.DB.prepare(`  
-      UPDATE users  
-      SET  
-        name = ?,  
-        country = ?  
-      WHERE id = ?  
-    `)  
-      .bind(  
-        name,  
-        country,  
-        user.user_id  
-      )  
-      .run();  
-
-    const updated =  
-      await env.DB.prepare(`  
-        SELECT *  
-        FROM users  
-        WHERE id = ?  
-        LIMIT 1  
-      `)  
-        .bind(user.user_id)  
-        .first();  
-
-    return json({  
-      ok: true,  
-      user: safeUser(updated)  
-    });  
-  }  
-
-  /* =====================================================  
-     LOGOUT  
-     ===================================================== */  
-
-  if (  
-    path === "/api/logout" &&  
-    method === "POST"  
-  ) {  
-    const token =  
-      tokenFromRequest(request);  
-
-    if (token) {  
-      const hash =  
-        await sha256(token);  
-
-      await env.DB.prepare(`  
-        DELETE FROM sessions  
-        WHERE token_hash = ?  
-      `)  
-        .bind(hash)  
-        .run();  
-    }  
-
-    return json({  
-      ok: true  
-    });  
-  }  
-
-  /* =====================================================  
-     CREATE PRODUCT / SERVICE  
-     ===================================================== */  
-
-  if (  
-    path === "/api/products" &&  
-    method === "POST"  
-  ) {  
-    const user =  
-      await requireUser(  
-        request,  
-        env  
-      );  
-
-    const body =  
-      await readJSON(request);  
-
-    const title =  
-      String(  
-        body.title || ""  
-      ).trim();  
-
-    const category =  
-      String(  
-        body.category || "Other"  
-      ).trim();  
-
-    const description =  
-      String(  
-        body.description || ""  
-      ).trim();  
-
-    const price =  
-      number(body.price, 0);  
-
-    const currency =  
-      String(  
-        body.currency || "RWF"  
-      ).trim();  
-
-    const stock =  
-      Math.max(  
-        0,  
-        Math.floor(  
-          number(body.stock, 1)  
-        )  
-      );  
-
-    const country =  
-      String(  
-        body.country ||  
-        user.country ||  
-        "Rwanda"  
-      ).trim();  
-
-    const district =  
-      String(  
-        body.district ||  
-        body.city ||  
-        ""  
-      ).trim();  
-
-    const brand =  
-      String(  
-        body.brand || ""  
-      ).trim();  
-
-    const model =  
-      String(  
-        body.model || ""  
-      ).trim();  
-
-    const storage =  
-      String(  
-        body.storage || ""  
-      ).trim();  
-
-    const ram =  
-      String(  
-        body.ram || ""  
-      ).trim();  
-
-    const imageUrl =  
-      String(  
-        body.image_url || ""  
-      ).trim();  
-
-    const specs =  
-      String(  
-        body.specs || ""  
-      ).trim();  
-
-    const negotiable =  
-      body.negotiable ? 1 : 0;  
-
-    const condition =  
-      String(  
-        body.condition || "new"  
-      ).trim();  
-
-    if (!title) {  
-      return json({  
-        error:  
-          "Title is required."  
-      }, 400);  
-    }  
-
-    const validConditions = [  
-      "new",  
-      "used",  
-      "has crack",  
-      "refurbished"  
-    ];  
-
-    const safeCondition =  
-      validConditions.includes(  
-        condition  
-      )  
-        ? condition  
-        : "new";  
-
-    const result =  
-      await env.DB.prepare(`  
-        INSERT INTO products  
-        (  
-          seller_id,  
-          title,  
-          category,  
-          description,  
-          price,  
-          currency,  
-          stock,  
-          brand,  
-          model,  
-          condition,  
-          country,  
-          district,  
-          storage,  
-          ram,  
-          image_url,  
-          specs,  
-          negotiable,  
-          status,  
-          views  
-        )  
-        VALUES  
-        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', 0)  
-      `)  
-        .bind(  
-          user.user_id,  
-          title,  
-          category,  
-          description,  
-          price,  
-          currency,  
-          stock,  
-          brand,  
-          model,  
-          safeCondition,  
-          country,  
-          district,  
-          storage,  
-          ram,  
-          imageUrl,  
-          specs,  
-          negotiable  
-        )  
-        .run();  
-
-    return json({  
-      ok: true,  
-      product_id:  
-        result.meta.last_row_id  
-    }, 201);  
-  }  
-
-  /* =====================================================  
-     UPDATE PRODUCT  
-     ===================================================== */  
-
-  if (  
-    productMatch &&  
-    method === "PUT"  
-  ) {  
-    const user =  
-      await requireUser(  
-        request,  
-        env  
-      );  
-
-    const id =  
-      productMatch[1];  
-
-    const product =  
-      await env.DB.prepare(`  
-        SELECT *  
-        FROM products  
-        WHERE id = ?  
-        LIMIT 1  
-      `)  
-        .bind(id)  
-        .first();  
-
-    if (!product) {  
-      return json({  
-        error:  
-          "Product not found."  
-      }, 404);  
-    }  
-
-    if (  
-      String(product.seller_id) !==  
-        String(user.user_id) &&  
-      user.role !== "admin"  
-    ) {  
-      return json({  
-        error:  
-          "Not allowed."  
-      }, 403);  
-    }  
-
-    const body =  
-      await readJSON(request);  
-
-    const fields = [  
-      "title",  
-      "category",  
-      "description",  
-      "price",  
-      "currency",  
-      "stock",  
-      "brand",  
-      "model",  
-      "condition",  
-      "country",  
-      "district",  
-      "storage",  
-      "ram",  
-      "image_url",  
-      "specs",  
-      "negotiable",  
-      "status"  
-    ];  
-
-    const updates = [];  
-    const values = [];  
-
-    for (const field of fields) {  
-      if (body[field] !== undefined) {  
-        updates.push(  
-          `${field} = ?`  
-        );  
-
-        values.push(  
-          body[field]  
-        );  
-      }  
-    }  
-
-    if (!updates.length) {  
-      return json({  
-        error:  
-          "No changes supplied."  
-      }, 400);  
-    }  
-
-    values.push(id);  
-
-    await env.DB.prepare(`  
-      UPDATE products  
-      SET ${updates.join(", ")}  
-      WHERE id = ?  
-    `)  
-      .bind(...values)  
-      .run();  
-
-    return json({  
-      ok: true  
-    });  
-  }  
-
-  /* =====================================================  
-     DELETE PRODUCT  
-     ===================================================== */  
-
-  if (  
-    productMatch &&  
-    method === "DELETE"  
-  ) {  
-    const user =  
-      await requireUser(  
-        request,  
-        env  
-      );  
-
-    const id =  
-      productMatch[1];  
-
-    const product =  
-      await env.DB.prepare(`  
-        SELECT *  
-        FROM products  
-        WHERE id = ?  
-        LIMIT 1  
-      `)  
-        .bind(id)  
-        .first();  
-
-    if (!product) {  
-      return json({  
-        error:  
-          "Product not found."  
-      }, 404);  
-    }  
-
-    if (  
-      String(product.seller_id) !==  
-        String(user.user_id) &&  
-      user.role !== "admin"  
-    ) {  
-      return json({  
-        error:  
-          "Not allowed."  
-      }, 403);  
-    }  
-
-    await env.DB.prepare(`  
-      DELETE FROM products  
-      WHERE id = ?  
-    `)  
-      .bind(id)  
-      .run();  
-
-    return json({  
-      ok: true  
-    });  
-  }  
-
-  /* =====================================================  
-     SAVED  
-     ===================================================== */  
-
-  if (  
-    path === "/api/saved" &&  
-    method === "GET"  
-  ) {  
-    const user =  
-      await requireUser(  
-        request,  
-        env  
-      );  
-
-    const result =  
-      await env.DB.prepare(`  
-        SELECT  
-          sp.*,  
-          p.title,  
-          p.price,  
-          p.currency,  
-          p.image_url,  
-          p.country,  
-          p.district,  
-          p.status  
-        FROM saved_products sp  
-        JOIN products p  
-          ON p.id = sp.product_id  
-        WHERE sp.user_id = ?  
-        ORDER BY sp.created_at DESC  
-      `)  
-        .bind(user.user_id)  
-        .all();  
-
-    return json({  
-      saved:  
-        result.results || []  
-    });  
-  }  
-
-  if (  
-    path === "/api/saved" &&  
-    method === "POST"  
-  ) {  
-    const user =  
-      await requireUser(  
-        request,  
-        env  
-      );  
-
-    const body =  
-      await readJSON(request);  
-
-    const productId =  
-      number(  
-        body.product_id,  
-        0  
-      );  
-
-    if (!productId) {  
-      return json({  
-        error:  
-          "product_id is required."  
-      }, 400);  
-    }  
-
-    await env.DB.prepare(`  
-      INSERT OR IGNORE INTO saved_products  
-      (  
-        user_id,  
-        product_id  
-      )  
-      VALUES (?, ?)  
-    `)  
-      .bind(  
-        user.user_id,  
-        productId  
-      )  
-      .run();  
-
-    return json({  
-      ok: true  
-    });  
-  }  
-
-  const savedMatch =  
-    path.match(  
-      /^\/api\/saved\/(\d+)$/  
-    );  
-
-  if (  
-    savedMatch &&  
-    method === "DELETE"  
-  ) {  
-    const user =  
-      await requireUser(  
-        request,  
-        env  
-      );  
-
-    await env.DB.prepare(`  
-      DELETE FROM saved_products  
-      WHERE user_id = ?  
-        AND product_id = ?  
-    `)  
-      .bind(  
-        user.user_id,  
-        savedMatch[1]  
-      )  
-      .run();  
-
-    return json({  
-      ok: true  
-    });  
-  }  
-
-  /* =====================================================  
-     ORDERS  
-     ===================================================== */  
-
-  if (  
-    path === "/api/orders" &&  
-    method === "GET"  
-  ) {  
-    const user =  
-      await requireUser(  
-        request,  
-        env  
-      );  
-
-    const result =  
-      await env.DB.prepare(`  
-        SELECT  
-          o.*,  
-          p.title,  
-          p.image_url,  
-          p.currency,  
-          buyer.name AS buyer_name,  
-          buyer.email AS buyer_email,  
-          seller.name AS seller_name,  
-          seller.email AS seller_email  
-        FROM orders o  
-        JOIN products p  
-          ON p.id = o.product_id  
-        JOIN users buyer  
-          ON buyer.id = o.buyer_id  
-        JOIN users seller  
-          ON seller.id = p.seller_id  
-        WHERE  
-          o.buyer_id = ?  
-          OR p.seller_id = ?  
-        ORDER BY o.created_at DESC  
-      `)  
-        .bind(  
-          user.user_id,  
-          user.user_id  
-        )  
-        .all();  
-
-    return json({  
-      orders:  
-        result.results || []  
-    });  
-  }  
-
-  if (  
-    path === "/api/orders" &&  
-    method === "POST"  
-  ) {  
-    const user =  
-      await requireUser(  
-        request,  
-        env  
-      );  
-
-    const body =  
-      await readJSON(request);  
-
-    const productId =  
-      number(  
-        body.product_id,  
-        0  
-      );  
-
-    const quantity =  
-      Math.max(  
-        1,  
-        Math.floor(  
-          number(  
-            body.quantity,  
-            1  
-          )  
-        )  
-      );  
-
-    if (!productId) {  
-      return json({  
-        error:  
-          "product_id is required."  
-      }, 400);  
-    }  
-
-    const product =  
-      await env.DB.prepare(`  
-        SELECT *  
-        FROM products  
-        WHERE id = ?  
-          AND status = 'active'  
-        LIMIT 1  
-      `)  
-        .bind(productId)  
-        .first();  
-
-    if (!product) {  
-      return json({  
-        error:  
-          "Product not found or inactive."  
-      }, 404);  
-    }  
-
-    if (  
-      String(product.seller_id) ===  
-      String(user.user_id)  
-    ) {  
-      return json({  
-        error:  
-          "You cannot order your own product."  
-      }, 400);  
-    }  
-
-    if (  
-      number(product.stock) <  
-      quantity  
-    ) {  
-      return json({  
-        error:  
-          "Insufficient stock."  
-      }, 400);  
-    }  
-
-    const total =  
-      number(product.price) *  
-      quantity;  
-
-    const commission =  
-      total *  
-      COMMISSION_RATE;  
-
-    const result =  
-      await env.DB.prepare(`  
-        INSERT INTO orders  
-        (  
-          buyer_id,  
-          product_id,  
-          quantity,  
-          unit_price,  
-          total_amount,  
-          commission_amount,  
-          status,  
-          payment_status  
-        )  
-        VALUES  
-        (?, ?, ?, ?, ?, ?, 'pending', 'unpaid')  
-      `)  
-        .bind(  
-          user.user_id,  
-          productId,  
-          quantity,  
-          product.price,  
-          total,  
-          commission  
-        )  
-        .run();  
-
-    await env.DB.prepare(`  
-      UPDATE products  
-      SET stock = stock - ?  
-      WHERE id = ?  
-    `)  
-      .bind(  
-        quantity,  
-        productId  
-      )  
-      .run();  
-
-    return json({  
-      ok: true,  
-      order_id:  
-        result.meta.last_row_id,  
-      total_amount: total,  
-      commission_amount:  
-        commission  
-    }, 201);  
-  }  
-
-  /* =====================================================  
-     MESSAGES  
-     ===================================================== */  
-
-  if (  
-    path === "/api/messages" &&  
-    method === "GET"  
-  ) {  
-    const user =  
-      await requireUser(  
-        request,  
-        env  
-      );  
-
-    const result =  
-      await env.DB.prepare(`  
-        SELECT  
-          m.*,  
-          sender.name AS sender_name,  
-          receiver.name AS receiver_name  
-        FROM messages m  
-        JOIN users sender  
-          ON sender.id = m.sender_id  
-        JOIN users receiver  
-          ON receiver.id = m.receiver_id  
-        WHERE  
-          m.sender_id = ?  
-          OR m.receiver_id = ?  
-        ORDER BY m.created_at ASC  
-      `)  
-        .bind(  
-          user.user_id,  
-          user.user_id  
-        )  
-        .all();  
-
-    return json({  
-      messages:  
-        result.results || []  
-    });  
-  }  
-
-  if (  
-    path === "/api/messages" &&  
-    method === "POST"  
-  ) {  
-    const user =  
-      await requireUser(  
-        request,  
-        env  
-      );  
-
-    const body =  
-      await readJSON(request);  
-
-    const receiverId =  
-      number(  
-        body.receiver_id,  
-        0  
-      );  
-
-    const message =  
-      String(  
-        body.message || ""  
-      ).trim();  
-
-    if (  
-      !receiverId ||  
-      !message  
-    ) {  
-      return json({  
-        error:  
-          "receiver_id and message are required."  
-      }, 400);  
-    }  
-
-    const result =  
-      await env.DB.prepare(`  
-        INSERT INTO messages  
-        (  
-          sender_id,  
-          receiver_id,  
-          message  
-        )  
-        VALUES (?, ?, ?)  
-      `)  
-        .bind(  
-          user.user_id,  
-          receiverId,  
-          message  
-        )  
-        .run();  
-
-    return json({  
-      ok: true,  
-      message_id:  
-        result.meta.last_row_id  
-    }, 201);  
-  }  
-
-  /* =====================================================  
-     SELLER PRODUCTS  
-     ===================================================== */  
-
-  if (  
-    path === "/api/seller/products" &&  
-    method === "GET"  
-  ) {  
-    const user =  
-      await requireUser(  
-        request,  
-        env  
-      );  
-
-    const result =  
-      await env.DB.prepare(`  
-        SELECT *  
-        FROM products  
-        WHERE seller_id = ?  
-        ORDER BY created_at DESC  
-      `)  
-        .bind(user.user_id)  
-        .all();  
-
-    return json({  
-      products:  
-        result.results || []  
-    });  
-  }  
-
-  /* =====================================================  
-     SELLER STATS  
-     ===================================================== */  
-
-  if (  
-    path === "/api/seller/stats" &&  
-    method === "GET"  
-  ) {  
-    const user =  
-      await requireUser(  
-        request,  
-        env  
-      );  
-
-    const products =  
-      await env.DB.prepare(`  
-        SELECT COUNT(*) AS count  
-        FROM products  
-        WHERE seller_id = ?  
-      `)  
-        .bind(user.user_id)  
-        .first();  
-
-    const orders =  
-      await env.DB.prepare(`  
-        SELECT COUNT(*) AS count  
-        FROM orders o  
-        JOIN products p  
-          ON p.id = o.product_id  
-        WHERE p.seller_id = ?  
-      `)  
-        .bind(user.user_id)  
-        .first();  
-
-    const sales =  
-      await env.DB.prepare(`  
-        SELECT  
-          COALESCE(  
-            SUM(o.total_amount),  
-            0  
-          ) AS total  
-        FROM orders o  
-        JOIN products p  
-          ON p.id = o.product_id  
-        WHERE  
-          p.seller_id = ?  
-          AND o.payment_status = 'paid'  
-      `)  
-        .bind(user.user_id)  
-        .first();  
-
-    return json({  
-      products:  
-        number(products?.count),  
-      orders:  
-        number(orders?.count),  
-      sales:  
-        number(sales?.total)  
-    });  
-  }  
-
-  /* =====================================================  
-     ADMIN STATS  
-     ===================================================== */  
-
-  if (  
-    path === "/api/admin/stats" &&  
-    method === "GET"  
-  ) {  
-    await requireAdmin(  
-      request,  
-      env  
-    );  
-
-    const users =  
-      await env.DB.prepare(`  
-        SELECT COUNT(*) AS count  
-        FROM users  
-      `).first();  
-
-    const sellers =  
-      await env.DB.prepare(`  
-        SELECT  
-          COUNT(DISTINCT seller_id) AS count  
-        FROM products  
-        WHERE seller_id IS NOT NULL  
-      `).first();  
-
-    const products =  
-      await env.DB.prepare(`  
-        SELECT COUNT(*) AS count  
-        FROM products  
-      `).first();  
-
-    const serviceRows =  
-      await env.DB.prepare(`  
-        SELECT  
-          id,  
-          title,  
-          description,  
-          category,  
-          specs,  
-          brand,  
-          model  
-        FROM products  
-        WHERE status = 'active'  
-        LIMIT 2000  
-      `).all();  
-
-    const serviceCount =  
-      (serviceRows.results || [])  
-        .filter(isServiceProduct)  
-        .length;  
-
-    const orders =  
-      await env.DB.prepare(`  
-        SELECT COUNT(*) AS count  
-        FROM orders  
-      `).first();  
-
-    const pendingOrders =  
-      await env.DB.prepare(`  
-        SELECT COUNT(*) AS count  
-        FROM orders  
-        WHERE status = 'pending'  
-      `).first();  
-
-    const paid =  
-      await env.DB.prepare(`  
-        SELECT  
-          COALESCE(  
-            SUM(total_amount),  
-            0  
-          ) AS total,  
-          COALESCE(  
-            SUM(commission_amount),  
-            0  
-          ) AS commission  
-        FROM orders  
-        WHERE payment_status = 'paid'  
-      `).first();  
-
-    const categories =  
-      await env.DB.prepare(`  
-        SELECT COUNT(*) AS count  
-        FROM categories  
-        WHERE is_active = 1  
-      `).first();  
-
-    const messages =  
-      await env.DB.prepare(`  
-        SELECT COUNT(*) AS count  
-        FROM messages  
-      `).first();  
-
-    return json({  
-      users:  
-        number(users?.count),  
-
-      sellers:  
-        number(sellers?.count),  
-
-      products:  
-        number(products?.count),  
-
-      services:  
-        serviceCount,  
-
-      orders:  
-        number(orders?.count),  
-
-      pending_orders:  
-        number(  
-          pendingOrders?.count  
-        ),  
-
-      paid_amount:  
-        number(  
-          paid?.total  
-        ),  
-
-      commission:  
-        number(  
-          paid?.commission  
-        ),  
-
-      categories:  
-        number(  
-          categories?.count  
-        ),  
-
-      messages:  
-        number(  
-          messages?.count  
-        ),  
-
-      countries:  
-        COUNTRIES.length  
-    });  
-  }  
-
-  /* =====================================================  
-     ADMIN USERS  
-     ===================================================== */  
-
-  if (  
-    path === "/api/admin/users" &&  
-    method === "GET"  
-  ) {  
-    await requireAdmin(  
-      request,  
-      env  
-    );  
-
-    const result =  
-      await env.DB.prepare(`  
-        SELECT  
-          id,  
-          name,  
-          email,  
-          country,  
-          role,  
-          is_active,  
-          is_verified,  
-          created_at  
-        FROM users  
-        ORDER BY created_at DESC  
-      `).all();  
-
-    return json({  
-      users:  
-        result.results || []  
-    });  
-  }  
-
-  /* =====================================================  
-     ADMIN SELLERS  
-     ===================================================== */  
-
-  if (  
-    path === "/api/admin/sellers" &&  
-    method === "GET"  
-  ) {  
-    await requireAdmin(  
-      request,  
-      env  
-    );  
-
-    const result =  
-      await env.DB.prepare(`  
-        SELECT  
-          u.id,  
-          u.name,  
-          u.email,  
-          u.country,  
-          u.is_active,  
-          u.is_verified,  
-          COUNT(DISTINCT p.id)  
-            AS product_count,  
-          COUNT(DISTINCT o.id)  
-            AS order_count,  
-          COALESCE(  
-            SUM(  
-              CASE  
-                WHEN o.payment_status = 'paid'  
-                THEN o.total_amount  
-                ELSE 0  
-              END  
-            ),  
-            0  
-          ) AS paid_sales  
-        FROM users u  
-        JOIN products p  
-          ON p.seller_id = u.id  
-        LEFT JOIN orders o  
-          ON o.product_id = p.id  
-        GROUP BY u.id  
-        ORDER BY product_count DESC  
-      `).all();  
-
-    return json({  
-      sellers:  
-        result.results || []  
-    });  
-  }  
-
-  /* =====================================================  
-     ADMIN PRODUCTS  
-     ===================================================== */  
-
-  if (  
-    path === "/api/admin/products" &&  
-    method === "GET"  
-  ) {  
-    await requireAdmin(  
-      request,  
-      env  
-    );  
-
-    const result =  
-      await env.DB.prepare(`  
-        SELECT  
-          p.*,  
-          u.name AS seller_name,  
-          u.email AS seller_email  
-        FROM products p  
-        LEFT JOIN users u  
-          ON u.id = p.seller_id  
-        ORDER BY p.created_at DESC  
-      `).all();  
-
-    return json({  
-      products:  
-        result.results || []  
-    });  
-  }  
-
-  /* =====================================================  
-     ADMIN ORDERS  
-     ===================================================== */  
-
-  if (  
-    path === "/api/admin/orders" &&  
-    method === "GET"  
-  ) {  
-    await requireAdmin(  
-      request,  
-      env  
-    );  
-
-    const result =  
-      await env.DB.prepare(`  
-        SELECT  
-          o.*,  
-          p.title,  
-          buyer.name AS buyer_name,  
-          buyer.email AS buyer_email,  
-          seller.name AS seller_name,  
-          seller.email AS seller_email  
-        FROM orders o  
-        JOIN products p  
-          ON p.id = o.product_id  
-        JOIN users buyer  
-          ON buyer.id = o.buyer_id  
-        JOIN users seller  
-          ON seller.id = p.seller_id  
-        ORDER BY o.created_at DESC  
-      `).all();  
-
-    return json({  
-      orders:  
-        result.results || []  
-    });  
-  }  
-
-  /* =====================================================  
-     ADMIN PAYMENTS  
-     ===================================================== */  
-
-  if (  
-    path === "/api/admin/payments" &&  
-    method === "GET"  
-  ) {  
-    await requireAdmin(  
-      request,  
-      env  
-    );  
-
-    const rows =  
-      await env.DB.prepare(`  
-        SELECT  
-          o.id,  
-          o.product_id,  
-          o.buyer_id,  
-          o.quantity,  
-          o.unit_price,  
-          o.total_amount,  
-          o.commission_amount,  
-          o.status,  
-          o.payment_status,  
-          o.created_at,  
-          p.title,  
-          buyer.name AS buyer_name,  
-          seller.name AS seller_name  
-        FROM orders o  
-        JOIN products p  
-          ON p.id = o.product_id  
-        JOIN users buyer  
-          ON buyer.id = o.buyer_id  
-        JOIN users seller  
-          ON seller.id = p.seller_id  
-        ORDER BY o.created_at DESC  
-      `).all();  
-
-    const summary =  
-      await env.DB.prepare(`  
-        SELECT  
-          COALESCE(  
-            SUM(  
-              CASE  
-                WHEN payment_status = 'paid'  
-                THEN total_amount  
-                ELSE 0  
-              END  
-            ),  
-            0  
-          ) AS paid_amount,  
-
-          COALESCE(  
-            SUM(  
-              CASE  
-                WHEN payment_status = 'paid'  
-                THEN commission_amount  
-                ELSE 0  
-              END  
-            ),  
-            0  
-          ) AS commission  
-        FROM orders  
-      `).first();  
-
-    return json({  
-      payments:  
-        rows.results || [],  
-
-      summary: {  
-        paid_amount:  
-          number(  
-            summary?.paid_amount  
-          ),  
-
-        commission:  
-          number(  
-            summary?.commission  
-          )  
-      }  
-    });  
-  }  
-
-  /* =====================================================  
-     ADMIN SERVICES  
-     ===================================================== */  
-
-  if (  
-    path === "/api/admin/services" &&  
-    method === "GET"  
-  ) {  
-    await requireAdmin(  
-      request,  
-      env  
-    );  
-
-    const search =  
-      normalize(  
-        url.searchParams.get(  
-          "search"  
-        )  
-      );  
-
-    const country =  
-      url.searchParams.get(  
-        "country"  
-      ) || "";  
-
-    const category =  
-      url.searchParams.get(  
-        "category"  
-      ) || "";  
-
-    const rows =  
-      await env.DB.prepare(`  
-        SELECT  
-          p.*,  
-          u.name AS seller_name,  
-          u.email AS seller_email,  
-          u.country AS seller_country,  
-          u.is_verified AS seller_verified  
-        FROM products p  
-        LEFT JOIN users u  
-          ON u.id = p.seller_id  
-        WHERE p.status = 'active'  
-        ORDER BY p.created_at DESC  
-        LIMIT 2000  
-      `).all();  
-
-    let services =  
-      (rows.results || [])  
-        .filter(isServiceProduct);  
-
-    if (search) {  
-      services =  
-        services.filter(product =>  
-          productText(product)  
-            .includes(search)  
-        );  
-    }  
-
-    if (country) {  
-      services =  
-        services.filter(product =>  
-          normalize(  
-            product.country  
-          ).includes(  
-            normalize(country)  
-          )  
-        );  
-    }  
-
-    if (category) {  
-      services =  
-        services.filter(product =>  
-          serviceCategoryMatch(  
-            product,  
-            category  
-          )  
-        );  
-    }  
-
-    return json({  
-      services,  
-      count: services.length,  
-      categories:  
-        SERVICE_CATEGORIES,  
-      countries:  
-        COUNTRIES.length  
-    });  
-  }  
-
-  /* =====================================================  
-     ADMIN REPORTS  
-     ===================================================== */  
-
-  if (  
-    path === "/api/admin/reports" &&  
-    method === "GET"  
-  ) {  
-    await requireAdmin(  
-      request,  
-      env  
-    );  
-
-    const usersByCountry =  
-      await env.DB.prepare(`  
-        SELECT  
-          country,  
-          COUNT(*) AS count  
-        FROM users  
-        GROUP BY country  
-        ORDER BY count DESC  
-      `).all();  
-
-    const productsByCategory =  
-      await env.DB.prepare(`  
-        SELECT  
-          category,  
-          COUNT(*) AS count  
-        FROM products  
-        GROUP BY category  
-        ORDER BY count DESC  
-      `).all();  
-
-    const orderStatuses =  
-      await env.DB.prepare(`  
-        SELECT  
-          status,  
-          COUNT(*) AS count  
-        FROM orders  
-        GROUP BY status  
-      `).all();  
-
-    const paymentStatuses =  
-      await env.DB.prepare(`  
-        SELECT  
-          payment_status,  
-          COUNT(*) AS count  
-        FROM orders  
-        GROUP BY payment_status  
-      `).all();  
-
-    const topProducts =  
-      await env.DB.prepare(`  
-        SELECT  
-          p.id,  
-          p.title,  
-          p.views,  
-          COALESCE(  
-            SUM(o.quantity),  
-            0  
-          ) AS sold_quantity  
-        FROM products p  
-        LEFT JOIN orders o  
-          ON o.product_id = p.id  
-        GROUP BY p.id  
-        ORDER BY sold_quantity DESC  
-        LIMIT 20  
-      `).all();  
-
-    return json({  
-      users_by_country:  
-        usersByCountry.results || [],  
-
-      products_by_category:  
-        productsByCategory.results || [],  
-
-      order_statuses:  
-        orderStatuses.results || [],  
-
-      payment_statuses:  
-        paymentStatuses.results || [],  
-
-      top_products:  
-        topProducts.results || [],  
-
-      global_countries:  
-        COUNTRIES.length  
-    });  
-  }  
-
-  /* =====================================================  
-     ADMIN REVIEWS  
-     ===================================================== */  
-
-  if (  
-    path === "/api/admin/reviews" &&  
-    method === "GET"  
-  ) {  
-    await requireAdmin(  
-      request,  
-      env  
-    );  
-
-    return json({  
-      supported: false,  
-      reviews: [],  
-      message:  
-        "Reviews are prepared in the interface, but the locked schema.sql does not contain a reviews table."  
-    });  
-  }  
-
-  /* =====================================================  
-     ADMIN PROMOTIONS  
-     ===================================================== */  
-
-  if (  
-    path === "/api/admin/promotions" &&  
-    method === "GET"  
-  ) {  
-    await requireAdmin(  
-      request,  
-      env  
-    );  
-
-    return json({  
-      supported: false,  
-      promotions: [],  
-      message:  
-        "Promotions are prepared in the interface, but the locked schema.sql does not contain a promotions table."  
-    });  
-  }  
-
-  /* =====================================================  
-     ADMIN ADS  
-     ===================================================== */  
-
-  if (  
-    path === "/api/admin/ads" &&  
-    method === "GET"  
-  ) {  
-    await requireAdmin(  
-      request,  
-      env  
-    );  
-
-    return json({  
-      supported: false,  
-      ads: [],  
-      message:  
-        "Ads are prepared in the interface, but the locked schema.sql does not contain an ads table."  
-    });  
-  }  
-
-  /* =====================================================  
-     ADMIN CATEGORIES  
-     ===================================================== */  
-
-  if (  
-    path === "/api/admin/categories" &&  
-    method === "GET"  
-  ) {  
-    await requireAdmin(  
-      request,  
-      env  
-    );  
-
-    const result =  
-      await env.DB.prepare(`  
-        SELECT *  
-        FROM categories  
-        ORDER BY name ASC  
-      `).all();  
-
-    return json({  
-      categories:  
-        result.results || []  
-    });  
-  }  
-
-  if (  
-    path === "/api/admin/categories" &&  
-    method === "POST"  
-  ) {  
-    await requireAdmin(  
-      request,  
-      env  
-    );  
-
-    const body =  
-      await readJSON(request);  
-
-    const name =  
-      String(  
-        body.name || ""  
-      ).trim();  
-
-    if (!name) {  
-      return json({  
-        error:  
-          "Category name is required."  
-      }, 400);  
-    }  
-
-    const result =  
-      await env.DB.prepare(`  
-        INSERT INTO categories  
-        (  
-          name,  
-          is_active  
-        )  
-        VALUES (?, 1)  
-      `)  
-        .bind(name)  
-        .run();  
-
-    return json({  
-      ok: true,  
-      category_id:  
-        result.meta.last_row_id  
-    }, 201);  
-  }  
-
-  /* =====================================================  
-     ADMIN UPDATE ORDER  
-     ===================================================== */  
-
-  const adminOrderMatch =  
-    path.match(  
-      /^\/api\/admin\/orders\/(\d+)$/  
-    );  
-
-  if (  
-    adminOrderMatch &&  
-    method === "PATCH"  
-  ) {  
-    await requireAdmin(  
-      request,  
-      env  
-    );  
-
-    const id =  
-      adminOrderMatch[1];  
-
-    const body =  
-      await readJSON(request);  
-
-    const updates = [];  
-    const values = [];  
-
-    if (  
-      body.status !== undefined  
-    ) {  
-      updates.push(  
-        "status = ?"  
-      );  
-
-      values.push(  
-        String(body.status)  
-      );  
-    }  
-
-    if (  
-      body.payment_status !== undefined  
-    ) {  
-      updates.push(  
-        "payment_status = ?"  
-      );  
-
-      values.push(  
-        String(  
-          body.payment_status  
-        )  
-      );  
-    }  
-
-    if (!updates.length) {  
-      return json({  
-        error:  
-          "No changes supplied."  
-      }, 400);  
-    }  
-
-    values.push(id);  
-
-    await env.DB.prepare(`  
-      UPDATE orders  
-      SET ${updates.join(", ")}  
-      WHERE id = ?  
-    `)  
-      .bind(...values)  
-      .run();  
-
-    return json({  
-      ok: true  
-    });  
-  }  
-
-  /* =====================================================  
-     ADMIN UPDATE USER  
-     ===================================================== */  
-
-  const adminUserMatch =  
-    path.match(  
-      /^\/api\/admin\/users\/(\d+)$/  
-    );  
-
-  if (  
-    adminUserMatch &&  
-    method === "PATCH"  
-  ) {  
-    const admin =  
-      await requireAdmin(  
-        request,  
-        env  
-      );  
-
-    const id =  
-      adminUserMatch[1];  
-
-    const body =  
-      await readJSON(request);  
-
-    const updates = [];  
-    const values = [];  
-
-    if (  
-      body.role !== undefined  
-    ) {  
-      const role =  
-        String(body.role);  
-
-      if (  
-        ![  
-          "buyer",  
-          "seller",  
-          "admin"  
-        ].includes(role)  
-      ) {  
-        return json({  
-          error:  
-            "Invalid role."  
-        }, 400);  
-      }  
-
-      updates.push(  
-        "role = ?"  
-      );  
-
-      values.push(role);  
-    }  
-
-    if (  
-      body.is_active !== undefined  
-    ) {  
-      updates.push(  
-        "is_active = ?"  
-      );  
-
-      values.push(  
-        body.is_active ? 1 : 0  
-      );  
-    }  
-
-    if (  
-      body.is_verified !== undefined  
-    ) {  
-      updates.push(  
-        "is_verified = ?"  
-      );  
-
-      values.push(  
-        body.is_verified ? 1 : 0  
-      );  
-    }  
-
-    if (!updates.length) {  
-      return json({  
-        error:  
-          "No changes supplied."  
-      }, 400);  
-    }  
-
-    if (  
-      String(id) ===  
-        String(admin.user_id) &&  
-      body.is_active === false  
-    ) {  
-      return json({  
-        error:  
-          "You cannot deactivate your own admin account."  
-      }, 400);  
-    }  
-
-    values.push(id);  
-
-    await env.DB.prepare(`  
-      UPDATE users  
-      SET ${updates.join(", ")}  
-      WHERE id = ?  
-    `)  
-      .bind(...values)  
-      .run();  
-
-    return json({  
-      ok: true  
-    });  
-  }  
-
-  /* =====================================================  
-     ADMIN UPDATE PRODUCT  
-     ===================================================== */  
-
-  const adminProductMatch =  
-    path.match(  
-      /^\/api\/admin\/products\/(\d+)$/  
-    );  
-
-  if (  
-    adminProductMatch &&  
-    method === "PATCH"  
-  ) {  
-    await requireAdmin(  
-      request,  
-      env  
-    );  
-
-    const id =  
-      adminProductMatch[1];  
-
-    const body =  
-      await readJSON(request);  
-
-    if (  
-      body.status === undefined  
-    ) {  
-      return json({  
-        error:  
-          "status is required."  
-      }, 400);  
-    }  
-
-    await env.DB.prepare(`  
-      UPDATE products  
-      SET status = ?  
-      WHERE id = ?  
-    `)  
-      .bind(  
-        String(body.status),  
-        id  
-      )  
-      .run();  
-
-    return json({  
-      ok: true  
-    });  
-  }  
-
-  /* =====================================================  
-     GLOBAL SERVICE SEARCH  
-     ===================================================== */  
-
-  if (  
-    path === "/api/service-search" &&  
-    method === "GET"  
-  ) {  
-    const search =  
-      url.searchParams.get("q") ||  
-      url.searchParams.get("search") ||  
-      "";  
-
-    const country =  
-      url.searchParams.get(  
-        "country"  
-      ) || "";  
-
-    const city =  
-      url.searchParams.get(  
-        "city"  
-      ) ||  
-      url.searchParams.get(  
-        "district"  
-      ) ||  
-      "";  
-
-    const category =  
-      url.searchParams.get(  
-        "category"  
-      ) || "";  
-
-    const provider =  
-      url.searchParams.get(  
-        "provider"  
-      ) || "";  
-
-    const limit =  
-      limitValue(  
-        url.searchParams.get(  
-          "limit"  
-        )  
-      );  
-
-    const conditions = [  
-      "p.status = 'active'",  
-      "u.is_active = 1"  
-    ];  
-
-    const params = [];  
-
-    if (country) {  
-      conditions.push(  
-        "p.country LIKE ?"  
-      );  
-
-      params.push(  
-        `%${country}%`  
-      );  
-    }  
-
-    if (city) {  
-      conditions.push(  
-        "p.district LIKE ?"  
-      );  
-
-      params.push(  
-        `%${city}%`  
-      );  
-    }  
-
-    if (provider) {  
-      conditions.push(  
-        "u.name LIKE ?"  
-      );  
-
-      params.push(  
-        `%${provider}%`  
-      );  
-    }  
-
-    if (search) {  
-      conditions.push(`  
-        (  
-          p.title LIKE ?  
-          OR p.description LIKE ?  
-          OR p.category LIKE ?  
-          OR p.specs LIKE ?  
-          OR p.brand LIKE ?  
-          OR p.model LIKE ?  
-          OR u.name LIKE ?  
-        )  
-      `);  
-
-      const q =  
-        `%${search}%`;  
-
-      params.push(  
-        q,q,q,q,q,q,q  
-      );  
-    }  
-
-    const result =  
-      await env.DB.prepare(`  
-        SELECT  
-          p.*,  
-          u.name AS seller_name,  
-          u.email AS seller_email,  
-          u.country AS seller_country,  
-          u.is_verified AS seller_verified  
-        FROM products p  
-        LEFT JOIN users u  
-          ON u.id = p.seller_id  
-        WHERE ${conditions.join(" AND ")}  
-        ORDER BY p.created_at DESC  
-        LIMIT 500  
-      `)  
-        .bind(...params)  
-        .all();  
-
-    let services =  
-      (result.results || [])  
-        .filter(isServiceProduct)  
-        .filter(product =>  
-          serviceCategoryMatch(  
-            product,  
-            category  
-          )  
-        );  
-
-    services =  
-      services.slice(0, limit);  
-
-    return json({  
-      ok: true,  
-      services,  
-      count: services.length,  
-
-      query: {  
-        service:  
-          search,  
-
-        country:  
-          country ||  
-          "All countries",  
-
-        city:  
-          city ||  
-          "All cities",  
-
-        category:  
-          category ||  
-          "All service categories",  
-
-        provider:  
-          provider ||  
-          "All providers"  
-      },  
-
-      countries:  
-        COUNTRIES.length,  
-
-      global: true  
-    });  
-  }  
-
-  /* =====================================================  
-     FRONTEND ASSETS  
-     ===================================================== */  
-
-  if (env.ASSETS) {  
-    return env.ASSETS.fetch(request);  
-  }  
-
-  return json({  
-    error:  
-      "Not found"  
-  }, 404);  
-
-} catch (error) {  
-  console.error(  
-    "IsokoHub API error:",  
-    error  
-  );  
-
-  if (  
-    error?.message ===  
-    "UNAUTHORIZED"  
-  ) {  
-    return json({  
-      error:  
-        "Unauthorized"  
-    }, 401);  
-  }  
-
-  if (  
-    error?.message ===  
-    "ADMIN_ONLY"  
-  ) {  
-    return json({  
-      error:  
-        "Admin access required."  
-    }, 403);  
-  }  
-
-  return json({  
-    error:  
-      "Internal server error.",  
-    message:  
-      error?.message ||  
-      "Unknown error"  
-  }, 500);  
+let d=await api(map[section]);
+let rows=Array.isArray(d)?d:(d.items||d.users||d.sellers||d.products||d.orders||d.payments||d.services||d.categories||d.reports||[]);
+adminTable(section,rows)
+}catch(e){$("adminContent").innerHTML=`<div class="empty">❌ ${esc(e.message)}</div>`}
 }
 
+function stat(a,b){
+return `<div class="stat"><small>${esc(a)}</small><strong>${esc(b??0)}</strong></div>`
 }
-};
+
+function adminTable(section,rows){
+if(!rows.length){
+$("adminContent").innerHTML=`<h2>${esc(section)}</h2><br><div class="empty">No data available.</div>`;
+return
+}
+let keys=[...new Set(rows.flatMap(x=>Object.keys(x)))].slice(0,10);
+$("adminContent").innerHTML=`
+<h2>${esc(section.charAt(0).toUpperCase()+section.slice(1))}</h2><br>
+<div class="table"><table><tr>${keys.map(k=>`<th>${esc(k)}</th>`).join("")}</tr>
+${rows.map(r=>`<tr>${keys.map(k=>`<td>${esc(typeof r[k]==="object"?JSON.stringify(r[k]):r[k]??"")}</td>`).join("")}</tr>`).join("")}
+</table></div>`
+}
+
+
+/* EVENTS */
+
+function bind(){
+$("searchForm").addEventListener("submit",e=>{
+e.preventDefault();search($("searchInput").value.trim())
+});
+$("heroForm").addEventListener("submit",e=>{
+e.preventDefault();search($("heroInput").value.trim(),$("heroCountry").value)
+});
+$("loginForm").addEventListener("submit",login);
+$("registerForm").addEventListener("submit",register);
+$("messageForm").addEventListener("submit",sendMessage);
+$("sellForm").addEventListener("submit",createProduct);
+$("filterSearch").addEventListener("keydown",e=>{if(e.key==="Enter")filter()});
+document.querySelectorAll(".overlay").forEach(o=>o.addEventListener("click",e=>{
+if(e.target===o)o.style.display="none"
+}));
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeAll()})
+}
+
+window.addEventListener("DOMContentLoaded",init);
+
+window.home=home;
+window.services=services;
+window.education=education;
+window.creators=creators;
+window.business=business;
+window.work=work;
+window.auth=auth;
+window.authTab=authTab;
+window.saved=saved;
+window.cartOpen=cartOpen;
+window.orders=orders;
+window.messages=messages;
+window.profile=profile;
+window.sell=sell;
+window.admin=admin;
+window.adminSection=adminSection;
+window.closeM=closeM;
+window.view=view;
+window.addById=addById;
+window.toggleSave=toggleSave;
+window.removeCart=removeCart;
+window.checkout=checkout;
+window.filter=filter;
+window.serviceSearch=serviceSearch;
+</script>
+
+</body>
+</html>
