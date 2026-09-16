@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>IsokoHub — Global Marketplace</title>
-<meta name="description" content="IsokoHub — global marketplace for products, services, education, creators, businesses and professionals.">
+<meta name="description" content="IsokoHub — global marketplace connecting buyers, sellers, teachers, artists, creators, filmmakers, professionals and service providers.">
 
 <style>
 *{box-sizing:border-box}
@@ -19,371 +19,646 @@ button,input,select,textarea{font:inherit}
 button{cursor:pointer}
 a{text-decoration:none;color:inherit}
 
+:root{
+  --primary:#2563eb;
+  --primary-dark:#1d4ed8;
+  --secondary:#0f172a;
+  --success:#16a34a;
+  --danger:#dc2626;
+  --warning:#d97706;
+  --muted:#64748b;
+  --border:#e2e8f0;
+  --card:#fff;
+  --soft:#eff6ff;
+  --shadow:0 8px 25px rgba(15,23,42,.08);
+  --radius:16px;
+}
+
 header{
   position:sticky;
   top:0;
   z-index:100;
   background:#fff;
-  border-bottom:1px solid #e5e7eb;
+  border-bottom:1px solid var(--border);
+  box-shadow:0 2px 10px rgba(0,0,0,.04);
 }
+
 .topbar{
   max-width:1400px;
   margin:auto;
-  padding:14px 18px;
+  padding:12px 18px;
   display:flex;
   gap:16px;
   align-items:center;
-  flex-wrap:wrap;
 }
+
 .logo{
   font-size:25px;
   font-weight:900;
-  color:#1261d8;
+  color:var(--primary);
   white-space:nowrap;
 }
+
+.logo span{color:#111827}
+
 .search{
   flex:1;
-  min-width:220px;
   display:flex;
   gap:8px;
 }
+
 .search input{
-  flex:1;
+  width:100%;
   padding:12px 15px;
-  border:1px solid #d8dee9;
+  border:1px solid var(--border);
   border-radius:12px;
   outline:none;
 }
-.search input:focus{border-color:#1261d8}
+
+.search input:focus{
+  border-color:var(--primary);
+}
 
 .btn{
   border:0;
   border-radius:10px;
-  padding:11px 16px;
-  background:#1261d8;
-  color:#fff;
+  padding:10px 15px;
+  background:var(--primary);
+  color:white;
   font-weight:700;
 }
-.btn:hover{opacity:.9}
-.btn.secondary{
-  background:#eef2f7;
-  color:#172033;
-}
-.btn.orange{background:#f97316}
-.btn.danger{background:#dc2626}
-.btn.green{background:#16a34a}
 
-.authArea{display:flex;gap:8px}
+.btn:hover{background:var(--primary-dark)}
+
+.btn.secondary{
+  background:#e2e8f0;
+  color:#0f172a;
+}
+
+.btn.success{background:var(--success)}
+.btn.danger{background:var(--danger)}
+.btn.warning{background:var(--warning)}
+.btn.small{padding:7px 10px;font-size:13px}
+
+.authArea{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
 
 .nav{
   max-width:1400px;
   margin:auto;
-  padding:0 18px 12px;
+  padding:8px 18px;
   display:flex;
-  gap:8px;
+  gap:6px;
   overflow-x:auto;
+  scrollbar-width:none;
 }
+
+.nav::-webkit-scrollbar{display:none}
+
 .nav button{
-  border:0;
-  background:#f3f5f9;
-  padding:9px 12px;
-  border-radius:9px;
   white-space:nowrap;
-  color:#243047;
+  border:0;
+  background:#f1f5f9;
+  color:#334155;
+  padding:9px 12px;
+  border-radius:10px;
 }
-.nav button:hover{background:#e7edf7}
+
+.nav button:hover,
+.nav button.active{
+  background:var(--primary);
+  color:#fff;
+}
+
+.statusbar{
+  max-width:1400px;
+  margin:auto;
+  padding:7px 18px;
+  font-size:13px;
+}
 
 .status{
-  max-width:1400px;
-  margin:14px auto;
-  padding:0 18px;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:5px 10px;
+  border-radius:999px;
+  background:#f1f5f9;
 }
-.statusBox{
-  padding:11px 14px;
-  border-radius:10px;
-  background:#fff;
-  border:1px solid #e5e7eb;
-  font-size:14px;
-}
+
+.status.ok{color:#166534;background:#dcfce7}
+.status.error{color:#991b1b;background:#fee2e2}
+.status.loading{color:#92400e;background:#fef3c7}
 
 main{
   max-width:1400px;
   margin:auto;
-  padding:0 18px 50px;
+  padding:20px 18px 60px;
 }
 
-.section{margin:28px 0}
+section{display:none}
+section.active{display:block}
 
 .hero{
-  margin-top:20px;
-  padding:45px 30px;
-  border-radius:22px;
-  background:linear-gradient(135deg,#1261d8,#4f46e5);
+  background:linear-gradient(135deg,#1d4ed8,#2563eb,#0f172a);
   color:#fff;
+  padding:45px 30px;
+  border-radius:24px;
+  margin-bottom:25px;
 }
+
 .hero h1{
-  font-size:42px;
   margin:0 0 12px;
+  font-size:clamp(30px,5vw,54px);
 }
+
 .hero p{
-  max-width:850px;
-  font-size:18px;
+  max-width:800px;
   line-height:1.7;
+  color:#dbeafe;
 }
+
 .heroActions{
   display:flex;
-  gap:10px;
   flex-wrap:wrap;
+  gap:10px;
+  margin-top:20px;
 }
 
-.sectionTitle{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
-  margin-bottom:15px;
-}
-.sectionTitle h2{margin:0}
-
-.categories,
-.products,
-.serviceGrid,
-.opportunities,
-.features,
-.dashboardGrid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
-  gap:14px;
-}
-
-.card{
+.hero .btn.secondary{
   background:#fff;
-  border:1px solid #e5e7eb;
-  border-radius:15px;
-  padding:18px;
-  box-shadow:0 3px 12px rgba(0,0,0,.04);
+  color:#1d4ed8;
 }
-.card h3{margin-top:0}
 
-.category{
+.sectionHead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin:25px 0 15px;
+}
+
+.sectionHead h2{
+  margin:0;
+}
+
+.muted{color:var(--muted)}
+.hidden{display:none!important}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:16px;
+}
+
+.categoryGrid{
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:12px;
+}
+
+.categoryCard{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:15px;
+  padding:18px 12px;
   text-align:center;
-  font-size:16px;
-  font-weight:700;
+  box-shadow:var(--shadow);
   transition:.2s;
 }
-.category:hover{
+
+.categoryCard:hover{
   transform:translateY(-2px);
-  border-color:#1261d8;
+  border-color:#bfdbfe;
 }
 
-.product{
-  overflow:hidden;
-  padding:0;
+.categoryIcon{
+  font-size:30px;
+  margin-bottom:8px;
 }
-.productBody{padding:16px}
+
+.productCard{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:var(--shadow);
+  display:flex;
+  flex-direction:column;
+}
+
 .productImage{
-  height:150px;
+  width:100%;
+  height:180px;
+  background:#e2e8f0;
   display:flex;
   align-items:center;
   justify-content:center;
-  background:#eef2f7;
-  font-size:55px;
-}
-.price{
-  font-size:20px;
-  font-weight:900;
-  color:#1261d8;
-}
-.muted{
-  color:#64748b;
-  font-size:14px;
-}
-.actions{
-  display:flex;
-  gap:7px;
-  flex-wrap:wrap;
-  margin-top:12px;
+  overflow:hidden;
 }
 
-.serviceGrid .card,
-.opportunities .card,
-.features .card{
-  min-height:145px;
+.productImage img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.placeholderImage{
+  font-size:52px;
+  color:#94a3b8;
+}
+
+.productBody{
+  padding:14px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  flex:1;
+}
+
+.productTitle{
+  font-weight:800;
+  font-size:16px;
+}
+
+.price{
+  font-weight:900;
+  font-size:18px;
+  color:var(--primary);
+}
+
+.meta{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+
+.tag{
+  background:#eff6ff;
+  color:#1d4ed8;
+  padding:4px 8px;
+  border-radius:999px;
+  font-size:12px;
+}
+
+.cardActions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-top:auto;
+  padding-top:8px;
 }
 
 .empty{
-  padding:35px;
-  text-align:center;
   background:#fff;
   border:1px dashed #cbd5e1;
   border-radius:15px;
+  padding:30px;
+  text-align:center;
+  color:var(--muted);
 }
 
-.pageSection{display:none}
-.pageSection.active{display:block}
-
-.adminTabs{
-  display:flex;
-  gap:7px;
-  flex-wrap:wrap;
-  margin-bottom:16px;
-}
-.adminTabs button{
-  border:1px solid #d8dee9;
+.panel{
   background:#fff;
-  padding:10px 13px;
-  border-radius:9px;
-}
-.adminTabs button.active{
-  background:#1261d8;
-  color:#fff;
-}
-
-.adminPanel{
-  background:#fff;
-  border:1px solid #e5e7eb;
-  border-radius:15px;
+  border:1px solid var(--border);
+  border-radius:16px;
   padding:20px;
+  box-shadow:var(--shadow);
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:14px;
 }
 
 .stat{
-  padding:20px;
   background:#fff;
-  border:1px solid #e5e7eb;
+  border:1px solid var(--border);
   border-radius:15px;
-}
-.stat strong{
-  display:block;
-  font-size:28px;
-  margin-top:7px;
+  padding:18px;
+  box-shadow:var(--shadow);
 }
 
-.adminTableWrap{
-  overflow-x:auto;
+.stat .num{
+  font-size:28px;
+  font-weight:900;
+  margin-top:6px;
 }
-.adminTable{
+
+.tableWrap{
+  width:100%;
+  overflow-x:auto;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:15px;
+}
+
+table{
   width:100%;
   border-collapse:collapse;
   min-width:700px;
 }
-.adminTable th,
-.adminTable td{
-  border-bottom:1px solid #e5e7eb;
+
+th,td{
   padding:12px;
+  border-bottom:1px solid var(--border);
   text-align:left;
-}
-.adminTable th{
-  background:#f8fafc;
+  font-size:14px;
 }
 
-.badge{
-  display:inline-block;
-  padding:5px 9px;
-  border-radius:999px;
-  background:#eef2f7;
-  font-size:12px;
+th{
+  background:#f8fafc;
+  font-weight:800;
+}
+
+.formGrid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:14px;
+}
+
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.field.full{grid-column:1/-1}
+
+.field label{
+  font-size:13px;
   font-weight:700;
 }
 
-footer{
-  background:#111827;
+.field input,
+.field select,
+.field textarea{
+  width:100%;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:11px 12px;
+  outline:none;
+  background:#fff;
+}
+
+.field textarea{
+  min-height:110px;
+  resize:vertical;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus{
+  border-color:var(--primary);
+}
+
+.adminTabs{
+  display:flex;
+  gap:7px;
+  overflow-x:auto;
+  padding-bottom:8px;
+}
+
+.adminTabs button{
+  white-space:nowrap;
+  border:0;
+  background:#e2e8f0;
+  padding:9px 12px;
+  border-radius:9px;
+}
+
+.adminTabs button.active{
+  background:var(--primary);
   color:#fff;
-  padding:40px 18px;
 }
-.footerGrid{
-  max-width:1400px;
-  margin:auto;
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:25px;
+
+.adminPanel{display:none}
+.adminPanel.active{display:block}
+
+.notice{
+  padding:12px 15px;
+  border-radius:10px;
+  margin:10px 0;
+  background:#eff6ff;
+  color:#1e40af;
 }
-footer a{
-  display:block;
-  color:#cbd5e1;
-  margin:8px 0;
+
+.notice.error{
+  background:#fee2e2;
+  color:#991b1b;
+}
+
+.notice.success{
+  background:#dcfce7;
+  color:#166534;
+}
+
+.notice.warning{
+  background:#fef3c7;
+  color:#92400e;
 }
 
 .modal{
+  display:none;
   position:fixed;
   inset:0;
   z-index:500;
-  background:rgba(0,0,0,.55);
-  display:none;
+  background:rgba(15,23,42,.65);
   align-items:center;
   justify-content:center;
-  padding:15px;
+  padding:18px;
 }
+
 .modal.open{display:flex}
+
 .modalBox{
   background:#fff;
-  width:min(600px,100%);
-  max-height:90vh;
+  width:min(650px,100%);
+  max-height:92vh;
   overflow:auto;
   border-radius:18px;
-  padding:24px;
+  padding:22px;
+  position:relative;
 }
-.modalHead{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
+
 .close{
+  position:absolute;
+  top:10px;
+  right:12px;
+  width:34px;
+  height:34px;
   border:0;
-  background:#eef2f7;
-  border-radius:8px;
-  padding:7px 11px;
+  border-radius:50%;
+  background:#f1f5f9;
+  font-size:20px;
 }
-.formGroup{margin:13px 0}
-.formGroup label{
-  display:block;
-  font-weight:700;
-  margin-bottom:6px;
+
+.modalBox h2{
+  margin-top:0;
+  padding-right:35px;
 }
-.formGroup input,
-.formGroup select,
-.formGroup textarea{
-  width:100%;
-  padding:11px;
-  border:1px solid #d8dee9;
-  border-radius:9px;
-}
-.formGroup textarea{min-height:110px}
-.formRow{
+
+.profileBox{
   display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
+  grid-template-columns:150px 1fr;
+  gap:20px;
 }
-.formMessage{
-  margin:10px 0;
-  font-size:14px;
+
+.avatar{
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  background:#dbeafe;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:45px;
+  color:#2563eb;
 }
+
 .quickGrid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+}
+
+.quickCard{
+  border:1px solid var(--border);
+  background:#fff;
+  padding:18px;
+  border-radius:15px;
+  box-shadow:var(--shadow);
+}
+
+.quickCard button{
+  border:0;
+  background:none;
+  text-align:left;
+  width:100%;
+}
+
+.message{
+  padding:12px;
+  border-bottom:1px solid var(--border);
+}
+
+.message:last-child{border-bottom:0}
+
+.message .msgTop{
+  display:flex;
+  justify-content:space-between;
   gap:10px;
 }
-.quick{
-  border:1px solid #e5e7eb;
-  background:#fff;
-  border-radius:12px;
-  padding:15px;
-  text-align:center;
-  font-weight:700;
-}
-.quick:hover{border-color:#1261d8}
 
-.loading{
-  padding:30px;
-  text-align:center;
-  color:#64748b;
+.cartRow{
+  display:grid;
+  grid-template-columns:1fr auto auto auto;
+  gap:12px;
+  align-items:center;
+  padding:14px 0;
+  border-bottom:1px solid var(--border);
 }
 
-@media(max-width:700px){
-  .hero h1{font-size:30px}
+.cartRow:last-child{border-bottom:0}
+
+.footer{
+  background:#0f172a;
+  color:#cbd5e1;
+  padding:35px 18px;
+}
+
+.footerInner{
+  max-width:1400px;
+  margin:auto;
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr 1fr;
+  gap:25px;
+}
+
+.footer h3{color:#fff}
+
+.badge{
+  display:inline-block;
+  padding:4px 8px;
+  border-radius:999px;
+  background:#e2e8f0;
+  font-size:12px;
+}
+
+.badge.green{background:#dcfce7;color:#166534}
+.badge.red{background:#fee2e2;color:#991b1b}
+.badge.yellow{background:#fef3c7;color:#92400e}
+
+@media(max-width:1100px){
+  .grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .categoryGrid{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .quickGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+@media(max-width:760px){
+  .topbar{
+    flex-wrap:wrap;
+  }
+
+  .logo{
+    width:100%;
+  }
+
+  .search{
+    order:3;
+    width:100%;
+  }
+
+  .authArea{
+    margin-left:auto;
+  }
+
+  .grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+
+  .categoryGrid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+
+  .formGrid{
+    grid-template-columns:1fr;
+  }
+
+  .field.full{grid-column:auto}
+
+  .profileBox{
+    grid-template-columns:1fr;
+  }
+
+  .footerInner{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .cartRow{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:480px){
+  main{padding:12px 10px 45px}
+  .topbar{padding:10px}
+  .nav{padding:7px 10px}
+  .grid{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr}
+  .quickGrid{grid-template-columns:1fr}
+  .footerInner{grid-template-columns:1fr}
   .hero{padding:30px 20px}
-  .formRow{grid-template-columns:1fr}
-  .topbar{padding:11px}
-  main{padding:0 12px 40px}
 }
 </style>
 </head>
@@ -391,2542 +666,3696 @@ footer a{
 <body>
 
 <header>
-<div class="topbar">
+  <div class="topbar">
+    <div class="logo">Isoko<span>Hub</span> 🌍</div>
 
-<div class="logo">IsokoHub 🌍</div>
+    <form class="search" id="searchForm">
+      <input
+        id="searchInput"
+        type="search"
+        placeholder="Search products, services, teachers, creators..."
+      >
+      <button class="btn" type="submit">Search</button>
+    </form>
 
-<form class="search" id="searchForm">
-<input id="searchInput" type="search"
-placeholder="Search products, services, teachers, creators...">
-<button class="btn" type="submit">Search</button>
-</form>
+    <div class="authArea" id="authArea">
+      <button class="btn secondary" onclick="openModal('loginModal')">Login</button>
+      <button class="btn" onclick="openModal('registerModal')">Register</button>
+    </div>
+  </div>
 
-<div class="authArea" id="authArea">
-<button class="btn secondary" onclick="openModal('loginModal')">Login</button>
-<button class="btn" onclick="openModal('registerModal')">Register</button>
-</div>
+  <nav class="nav" id="mainNav">
+    <button data-section="home" onclick="showSection('home')">🏠 Home</button>
+    <button data-section="saved" onclick="showSection('saved')">❤️ Saved <span id="savedCount">0</span></button>
+    <button data-section="cart" onclick="showSection('cart')">🛒 Cart <span id="cartCount">0</span></button>
+    <button data-section="orders" onclick="showSection('orders')">📦 Orders</button>
+    <button data-section="messages" onclick="showSection('messages')">💬 Messages</button>
+    <button data-section="sell" onclick="showSection('sell')">➕ Sell</button>
+    <button data-section="profile" onclick="showSection('profile')">👤 Profile</button>
+    <button data-section="services" onclick="showSection('services')">🛠️ Services</button>
+    <button data-section="education" onclick="filterCategory('Education')">📚 Education</button>
+    <button data-section="creators" onclick="filterCategory('Art & Creative')">🎨 Creators</button>
+    <button data-section="business" onclick="filterCategory('Business & Professional')">💼 Business</button>
+    <button data-section="work" onclick="filterCategory('Jobs & Freelance')">💻 Work</button>
+    <button data-section="admin" onclick="showAdmin()">⚙️ Admin</button>
+  </nav>
 
-</div>
-
-<nav class="nav">
-<button onclick="showSection('home')">🏠 Home</button>
-<button onclick="showSection('saved')">❤️ Saved <span id="savedCount">0</span></button>
-<button onclick="showSection('cart')">🛒 Cart <span id="cartCount">0</span></button>
-<button onclick="showSection('orders')">📦 Orders</button>
-<button onclick="showSection('messages')">💬 Messages</button>
-<button onclick="openModal('sellModal')">➕ Sell</button>
-<button onclick="showSection('profile')">👤 Profile</button>
-<button onclick="showSection('services')">🛠️ Services</button>
-<button onclick="showSection('requests')">📋 Requests</button>
-<button onclick="showSection('education')">🎓 Education</button>
-<button onclick="showSection('creators')">🎨 Creators</button>
-<button onclick="showSection('business')">🏢 Business</button>
-<button onclick="showSection('work')">💼 Work</button>
-<button onclick="showSection('deals')">🔥 Deals</button>
-<button onclick="showSection('community')">🤝 Community</button>
-<button onclick="showSection('admin')">⚙️ Admin</button>
-</nav>
+  <div class="statusbar">
+    <span id="connectionStatus" class="status loading">
+      ⏳ Connecting to IsokoHub API + D1 database...
+    </span>
+  </div>
 </header>
-
-<div class="status">
-<div class="statusBox" id="connectionStatus">
-Connecting to IsokoHub API + D1 database...
-</div>
-</div>
 
 <main>
 
 <!-- HOME -->
-<section id="home" class="pageSection active">
+<section id="home" class="active">
 
-<div class="hero">
-<h1>Welcome to IsokoHub 🌍</h1>
-<p>
-A global marketplace connecting buyers, sellers, teachers, artists,
-creators, filmmakers, professionals and service providers.
-</p>
+  <div class="hero">
+    <h1>Welcome to IsokoHub 🌍</h1>
+    <p>
+      A global marketplace connecting buyers, sellers, teachers, artists,
+      creators, filmmakers, professionals and service providers.
+    </p>
 
-<div class="heroActions">
-<button class="btn orange" onclick="scrollToProducts()">Explore Marketplace</button>
-<button class="btn secondary" onclick="openModal('sellModal')">Start Selling</button>
-<button class="btn secondary" onclick="showSection('requests')">Post a Request</button>
-</div>
-</div>
+    <div class="heroActions">
+      <button class="btn" onclick="scrollToProducts()">Explore Marketplace</button>
+      <button class="btn secondary" onclick="showSection('sell')">Start Selling</button>
+      <button class="btn secondary" onclick="showSection('services')">Explore Services</button>
+    </div>
+  </div>
 
-<div class="section">
-<div class="sectionTitle">
-<h2>🚀 IsokoHub Services</h2>
-</div>
+  <div class="sectionHead">
+    <h2>Explore IsokoHub</h2>
+  </div>
 
-<div class="quickGrid">
-<button class="quick" onclick="showSection('services')">🛠️ Services</button>
-<button class="quick" onclick="showSection('requests')">📋 Requests</button>
-<button class="quick" onclick="showSection('education')">🎓 LearnHub</button>
-<button class="quick" onclick="showSection('creators')">🎨 CreatorHub</button>
-<button class="quick" onclick="showSection('business')">🏢 BusinessHub</button>
-<button class="quick" onclick="showSection('work')">💼 WorkHub</button>
-<button class="quick" onclick="showSection('deals')">🔥 IsokoDeals</button>
-<button class="quick" onclick="showSection('community')">🤝 Community</button>
-<button class="quick" onclick="openModal('aiModal')">🤖 IsokoAI</button>
-<button class="quick" onclick="openModal('matchModal')">🤝 IsokoMatch</button>
-<button class="quick" onclick="openModal('quoteModal')">📑 Get Quote</button>
-<button class="quick" onclick="openModal('bookingModal')">📅 Book Service</button>
-</div>
-</div>
+  <div class="quickGrid">
+    <div class="quickCard">
+      <button onclick="scrollToProducts()">
+        <div style="font-size:30px">🛍️</div>
+        <strong>Marketplace</strong>
+        <p class="muted">Products from sellers around the marketplace.</p>
+      </button>
+    </div>
 
-<div class="section">
-<div class="sectionTitle">
-<h2>Shop by Category</h2>
-</div>
-<div class="categories" id="categories"></div>
-</div>
+    <div class="quickCard">
+      <button onclick="filterCategory('Education')">
+        <div style="font-size:30px">📚</div>
+        <strong>Education</strong>
+        <p class="muted">Courses, teachers and educational services.</p>
+      </button>
+    </div>
 
-<div class="section" id="productsSection">
-<div class="sectionTitle">
-<h2>Featured Products & Services</h2>
-<button class="btn secondary" onclick="loadProducts()">Refresh</button>
-</div>
-<div class="products" id="products"></div>
-</div>
+    <div class="quickCard">
+      <button onclick="filterCategory('Art & Creative')">
+        <div style="font-size:30px">🎨</div>
+        <strong>Art & Creative</strong>
+        <p class="muted">Artists, designers, photographers and creators.</p>
+      </button>
+    </div>
 
-<div class="section">
-<div class="sectionTitle"><h2>🌟 Explore IsokoHub</h2></div>
+    <div class="quickCard">
+      <button onclick="showSection('services')">
+        <div style="font-size:30px">🛠️</div>
+        <strong>Services</strong>
+        <p class="muted">Professional services for individuals and businesses.</p>
+      </button>
+    </div>
+  </div>
 
-<div class="features">
+  <div class="sectionHead">
+    <h2>Shop by Category</h2>
+  </div>
 
-<div class="card">
-<h3>🤝 IsokoMatch</h3>
-<p>Buyers can describe what they need and receive relevant offers.</p>
-<button class="btn" onclick="openModal('matchModal')">Find a Provider</button>
-</div>
+  <div id="categoryGrid" class="categoryGrid">
+    <div class="empty">Loading categories...</div>
+  </div>
 
-<div class="card">
-<h3>📋 Request a Service</h3>
-<p>Post a service request and let qualified providers respond.</p>
-<button class="btn" onclick="showSection('requests')">Create Request</button>
-</div>
+  <div id="productsAnchor" class="sectionHead">
+    <h2>Marketplace Products</h2>
+    <button class="btn secondary small" onclick="loadProducts()">Refresh</button>
+  </div>
 
-<div class="card">
-<h3>📑 Request for Quote</h3>
-<p>Businesses can request quotations from sellers and professionals.</p>
-<button class="btn" onclick="openModal('quoteModal')">Request Quote</button>
-</div>
-
-<div class="card">
-<h3>🏪 IsokoStore</h3>
-<p>Create a professional storefront and build your marketplace identity.</p>
-<button class="btn" onclick="showSection('profile')">My Store</button>
-</div>
-
-</div>
-</div>
-
-<div class="section">
-<div class="sectionTitle"><h2>💰 Business Opportunities</h2></div>
-
-<div class="opportunities">
-
-<div class="card"><h3>📣 IsokoAds</h3><p>Businesses can advertise products, services and brands.</p></div>
-<div class="card"><h3>🚀 BoostHub</h3><p>Promote listings and increase marketplace visibility.</p></div>
-<div class="card"><h3>⭐ Premium Sellers</h3><p>Premium marketplace tools for sellers and businesses.</p></div>
-<div class="card"><h3>💳 Commission</h3><p>Marketplace commission from successful transactions.</p></div>
-<div class="card"><h3>🎁 IsokoRewards</h3><p>Loyalty points and rewards for marketplace activity.</p></div>
-<div class="card"><h3>🔗 IsokoRefer</h3><p>Referral and affiliate opportunities.</p></div>
-
-</div>
-</div>
-
+  <div id="productInfo" class="muted"></div>
+  <div id="productsGrid" class="grid">
+    <div class="empty">Loading products...</div>
+  </div>
 </section>
 
 <!-- SERVICES -->
-<section id="services" class="pageSection">
-<div class="sectionTitle"><h2>🛠️ IsokoHub Services</h2></div>
-
-<div class="serviceGrid">
-<div class="card"><h3>🧑‍🔧 Professional Services</h3><p>Find professionals and service providers.</p><button class="btn" onclick="openModal('bookingModal')">Book</button></div>
-<div class="card"><h3>📋 Service Requests</h3><p>Tell providers what you need.</p><button class="btn" onclick="showSection('requests')">Request</button></div>
-<div class="card"><h3>💰 Make an Offer</h3><p>Negotiate prices directly with sellers.</p><button class="btn" onclick="openModal('offerModal')">Make Offer</button></div>
-<div class="card"><h3>📑 Quotes</h3><p>Request quotations from businesses.</p><button class="btn" onclick="openModal('quoteModal')">Get Quote</button></div>
-<div class="card"><h3>📅 Booking</h3><p>Schedule professional services.</p><button class="btn" onclick="openModal('bookingModal')">Book Service</button></div>
-<div class="card"><h3>🤝 IsokoMatch</h3><p>Match your needs with providers.</p><button class="btn" onclick="openModal('matchModal')">Match Me</button></div>
-</div>
-</section>
-
-<!-- REQUESTS -->
-<section id="requests" class="pageSection">
-<div class="sectionTitle">
-<h2>📋 IsokoHub Requests</h2>
-<button class="btn" onclick="openModal('requestModal')">+ New Request</button>
-</div>
-
-<div class="empty">
-<h3>What do you need?</h3>
-<p>Post your request and sellers, professionals or service providers can respond.</p>
-<button class="btn" onclick="openModal('requestModal')">Post a Request</button>
-</div>
-</section>
-
-<!-- EDUCATION -->
-<section id="education" class="pageSection">
-<div class="sectionTitle"><h2>🎓 LearnHub</h2></div>
-
-<div class="serviceGrid">
-<div class="card"><h3>👨‍🏫 Teachers</h3><p>Find teachers and instructors.</p></div>
-<div class="card"><h3>📚 Courses</h3><p>Discover online courses and educational content.</p></div>
-<div class="card"><h3>🎥 Video Lessons</h3><p>Learn through digital lessons.</p></div>
-<div class="card"><h3>📝 Assignments</h3><p>Courses can include assignments and learning activities.</p></div>
-<div class="card"><h3>🧪 Quizzes</h3><p>Interactive educational assessments.</p></div>
-<div class="card"><h3>🏆 Certificates</h3><p>Educational completion certificates.</p></div>
-</div>
-</section>
-
-<!-- CREATORS -->
-<section id="creators" class="pageSection">
-<div class="sectionTitle"><h2>🎨 CreatorHub</h2></div>
-
-<div class="serviceGrid">
-<div class="card"><h3>🎨 Artists</h3><p>Sell artwork and creative work.</p></div>
-<div class="card"><h3>📸 Photographers</h3><p>Photography services and portfolios.</p></div>
-<div class="card"><h3>🎬 Filmmakers</h3><p>Film production and creative services.</p></div>
-<div class="card"><h3>🎭 Actors</h3><p>Creative profiles and opportunities.</p></div>
-<div class="card"><h3>🎨 Designers</h3><p>Graphic, fashion and creative design services.</p></div>
-<div class="card"><h3>📹 Videographers</h3><p>Professional video services.</p></div>
-</div>
-</section>
-
-<!-- BUSINESS -->
-<section id="business" class="pageSection">
-<div class="sectionTitle"><h2>🏢 BusinessHub</h2></div>
-
-<div class="serviceGrid">
-<div class="card"><h3>🏢 Company Profiles</h3><p>Businesses can build public profiles.</p></div>
-<div class="card"><h3>🤝 B2B Marketplace</h3><p>Connect businesses with suppliers and customers.</p></div>
-<div class="card"><h3>🏭 Wholesale</h3><p>Wholesale products and bulk purchasing.</p></div>
-<div class="card"><h3>📑 Business Quotes</h3><p>Request and compare quotations.</p></div>
-<div class="card"><h3>👥 Team Accounts</h3><p>Business staff and account permissions.</p></div>
-<div class="card"><h3>📊 Business Analytics</h3><p>Track marketplace activity and sales.</p></div>
-</div>
-</section>
-
-<!-- WORK -->
-<section id="work" class="pageSection">
-<div class="sectionTitle"><h2>💼 WorkHub</h2></div>
-
-<div class="serviceGrid">
-<div class="card"><h3>💼 Jobs</h3><p>Discover job opportunities.</p></div>
-<div class="card"><h3>🧑‍💻 Freelance</h3><p>Find freelance projects and clients.</p></div>
-<div class="card"><h3>📋 Projects</h3><p>Post and discover projects.</p></div>
-<div class="card"><h3>🧑‍💼 Professional Profiles</h3><p>Showcase skills and experience.</p></div>
-</div>
-</section>
-
-<!-- DEALS -->
-<section id="deals" class="pageSection">
-<div class="sectionTitle"><h2>🔥 IsokoDeals</h2></div>
-
-<div class="serviceGrid">
-<div class="card"><h3>🔥 Flash Sales</h3><p>Limited promotional offers.</p></div>
-<div class="card"><h3>🏷️ Discounts</h3><p>Seller discounts and special prices.</p></div>
-<div class="card"><h3>🎁 Bundles</h3><p>Products and services packaged together.</p></div>
-<div class="card"><h3>🎟️ Coupons</h3><p>Promotional codes and marketplace offers.</p></div>
-<div class="card"><h3>🆕 New Arrivals</h3><p>Discover newly listed items.</p></div>
-<div class="card"><h3>📈 Trending</h3><p>Explore popular marketplace listings.</p></div>
-</div>
-</section>
-
-<!-- COMMUNITY -->
-<section id="community" class="pageSection">
-<div class="sectionTitle">
-<h2>🤝 IsokoCommunity</h2>
-<button class="btn" onclick="openModal('communityModal')">Create Post</button>
-</div>
-
-<div class="empty">
-<h3>Connect beyond transactions</h3>
-<p>Share announcements, marketplace knowledge, opportunities and creator content.</p>
-</div>
+<section id="services">
+  <div class="sectionHead">
+    <h2>🛠️ Services</h2>
+    <button class="btn secondary" onclick="loadServices()">Refresh</button>
+  </div>
+  <p class="muted">
+    Services available in the current IsokoHub database.
+  </p>
+  <div id="servicesGrid" class="grid">
+    <div class="empty">Loading services...</div>
+  </div>
 </section>
 
 <!-- SAVED -->
-<section id="saved" class="pageSection">
-<div class="sectionTitle"><h2>❤️ Saved Items</h2></div>
-<div id="savedItems" class="products"></div>
+<section id="saved">
+  <div class="sectionHead">
+    <h2>❤️ Saved Products</h2>
+    <button class="btn secondary small" onclick="loadSaved()">Refresh</button>
+  </div>
+  <div id="savedItems" class="grid">
+    <div class="empty">No saved products yet.</div>
+  </div>
 </section>
 
 <!-- CART -->
-<section id="cart" class="pageSection">
-<div class="sectionTitle"><h2>🛒 Shopping Cart</h2></div>
-<div id="cartItems"></div>
+<section id="cart">
+  <div class="sectionHead">
+    <h2>🛒 Shopping Cart</h2>
+    <button class="btn secondary small" onclick="renderCart()">Refresh</button>
+  </div>
+
+  <div class="panel">
+    <div id="cartItems"></div>
+
+    <div id="cartSummary" class="hidden" style="margin-top:20px">
+      <hr style="border:0;border-top:1px solid #e2e8f0">
+      <div style="display:flex;justify-content:space-between;gap:10px">
+        <strong>Total</strong>
+        <strong id="cartTotal" class="price">0</strong>
+      </div>
+
+      <div style="margin-top:15px">
+        <button class="btn success" onclick="checkoutCart()">
+          Checkout
+        </button>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- ORDERS -->
-<section id="orders" class="pageSection">
-<div class="sectionTitle">
-<h2>📦 My Orders</h2>
-<button class="btn secondary" onclick="loadOrders()">Refresh</button>
-</div>
-<div id="ordersContent" class="empty">Login to view your orders.</div>
+<section id="orders">
+  <div class="sectionHead">
+    <h2>📦 My Orders</h2>
+    <button class="btn secondary small" onclick="loadOrders()">Refresh</button>
+  </div>
+
+  <div id="ordersContent">
+    <div class="empty">Login to view your orders.</div>
+  </div>
 </section>
 
 <!-- MESSAGES -->
-<section id="messages" class="pageSection">
-<div class="sectionTitle">
-<h2>💬 Messages</h2>
-<button class="btn" onclick="openModal('messageModal')">New Message</button>
-</div>
+<section id="messages">
+  <div class="sectionHead">
+    <h2>💬 Messages</h2>
+    <button class="btn small" onclick="openModal('messageModal')">New Message</button>
+  </div>
 
-<div class="empty">
-<p>Communicate directly with sellers, buyers, teachers and service providers.</p>
-<button class="btn" onclick="openModal('messageModal')">Send a Message</button>
-</div>
+  <div id="messagesContent" class="panel">
+    <div class="empty">Login to view your messages.</div>
+  </div>
+</section>
+
+<!-- SELL -->
+<section id="sell">
+  <div class="sectionHead">
+    <h2>➕ Sell on IsokoHub</h2>
+  </div>
+
+  <div class="panel">
+    <p class="muted">
+      Add a product or service to the IsokoHub marketplace.
+    </p>
+
+    <form id="sellForm" class="formGrid">
+
+      <div class="field full">
+        <label>Title *</label>
+        <input id="sellTitle" required placeholder="Product or service title">
+      </div>
+
+      <div class="field">
+        <label>Category *</label>
+        <select id="sellCategory" required></select>
+      </div>
+
+      <div class="field">
+        <label>Price *</label>
+        <input id="sellPrice" type="number" min="0" step="0.01" required>
+      </div>
+
+      <div class="field">
+        <label>Currency</label>
+        <input id="sellCurrency" value="RWF">
+      </div>
+
+      <div class="field">
+        <label>Stock</label>
+        <input id="sellStock" type="number" min="0" value="1">
+      </div>
+
+      <div class="field">
+        <label>Condition</label>
+        <select id="sellCondition">
+          <option value="new">New</option>
+          <option value="used">Used</option>
+          <option value="has crack">Has crack</option>
+          <option value="refurbished">Refurbished</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Country</label>
+        <input id="sellCountry" value="Rwanda">
+      </div>
+
+      <div class="field">
+        <label>District</label>
+        <input id="sellDistrict" placeholder="e.g. Gasabo">
+      </div>
+
+      <div class="field">
+        <label>Brand</label>
+        <input id="sellBrand">
+      </div>
+
+      <div class="field">
+        <label>Model</label>
+        <input id="sellModel">
+      </div>
+
+      <div class="field">
+        <label>Storage</label>
+        <input id="sellStorage" placeholder="e.g. 256GB">
+      </div>
+
+      <div class="field">
+        <label>RAM</label>
+        <input id="sellRam" placeholder="e.g. 8GB">
+      </div>
+
+      <div class="field full">
+        <label>Image URL</label>
+        <input id="sellImage" type="url" placeholder="https://...">
+      </div>
+
+      <div class="field full">
+        <label>Description</label>
+        <textarea id="sellDescription"></textarea>
+      </div>
+
+      <div class="field full">
+        <label>Specifications</label>
+        <textarea id="sellSpecs" placeholder="Additional specifications"></textarea>
+      </div>
+
+      <div class="field">
+        <label>Negotiable</label>
+        <select id="sellNegotiable">
+          <option value="0">No</option>
+          <option value="1">Yes</option>
+        </select>
+      </div>
+
+      <div class="field full">
+        <button class="btn" type="submit">Publish on IsokoHub</button>
+      </div>
+
+    </form>
+
+    <div id="sellMessage"></div>
+  </div>
+
+  <div class="sectionHead">
+    <h2>Seller Dashboard</h2>
+    <button class="btn secondary small" onclick="loadSellerDashboard()">Refresh</button>
+  </div>
+
+  <div id="sellerStats" class="stats"></div>
+
+  <div class="sectionHead">
+    <h3>My Products</h3>
+  </div>
+
+  <div id="sellerProducts" class="grid">
+    <div class="empty">Login as a seller to view your products.</div>
+  </div>
 </section>
 
 <!-- PROFILE -->
-<section id="profile" class="pageSection">
-<div class="sectionTitle"><h2>👤 My Profile</h2></div>
-<div id="profileContent" class="empty">
-<p>Login to view and manage your profile.</p>
-<button class="btn" onclick="openModal('loginModal')">Login</button>
-</div>
+<section id="profile">
+  <div class="sectionHead">
+    <h2>👤 My Profile</h2>
+    <button class="btn secondary small" onclick="loadProfile()">Refresh</button>
+  </div>
+
+  <div id="profileContent">
+    <div class="empty">Login to view your profile.</div>
+  </div>
+</section>
+
+<!-- GENERIC FEATURE -->
+<section id="education">
+  <div class="sectionHead">
+    <h2>📚 Education</h2>
+  </div>
+  <div id="educationGrid" class="grid"></div>
+</section>
+
+<section id="creators">
+  <div class="sectionHead">
+    <h2>🎨 Creators</h2>
+  </div>
+  <div id="creatorsGrid" class="grid"></div>
+</section>
+
+<section id="business">
+  <div class="sectionHead">
+    <h2>💼 Business & Professional</h2>
+  </div>
+  <div id="businessGrid" class="grid"></div>
+</section>
+
+<section id="work">
+  <div class="sectionHead">
+    <h2>💻 Jobs & Freelance</h2>
+  </div>
+  <div id="workGrid" class="grid"></div>
 </section>
 
 <!-- ADMIN -->
-<section id="admin" class="pageSection">
+<section id="admin">
 
-<div class="sectionTitle">
-<h2>⚙️ IsokoHub Admin Dashboard</h2>
-<button class="btn secondary" onclick="adminTab(currentAdminTab)">Refresh</button>
-</div>
+  <div class="sectionHead">
+    <div>
+      <h2>⚙️ IsokoHub Admin Dashboard</h2>
+      <p class="muted">Administration connected to the current D1 schema and Worker API.</p>
+    </div>
+    <button class="btn secondary small" onclick="loadAdminOverview()">Refresh</button>
+  </div>
 
-<div id="adminGuard" class="empty" style="display:none">
-<h3>🔒 Admin Access Required</h3>
-<p>You must be logged in with an administrator account.</p>
-<button class="btn" onclick="openModal('loginModal')">Login</button>
-</div>
+  <div id="adminAccessMessage"></div>
 
-<div id="adminArea">
+  <div id="adminDashboard" class="hidden">
 
-<div class="adminTabs" id="adminTabs">
+    <div class="adminTabs">
 
-<button onclick="adminTab('overview')" class="active">Overview</button>
-<button onclick="adminTab('users')">Users</button>
-<button onclick="adminTab('sellers')">Sellers</button>
-<button onclick="adminTab('products')">Products</button>
-<button onclick="adminTab('services')">Services</button>
-<button onclick="adminTab('requests')">Requests</button>
-<button onclick="adminTab('orders')">Orders</button>
-<button onclick="adminTab('payments')">Payments</button>
-<button onclick="adminTab('wallet')">Wallet</button>
-<button onclick="adminTab('categories')">Categories</button>
-<button onclick="adminTab('promotions')">Promotions</button>
-<button onclick="adminTab('ads')">Ads</button>
-<button onclick="adminTab('reviews')">Reviews</button>
-<button onclick="adminTab('reports')">Reports</button>
-<button onclick="adminTab('disputes')">Disputes</button>
-<button onclick="adminTab('verification')">Verification</button>
-<button onclick="adminTab('notifications')">Notifications</button>
-<button onclick="adminTab('settings')">Settings</button>
-<button onclick="adminTab('logs')">Audit Logs</button>
+      <button data-admin-tab="overview" onclick="adminTab('overview')">Overview</button>
+      <button data-admin-tab="users" onclick="adminTab('users')">Users</button>
+      <button data-admin-tab="sellers" onclick="adminTab('sellers')">Sellers</button>
+      <button data-admin-tab="products" onclick="adminTab('products')">Products</button>
+      <button data-admin-tab="orders" onclick="adminTab('orders')">Orders</button>
+      <button data-admin-tab="payments" onclick="adminTab('payments')">Payments</button>
+      <button data-admin-tab="categories" onclick="adminTab('categories')">Categories</button>
+      <button data-admin-tab="services" onclick="adminTab('services')">Services</button>
+      <button data-admin-tab="reports" onclick="adminTab('reports')">Reports</button>
+      <button data-admin-tab="reviews" onclick="adminTab('reviews')">Reviews</button>
+      <button data-admin-tab="promotions" onclick="adminTab('promotions')">Promotions</button>
+      <button data-admin-tab="ads" onclick="adminTab('ads')">Ads</button>
 
-</div>
+    </div>
 
-<div id="adminContent" class="adminPanel"></div>
+    <!-- ADMIN OVERVIEW -->
+    <div id="admin-overview" class="adminPanel active">
 
-</div>
+      <div class="sectionHead">
+        <h3>Overview</h3>
+      </div>
+
+      <div id="adminStats" class="stats"></div>
+
+      <div class="sectionHead">
+        <h3>System Configuration</h3>
+      </div>
+
+      <div id="adminConfig" class="panel">Loading...</div>
+    </div>
+
+    <!-- USERS -->
+    <div id="admin-users" class="adminPanel">
+
+      <div class="sectionHead">
+        <h3>Users</h3>
+        <button class="btn secondary small" onclick="loadAdminUsers()">Refresh</button>
+      </div>
+
+      <div id="adminUsers"></div>
+    </div>
+
+    <!-- SELLERS -->
+    <div id="admin-sellers" class="adminPanel">
+
+      <div class="sectionHead">
+        <h3>Sellers</h3>
+        <button class="btn secondary small" onclick="loadAdminSellers()">Refresh</button>
+      </div>
+
+      <div id="adminSellers"></div>
+    </div>
+
+    <!-- PRODUCTS -->
+    <div id="admin-products" class="adminPanel">
+
+      <div class="sectionHead">
+        <h3>Products</h3>
+        <button class="btn secondary small" onclick="loadAdminProducts()">Refresh</button>
+      </div>
+
+      <div id="adminProducts"></div>
+    </div>
+
+    <!-- ORDERS -->
+    <div id="admin-orders" class="adminPanel">
+
+      <div class="sectionHead">
+        <h3>Orders</h3>
+        <button class="btn secondary small" onclick="loadAdminOrders()">Refresh</button>
+      </div>
+
+      <div id="adminOrders"></div>
+    </div>
+
+    <!-- PAYMENTS -->
+    <div id="admin-payments" class="adminPanel">
+
+      <div class="sectionHead">
+        <h3>Payments</h3>
+        <button class="btn secondary small" onclick="loadAdminPayments()">Refresh</button>
+      </div>
+
+      <div id="adminPayments"></div>
+    </div>
+
+    <!-- CATEGORIES -->
+    <div id="admin-categories" class="adminPanel">
+
+      <div class="sectionHead">
+        <h3>Categories</h3>
+        <button class="btn secondary small" onclick="loadAdminCategories()">Refresh</button>
+      </div>
+
+      <div class="panel" style="margin-bottom:15px">
+        <form id="categoryForm" class="formGrid">
+
+          <div class="field">
+            <label>Category name</label>
+            <input id="newCategoryName" required>
+          </div>
+
+          <div class="field">
+            <label>Icon</label>
+            <input id="newCategoryIcon" placeholder="📦">
+          </div>
+
+          <div class="field full">
+            <label>Description</label>
+            <input id="newCategoryDescription">
+          </div>
+
+          <div class="field full">
+            <button class="btn" type="submit">Create Category</button>
+          </div>
+
+        </form>
+      </div>
+
+      <div id="adminCategories"></div>
+    </div>
+
+    <!-- SERVICES -->
+    <div id="admin-services" class="adminPanel">
+
+      <div class="sectionHead">
+        <h3>Services</h3>
+        <button class="btn secondary small" onclick="loadAdminServices()">Refresh</button>
+      </div>
+
+      <div id="adminServices"></div>
+    </div>
+
+    <!-- REPORTS -->
+    <div id="admin-reports" class="adminPanel">
+
+      <div class="sectionHead">
+        <h3>Reports</h3>
+        <button class="btn secondary small" onclick="loadAdminReports()">Refresh</button>
+      </div>
+
+      <div id="adminReports"></div>
+    </div>
+
+    <!-- REVIEWS -->
+    <div id="admin-reviews" class="adminPanel">
+      <div class="panel">
+        <h3>Reviews</h3>
+        <div id="adminReviews"></div>
+      </div>
+    </div>
+
+    <!-- PROMOTIONS -->
+    <div id="admin-promotions" class="adminPanel">
+      <div class="panel">
+        <h3>Promotions</h3>
+        <div id="adminPromotions"></div>
+      </div>
+    </div>
+
+    <!-- ADS -->
+    <div id="admin-ads" class="adminPanel">
+      <div class="panel">
+        <h3>Advertising</h3>
+        <div id="adminAds"></div>
+      </div>
+    </div>
+
+  </div>
 </section>
 
 </main>
 
-<footer>
-<div class="footerGrid">
+<footer class="footer">
+  <div class="footerInner">
 
-<div>
-<h3>IsokoHub 🌍</h3>
-<p>Global marketplace for products, services, education, businesses and creativity.</p>
-</div>
+    <div>
+      <h3>IsokoHub 🌍</h3>
+      <p>
+        Global marketplace connecting buyers, sellers, teachers,
+        artists, creators, filmmakers and service providers.
+      </p>
+    </div>
 
-<div>
-<h3>Marketplace</h3>
-<a href="#" onclick="showSection('home');return false">Home</a>
-<a href="#" onclick="showSection('saved');return false">Saved</a>
-<a href="#" onclick="showSection('cart');return false">Cart</a>
-<a href="#" onclick="showSection('orders');return false">Orders</a>
-<a href="#" onclick="showSection('deals');return false">Deals</a>
-</div>
+    <div>
+      <h3>Marketplace</h3>
+      <p>Products</p>
+      <p>Services</p>
+      <p>Education</p>
+      <p>Creators</p>
+    </div>
 
-<div>
-<h3>Services</h3>
-<a href="#" onclick="showSection('services');return false">Services</a>
-<a href="#" onclick="showSection('requests');return false">Requests</a>
-<a href="#" onclick="showSection('education');return false">Education</a>
-<a href="#" onclick="showSection('creators');return false">Creators</a>
-</div>
+    <div>
+      <h3>Account</h3>
+      <p>Profile</p>
+      <p>Orders</p>
+      <p>Messages</p>
+      <p>Saved</p>
+    </div>
 
-<div>
-<h3>Account</h3>
-<a href="#" onclick="showSection('profile');return false">Profile</a>
-<a href="#" onclick="openModal('loginModal');return false">Login</a>
-<a href="#" onclick="openModal('registerModal');return false">Register</a>
-<a href="#" onclick="openModal('sellModal');return false">Start Selling</a>
-</div>
+    <div>
+      <h3>Sell</h3>
+      <p>Sell Products</p>
+      <p>Professional Services</p>
+      <p>Seller Dashboard</p>
+    </div>
 
-</div>
+  </div>
 </footer>
 
-<!-- LOGIN -->
-<div class="modal" id="loginModal">
-<div class="modalBox">
-
-<div class="modalHead">
-<h2>Login</h2>
-<button class="close" onclick="closeModal('loginModal')">×</button>
-</div>
-
-<form id="loginForm">
-
-<div class="formGroup">
-<label>Email</label>
-<input id="loginEmail" type="email" required>
-</div>
-
-<div class="formGroup">
-<label>Password</label>
-<input id="loginPassword" type="password" required>
-</div>
-
-<div id="loginMessage" class="formMessage"></div>
-
-<button class="btn" type="submit">Login</button>
-
-<button class="btn secondary" type="button"
-onclick="closeModal('loginModal');openModal('registerModal')">
-Create Account
-</button>
-
-</form>
-</div>
-</div>
-
-<!-- REGISTER -->
-<div class="modal" id="registerModal">
-<div class="modalBox">
-
-<div class="modalHead">
-<h2>Create Account</h2>
-<button class="close" onclick="closeModal('registerModal')">×</button>
-</div>
-
-<form id="registerForm">
-
-<div class="formGroup">
-<label>Name</label>
-<input id="registerName" required>
-</div>
-
-<div class="formGroup">
-<label>Email</label>
-<input id="registerEmail" type="email" required>
-</div>
-
-<div class="formGroup">
-<label>Phone</label>
-<input id="registerPhone">
-</div>
-
-<div class="formGroup">
-<label>Country</label>
-<input id="registerCountry" value="Rwanda">
-</div>
-
-<div class="formGroup">
-<label>Password</label>
-<input id="registerPassword" type="password" minlength="6" required>
-</div>
-
-<div id="registerMessage" class="formMessage"></div>
-
-<button class="btn" type="submit">Register</button>
-
-</form>
-</div>
-</div>
-
-<!-- SELL -->
-<div class="modal" id="sellModal">
-<div class="modalBox">
-
-<div class="modalHead">
-<h2>Sell on IsokoHub</h2>
-<button class="close" onclick="closeModal('sellModal')">×</button>
-</div>
-
-<form id="sellForm">
-
-<div class="formGroup">
-<label>What are you offering?</label>
-<select id="sellType">
-<option value="product">Physical Product</option>
-<option value="service">Service</option>
-<option value="course">Course / Education</option>
-<option value="digital">Digital Product</option>
-<option value="creative">Creative Work</option>
-<option value="real_estate">Real Estate</option>
-<option value="job">Job / Freelance</option>
-</select>
-</div>
-
-<div class="formGroup">
-<label>Title</label>
-<input id="sellTitle" required>
-</div>
-
-<div class="formGroup">
-<label>Category</label>
-<select id="sellCategory" required></select>
-</div>
-
-<div class="formRow">
-
-<div class="formGroup">
-<label>Price</label>
-<input id="sellPrice" type="number" min="0" required>
-</div>
-
-<div class="formGroup">
-<label>Currency</label>
-<select id="sellCurrency">
-<option>RWF</option>
-<option>USD</option>
-<option>EUR</option>
-<option>KES</option>
-<option>UGX</option>
-<option>TZS</option>
-<option>NGN</option>
-<option>ZAR</option>
-<option>GBP</option>
-</select>
-</div>
-
-</div>
-
-<div class="formRow">
-
-<div class="formGroup">
-<label>Country</label>
-<input id="sellCountry" value="Rwanda">
-</div>
-
-<div class="formGroup">
-<label>District / City</label>
-<input id="sellDistrict">
-</div>
-
-</div>
-
-<div class="formGroup">
-<label>Description / Specifications</label>
-<textarea id="sellSpecs"></textarea>
-</div>
-
-<div id="sellMessage" class="formMessage"></div>
-
-<button class="btn" type="submit">Publish Listing</button>
-
-</form>
-</div>
-</div>
-
-<!-- MESSAGE -->
-<div class="modal" id="messageModal">
-<div class="modalBox">
-
-<div class="modalHead">
-<h2>New Message</h2>
-<button class="close" onclick="closeModal('messageModal')">×</button>
-</div>
-
-<form id="messageForm">
-
-<div class="formGroup">
-<label>Recipient User ID</label>
-<input id="messageRecipient" type="number" required>
-</div>
-
-<div class="formGroup">
-<label>Message</label>
-<textarea id="messageText" required></textarea>
-</div>
-
-<div id="messageStatus" class="formMessage"></div>
-
-<button class="btn" type="submit">Send Message</button>
+<!-- LOGIN MODAL -->
+<div id="loginModal" class="modal">
+  <div class="modalBox">
+    <button class="close" onclick="closeModal('loginModal')">×</button>
 
-</form>
-</div>
-</div>
-
-<!-- REQUEST -->
-<div class="modal" id="requestModal">
-<div class="modalBox">
-
-<div class="modalHead">
-<h2>📋 Post a Request</h2>
-<button class="close" onclick="closeModal('requestModal')">×</button>
-</div>
-
-<form>
-
-<div class="formGroup">
-<label>What do you need?</label>
-<input required placeholder="Example: I need a photographer...">
-</div>
-
-<div class="formGroup">
-<label>Category</label>
-<input placeholder="Photography, design, construction...">
-</div>
-
-<div class="formGroup">
-<label>Budget</label>
-<input type="number">
-</div>
-
-<div class="formGroup">
-<label>Location</label>
-<input placeholder="Country / City">
-</div>
-
-<div class="formGroup">
-<label>Details</label>
-<textarea></textarea>
-</div>
-
-<button class="btn" type="button"
-onclick="demoAction('Request created successfully')">
-Post Request
-</button>
-
-</form>
-</div>
-</div>
-
-<!-- OFFER -->
-<div class="modal" id="offerModal">
-<div class="modalBox">
-
-<div class="modalHead">
-<h2>💰 Make an Offer</h2>
-<button class="close" onclick="closeModal('offerModal')">×</button>
-</div>
-
-<div class="formGroup">
-<label>Product / Service</label>
-<input id="offerItem">
-</div>
-
-<div class="formGroup">
-<label>Your Offer</label>
-<input id="offerPrice" type="number">
-</div>
-
-<div class="formGroup">
-<label>Message</label>
-<textarea id="offerText"></textarea>
-</div>
-
-<button class="btn" onclick="demoAction('Offer submitted')">
-Submit Offer
-</button>
-
-</div>
-</div>
-
-<!-- QUOTE -->
-<div class="modal" id="quoteModal">
-<div class="modalBox">
-
-<div class="modalHead">
-<h2>📑 Request for Quote</h2>
-<button class="close" onclick="closeModal('quoteModal')">×</button>
-</div>
-
-<div class="formGroup">
-<label>Business / Service Needed</label>
-<input>
-</div>
-
-<div class="formGroup">
-<label>Quantity</label>
-<input type="number">
-</div>
-
-<div class="formGroup">
-<label>Budget</label>
-<input type="number">
-</div>
-
-<div class="formGroup">
-<label>Details</label>
-<textarea></textarea>
-</div>
-
-<button class="btn" onclick="demoAction('Quote request created')">
-Request Quote
-</button>
-
-</div>
-</div>
-
-<!-- BOOKING -->
-<div class="modal" id="bookingModal">
-<div class="modalBox">
-
-<div class="modalHead">
-<h2>📅 Book a Service</h2>
-<button class="close" onclick="closeModal('bookingModal')">×</button>
-</div>
-
-<div class="formGroup">
-<label>Service</label>
-<input>
-</div>
+    <h2>Login to IsokoHub</h2>
 
-<div class="formRow">
+    <form id="loginForm">
 
-<div class="formGroup">
-<label>Date</label>
-<input type="date">
-</div>
-
-<div class="formGroup">
-<label>Time</label>
-<input type="time">
-</div>
+      <div class="field">
+        <label>Email</label>
+        <input id="loginEmail" type="email" required>
+      </div>
 
-</div>
+      <div class="field" style="margin-top:12px">
+        <label>Password</label>
+        <input id="loginPassword" type="password" required>
+      </div>
 
-<div class="formGroup">
-<label>Notes</label>
-<textarea></textarea>
-</div>
+      <div style="margin-top:15px">
+        <button class="btn" type="submit">Login</button>
+      </div>
 
-<button class="btn" onclick="demoAction('Booking request created')">
-Request Booking
-</button>
+    </form>
 
-</div>
+    <div id="loginMessage"></div>
+  </div>
 </div>
 
-<!-- MATCH -->
-<div class="modal" id="matchModal">
-<div class="modalBox">
+<!-- REGISTER MODAL -->
+<div id="registerModal" class="modal">
+  <div class="modalBox">
+    <button class="close" onclick="closeModal('registerModal')">×</button>
 
-<div class="modalHead">
-<h2>🤝 IsokoMatch</h2>
-<button class="close" onclick="closeModal('matchModal')">×</button>
-</div>
+    <h2>Create IsokoHub Account</h2>
 
-<p>
-Describe what you need and IsokoHub can match you with relevant marketplace providers.
-</p>
-
-<div class="formGroup">
-<label>What are you looking for?</label>
-<textarea id="matchNeed"
-placeholder="Example: wedding photographer in Kigali"></textarea>
-</div>
+    <form id="registerForm">
 
-<div class="formGroup">
-<label>Country / City</label>
-<input id="matchLocation">
-</div>
+      <div class="field">
+        <label>Name *</label>
+        <input id="registerName" required>
+      </div>
 
-<button class="btn"
-onclick="demoAction('Matching request submitted')">
-Find Matches
-</button>
+      <div class="field" style="margin-top:12px">
+        <label>Email *</label>
+        <input id="registerEmail" type="email" required>
+      </div>
 
-</div>
-</div>
+      <div class="field" style="margin-top:12px">
+        <label>Password *</label>
+        <input id="registerPassword" type="password" minlength="6" required>
+      </div>
 
-<!-- AI -->
-<div class="modal" id="aiModal">
-<div class="modalBox">
+      <div class="field" style="margin-top:12px">
+        <label>Phone</label>
+        <input id="registerPhone">
+      </div>
 
-<div class="modalHead">
-<h2>🤖 IsokoAI</h2>
-<button class="close" onclick="closeModal('aiModal')">×</button>
-</div>
+      <div class="field" style="margin-top:12px">
+        <label>Country</label>
+        <input id="registerCountry" value="Rwanda">
+      </div>
 
-<p>
-Smart marketplace assistant for finding products, services and opportunities.
-</p>
+      <div class="field" style="margin-top:12px">
+        <label>Account Type</label>
+        <select id="registerRole">
+          <option value="buyer">Buyer</option>
+          <option value="seller">Seller</option>
+        </select>
+      </div>
 
-<div class="formGroup">
-<label>Ask IsokoAI</label>
-<textarea placeholder="What are you looking for?"></textarea>
-</div>
+      <div style="margin-top:15px">
+        <button class="btn" type="submit">Register</button>
+      </div>
 
-<button class="btn"
-onclick="demoAction('AI request submitted')">
-Ask IsokoAI
-</button>
+    </form>
 
+    <div id="registerMessage"></div>
+  </div>
 </div>
-</div>
 
-<!-- COMMUNITY -->
-<div class="modal" id="communityModal">
-<div class="modalBox">
+<!-- MESSAGE MODAL -->
+<div id="messageModal" class="modal">
+  <div class="modalBox">
+    <button class="close" onclick="closeModal('messageModal')">×</button>
 
-<div class="modalHead">
-<h2>🤝 Community Post</h2>
-<button class="close" onclick="closeModal('communityModal')">×</button>
-</div>
+    <h2>Send Message</h2>
 
-<div class="formGroup">
-<label>Title</label>
-<input>
-</div>
+    <form id="messageForm">
 
-<div class="formGroup">
-<label>Post</label>
-<textarea></textarea>
-</div>
+      <div class="field">
+        <label>Receiver User ID *</label>
+        <input id="messageReceiver" required>
+      </div>
 
-<button class="btn"
-onclick="demoAction('Community post created')">
-Publish
-</button>
+      <div class="field" style="margin-top:12px">
+        <label>Product ID</label>
+        <input id="messageProduct">
+      </div>
 
-</div>
+      <div class="field" style="margin-top:12px">
+        <label>Message *</label>
+        <textarea id="messageText" required></textarea>
+      </div>
+
+      <div style="margin-top:15px">
+        <button class="btn" type="submit">Send</button>
+      </div>
+
+    </form>
+
+    <div id="messageFormResult"></div>
+  </div>
+</div>
+
+<!-- PRODUCT MODAL -->
+<div id="productModal" class="modal">
+  <div class="modalBox">
+    <button class="close" onclick="closeModal('productModal')">×</button>
+    <div id="productDetails"></div>
+  </div>
 </div>
 
 <script>
+"use strict";
+
+/* =========================================================
+   ISOKOHUB FRONTEND
+   Connected to current src/index.js + locked schema.sql
+   ========================================================= */
 
 const API_BASE = "";
 
+const TOKEN_KEY = "isokohub_token";
+const SAVED_KEY = "isokohub_saved";
+const CART_KEY = "isokohub_cart";
+
 let currentUser = null;
-let categoriesCache = [];
-let productsCache = [];
+let categories = [];
+let productsCache = {};
+let currentProducts = [];
 
-let saved =
-JSON.parse(localStorage.getItem("isokohub_saved") || "[]");
+/* =========================================================
+   BASIC HELPERS
+   ========================================================= */
 
-let cart =
-JSON.parse(localStorage.getItem("isokohub_cart") || "[]");
-
-let currentAdminTab = "overview";
-
-/* ================= API ================= */
-
-function api(path, options = {}){
-
-const token = localStorage.getItem("isokohub_token");
-
-const headers = {
-"Content-Type":"application/json",
-...(options.headers || {})
-};
-
-if(token){
-headers.Authorization = "Bearer " + token;
+function $(id){
+  return document.getElementById(id);
 }
 
-return fetch(API_BASE + path,{
-...options,
-headers
-}).then(async r=>{
-
-const data = await r.json().catch(()=>({}));
-
-if(!r.ok){
-throw new Error(data.error || data.message || "Request failed");
+function escapeHTML(value){
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
 }
 
-return data;
-
-});
-
+function money(value,currency="RWF"){
+  const n = Number(value || 0);
+  return `${n.toLocaleString()} ${escapeHTML(currency || "RWF")}`;
 }
 
-/* ================= MODALS ================= */
-
-function openModal(id){
-
-const el=document.getElementById(id);
-
-if(el) el.classList.add("open");
-
+function formatDate(value){
+  if(!value) return "";
+  const d = new Date(value);
+  if(Number.isNaN(d.getTime())) return String(value);
+  return d.toLocaleString();
 }
 
-function closeModal(id){
-
-const el=document.getElementById(id);
-
-if(el) el.classList.remove("open");
-
+function getSaved(){
+  try{
+    const data = JSON.parse(localStorage.getItem(SAVED_KEY) || "[]");
+    return Array.isArray(data) ? data : [];
+  }catch{
+    return [];
+  }
 }
 
-document.querySelectorAll(".modal").forEach(m=>{
+function setSaved(data){
+  localStorage.setItem(SAVED_KEY,JSON.stringify(data));
+  updateCounts();
+}
 
-m.addEventListener("click",e=>{
+function getCart(){
+  try{
+    const data = JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+    return Array.isArray(data) ? data : [];
+  }catch{
+    return [];
+  }
+}
 
-if(e.target===m)
-m.classList.remove("open");
+function setCart(data){
+  localStorage.setItem(CART_KEY,JSON.stringify(data));
+  updateCounts();
+}
 
-});
+function updateCounts(){
+  const saved = getSaved();
+  const cart = getCart();
 
-});
+  $("savedCount").textContent = saved.length;
 
-/* ================= NAVIGATION ================= */
+  const qty = cart.reduce((sum,item)=>sum + Number(item.quantity || 1),0);
+  $("cartCount").textContent = qty;
+}
+
+function messageBox(text,type=""){
+  if(!text) return "";
+  return `<div class="notice ${type}">${escapeHTML(text)}</div>`;
+}
+
+function isLoggedIn(){
+  return !!localStorage.getItem(TOKEN_KEY) && !!currentUser;
+}
+
+function token(){
+  return localStorage.getItem(TOKEN_KEY) || "";
+}
+
+/* =========================================================
+   API
+   ========================================================= */
+
+async function api(path,options={}){
+  const headers = {
+    "Content-Type":"application/json",
+    ...(options.headers || {})
+  };
+
+  const t = token();
+
+  if(t){
+    headers.Authorization = `Bearer ${t}`;
+  }
+
+  const response = await fetch(API_BASE + path,{
+    ...options,
+    headers
+  });
+
+  let data = null;
+
+  try{
+    data = await response.json();
+  }catch{
+    data = {};
+  }
+
+  if(!response.ok){
+    const error = new Error(data.error || data.message || `HTTP ${response.status}`);
+    error.status = response.status;
+    error.data = data;
+    throw error;
+  }
+
+  return data;
+}
+
+/* =========================================================
+   CONNECTION
+   ========================================================= */
+
+async function checkConnection(){
+  const status = $("connectionStatus");
+
+  status.className = "status loading";
+  status.textContent = "⏳ Connecting to IsokoHub API + D1 database...";
+
+  try{
+    const health = await api("/api/health");
+
+    if(health && health.database === "connected"){
+      status.className = "status ok";
+      status.textContent = "✓ Connected — IsokoHub API + D1 database";
+    }else{
+      status.className = "status error";
+      status.textContent = "⚠ API connected, but D1 database is not connected";
+    }
+
+    try{
+      await loadConfig();
+    }catch{}
+
+  }catch(error){
+    status.className = "status error";
+    status.textContent = "✕ Backend connection failed — check Cloudflare Worker/D1 deployment";
+    console.error(error);
+  }
+}
+
+async function loadConfig(){
+  const data = await api("/api/config");
+  window.isokoConfig = data;
+}
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
 
 function showSection(id){
+  document.querySelectorAll("main > section").forEach(section=>{
+    section.classList.remove("active");
+  });
 
-document.querySelectorAll(".pageSection")
-.forEach(s=>s.classList.remove("active"));
+  const target = $(id);
 
-const section=document.getElementById(id);
+  if(target){
+    target.classList.add("active");
+  }
 
-if(section)
-section.classList.add("active");
+  document.querySelectorAll("#mainNav button[data-section]").forEach(btn=>{
+    btn.classList.toggle("active",btn.dataset.section === id);
+  });
 
-if(id==="saved")
-renderSaved();
+  window.scrollTo({top:0,behavior:"smooth"});
 
-if(id==="cart")
-renderCart();
-
-if(id==="orders")
-loadOrders();
-
-if(id==="profile")
-loadProfile();
-
-if(id==="admin")
-openAdmin();
-
-window.scrollTo({
-top:0,
-behavior:"smooth"
-});
-
+  if(id === "saved") loadSaved();
+  if(id === "cart") renderCart();
+  if(id === "orders") loadOrders();
+  if(id === "messages") loadMessages();
+  if(id === "profile") loadProfile();
+  if(id === "services") loadServices();
+  if(id === "sell") loadSellerDashboard();
+  if(id === "admin") loadAdminOverview();
 }
 
 function scrollToProducts(){
+  showSection("home");
 
-showSection("home");
-
-setTimeout(()=>{
-
-document
-.getElementById("productsSection")
-?.scrollIntoView({behavior:"smooth"});
-
-},100);
-
+  setTimeout(()=>{
+    $("productsAnchor").scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
+  },100);
 }
 
-/* ================= LOCAL STATE ================= */
+async function filterCategory(category){
+  showSection("home");
 
-function saveState(){
+  const input = $("searchInput");
+  input.value = "";
 
-localStorage.setItem(
-"isokohub_saved",
-JSON.stringify(saved)
-);
+  await loadProducts({category});
 
-localStorage.setItem(
-"isokohub_cart",
-JSON.stringify(cart)
-);
-
-document.getElementById("savedCount").textContent =
-saved.length;
-
-document.getElementById("cartCount").textContent =
-cart.reduce((a,b)=>a+(b.qty||1),0);
-
+  setTimeout(()=>{
+    $("productsAnchor").scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
+  },100);
 }
 
-/* ================= SAVED ================= */
+/* =========================================================
+   MODALS
+   ========================================================= */
 
-function toggleSaved(product){
-
-const id=product.id;
-
-const exists=saved.some(x=>x.id===id);
-
-saved=exists
-?saved.filter(x=>x.id!==id)
-:[...saved,product];
-
-saveState();
-
-renderProducts(productsCache);
-
+function openModal(id){
+  const modal = $(id);
+  if(modal) modal.classList.add("open");
 }
 
-function renderSaved(){
-
-const el=document.getElementById("savedItems");
-
-if(!saved.length){
-
-el.innerHTML=
-'<div class="empty">No saved items yet.</div>';
-
-return;
-
+function closeModal(id){
+  const modal = $(id);
+  if(modal) modal.classList.remove("open");
 }
 
-renderProducts(saved,"savedItems");
+document.querySelectorAll(".modal").forEach(modal=>{
+  modal.addEventListener("click",event=>{
+    if(event.target === modal){
+      modal.classList.remove("open");
+    }
+  });
+});
 
+/* =========================================================
+   CATEGORIES
+   ========================================================= */
+
+async function loadCategories(){
+  try{
+    const data = await api("/api/categories");
+    categories = Array.isArray(data) ? data : (data.categories || []);
+
+    renderCategories();
+    fillSellCategories();
+
+  }catch(error){
+    console.error(error);
+
+    $("categoryGrid").innerHTML =
+      `<div class="empty">Unable to load categories.</div>`;
+  }
 }
 
-/* ================= CART ================= */
+function renderCategories(){
+  if(!categories.length){
+    $("categoryGrid").innerHTML =
+      `<div class="empty">No active categories found.</div>`;
+    return;
+  }
 
-function addCart(product){
-
-const existing=cart.find(x=>x.id===product.id);
-
-if(existing)
-existing.qty=(existing.qty||1)+1;
-else
-cart.push({...product,qty:1});
-
-saveState();
-
-alert("Added to cart");
-
+  $("categoryGrid").innerHTML = categories.map(category=>`
+    <button class="categoryCard" onclick="filterCategory('${String(category.name || "").replace(/'/g,"\\'")}')">
+      <div class="categoryIcon">${escapeHTML(category.icon || "📦")}</div>
+      <strong>${escapeHTML(category.name)}</strong>
+      ${category.description
+        ? `<div class="meta">${escapeHTML(category.description)}</div>`
+        : ""}
+    </button>
+  `).join("");
 }
 
-function removeCart(id){
+function fillSellCategories(){
+  const select = $("sellCategory");
 
-cart=cart.filter(x=>x.id!==id);
+  if(!select) return;
 
-saveState();
+  select.innerHTML =
+    `<option value="">Select category</option>` +
+    categories.map(category=>
+      `<option value="${escapeHTML(category.name)}">${escapeHTML(category.name)}</option>`
+    ).join("");
+}
 
-renderCart();
+/* =========================================================
+   PRODUCTS
+   ========================================================= */
 
+async function loadProducts(params={}){
+  const grid = $("productsGrid");
+  const info = $("productInfo");
+
+  grid.innerHTML = `<div class="empty">Loading products...</div>`;
+  info.textContent = "";
+
+  try{
+
+    const search =
+      params.search !== undefined
+      ? params.search
+      : $("searchInput").value.trim();
+
+    const category = params.category || "";
+
+    const query = new URLSearchParams();
+
+    query.set("limit","100");
+
+    if(search) query.set("search",search);
+    if(category) query.set("category",category);
+
+    const data = await api(`/api/products?${query.toString()}`);
+
+    currentProducts = Array.isArray(data)
+      ? data
+      : (data.products || []);
+
+    currentProducts.forEach(product=>{
+      productsCache[String(product.id)] = product;
+    });
+
+    info.textContent =
+      `${currentProducts.length} product${currentProducts.length === 1 ? "" : "s"} found`;
+
+    renderProducts(currentProducts,"productsGrid");
+
+  }catch(error){
+
+    console.error(error);
+
+    grid.innerHTML =
+      `<div class="empty">${escapeHTML(error.message)}</div>`;
+  }
+}
+
+function renderProducts(list,targetId="productsGrid"){
+  const target = $(targetId);
+
+  if(!target) return;
+
+  if(!list || !list.length){
+    target.innerHTML =
+      `<div class="empty">No products found.</div>`;
+    return;
+  }
+
+  target.innerHTML = list.map(productCardHTML).join("");
+}
+
+function productCardHTML(p){
+
+  productsCache[String(p.id)] = p;
+
+  const saved = getSaved().includes(p.id);
+  const image = p.image_url || p.imageUrl || "";
+
+  return `
+    <article class="productCard">
+
+      <div class="productImage">
+        ${
+          image
+          ? `<img src="${escapeHTML(image)}" alt="${escapeHTML(p.title)}" loading="lazy">`
+          : `<div class="placeholderImage">🛍️</div>`
+        }
+      </div>
+
+      <div class="productBody">
+
+        <div class="productTitle">
+          ${escapeHTML(p.title || "Untitled")}
+        </div>
+
+        <div class="price">
+          ${money(p.price,p.currency)}
+        </div>
+
+        <div class="meta">
+          ${escapeHTML(p.category || "Marketplace")}
+        </div>
+
+        ${
+          p.description
+          ? `<div class="meta">${escapeHTML(
+              String(p.description).slice(0,110)
+            )}${String(p.description).length > 110 ? "…" : ""}</div>`
+          : ""
+        }
+
+        <div class="tags">
+
+          ${
+            p.country
+            ? `<span class="tag">🌍 ${escapeHTML(p.country)}</span>`
+            : ""
+          }
+
+          ${
+            p.district
+            ? `<span class="tag">📍 ${escapeHTML(p.district)}</span>`
+            : ""
+          }
+
+          ${
+            p.stock !== undefined
+            ? `<span class="tag">Stock: ${escapeHTML(p.stock)}</span>`
+            : ""
+          }
+
+        </div>
+
+        ${
+          p.seller_name
+          ? `<div class="meta">Seller: ${escapeHTML(p.seller_name)}</div>`
+          : ""
+        }
+
+        <div class="cardActions">
+
+          <button class="btn small"
+            onclick="viewProduct('${escapeHTML(String(p.id))}')">
+            View
+          </button>
+
+          <button class="btn success small"
+            onclick="addToCart('${escapeHTML(String(p.id))}')">
+            Add to Cart
+          </button>
+
+          <button class="btn secondary small"
+            onclick="toggleSaved('${escapeHTML(String(p.id))}')">
+            ${saved ? "♥ Saved" : "♡ Save"}
+          </button>
+
+          ${
+            p.seller_id
+            ? `<button class="btn secondary small"
+                onclick="openMessageForProduct('${escapeHTML(String(p.seller_id))}','${escapeHTML(String(p.id))}')">
+                Message
+              </button>`
+            : ""
+          }
+
+        </div>
+
+      </div>
+    </article>
+  `;
+}
+
+async function viewProduct(id){
+  const local = productsCache[String(id)];
+
+  $("productDetails").innerHTML =
+    `<div class="empty">Loading product...</div>`;
+
+  openModal("productModal");
+
+  try{
+    const data = await api(`/api/products/${encodeURIComponent(id)}`);
+
+    const p = data.product || data;
+
+    productsCache[String(p.id)] = p;
+
+    const image = p.image_url || "";
+
+    $("productDetails").innerHTML = `
+      ${
+        image
+        ? `<div class="productImage" style="height:260px">
+            <img src="${escapeHTML(image)}" alt="${escapeHTML(p.title)}">
+          </div>`
+        : `<div class="productImage" style="height:180px">
+            <div class="placeholderImage">🛍️</div>
+          </div>`
+      }
+
+      <h2>${escapeHTML(p.title)}</h2>
+
+      <div class="price">${money(p.price,p.currency)}</div>
+
+      <p>${escapeHTML(p.description || "")}</p>
+
+      <div class="tags">
+        <span class="tag">${escapeHTML(p.category || "")}</span>
+        <span class="tag">${escapeHTML(p.country || "")}</span>
+        ${p.district ? `<span class="tag">${escapeHTML(p.district)}</span>` : ""}
+        ${p.condition ? `<span class="tag">${escapeHTML(p.condition)}</span>` : ""}
+      </div>
+
+      <hr style="border:0;border-top:1px solid #e2e8f0;margin:18px 0">
+
+      <p><strong>Seller:</strong> ${escapeHTML(p.seller_name || "Seller")}</p>
+      <p><strong>Stock:</strong> ${escapeHTML(p.stock)}</p>
+
+      ${
+        p.brand
+        ? `<p><strong>Brand:</strong> ${escapeHTML(p.brand)}</p>`
+        : ""
+      }
+
+      ${
+        p.model
+        ? `<p><strong>Model:</strong> ${escapeHTML(p.model)}</p>`
+        : ""
+      }
+
+      ${
+        p.storage
+        ? `<p><strong>Storage:</strong> ${escapeHTML(p.storage)}</p>`
+        : ""
+      }
+
+      ${
+        p.ram
+        ? `<p><strong>RAM:</strong> ${escapeHTML(p.ram)}</p>`
+        : ""
+      }
+
+      ${
+        p.specs
+        ? `<p><strong>Specifications:</strong><br>${escapeHTML(p.specs)}</p>`
+        : ""
+      }
+
+      <div class="cardActions">
+        <button class="btn success"
+          onclick="addToCart('${escapeHTML(String(p.id))}')">
+          Add to Cart
+        </button>
+
+        <button class="btn secondary"
+          onclick="toggleSaved('${escapeHTML(String(p.id))}')">
+          ${getSaved().includes(p.id) ? "♥ Saved" : "♡ Save"}
+        </button>
+
+        ${
+          p.seller_id
+          ? `<button class="btn secondary"
+              onclick="openMessageForProduct('${escapeHTML(String(p.seller_id))}','${escapeHTML(String(p.id))}')">
+              Message Seller
+            </button>`
+          : ""
+        }
+      </div>
+    `;
+
+  }catch(error){
+
+    if(local){
+      $("productDetails").innerHTML =
+        productCardHTML(local);
+    }else{
+      $("productDetails").innerHTML =
+        messageBox(error.message,"error");
+    }
+  }
+}
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+$("searchForm").addEventListener("submit",async event=>{
+  event.preventDefault();
+  showSection("home");
+  await loadProducts({
+    search:$("searchInput").value.trim()
+  });
+  scrollToProducts();
+});
+
+/* =========================================================
+   SAVED
+   ========================================================= */
+
+async function toggleSaved(id){
+
+  const numericId = Number(id);
+
+  let saved = getSaved();
+
+  const exists = saved.includes(numericId) || saved.includes(id);
+
+  if(exists){
+
+    saved = saved.filter(x=>String(x) !== String(id));
+    setSaved(saved);
+
+    if(currentProducts.length){
+      renderProducts(currentProducts,"productsGrid");
+    }
+
+    loadSaved();
+
+    if(isLoggedIn()){
+      try{
+        await api(`/api/saved/${encodeURIComponent(id)}`,{
+          method:"DELETE"
+        });
+      }catch(error){
+        console.warn("Saved delete API:",error);
+      }
+    }
+
+    return;
+  }
+
+  saved.push(numericId);
+  setSaved(saved);
+
+  if(isLoggedIn()){
+    try{
+      await api("/api/saved",{
+        method:"POST",
+        body:JSON.stringify({
+          product_id:numericId
+        })
+      });
+    }catch(error){
+      console.warn("Saved API:",error);
+    }
+  }
+
+  if(currentProducts.length){
+    renderProducts(currentProducts,"productsGrid");
+  }
+
+  loadSaved();
+}
+
+async function loadSaved(){
+
+  let ids = getSaved();
+
+  if(isLoggedIn()){
+
+    try{
+      const data = await api("/api/saved");
+
+      const serverItems =
+        Array.isArray(data)
+        ? data
+        : (data.saved || data.products || []);
+
+      if(serverItems.length){
+
+        serverItems.forEach(item=>{
+          const id = item.product_id || item.id;
+          if(id !== undefined){
+            if(!ids.includes(Number(id))) ids.push(Number(id));
+          }
+        });
+
+        setSaved(ids);
+      }
+
+    }catch(error){
+      console.warn("Saved load:",error);
+    }
+  }
+
+  const products = ids
+    .map(id=>productsCache[String(id)])
+    .filter(Boolean);
+
+  renderProducts(products,"savedItems");
+
+  if(ids.length && products.length < ids.length){
+
+    try{
+      const data = await api("/api/products?limit=100");
+
+      const list =
+        Array.isArray(data)
+        ? data
+        : (data.products || []);
+
+      list.forEach(p=>{
+        productsCache[String(p.id)] = p;
+      });
+
+      renderProducts(
+        ids.map(id=>productsCache[String(id)]).filter(Boolean),
+        "savedItems"
+      );
+
+    }catch{}
+  }
+}
+
+/* =========================================================
+   CART
+   ========================================================= */
+
+function addToCart(id){
+
+  const p = productsCache[String(id)];
+
+  if(!p){
+    alert("Product information is not available. Refresh products first.");
+    return;
+  }
+
+  const cart = getCart();
+
+  const existing = cart.find(item=>String(item.product_id) === String(id));
+
+  if(existing){
+    existing.quantity = Number(existing.quantity || 1) + 1;
+  }else{
+    cart.push({
+      product_id:p.id,
+      title:p.title,
+      price:Number(p.price || 0),
+      currency:p.currency || "RWF",
+      quantity:1,
+      stock:Number(p.stock ?? 999999),
+      seller_id:p.seller_id
+    });
+  }
+
+  setCart(cart);
+  renderCart();
+
+  alert("Added to cart.");
+}
+
+function changeCartQuantity(id,change){
+
+  const cart = getCart();
+
+  const item = cart.find(x=>String(x.product_id) === String(id));
+
+  if(!item) return;
+
+  const maxStock = Number(item.stock ?? 999999);
+
+  item.quantity = Number(item.quantity || 1) + Number(change);
+
+  if(item.quantity < 1){
+    item.quantity = 1;
+  }
+
+  if(maxStock >= 0 && item.quantity > maxStock){
+    item.quantity = maxStock;
+  }
+
+  setCart(cart);
+  renderCart();
+}
+
+function removeCartItem(id){
+
+  const cart = getCart().filter(
+    item=>String(item.product_id) !== String(id)
+  );
+
+  setCart(cart);
+  renderCart();
 }
 
 function renderCart(){
 
-const el=document.getElementById("cartItems");
+  const cart = getCart();
 
-if(!cart.length){
+  const target = $("cartItems");
+  const summary = $("cartSummary");
 
-el.innerHTML=
-'<div class="empty"><h3>Your cart is empty</h3><p>Add products or services to your cart.</p></div>';
+  if(!cart.length){
 
-return;
+    target.innerHTML =
+      `<div class="empty">
+        Your cart is empty.<br><br>
+        <button class="btn" onclick="scrollToProducts()">Explore Products</button>
+      </div>`;
 
+    summary.classList.add("hidden");
+    return;
+  }
+
+  target.innerHTML = cart.map(item=>`
+    <div class="cartRow">
+
+      <div>
+        <strong>${escapeHTML(item.title || "Product")}</strong>
+        <div class="meta">${money(item.price,item.currency)}</div>
+      </div>
+
+      <div>
+        <button class="btn secondary small"
+          onclick="changeCartQuantity('${escapeHTML(String(item.product_id))}',-1)">
+          −
+        </button>
+
+        <strong style="padding:0 10px">
+          ${escapeHTML(item.quantity)}
+        </strong>
+
+        <button class="btn secondary small"
+          onclick="changeCartQuantity('${escapeHTML(String(item.product_id))}',1)">
+          +
+        </button>
+      </div>
+
+      <strong class="price">
+        ${money(
+          Number(item.price || 0) * Number(item.quantity || 1),
+          item.currency
+        )}
+      </strong>
+
+      <button class="btn danger small"
+        onclick="removeCartItem('${escapeHTML(String(item.product_id))}')">
+        Remove
+      </button>
+
+    </div>
+  `).join("");
+
+  const total = cart.reduce(
+    (sum,item)=>
+      sum + Number(item.price || 0) * Number(item.quantity || 1),
+    0
+  );
+
+  $("cartTotal").textContent =
+    money(total,cart[0]?.currency || "RWF");
+
+  summary.classList.remove("hidden");
 }
 
-let total=0;
+async function checkoutCart(){
 
-el.innerHTML=cart.map(item=>{
+  const cart = getCart();
 
-const qty=item.qty||1;
+  if(!cart.length){
+    alert("Your cart is empty.");
+    return;
+  }
 
-total+=Number(item.price||0)*qty;
+  if(!isLoggedIn()){
+    openModal("loginModal");
+    alert("Please login before checkout.");
+    return;
+  }
 
-return `
+  if(!confirm("Create orders for all items in your cart?")){
+    return;
+  }
 
-<div class="card" style="margin-bottom:10px">
+  let success = 0;
+  const failures = [];
 
-<h3>${escapeHtml(item.title||"Item")}</h3>
+  for(const item of cart){
 
-<p>
-${qty} ×
-${escapeHtml(item.currency||"RWF")}
-${Number(item.price||0).toLocaleString()}
-</p>
+    try{
 
-<button class="btn secondary"
-onclick="removeCart(${Number(item.id)})">
-Remove
-</button>
+      await api("/api/orders",{
+        method:"POST",
+        body:JSON.stringify({
+          product_id:Number(item.product_id),
+          quantity:Number(item.quantity || 1)
+        })
+      });
 
-</div>
+      success++;
 
-`;
+    }catch(error){
 
-}).join("")+
+      failures.push(
+        `${item.title || "Product"}: ${error.message}`
+      );
+    }
+  }
 
-`
+  if(success > 0){
 
-<div class="card">
+    setCart([]);
 
-<h2>Total: ${total.toLocaleString()}</h2>
+    renderCart();
 
-<button class="btn"
-onclick="demoAction('Checkout started')">
-Proceed to Checkout
-</button>
+    showSection("orders");
 
-</div>
+    await loadOrders();
 
-`;
+    let text = `${success} order${success === 1 ? "" : "s"} created successfully.`;
 
+    if(failures.length){
+      text += ` ${failures.length} item(s) failed.`;
+    }
+
+    alert(text);
+
+  }else{
+
+    alert(
+      "Checkout failed:\n\n" +
+      failures.join("\n")
+    );
+  }
 }
 
-/* ================= CATEGORIES ================= */
+/* =========================================================
+   AUTH
+   ========================================================= */
 
-function renderCategories(){
+$("registerForm").addEventListener("submit",async event=>{
 
-const el=document.getElementById("categories");
+  event.preventDefault();
 
-const defaults=[
+  const result = $("registerMessage");
 
-["📱","Electronics"],
-["👕","Fashion"],
-["🏠","Home"],
-["🎓","Education"],
-["🎨","Art & Creative"],
-["🎬","Film & Entertainment"],
-["🛠️","Services"],
-["💼","Jobs & Freelance"],
-["🏢","Business"],
-["🏠","Real Estate"],
-["🚗","Vehicles"],
-["💻","Digital Products"]
+  result.innerHTML =
+    messageBox("Creating account...","warning");
 
-];
+  try{
 
-const data=categoriesCache.length
+    const data = await api("/api/register",{
+      method:"POST",
+      body:JSON.stringify({
+        name:$("registerName").value.trim(),
+        email:$("registerEmail").value.trim(),
+        password:$("registerPassword").value,
+        phone:$("registerPhone").value.trim(),
+        country:$("registerCountry").value.trim(),
+        role:$("registerRole").value
+      })
+    });
 
-?categoriesCache.map(c=>[
-"📦",
-c.name||c.title
-])
+    result.innerHTML =
+      messageBox(
+        data.message || "Registration successful. Please login.",
+        "success"
+      );
 
-:defaults;
+    $("registerForm").reset();
 
-el.innerHTML=data.map(x=>`
+  }catch(error){
 
-<button class="card category"
-onclick="searchCategory('${escapeAttr(x[1])}')">
-
-<div style="font-size:32px">${x[0]}</div>
-
-${escapeHtml(x[1])}
-
-</button>
-
-`).join("");
-
-const select=document.getElementById("sellCategory");
-
-if(select){
-
-select.innerHTML=data.map(x=>`
-
-<option value="${escapeAttr(x[1])}">
-${escapeHtml(x[1])}
-</option>
-
-`).join("");
-
-}
-
-}
-
-function searchCategory(category){
-
-document.getElementById("searchInput").value=category;
-
-showSection("home");
-
-loadProducts(category);
-
-setTimeout(()=>{
-
-document
-.getElementById("productsSection")
-?.scrollIntoView({behavior:"smooth"});
-
-},100);
-
-}
-
-/* ================= PRODUCTS ================= */
-
-function renderProducts(items,target="products"){
-
-const el=document.getElementById(target);
-
-if(!el)return;
-
-if(!items || !items.length){
-
-el.innerHTML=
-'<div class="empty"><p>No listings found.</p></div>';
-
-return;
-
-}
-
-el.innerHTML=items.map(p=>{
-
-const isSaved=saved.some(x=>x.id===p.id);
-
-const productJSON =
-JSON.stringify(p)
-.replace(/\\/g,"\\\\")
-.replace(/'/g,"&#39;");
-
-return `
-
-<div class="card product">
-
-<div class="productImage">🛍️</div>
-
-<div class="productBody">
-
-<h3>
-${escapeHtml(p.title||"Untitled")}
-</h3>
-
-<div class="price">
-${escapeHtml(p.currency||"RWF")}
-${Number(p.price||0).toLocaleString()}
-</div>
-
-<p class="muted">
-${escapeHtml(p.category||"Marketplace")}
-</p>
-
-<p class="muted">
-${escapeHtml(p.country||"")}
-${p.district?" • "+escapeHtml(p.district):""}
-</p>
-
-<div class="actions">
-
-<button class="btn"
-onclick='addCart(${productJSON})'>
-🛒 Cart
-</button>
-
-<button class="btn secondary"
-onclick='toggleSaved(${productJSON})'>
-${isSaved?"❤️ Saved":"♡ Save"}
-</button>
-
-<button class="btn secondary"
-onclick="openModal('offerModal')">
-💰 Offer
-</button>
-
-</div>
-
-</div>
-</div>
-
-`;
-
-}).join("");
-
-}
-
-async function loadProducts(category=""){
-
-try{
-
-const q=category
-
-?"?category="+encodeURIComponent(category)+"&limit=30"
-:"?limit=30";
-
-const data=await api("/api/products"+q);
-
-productsCache=data.products||data.data||[];
-
-renderProducts(productsCache);
-
-}catch(e){
-
-document.getElementById("products").innerHTML=
-
-'<div class="empty"><p>Products could not be loaded from the API.</p></div>';
-
-}
-
-}
-
-async function loadCategories(){
-
-try{
-
-const data=await api("/api/categories");
-
-categoriesCache=data.categories||data.data||[];
-
-}catch(e){}
-
-renderCategories();
-
-}
-
-/* ================= CONNECTION ================= */
-
-async function checkConnection(){
-
-try{
-
-const data=await api("/api/health");
-
-document.getElementById("connectionStatus").textContent =
-"Connected ✓ IsokoHub API + D1 database";
-
-}catch(e){
-
-document.getElementById("connectionStatus").textContent =
-"Backend connection failed — check Cloudflare D1/API settings";
-
-}
-
-}
-
-/* ================= SEARCH ================= */
-
-document
-.getElementById("searchForm")
-.addEventListener("submit",async e=>{
-
-e.preventDefault();
-
-const q=document
-.getElementById("searchInput")
-.value.trim();
-
-if(!q){
-
-loadProducts();
-
-return;
-
-}
-
-try{
-
-const data=await api(
-"/api/products?search="+
-encodeURIComponent(q)+
-"&limit=30"
-);
-
-productsCache=data.products||data.data||[];
-
-showSection("home");
-
-renderProducts(productsCache);
-
-setTimeout(()=>{
-
-document
-.getElementById("productsSection")
-?.scrollIntoView({behavior:"smooth"});
-
-},100);
-
-}catch(e){
-
-alert("Search failed");
-
-}
-
+    result.innerHTML =
+      messageBox(error.message,"error");
+  }
 });
 
-/* ================= REGISTER ================= */
+$("loginForm").addEventListener("submit",async event=>{
 
-document
-.getElementById("registerForm")
-.addEventListener("submit",async e=>{
+  event.preventDefault();
 
-e.preventDefault();
+  const result = $("loginMessage");
 
-const msg=document.getElementById("registerMessage");
+  result.innerHTML =
+    messageBox("Logging in...","warning");
 
-try{
+  try{
 
-const data=await api("/api/register",{
+    const data = await api("/api/login",{
+      method:"POST",
+      body:JSON.stringify({
+        email:$("loginEmail").value.trim(),
+        password:$("loginPassword").value
+      })
+    });
 
-method:"POST",
+    if(data.token){
+      localStorage.setItem(TOKEN_KEY,data.token);
+    }
 
-body:JSON.stringify({
+    currentUser = data.user || null;
 
-name:registerName.value.trim(),
-email:registerEmail.value.trim(),
-phone:registerPhone.value.trim(),
-country:registerCountry.value.trim(),
-password:registerPassword.value
+    closeModal("loginModal");
 
-})
+    updateAuthArea();
 
+    result.innerHTML = "";
+
+    await loadCurrentUser();
+
+    alert("Login successful.");
+
+  }catch(error){
+
+    result.innerHTML =
+      messageBox(error.message,"error");
+  }
 });
 
-msg.textContent =
-data.message ||
-"Account created successfully.";
+async function loadCurrentUser(){
 
-msg.style.color="green";
+  if(!token()){
+    currentUser = null;
+    updateAuthArea();
+    return;
+  }
 
-document.getElementById("registerForm").reset();
+  try{
 
-}catch(err){
+    const data = await api("/api/me");
 
-msg.textContent=err.message;
-msg.style.color="crimson";
+    currentUser = data.user || data;
 
+    updateAuthArea();
+
+  }catch(error){
+
+    localStorage.removeItem(TOKEN_KEY);
+    currentUser = null;
+
+    updateAuthArea();
+  }
 }
 
-});
+function updateAuthArea(){
 
-/* ================= LOGIN ================= */
+  const area = $("authArea");
 
-document
-.getElementById("loginForm")
-.addEventListener("submit",async e=>{
+  if(!currentUser){
 
-e.preventDefault();
+    area.innerHTML = `
+      <button class="btn secondary" onclick="openModal('loginModal')">
+        Login
+      </button>
 
-const msg=document.getElementById("loginMessage");
+      <button class="btn" onclick="openModal('registerModal')">
+        Register
+      </button>
+    `;
 
-try{
+    return;
+  }
 
-const data=await api("/api/login",{
+  const name =
+    currentUser.name ||
+    currentUser.email ||
+    "User";
 
-method:"POST",
+  area.innerHTML = `
+    <span class="badge green">
+      ${escapeHTML(name)}
+    </span>
 
-body:JSON.stringify({
+    <button class="btn secondary" onclick="showSection('profile')">
+      Profile
+    </button>
 
-email:loginEmail.value.trim(),
-password:loginPassword.value
-
-})
-
-});
-
-currentUser=data.user||data;
-
-if(data.token)
-localStorage.setItem(
-"isokohub_token",
-data.token
-);
-
-if(data.session_token)
-localStorage.setItem(
-"isokohub_token",
-data.session_token
-);
-
-if(data.access_token)
-localStorage.setItem(
-"isokohub_token",
-data.access_token
-);
-
-localStorage.setItem(
-"isokohub_user",
-JSON.stringify(currentUser)
-);
-
-msg.textContent="Login successful.";
-msg.style.color="green";
-
-closeModal("loginModal");
-
-updateAuth();
-
-loadProfile();
-
-}catch(err){
-
-msg.textContent=err.message;
-msg.style.color="crimson";
-
+    <button class="btn danger" onclick="logout()">
+      Logout
+    </button>
+  `;
 }
-
-});
-
-/* ================= SELL ================= */
-
-document
-.getElementById("sellForm")
-.addEventListener("submit",async e=>{
-
-e.preventDefault();
-
-const msg=document.getElementById("sellMessage");
-
-try{
-
-const data=await api("/api/products",{
-
-method:"POST",
-
-body:JSON.stringify({
-
-title:sellTitle.value.trim(),
-category:sellCategory.value,
-price:Number(sellPrice.value),
-currency:sellCurrency.value,
-country:sellCountry.value.trim(),
-district:sellDistrict.value.trim(),
-specs:sellSpecs.value.trim(),
-type:sellType.value
-
-})
-
-});
-
-msg.textContent =
-data.message ||
-"Listing published successfully.";
-
-msg.style.color="green";
-
-loadProducts();
-
-}catch(err){
-
-msg.textContent =
-err.message ||
-"Please login before publishing.";
-
-msg.style.color="crimson";
-
-}
-
-});
-
-/* ================= MESSAGES ================= */
-
-document
-.getElementById("messageForm")
-.addEventListener("submit",async e=>{
-
-e.preventDefault();
-
-const status=document.getElementById("messageStatus");
-
-try{
-
-await api("/api/messages",{
-
-method:"POST",
-
-body:JSON.stringify({
-
-recipient_id:Number(messageRecipient.value),
-message:messageText.value.trim()
-
-})
-
-});
-
-status.textContent="Message sent successfully.";
-status.style.color="green";
-
-messageText.value="";
-
-}catch(err){
-
-status.textContent=err.message;
-status.style.color="crimson";
-
-}
-
-});
-
-/* ================= ORDERS ================= */
-
-async function loadOrders(){
-
-const el=document.getElementById("ordersContent");
-
-try{
-
-const data=await api("/api/orders");
-
-const orders=data.orders||data.data||[];
-
-if(!orders.length){
-
-el.innerHTML=
-'<div class="empty">No orders yet.</div>';
-
-return;
-
-}
-
-el.innerHTML=orders.map(o=>`
-
-<div class="card" style="margin-bottom:10px">
-
-<h3>
-Order #${escapeHtml(String(o.id))}
-</h3>
-
-<p>
-Status:
-<strong>
-${escapeHtml(o.status||"pending")}
-</strong>
-</p>
-
-<p>
-${escapeHtml(o.currency||"RWF")}
-${Number(o.total||o.amount||0).toLocaleString()}
-</p>
-
-</div>
-
-`).join("");
-
-}catch(e){
-
-el.innerHTML=
-'<div class="empty">Login to view your orders.</div>';
-
-}
-
-}
-
-/* ================= PROFILE ================= */
-
-async function loadProfile(){
-
-const el=document.getElementById("profileContent");
-
-try{
-
-const data=await api("/api/me");
-
-currentUser=data.user||data;
-
-localStorage.setItem(
-"isokohub_user",
-JSON.stringify(currentUser)
-);
-
-updateAuth();
-
-el.innerHTML=`
-
-<div class="card">
-
-<h3>
-${escapeHtml(currentUser.name||"User")}
-</h3>
-
-<p>
-${escapeHtml(currentUser.email||"")}
-</p>
-
-<p>
-${escapeHtml(currentUser.country||"")}
-</p>
-
-<p>
-Role:
-<strong>
-${escapeHtml(currentUser.role||"buyer")}
-</strong>
-</p>
-
-<button class="btn danger"
-onclick="logout()">
-Logout
-</button>
-
-</div>
-
-`;
-
-}catch(e){
-
-currentUser=null;
-
-el.innerHTML=
-
-'<div class="empty"><p>Login to view your profile.</p><button class="btn" onclick="openModal(\'loginModal\')">Login</button></div>';
-
-}
-
-}
-
-/* ================= AUTH UI ================= */
-
-function updateAuth(){
-
-const area=document.getElementById("authArea");
-
-if(currentUser){
-
-area.innerHTML=`
-
-<button class="btn secondary"
-onclick="showSection('profile')">
-
-👤 ${escapeHtml(currentUser.name||"Profile")}
-
-</button>
-
-<button class="btn danger"
-onclick="logout()">
-
-Logout
-
-</button>
-
-`;
-
-}else{
-
-area.innerHTML=`
-
-<button class="btn secondary"
-onclick="openModal('loginModal')">
-Login
-</button>
-
-<button class="btn"
-onclick="openModal('registerModal')">
-Register
-</button>
-
-`;
-
-}
-
-}
-
-/* ================= LOGOUT ================= */
 
 async function logout(){
 
-try{
+  try{
+    if(token()){
+      await api("/api/logout",{method:"POST"});
+    }
+  }catch{}
 
-await api("/api/logout",{
-method:"POST"
+  localStorage.removeItem(TOKEN_KEY);
+  currentUser = null;
+
+  updateAuthArea();
+
+  alert("Logged out.");
+}
+
+/* =========================================================
+   SELL PRODUCT
+   ========================================================= */
+
+$("sellForm").addEventListener("submit",async event=>{
+
+  event.preventDefault();
+
+  if(!isLoggedIn()){
+
+    openModal("loginModal");
+
+    $("sellMessage").innerHTML =
+      messageBox("Please login before selling.","warning");
+
+    return;
+  }
+
+  const result = $("sellMessage");
+
+  result.innerHTML =
+    messageBox("Publishing product...","warning");
+
+  try{
+
+    const payload = {
+      title:$("sellTitle").value.trim(),
+      category:$("sellCategory").value,
+      description:$("sellDescription").value.trim(),
+      price:Number($("sellPrice").value || 0),
+      currency:$("sellCurrency").value.trim() || "RWF",
+      stock:Number($("sellStock").value || 0),
+      condition:$("sellCondition").value,
+      country:$("sellCountry").value.trim() || "Rwanda",
+      district:$("sellDistrict").value.trim(),
+      brand:$("sellBrand").value.trim(),
+      model:$("sellModel").value.trim(),
+      storage:$("sellStorage").value.trim(),
+      ram:$("sellRam").value.trim(),
+      image_url:$("sellImage").value.trim(),
+      specs:$("sellSpecs").value.trim(),
+      negotiable:Number($("sellNegotiable").value || 0)
+    };
+
+    const data = await api("/api/products",{
+      method:"POST",
+      body:JSON.stringify(payload)
+    });
+
+    result.innerHTML =
+      messageBox(
+        data.message || "Product published successfully.",
+        "success"
+      );
+
+    $("sellForm").reset();
+
+    $("sellCurrency").value = "RWF";
+    $("sellCountry").value = currentUser.country || "Rwanda";
+    $("sellStock").value = "1";
+
+    await loadProducts();
+    await loadSellerDashboard();
+
+  }catch(error){
+
+    result.innerHTML =
+      messageBox(error.message,"error");
+  }
 });
 
-}catch(e){}
+/* =========================================================
+   ORDERS
+   ========================================================= */
 
-currentUser=null;
+async function loadOrders(){
 
-localStorage.removeItem("isokohub_user");
-localStorage.removeItem("isokohub_token");
+  const target = $("ordersContent");
 
-updateAuth();
+  if(!isLoggedIn()){
 
-showSection("home");
+    target.innerHTML =
+      `<div class="empty">Login to view your orders.</div>`;
 
+    return;
+  }
+
+  target.innerHTML =
+    `<div class="empty">Loading orders...</div>`;
+
+  try{
+
+    const data = await api("/api/orders");
+
+    const orders =
+      Array.isArray(data)
+      ? data
+      : (data.orders || []);
+
+    if(!orders.length){
+
+      target.innerHTML =
+        `<div class="empty">No orders found.</div>`;
+
+      return;
+    }
+
+    target.innerHTML = `
+      <div class="tableWrap">
+        <table>
+
+          <thead>
+            <tr>
+              <th>Order</th>
+              <th>Product</th>
+              <th>Quantity</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Payment</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            ${orders.map(o=>{
+
+              const total =
+                o.total_price ??
+                o.total ??
+                o.amount ??
+                0;
+
+              return `
+                <tr>
+
+                  <td>${escapeHTML(o.id)}</td>
+
+                  <td>
+                    ${escapeHTML(
+                      o.product_title ||
+                      o.title ||
+                      o.product_name ||
+                      "Product"
+                    )}
+                  </td>
+
+                  <td>${escapeHTML(o.quantity)}</td>
+
+                  <td>${money(total,o.currency)}</td>
+
+                  <td>
+                    <span class="badge">
+                      ${escapeHTML(o.status || "pending")}
+                    </span>
+                  </td>
+
+                  <td>
+                    <span class="badge">
+                      ${escapeHTML(o.payment_status || "unpaid")}
+                    </span>
+                  </td>
+
+                  <td>${escapeHTML(formatDate(o.created_at))}</td>
+
+                </tr>
+              `;
+
+            }).join("")}
+
+          </tbody>
+        </table>
+      </div>
+    `;
+
+  }catch(error){
+
+    target.innerHTML =
+      messageBox(error.message,"error");
+  }
 }
 
-/* ================= ADMIN ================= */
+/* =========================================================
+   MESSAGES
+   ========================================================= */
 
-function isAdmin(){
+async function loadMessages(){
 
-if(!currentUser)return false;
+  const target = $("messagesContent");
 
-const role=String(
-currentUser.role||""
-).toLowerCase();
+  if(!isLoggedIn()){
 
-return [
-"admin",
-"administrator",
-"super_admin",
-"superadmin"
-].includes(role);
+    target.innerHTML =
+      `<div class="empty">Login to view your messages.</div>`;
 
+    return;
+  }
+
+  target.innerHTML =
+    `<div class="empty">Loading messages...</div>`;
+
+  try{
+
+    const data = await api("/api/messages");
+
+    const messages =
+      Array.isArray(data)
+      ? data
+      : (data.messages || []);
+
+    if(!messages.length){
+
+      target.innerHTML =
+        `<div class="empty">No messages yet.</div>`;
+
+      return;
+    }
+
+    target.innerHTML = messages.map(m=>`
+
+      <div class="message">
+
+        <div class="msgTop">
+
+          <strong>
+            ${escapeHTML(
+              m.sender_name ||
+              m.sender_email ||
+              `User ${m.sender_id || ""}`
+            )}
+          </strong>
+
+          <span class="meta">
+            ${escapeHTML(formatDate(m.created_at))}
+          </span>
+
+        </div>
+
+        <p>${escapeHTML(m.message || "")}</p>
+
+        ${
+          m.product_id
+          ? `<span class="tag">Product #${escapeHTML(m.product_id)}</span>`
+          : ""
+        }
+
+      </div>
+
+    `).join("");
+
+  }catch(error){
+
+    target.innerHTML =
+      messageBox(error.message,"error");
+  }
 }
 
-function openAdmin(){
+function openMessageForProduct(receiverId,productId){
 
-const guard=document.getElementById("adminGuard");
-const area=document.getElementById("adminArea");
+  $("messageReceiver").value = receiverId || "";
+  $("messageProduct").value = productId || "";
 
-if(!isAdmin()){
-
-guard.style.display="block";
-area.style.display="none";
-
-return;
-
+  openModal("messageModal");
 }
 
-guard.style.display="none";
-area.style.display="block";
+$("messageForm").addEventListener("submit",async event=>{
 
-adminTab(currentAdminTab);
+  event.preventDefault();
 
-}
+  if(!isLoggedIn()){
 
-async function adminTab(tab){
+    openModal("loginModal");
+    return;
+  }
 
-currentAdminTab=tab;
+  const result = $("messageFormResult");
 
-if(!isAdmin()){
+  try{
 
-openAdmin();
+    const payload = {
+      receiver_id:$("messageReceiver").value.trim(),
+      product_id:$("messageProduct").value.trim()
+        ? Number($("messageProduct").value.trim())
+        : null,
+      message:$("messageText").value.trim()
+    };
 
-return;
+    const data = await api("/api/messages",{
+      method:"POST",
+      body:JSON.stringify(payload)
+    });
 
-}
+    result.innerHTML =
+      messageBox(
+        data.message || "Message sent.",
+        "success"
+      );
 
-document
-.querySelectorAll("#adminTabs button")
-.forEach(b=>{
+    $("messageText").value = "";
 
-b.classList.remove("active");
+    await loadMessages();
 
-if(
-b.textContent
-.toLowerCase()
-.includes(tab.toLowerCase())
-)
-b.classList.add("active");
+  }catch(error){
 
+    result.innerHTML =
+      messageBox(error.message,"error");
+  }
 });
 
-const c=document.getElementById("adminContent");
+/* =========================================================
+   SERVICES
+   ========================================================= */
 
-c.innerHTML=
-'<div class="loading">Loading admin data...</div>';
+async function loadServices(){
 
-if(tab==="overview"){
+  const target = $("servicesGrid");
 
-await adminOverview(c);
-return;
+  target.innerHTML =
+    `<div class="empty">Loading services...</div>`;
 
+  try{
+
+    const data = await api("/api/services");
+
+    const services =
+      Array.isArray(data)
+      ? data
+      : (data.services || data.products || []);
+
+    services.forEach(p=>{
+      productsCache[String(p.id)] = p;
+    });
+
+    renderProducts(services,"servicesGrid");
+
+  }catch(error){
+
+    target.innerHTML =
+      messageBox(error.message,"error");
+  }
 }
 
-if(tab==="users"){
+/* =========================================================
+   CATEGORY FILTER SECTIONS
+   ========================================================= */
 
-await adminUsers(c);
-return;
+async function loadCategorySection(category,targetId){
 
+  const target = $(targetId);
+
+  target.innerHTML =
+    `<div class="empty">Loading...</div>`;
+
+  try{
+
+    const data = await api(
+      `/api/products?category=${encodeURIComponent(category)}&limit=100`
+    );
+
+    const list =
+      Array.isArray(data)
+      ? data
+      : (data.products || []);
+
+    list.forEach(p=>{
+      productsCache[String(p.id)] = p;
+    });
+
+    renderProducts(list,targetId);
+
+  }catch(error){
+
+    target.innerHTML =
+      messageBox(error.message,"error");
+  }
 }
 
-if(tab==="sellers"){
+async function loadSpecialSection(category){
 
-await adminSellers(c);
-return;
+  if(category === "Education"){
+    showSection("education");
+    await loadCategorySection("Education","educationGrid");
+  }
 
+  if(category === "Art & Creative"){
+    showSection("creators");
+    await loadCategorySection("Art & Creative","creatorsGrid");
+  }
+
+  if(category === "Business & Professional"){
+    showSection("business");
+    await loadCategorySection("Business & Professional","businessGrid");
+  }
+
+  if(category === "Jobs & Freelance"){
+    showSection("work");
+    await loadCategorySection("Jobs & Freelance","workGrid");
+  }
 }
 
-if(tab==="products"){
+/* Override filter for special sections */
+async function filterCategory(category){
 
-await adminProducts(c);
-return;
+  if(
+    category === "Education" ||
+    category === "Art & Creative" ||
+    category === "Business & Professional" ||
+    category === "Jobs & Freelance"
+  ){
 
+    await loadSpecialSection(category);
+    return;
+  }
+
+  showSection("home");
+  await loadProducts({category});
+
+  setTimeout(()=>{
+    $("productsAnchor").scrollIntoView({
+      behavior:"smooth"
+    });
+  },100);
 }
 
-if(tab==="categories"){
+/* =========================================================
+   PROFILE
+   ========================================================= */
 
-await adminCategories(c);
-return;
+async function loadProfile(){
 
+  const target = $("profileContent");
+
+  if(!isLoggedIn()){
+
+    target.innerHTML =
+      `<div class="empty">Login to view your profile.</div>`;
+
+    return;
+  }
+
+  target.innerHTML =
+    `<div class="empty">Loading profile...</div>`;
+
+  try{
+
+    const data = await api("/api/me");
+
+    currentUser = data.user || data;
+
+    updateAuthArea();
+
+    const u = currentUser;
+
+    target.innerHTML = `
+
+      <div class="panel">
+
+        <div class="profileBox">
+
+          <div>
+            <div class="avatar">👤</div>
+          </div>
+
+          <div>
+
+            <h2>${escapeHTML(u.name || "User")}</h2>
+
+            <p><strong>Email:</strong> ${escapeHTML(u.email || "")}</p>
+
+            <p><strong>Role:</strong>
+              <span class="badge">
+                ${escapeHTML(u.role || "buyer")}
+              </span>
+            </p>
+
+            <p><strong>Country:</strong> ${escapeHTML(u.country || "")}</p>
+
+            <p><strong>District:</strong> ${escapeHTML(u.district || "")}</p>
+
+            ${
+              u.phone
+              ? `<p><strong>Phone:</strong> ${escapeHTML(u.phone)}</p>`
+              : ""
+            }
+
+            ${
+              u.bio
+              ? `<p><strong>Bio:</strong> ${escapeHTML(u.bio)}</p>`
+              : ""
+            }
+
+            <p>
+              <strong>Verified:</strong>
+              ${
+                Number(u.is_verified)
+                ? `<span class="badge green">Verified</span>`
+                : `<span class="badge">Not verified</span>`
+              }
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    `;
+
+  }catch(error){
+
+    target.innerHTML =
+      messageBox(error.message,"error");
+  }
 }
 
-if(tab==="orders"){
+/* =========================================================
+   SELLER DASHBOARD
+   ========================================================= */
 
-await adminOrders(c);
-return;
+async function loadSellerDashboard(){
 
+  if(!isLoggedIn()){
+
+    $("sellerStats").innerHTML =
+      `<div class="empty">Login as a seller to view dashboard.</div>`;
+
+    $("sellerProducts").innerHTML = "";
+
+    return;
+  }
+
+  try{
+
+    const statsData = await api("/api/seller/stats");
+
+    const stats =
+      statsData.stats ||
+      statsData ||
+      {};
+
+    $("sellerStats").innerHTML = `
+
+      <div class="stat">
+        <div class="muted">Products</div>
+        <div class="num">
+          ${escapeHTML(
+            stats.product_count ??
+            stats.products ??
+            0
+          )}
+        </div>
+      </div>
+
+      <div class="stat">
+        <div class="muted">Orders</div>
+        <div class="num">
+          ${escapeHTML(
+            stats.order_count ??
+            stats.orders ??
+            0
+          )}
+        </div>
+      </div>
+
+      <div class="stat">
+        <div class="muted">Sales</div>
+        <div class="num">
+          ${money(
+            stats.total_sales ??
+            stats.sales ??
+            0,
+            "RWF"
+          )}
+        </div>
+      </div>
+
+      <div class="stat">
+        <div class="muted">Views</div>
+        <div class="num">
+          ${escapeHTML(
+            stats.total_views ??
+            stats.views ??
+            0
+          )}
+        </div>
+      </div>
+
+    `;
+
+  }catch(error){
+
+    $("sellerStats").innerHTML =
+      `<div class="empty">${escapeHTML(error.message)}</div>`;
+  }
+
+  try{
+
+    const data = await api("/api/seller/products");
+
+    const products =
+      Array.isArray(data)
+      ? data
+      : (data.products || []);
+
+    products.forEach(p=>{
+      productsCache[String(p.id)] = p;
+    });
+
+    renderProducts(products,"sellerProducts");
+
+  }catch(error){
+
+    $("sellerProducts").innerHTML =
+      `<div class="empty">${escapeHTML(error.message)}</div>`;
+  }
 }
 
-renderAdminPlaceholder(tab,c);
+/* =========================================================
+   ADMIN
+   ========================================================= */
 
+function userIsAdmin(){
+
+  if(!currentUser) return false;
+
+  const role = String(currentUser.role || "").toLowerCase();
+
+  return [
+    "admin",
+    "administrator",
+    "super_admin",
+    "superadmin"
+  ].includes(role);
 }
 
-/* ================= ADMIN OVERVIEW ================= */
+async function showAdmin(){
 
-async function adminOverview(c){
+  showSection("admin");
 
-try{
+  if(!isLoggedIn()){
 
-const results=await Promise.allSettled([
+    $("adminAccessMessage").innerHTML =
+      messageBox(
+        "Please login with an admin account.",
+        "warning"
+      );
 
-api("/api/admin/users"),
-api("/api/admin/products"),
-api("/api/admin/orders"),
-api("/api/admin/sellers")
+    $("adminDashboard").classList.add("hidden");
+    return;
+  }
 
-]);
+  await loadCurrentUser();
 
-const users=
-results[0].status==="fulfilled"
-?(results[0].value.users||
-results[0].value.data||[])
-:[];
+  if(!userIsAdmin()){
 
-const products=
-results[1].status==="fulfilled"
-?(results[1].value.products||
-results[1].value.data||[])
-:[];
+    $("adminAccessMessage").innerHTML =
+      messageBox(
+        "Admin access only. Your current account does not have an admin role.",
+        "error"
+      );
 
-const orders=
-results[2].status==="fulfilled"
-?(results[2].value.orders||
-results[2].value.data||[])
-:[];
+    $("adminDashboard").classList.add("hidden");
+    return;
+  }
 
-const sellers=
-results[3].status==="fulfilled"
-?(results[3].value.sellers||
-results[3].value.data||[])
-:[];
+  $("adminAccessMessage").innerHTML =
+    messageBox("Admin access granted.","success");
 
-c.innerHTML=`
+  $("adminDashboard").classList.remove("hidden");
 
-<h2>📊 Overview</h2>
-
-<p>
-Monitor marketplace activity, users, sellers,
-products and orders.
-</p>
-
-<div class="dashboardGrid">
-
-<div class="stat">
-👥 Users
-<strong>${users.length}</strong>
-</div>
-
-<div class="stat">
-🏪 Sellers
-<strong>${sellers.length}</strong>
-</div>
-
-<div class="stat">
-🛍️ Products
-<strong>${products.length}</strong>
-</div>
-
-<div class="stat">
-📦 Orders
-<strong>${orders.length}</strong>
-</div>
-
-<div class="stat">
-💳 Payments
-<strong>—</strong>
-</div>
-
-<div class="stat">
-📋 Requests
-<strong>—</strong>
-</div>
-
-</div>
-
-<div class="section">
-
-<div class="quickGrid">
-
-<button class="quick"
-onclick="adminTab('users')">
-👥 Manage Users
-</button>
-
-<button class="quick"
-onclick="adminTab('sellers')">
-🏪 Manage Sellers
-</button>
-
-<button class="quick"
-onclick="adminTab('products')">
-🛍️ Manage Products
-</button>
-
-<button class="quick"
-onclick="adminTab('orders')">
-📦 Manage Orders
-</button>
-
-<button class="quick"
-onclick="adminTab('categories')">
-🗂️ Categories
-</button>
-
-<button class="quick"
-onclick="adminTab('reports')">
-📈 Reports
-</button>
-
-</div>
-
-</div>
-
-`;
-
-}catch(e){
-
-c.innerHTML=`
-
-<h2>📊 Overview</h2>
-
-<div class="empty">
-
-<p>
-Admin dashboard is connected, but some
-admin API endpoints are not available yet.
-</p>
-
-<button class="btn"
-onclick="adminTab('users')">
-Try Users
-</button>
-
-</div>
-
-`;
-
+  await loadAdminOverview();
 }
 
+function adminTab(tab){
+
+  if(!userIsAdmin()){
+    showAdmin();
+    return;
+  }
+
+  document.querySelectorAll(".adminPanel").forEach(panel=>{
+    panel.classList.remove("active");
+  });
+
+  const panel = $(`admin-${tab}`);
+
+  if(panel){
+    panel.classList.add("active");
+  }
+
+  document.querySelectorAll(".adminTabs button").forEach(btn=>{
+    btn.classList.toggle(
+      "active",
+      btn.dataset.adminTab === tab
+    );
+  });
+
+  if(tab === "overview") loadAdminOverview();
+  if(tab === "users") loadAdminUsers();
+  if(tab === "sellers") loadAdminSellers();
+  if(tab === "products") loadAdminProducts();
+  if(tab === "orders") loadAdminOrders();
+  if(tab === "payments") loadAdminPayments();
+  if(tab === "categories") loadAdminCategories();
+  if(tab === "services") loadAdminServices();
+  if(tab === "reports") loadAdminReports();
+  if(tab === "reviews") loadAdminReviews();
+  if(tab === "promotions") loadAdminPromotions();
+  if(tab === "ads") loadAdminAds();
 }
 
-/* ================= ADMIN USERS ================= */
+async function loadAdminOverview(){
 
-async function adminUsers(c){
+  if(!userIsAdmin()) return;
 
-try{
+  try{
 
-const data=await api("/api/admin/users");
+    const data = await api("/api/admin/stats");
 
-const users=data.users||data.data||[];
+    const s =
+      data.stats ||
+      data ||
+      {};
 
-if(!users.length){
+    $("adminStats").innerHTML = `
 
-c.innerHTML=
-'<div class="empty">No users found.</div>';
+      <div class="stat">
+        <div class="muted">Users</div>
+        <div class="num">
+          ${escapeHTML(s.users ?? s.user_count ?? 0)}
+        </div>
+      </div>
 
-return;
+      <div class="stat">
+        <div class="muted">Sellers</div>
+        <div class="num">
+          ${escapeHTML(s.sellers ?? s.seller_count ?? 0)}
+        </div>
+      </div>
 
+      <div class="stat">
+        <div class="muted">Products</div>
+        <div class="num">
+          ${escapeHTML(s.products ?? s.product_count ?? 0)}
+        </div>
+      </div>
+
+      <div class="stat">
+        <div class="muted">Orders</div>
+        <div class="num">
+          ${escapeHTML(s.orders ?? s.order_count ?? 0)}
+        </div>
+      </div>
+
+      <div class="stat">
+        <div class="muted">Paid Orders</div>
+        <div class="num">
+          ${escapeHTML(s.paid_orders ?? 0)}
+        </div>
+      </div>
+
+      <div class="stat">
+        <div class="muted">Revenue</div>
+        <div class="num">
+          ${money(s.revenue ?? s.total_sales ?? 0,"RWF")}
+        </div>
+      </div>
+
+      <div class="stat">
+        <div class="muted">Commission</div>
+        <div class="num">
+          ${money(s.commission ?? 0,"RWF")}
+        </div>
+      </div>
+
+      <div class="stat">
+        <div class="muted">Messages</div>
+        <div class="num">
+          ${escapeHTML(s.messages ?? s.message_count ?? 0)}
+        </div>
+      </div>
+
+    `;
+
+  }catch(error){
+
+    $("adminStats").innerHTML =
+      `<div class="empty">${escapeHTML(error.message)}</div>`;
+  }
+
+  try{
+
+    const config = await api("/api/config");
+
+    $("adminConfig").innerHTML = `
+      <div class="tags">
+        <span class="tag">Environment: ${escapeHTML(config.environment || "production")}</span>
+        <span class="tag">Platform: ${escapeHTML(config.platform || "cloudflare-workers")}</span>
+        <span class="tag">Database: ${escapeHTML(config.database || "D1")}</span>
+        <span class="tag">Assets: ${escapeHTML(config.assets || "Cloudflare Assets")}</span>
+        <span class="tag">Commission: ${escapeHTML(
+          config.commission_rate ??
+          config.commission ??
+          "5%"
+        )}</span>
+      </div>
+    `;
+
+  }catch(error){
+
+    $("adminConfig").innerHTML =
+      messageBox(error.message,"error");
+  }
 }
 
-c.innerHTML=`
+/* =========================================================
+   ADMIN USERS
+   ========================================================= */
 
-<h2>👥 Users</h2>
+async function loadAdminUsers(){
 
-<div class="adminTableWrap">
+  if(!userIsAdmin()) return;
 
-<table class="adminTable">
+  const target = $("adminUsers");
 
-<thead>
+  target.innerHTML =
+    `<div class="empty">Loading users...</div>`;
 
-<tr>
-<th>ID</th>
-<th>Name</th>
-<th>Email</th>
-<th>Role</th>
-<th>Country</th>
-</tr>
+  try{
 
-</thead>
+    const data = await api("/api/admin/users");
 
-<tbody>
+    const users =
+      Array.isArray(data)
+      ? data
+      : (data.users || []);
 
-${users.map(u=>`
+    if(!users.length){
+      target.innerHTML =
+        `<div class="empty">No users found.</div>`;
+      return;
+    }
 
-<tr>
+    target.innerHTML = `
+      <div class="tableWrap">
+        <table>
 
-<td>${escapeHtml(u.id)}</td>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Country</th>
+              <th>Verified</th>
+              <th>Active</th>
+              <th>Action</th>
+            </tr>
+          </thead>
 
-<td>${escapeHtml(u.name||"")}</td>
+          <tbody>
 
-<td>${escapeHtml(u.email||"")}</td>
+            ${users.map(u=>`
 
-<td>
-<span class="badge">
-${escapeHtml(u.role||"buyer")}
-</span>
-</td>
+              <tr>
 
-<td>${escapeHtml(u.country||"")}</td>
+                <td>${escapeHTML(u.id)}</td>
 
-</tr>
+                <td>${escapeHTML(u.name)}</td>
 
-`).join("")}
+                <td>${escapeHTML(u.email)}</td>
 
-</tbody>
+                <td>
+                  <span class="badge">
+                    ${escapeHTML(u.role)}
+                  </span>
+                </td>
 
-</table>
+                <td>${escapeHTML(u.country || "")}</td>
 
-</div>
+                <td>
+                  ${
+                    Number(u.is_verified)
+                    ? `<span class="badge green">Yes</span>`
+                    : `<span class="badge">No</span>`
+                  }
+                </td>
 
-`;
+                <td>
+                  ${
+                    Number(u.is_active)
+                    ? `<span class="badge green">Active</span>`
+                    : `<span class="badge red">Inactive</span>`
+                  }
+                </td>
 
-}catch(e){
+                <td>
+                  <button class="btn small"
+                    onclick="editAdminUser('${escapeHTML(String(u.id))}',${Number(u.is_active) ? 1 : 0},${Number(u.is_verified) ? 1 : 0})">
+                    Update
+                  </button>
+                </td>
 
-renderAdminEndpointError(
-c,
-"Users",
-e.message
-);
+              </tr>
 
+            `).join("")}
+
+          </tbody>
+        </table>
+      </div>
+    `;
+
+  }catch(error){
+
+    target.innerHTML =
+      messageBox(error.message,"error");
+  }
 }
 
+async function editAdminUser(id,currentActive,currentVerified){
+
+  const role = prompt(
+    "Enter role (buyer/seller/admin) or leave empty to keep current:",
+    ""
+  );
+
+  const activeInput = prompt(
+    "Active? 1=yes, 0=no",
+    String(currentActive)
+  );
+
+  const verifiedInput = prompt(
+    "Verified? 1=yes, 0=no",
+    String(currentVerified)
+  );
+
+  const payload = {};
+
+  if(role && role.trim()){
+    payload.role = role.trim();
+  }
+
+  if(activeInput === "0" || activeInput === "1"){
+    payload.is_active = Number(activeInput);
+  }
+
+  if(verifiedInput === "0" || verifiedInput === "1"){
+    payload.is_verified = Number(verifiedInput);
+  }
+
+  if(!Object.keys(payload).length) return;
+
+  try{
+
+    await api(`/api/admin/users/${encodeURIComponent(id)}`,{
+      method:"PATCH",
+      body:JSON.stringify(payload)
+    });
+
+    alert("User updated.");
+    await loadAdminUsers();
+
+  }catch(error){
+
+    alert(error.message);
+  }
 }
 
-/* ================= ADMIN SELLERS ================= */
+/* =========================================================
+   ADMIN SELLERS
+   ========================================================= */
 
-async function adminSellers(c){
+async function loadAdminSellers(){
 
-try{
+  if(!userIsAdmin()) return;
 
-const data=await api("/api/admin/sellers");
+  const target = $("adminSellers");
 
-const sellers=
-data.sellers||data.data||[];
+  target.innerHTML =
+    `<div class="empty">Loading sellers...</div>`;
 
-if(!sellers.length){
+  try{
 
-c.innerHTML=
-'<div class="empty">No sellers found.</div>';
+    const data = await api("/api/admin/sellers");
 
-return;
+    const sellers =
+      Array.isArray(data)
+      ? data
+      : (data.sellers || []);
 
+    if(!sellers.length){
+
+      target.innerHTML =
+        `<div class="empty">No sellers found.</div>`;
+
+      return;
+    }
+
+    target.innerHTML = `
+      <div class="tableWrap">
+        <table>
+
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Seller</th>
+              <th>Email</th>
+              <th>Products</th>
+              <th>Sales</th>
+              <th>Verified</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            ${sellers.map(s=>`
+
+              <tr>
+
+                <td>${escapeHTML(s.id)}</td>
+                <td>${escapeHTML(s.name)}</td>
+                <td>${escapeHTML(s.email)}</td>
+
+                <td>
+                  ${escapeHTML(
+                    s.product_count ??
+                    s.products ??
+                    0
+                  )}
+                </td>
+
+                <td>
+                  ${money(
+                    s.total_sales ??
+                    s.sales ??
+                    0,
+                    s.currency || "RWF"
+                  )}
+                </td>
+
+                <td>
+                  ${
+                    Number(s.is_verified)
+                    ? `<span class="badge green">Verified</span>`
+                    : `<span class="badge">No</span>`
+                  }
+                </td>
+
+              </tr>
+
+            `).join("")}
+
+          </tbody>
+        </table>
+      </div>
+    `;
+
+  }catch(error){
+
+    target.innerHTML =
+      messageBox(error.message,"error");
+  }
 }
 
-c.innerHTML=`
+/* =========================================================
+   ADMIN PRODUCTS
+   ========================================================= */
 
-<h2>🏪 Sellers</h2>
+async function loadAdminProducts(){
 
-<div class="adminTableWrap">
+  if(!userIsAdmin()) return;
 
-<table class="adminTable">
+  const target = $("adminProducts");
 
-<thead>
-<tr>
-<th>ID</th>
-<th>Name</th>
-<th>Email</th>
-<th>Country</th>
-</tr>
-</thead>
+  target.innerHTML =
+    `<div class="empty">Loading products...</div>`;
 
-<tbody>
+  try{
 
-${sellers.map(s=>`
+    const data = await api("/api/admin/products");
 
-<tr>
+    const products =
+      Array.isArray(data)
+      ? data
+      : (data.products || []);
 
-<td>${escapeHtml(s.id)}</td>
+    if(!products.length){
 
-<td>${escapeHtml(s.name||"")}</td>
+      target.innerHTML =
+        `<div class="empty">No products found.</div>`;
 
-<td>${escapeHtml(s.email||"")}</td>
+      return;
+    }
 
-<td>${escapeHtml(s.country||"")}</td>
+    target.innerHTML = `
+      <div class="tableWrap">
+        <table>
 
-</tr>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Title</th>
+              <th>Seller</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>Stock</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
 
-`).join("")}
+          <tbody>
 
-</tbody>
+            ${products.map(p=>`
 
-</table>
+              <tr>
 
-</div>
+                <td>${escapeHTML(p.id)}</td>
 
-`;
+                <td>${escapeHTML(p.title)}</td>
 
-}catch(e){
+                <td>
+                  ${escapeHTML(
+                    p.seller_name ||
+                    p.seller_email ||
+                    p.seller_id ||
+                    ""
+                  )}
+                </td>
 
-renderAdminEndpointError(
-c,
-"Sellers",
-e.message
-);
+                <td>${escapeHTML(p.category)}</td>
 
+                <td>${money(p.price,p.currency)}</td>
+
+                <td>${escapeHTML(p.stock)}</td>
+
+                <td>
+                  <span class="badge">
+                    ${escapeHTML(p.status)}
+                  </span>
+                </td>
+
+                <td>
+                  <button class="btn small"
+                    onclick="editAdminProduct('${escapeHTML(String(p.id))}','${escapeHTML(String(p.status || "active"))}')">
+                    Update
+                  </button>
+                </td>
+
+              </tr>
+
+            `).join("")}
+
+          </tbody>
+        </table>
+      </div>
+    `;
+
+  }catch(error){
+
+    target.innerHTML =
+      messageBox(error.message,"error");
+  }
 }
 
+async function editAdminProduct(id,currentStatus){
+
+  const status = prompt(
+    "Product status: active / inactive / sold / pending",
+    currentStatus
+  );
+
+  if(!status) return;
+
+  try{
+
+    await api(`/api/admin/products/${encodeURIComponent(id)}`,{
+      method:"PATCH",
+      body:JSON.stringify({
+        status:status.trim()
+      })
+    });
+
+    alert("Product updated.");
+    await loadAdminProducts();
+
+  }catch(error){
+
+    alert(error.message);
+  }
 }
 
-/* ================= ADMIN PRODUCTS ================= */
+/* =========================================================
+   ADMIN ORDERS
+   ========================================================= */
 
-async function adminProducts(c){
+async function loadAdminOrders(){
 
-try{
+  if(!userIsAdmin()) return;
 
-const data=await api("/api/products?limit=100");
+  const target = $("adminOrders");
 
-const products=
-data.products||data.data||[];
+  target.innerHTML =
+    `<div class="empty">Loading orders...</div>`;
 
-if(!products.length){
+  try{
 
-c.innerHTML=
-'<div class="empty">No products found.</div>';
+    const data = await api("/api/admin/orders");
 
-return;
+    const orders =
+      Array.isArray(data)
+      ? data
+      : (data.orders || []);
 
+    if(!orders.length){
+
+      target.innerHTML =
+        `<div class="empty">No orders found.</div>`;
+
+      return;
+    }
+
+    target.innerHTML = `
+      <div class="tableWrap">
+        <table>
+
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Buyer</th>
+              <th>Seller</th>
+              <th>Product</th>
+              <th>Qty</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Payment</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            ${orders.map(o=>{
+
+              const total =
+                o.total_price ??
+                o.total ??
+                o.amount ??
+                0;
+
+              return `
+
+                <tr>
+
+                  <td>${escapeHTML(o.id)}</td>
+
+                  <td>
+                    ${escapeHTML(
+                      o.buyer_name ||
+                      o.buyer_email ||
+                      o.buyer_id ||
+                      ""
+                    )}
+                  </td>
+
+                  <td>
+                    ${escapeHTML(
+                      o.seller_name ||
+                      o.seller_email ||
+                      o.seller_id ||
+                      ""
+                    )}
+                  </td>
+
+                  <td>
+                    ${escapeHTML(
+                      o.product_title ||
+                      o.title ||
+                      ""
+                    )}
+                  </td>
+
+                  <td>${escapeHTML(o.quantity)}</td>
+
+                  <td>${money(total,o.currency)}</td>
+
+                  <td>
+                    <span class="badge">
+                      ${escapeHTML(o.status || "pending")}
+                    </span>
+                  </td>
+
+                  <td>
+                    <span class="badge">
+                      ${escapeHTML(o.payment_status || "unpaid")}
+                    </span>
+                  </td>
+
+                  <td>
+                    <button class="btn small"
+                      onclick="editAdminOrder('${escapeHTML(String(o.id))}','${escapeHTML(String(o.status || "pending"))}','${escapeHTML(String(o.payment_status || "unpaid"))}')">
+                      Update
+                    </button>
+                  </td>
+
+                </tr>
+              `;
+            }).join("")}
+
+          </tbody>
+        </table>
+      </div>
+    `;
+
+  }catch(error){
+
+    target.innerHTML =
+      messageBox(error.message,"error");
+  }
 }
 
-c.innerHTML=`
+async function editAdminOrder(id,currentStatus,currentPayment){
 
-<h2>🛍️ Products</h2>
+  const status = prompt(
+    "Order status:",
+    currentStatus
+  );
 
-<div class="adminTableWrap">
+  if(!status) return;
 
-<table class="adminTable">
+  const payment = prompt(
+    "Payment status:",
+    currentPayment
+  );
 
-<thead>
+  if(!payment) return;
 
-<tr>
-<th>ID</th>
-<th>Title</th>
-<th>Category</th>
-<th>Price</th>
-<th>Status</th>
-</tr>
+  try{
 
-</thead>
+    await api(`/api/admin/orders/${encodeURIComponent(id)}`,{
+      method:"PATCH",
+      body:JSON.stringify({
+        status:status.trim(),
+        payment_status:payment.trim()
+      })
+    });
 
-<tbody>
+    alert("Order updated.");
+    await loadAdminOrders();
 
-${products.map(p=>`
+  }catch(error){
 
-<tr>
-
-<td>${escapeHtml(p.id)}</td>
-
-<td>${escapeHtml(p.title||"")}</td>
-
-<td>${escapeHtml(p.category||"")}</td>
-
-<td>
-${escapeHtml(p.currency||"RWF")}
-${Number(p.price||0).toLocaleString()}
-</td>
-
-<td>
-<span class="badge">
-${escapeHtml(p.status||"active")}
-</span>
-</td>
-
-</tr>
-
-`).join("")}
-
-</tbody>
-
-</table>
-
-</div>
-
-`;
-
-}catch(e){
-
-renderAdminEndpointError(
-c,
-"Products",
-e.message
-);
-
+    alert(error.message);
+  }
 }
 
+/* =========================================================
+   ADMIN PAYMENTS
+   ========================================================= */
+
+async function loadAdminPayments(){
+
+  if(!userIsAdmin()) return;
+
+  const target = $("adminPayments");
+
+  target.innerHTML =
+    `<div class="empty">Loading payment data...</div>`;
+
+  try{
+
+    const data = await api("/api/admin/payments");
+
+    const payments =
+      Array.isArray(data)
+      ? data
+      : (data.payments || data.orders || []);
+
+    if(!payments.length){
+
+      target.innerHTML =
+        `<div class="empty">No payment records found.</div>`;
+
+      return;
+    }
+
+    target.innerHTML = `
+      <div class="tableWrap">
+        <table>
+
+          <thead>
+            <tr>
+              <th>Order</th>
+              <th>Buyer</th>
+              <th>Seller</th>
+              <th>Total</th>
+              <th>Payment</th>
+              <th>Order Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            ${payments.map(p=>`
+
+              <tr>
+
+                <td>${escapeHTML(p.id || p.order_id || "")}</td>
+
+                <td>
+                  ${escapeHTML(
+                    p.buyer_name ||
+                    p.buyer_email ||
+                    p.buyer_id ||
+                    ""
+                  )}
+                </td>
+
+                <td>
+                  ${escapeHTML(
+                    p.seller_name ||
+                    p.seller_email ||
+                    p.seller_id ||
+                    ""
+                  )}
+                </td>
+
+                <td>
+                  ${money(
+                    p.total_price ??
+                    p.total ??
+                    p.amount ??
+                    0,
+                    p.currency || "RWF"
+                  )}
+                </td>
+
+                <td>
+                  <span class="badge">
+                    ${escapeHTML(p.payment_status || "unpaid")}
+                  </span>
+                </td>
+
+                <td>
+                  <span class="badge">
+                    ${escapeHTML(p.status || "pending")}
+                  </span>
+                </td>
+
+              </tr>
+
+            `).join("")}
+
+          </tbody>
+        </table>
+      </div>
+    `;
+
+  }catch(error){
+
+    target.innerHTML =
+      messageBox(error.message,"error");
+  }
 }
 
-/* ================= ADMIN CATEGORIES ================= */
+/* =========================================================
+   ADMIN CATEGORIES
+   ========================================================= */
 
-async function adminCategories(c){
+async function loadAdminCategories(){
 
-try{
+  if(!userIsAdmin()) return;
 
-const data=await api("/api/categories");
+  const target = $("adminCategories");
 
-const categories=
-data.categories||data.data||[];
+  target.innerHTML =
+    `<div class="empty">Loading categories...</div>`;
 
-c.innerHTML=`
+  try{
 
-<h2>🗂️ Categories</h2>
+    const data = await api("/api/admin/categories");
 
-<div class="categories">
+    const list =
+      Array.isArray(data)
+      ? data
+      : (data.categories || []);
 
-${categories.map(cat=>`
+    target.innerHTML = `
+      <div class="tableWrap">
+        <table>
 
-<div class="card">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Icon</th>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Active</th>
+            </tr>
+          </thead>
 
-<h3>
-📦 ${escapeHtml(cat.name||cat.title||"Category")}
-</h3>
+          <tbody>
 
-<p class="muted">
-ID: ${escapeHtml(cat.id||"")}
-</p>
+            ${list.map(c=>`
 
-</div>
+              <tr>
+                <td>${escapeHTML(c.id)}</td>
+                <td>${escapeHTML(c.icon || "📦")}</td>
+                <td>${escapeHTML(c.name)}</td>
+                <td>${escapeHTML(c.description || "")}</td>
+                <td>
+                  ${
+                    Number(c.is_active)
+                    ? `<span class="badge green">Active</span>`
+                    : `<span class="badge red">Inactive</span>`
+                  }
+                </td>
+              </tr>
 
-`).join("")}
+            `).join("")}
 
-</div>
+          </tbody>
+        </table>
+      </div>
+    `;
 
-`;
+  }catch(error){
 
-}catch(e){
-
-renderAdminEndpointError(
-c,
-"Categories",
-e.message
-);
-
+    target.innerHTML =
+      messageBox(error.message,"error");
+  }
 }
 
+$("categoryForm").addEventListener("submit",async event=>{
+
+  event.preventDefault();
+
+  if(!userIsAdmin()){
+    alert("Admin only.");
+    return;
+  }
+
+  try{
+
+    await api("/api/admin/categories",{
+      method:"POST",
+      body:JSON.stringify({
+        name:$("newCategoryName").value.trim(),
+        icon:$("newCategoryIcon").value.trim() || "📦",
+        description:$("newCategoryDescription").value.trim()
+      })
+    });
+
+    alert("Category created.");
+
+    $("categoryForm").reset();
+
+    await loadCategories();
+    await loadAdminCategories();
+
+  }catch(error){
+
+    alert(error.message);
+  }
+});
+
+/* =========================================================
+   ADMIN SERVICES
+   ========================================================= */
+
+async function loadAdminServices(){
+
+  if(!userIsAdmin()) return;
+
+  const target = $("adminServices");
+
+  target.innerHTML =
+    `<div class="empty">Loading services...</div>`;
+
+  try{
+
+    const data = await api("/api/admin/services");
+
+    const services =
+      Array.isArray(data)
+      ? data
+      : (data.services || data.products || []);
+
+    if(!services.length){
+
+      target.innerHTML =
+        `<div class="empty">No services found.</div>`;
+
+      return;
+    }
+
+    target.innerHTML = `
+      <div class="tableWrap">
+        <table>
+
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Service</th>
+              <th>Seller</th>
+              <th>Price</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            ${services.map(s=>`
+
+              <tr>
+
+                <td>${escapeHTML(s.id)}</td>
+                <td>${escapeHTML(s.title)}</td>
+
+                <td>
+                  ${escapeHTML(
+                    s.seller_name ||
+                    s.seller_email ||
+                    s.seller_id ||
+                    ""
+                  )}
+                </td>
+
+                <td>${money(s.price,s.currency)}</td>
+
+                <td>
+                  <span class="badge">
+                    ${escapeHTML(s.status || "active")}
+                  </span>
+                </td>
+
+              </tr>
+
+            `).join("")}
+
+          </tbody>
+        </table>
+      </div>
+    `;
+
+  }catch(error){
+
+    target.innerHTML =
+      messageBox(error.message,"error");
+  }
 }
 
-/* ================= ADMIN ORDERS ================= */
+/* =========================================================
+   ADMIN REPORTS
+   ========================================================= */
 
-async function adminOrders(c){
+async function loadAdminReports(){
 
-try{
+  if(!userIsAdmin()) return;
 
-const data=await api("/api/orders");
+  const target = $("adminReports");
 
-const orders=
-data.orders||data.data||[];
+  target.innerHTML =
+    `<div class="empty">Loading reports...</div>`;
 
-if(!orders.length){
+  try{
 
-c.innerHTML=
-'<div class="empty">No orders found.</div>';
+    const data = await api("/api/admin/reports");
 
-return;
+    target.innerHTML = `
+      <div class="panel">
 
+        <h3>Marketplace Reports</h3>
+
+        <pre style="
+          white-space:pre-wrap;
+          word-break:break-word;
+          background:#f8fafc;
+          padding:15px;
+          border-radius:10px;
+        ">${escapeHTML(
+          JSON.stringify(data,null,2)
+        )}</pre>
+
+      </div>
+    `;
+
+  }catch(error){
+
+    target.innerHTML =
+      messageBox(error.message,"error");
+  }
 }
 
-c.innerHTML=`
+/* =========================================================
+   UNSUPPORTED FEATURES — CURRENT LOCKED SCHEMA
+   ========================================================= */
 
-<h2>📦 Orders</h2>
+async function loadAdminReviews(){
 
-<div class="adminTableWrap">
+  const target = $("adminReviews");
 
-<table class="adminTable">
+  try{
 
-<thead>
+    const data = await api("/api/admin/reviews");
 
-<tr>
-<th>ID</th>
-<th>Status</th>
-<th>Total</th>
-</tr>
+    if(data && data.supported === false){
 
-</thead>
+      target.innerHTML =
+        messageBox(
+          data.message ||
+          "Reviews are not supported by the current locked database schema.",
+          "warning"
+        );
 
-<tbody>
+      return;
+    }
 
-${orders.map(o=>`
+    target.innerHTML = `
+      <pre style="white-space:pre-wrap">${escapeHTML(
+        JSON.stringify(data,null,2)
+      )}</pre>
+    `;
 
-<tr>
+  }catch(error){
 
-<td>#${escapeHtml(o.id)}</td>
-
-<td>
-<span class="badge">
-${escapeHtml(o.status||"pending")}
-</span>
-</td>
-
-<td>
-${escapeHtml(o.currency||"RWF")}
-${Number(o.total||o.amount||0).toLocaleString()}
-</td>
-
-</tr>
-
-`).join("")}
-
-</tbody>
-
-</table>
-
-</div>
-
-`;
-
-}catch(e){
-
-renderAdminEndpointError(
-c,
-"Orders",
-e.message
-);
-
+    target.innerHTML =
+      messageBox(error.message,"error");
+  }
 }
 
+async function loadAdminPromotions(){
+
+  const target = $("adminPromotions");
+
+  try{
+
+    const data = await api("/api/admin/promotions");
+
+    if(data && data.supported === false){
+
+      target.innerHTML =
+        messageBox(
+          data.message ||
+          "Promotions are not supported by the current locked database schema.",
+          "warning"
+        );
+
+      return;
+    }
+
+    target.innerHTML = `
+      <pre style="white-space:pre-wrap">${escapeHTML(
+        JSON.stringify(data,null,2)
+      )}</pre>
+    `;
+
+  }catch(error){
+
+    target.innerHTML =
+      messageBox(error.message,"error");
+  }
 }
 
-/* ================= ADMIN PLACEHOLDER ================= */
+async function loadAdminAds(){
 
-function renderAdminPlaceholder(tab,c){
+  const target = $("adminAds");
 
-const titles={
+  try{
 
-services:"🛠️ Services",
-requests:"📋 Requests",
-payments:"💳 Payments",
-wallet:"💰 Wallet",
-promotions:"🚀 Promotions",
-ads:"📣 Advertising",
-reviews:"⭐ Reviews",
-reports:"📈 Reports",
-disputes:"⚠️ Disputes",
-verification:"🛡️ Verification",
-notifications:"🔔 Notifications",
-settings:"⚙️ Settings",
-logs:"📋 Audit Logs"
+    const data = await api("/api/admin/ads");
 
-};
+    if(data && data.supported === false){
 
-const descriptions={
+      target.innerHTML =
+        messageBox(
+          data.message ||
+          "Ads are not supported by the current locked database schema.",
+          "warning"
+        );
 
-services:"Manage service listings and professional providers.",
-requests:"Review buyer requests and provider offers.",
-payments:"Monitor payments, fees and marketplace transactions.",
-wallet:"Seller earnings, payouts and marketplace balances.",
-promotions:"Manage featured listings, boosts, coupons and deals.",
-ads:"Manage business advertisements and campaigns.",
-reviews:"Review marketplace ratings and feedback.",
-reports:"Marketplace, sales and business reports.",
-disputes:"Manage transaction disputes and resolution requests.",
-verification:"Review seller and business verification.",
-notifications:"Manage marketplace notifications.",
-settings:"Configure marketplace settings.",
-logs:"Review administrative activity and system actions."
+      return;
+    }
 
-};
+    target.innerHTML = `
+      <pre style="white-space:pre-wrap">${escapeHTML(
+        JSON.stringify(data,null,2)
+      )}</pre>
+    `;
 
-c.innerHTML=`
+  }catch(error){
 
-<h2>
-${titles[tab]||"Admin"}
-</h2>
-
-<p>
-${descriptions[tab]||"Manage IsokoHub."}
-</p>
-
-<div class="empty">
-
-<p>
-This dashboard section is ready for its
-corresponding backend API endpoint.
-</p>
-
-<button class="btn secondary"
-onclick="adminTab('overview')">
-← Back to Overview
-</button>
-
-</div>
-
-`;
-
+    target.innerHTML =
+      messageBox(error.message,"error");
+  }
 }
 
-function renderAdminEndpointError(c,name,error){
-
-c.innerHTML=`
-
-<h2>${escapeHtml(name)}</h2>
-
-<div class="empty">
-
-<h3>Unable to load ${escapeHtml(name)}</h3>
-
-<p>
-${escapeHtml(error||"Admin API endpoint unavailable.")}
-</p>
-
-<button class="btn"
-onclick="adminTab(currentAdminTab)">
-Retry
-</button>
-
-</div>
-
-`;
-
-}
-
-/* ================= UTILITIES ================= */
-
-function demoAction(message){
-
-alert(message);
-
-}
-
-function escapeHtml(value){
-
-return String(value??"")
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
-
-}
-
-function escapeAttr(value){
-
-return escapeHtml(value);
-
-}
-
-/* ================= INIT ================= */
+/* =========================================================
+   INITIALIZATION
+   ========================================================= */
 
 async function init(){
 
-try{
+  updateCounts();
 
-currentUser=
-JSON.parse(
-localStorage.getItem("isokohub_user")||"null"
-);
+  await checkConnection();
 
-}catch(e){
+  await loadCategories();
 
-currentUser=null;
+  await loadCurrentUser();
 
-}
+  await loadProducts();
 
-saveState();
+  renderCart();
 
-updateAuth();
+  if(currentUser){
 
-renderCategories();
+    await loadProfile();
 
-checkConnection();
+    if(
+      ["seller","admin","administrator","super_admin","superadmin"]
+      .includes(
+        String(currentUser.role || "").toLowerCase()
+      )
+    ){
+      await loadSellerDashboard();
+    }
+  }
 
-loadCategories();
-
-loadProducts();
-
-if(currentUser){
-
-loadProfile();
-
-}
-
+  document.querySelector(
+    '#mainNav button[data-section="home"]'
+  )?.classList.add("active");
 }
 
 init();
 
+/* =========================================================
+   KEYBOARD / ESC
+   ========================================================= */
+
+document.addEventListener("keydown",event=>{
+
+  if(event.key === "Escape"){
+
+    document.querySelectorAll(".modal.open").forEach(modal=>{
+      modal.classList.remove("open");
+    });
+
+  }
+
+});
+
+/* =========================================================
+   EXPOSE SOME FUNCTIONS FOR INLINE BUTTONS
+   ========================================================= */
+
+window.showSection = showSection;
+window.showAdmin = showAdmin;
+window.adminTab = adminTab;
+window.openModal = openModal;
+window.closeModal = closeModal;
+window.filterCategory = filterCategory;
+window.loadProducts = loadProducts;
+window.loadServices = loadServices;
+window.toggleSaved = toggleSaved;
+window.addToCart = addToCart;
+window.changeCartQuantity = changeCartQuantity;
+window.removeCartItem = removeCartItem;
+window.checkoutCart = checkoutCart;
+window.viewProduct = viewProduct;
+window.openMessageForProduct = openMessageForProduct;
+window.loadSaved = loadSaved;
+window.loadOrders = loadOrders;
+window.loadMessages = loadMessages;
+window.loadProfile = loadProfile;
+window.loadSellerDashboard = loadSellerDashboard;
+window.loadAdminOverview = loadAdminOverview;
+window.loadAdminUsers = loadAdminUsers;
+window.loadAdminSellers = loadAdminSellers;
+window.loadAdminProducts = loadAdminProducts;
+window.loadAdminOrders = loadAdminOrders;
+window.loadAdminPayments = loadAdminPayments;
+window.loadAdminCategories = loadAdminCategories;
+window.loadAdminServices = loadAdminServices;
+window.loadAdminReports = loadAdminReports;
+window.loadAdminReviews = loadAdminReviews;
+window.loadAdminPromotions = loadAdminPromotions;
+window.loadAdminAds = loadAdminAds;
+window.editAdminUser = editAdminUser;
+window.editAdminProduct = editAdminProduct;
+window.editAdminOrder = editAdminOrder;
+window.logout = logout;
 </script>
 
 </body>
