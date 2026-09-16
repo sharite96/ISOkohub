@@ -1,12 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>IsokoHub — Global Marketplace & Services</title>
-<meta name="description" content="IsokoHub global marketplace for products, services, education, creators, business, work and opportunities worldwide.">
-
-<style>
+<meta name="description" content="IsokoHub global marketplace for products, services, education, creators, business, work and opportunities worldwide."><style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Arial,Helvetica,sans-serif;background:#f5f7fb;color:#172033;line-height:1.5}
 button,input,select,textarea{font:inherit}
@@ -19,7 +16,7 @@ button{cursor:pointer}
 .topbar{background:#111827;color:white;padding:8px 5%;display:flex;justify-content:space-between;font-size:13px}
 header{background:#fff;position:sticky;top:0;z-index:1000;border-bottom:1px solid var(--border)}
 .header{max-width:1450px;margin:auto;padding:12px 18px;display:flex;align-items:center;gap:15px}
-.logo{font-size:24px;font-weight:900;color:var(--p);white-space:nowrap}
+.logo{font-size:24px;font-weight:900;color:var(--p);white-space:nowrap;cursor:pointer}
 .logo span{color:#111827}
 .search{flex:1;display:flex;border:2px solid var(--p);border-radius:11px;overflow:hidden}
 .search input{flex:1;border:0;outline:0;padding:11px}
@@ -33,6 +30,7 @@ header{background:#fff;position:sticky;top:0;z-index:1000;border-bottom:1px soli
 .btn.red{background:var(--d)}
 .btn.gray{background:#eef2f7;color:#172033}
 .btn.sm{padding:7px 10px;font-size:13px}
+.btn.outline{background:#fff;color:var(--p);border:1px solid var(--p)}
 nav{border-top:1px solid #f0f2f5}
 .nav{max-width:1450px;margin:auto;padding:7px 18px;display:flex;gap:4px;overflow-x:auto}
 .nav button{white-space:nowrap;border:0;background:#fff;padding:9px 11px;border-radius:8px;color:#344054;font-weight:600}
@@ -61,7 +59,7 @@ nav{border-top:1px solid #f0f2f5}
 .service-info{background:#fff;border:1px solid var(--border);border-radius:15px;padding:22px;margin-bottom:15px}
 .service-info p{color:var(--muted)}
 .categories{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
-.cat{background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;gap:12px;align-items:center}
+.cat{background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;gap:12px;align-items:center;text-align:left}
 .cat .i{font-size:28px}
 .cat small{display:block;color:var(--muted)}
 .filters{display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:9px;background:#fff;border:1px solid var(--border);padding:15px;border-radius:14px;margin-bottom:20px}
@@ -87,8 +85,8 @@ footer{background:#111827;color:#fff;margin-top:40px}
 .copy{text-align:center;border-top:1px solid #263244;padding:14px;color:#94a3b8;font-size:12px}
 .overlay{position:fixed;inset:0;background:rgba(15,23,42,.62);z-index:2000;display:none;align-items:center;justify-content:center;padding:14px}
 .modal{background:#fff;border-radius:16px;width:min(700px,100%);max-height:93vh;overflow:auto}
-.modal.large{width:min(1050px,100%)}
-.head{display:flex;justify-content:space-between;align-items:center;padding:16px 19px;border-bottom:1px solid var(--border)}
+.modal.large{width:min(1100px,100%)}
+.head{display:flex;justify-content:space-between;align-items:center;padding:16px 19px;border-bottom:1px solid var(--border);position:sticky;top:0;background:#fff;z-index:2}
 .close{border:0;background:#f2f4f7;width:34px;height:34px;border-radius:50%;font-size:20px}
 .modal-body{padding:20px}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
@@ -98,16 +96,17 @@ label{font-size:13px;font-weight:bold;display:block;margin-bottom:5px}
 .tabs button{flex:1;border:0;background:#fff;padding:13px;font-weight:bold}
 .tabs .active{color:var(--p);border-bottom:3px solid var(--p)}
 .cart-row{display:grid;grid-template-columns:75px 1fr auto;gap:12px;align-items:center;border-bottom:1px solid var(--border);padding:11px 0}
-.cart-img{width:75px;height:65px;object-fit:cover;border-radius:8px;background:#eef2f6}
+.cart-img{width:75px;height:65px;object-fit:cover;border-radius:8px;background:#eef2f6;display:flex;align-items:center;justify-content:center}
 .total{text-align:right;font-size:21px;font-weight:900;margin-top:14px}
 .table{overflow:auto}
 table{width:100%;border-collapse:collapse}
 th,td{padding:10px;border-bottom:1px solid var(--border);font-size:13px;text-align:left;white-space:nowrap}
 th{background:#f8fafc}
-.admin{display:grid;grid-template-columns:205px 1fr;min-height:500px}
+.admin{display:grid;grid-template-columns:205px 1fr;min-height:550px}
 .admin-side{border-right:1px solid var(--border);padding:10px}
 .admin-side button{display:block;width:100%;border:0;background:#fff;text-align:left;padding:10px;border-radius:8px;margin-bottom:3px}
 .admin-side button:hover{background:var(--soft);color:var(--p)}
+.admin-side button.active{background:var(--soft);color:var(--p);font-weight:800}
 .admin-main{padding:20px}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
 .stat{background:#fff;border:1px solid var(--border);padding:17px;border-radius:12px}
@@ -119,6 +118,13 @@ th{background:#f8fafc}
 .mine{text-align:right}.mine .bubble{background:#eaf2ff}
 .profile{display:grid;grid-template-columns:140px 1fr;gap:20px}
 .avatar{width:115px;height:115px;border-radius:50%;background:#e8eefb;display:flex;align-items:center;justify-content:center;font-size:43px}
+.profile-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
+.profile-card{background:#f8fafc;border:1px solid var(--border);border-radius:13px;padding:16px;margin-top:20px}
+.dashboard-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:18px}
+.admin-badge{display:inline-block;background:#ecfdf3;color:#087443;padding:5px 9px;border-radius:20px;font-size:12px;font-weight:bold}
+.notice{padding:11px 13px;border-radius:9px;background:#eef4ff;color:#175cd3;margin-bottom:15px}
+.success{padding:10px;border-radius:8px;background:#ecfdf3;color:#087443;margin-top:12px}
+.error{padding:10px;border-radius:8px;background:#fff1f2;color:#b42318;margin-top:12px}
 @media(max-width:900px){
 .header{flex-wrap:wrap}.search{order:3;flex-basis:100%}
 .filters{grid-template-columns:1fr 1fr}.filters input:first-child{grid-column:1/-1}
@@ -132,35 +138,21 @@ th{background:#f8fafc}
 .form-grid,.profile{grid-template-columns:1fr}.full{grid-column:auto}
 .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.pic{height:135px}.body{padding:9px}
 .footer{grid-template-columns:1fr}.price{font-size:16px}
+.cart-row{grid-template-columns:55px 1fr}.cart-row .btn{grid-column:2}
 }
-</style>
-</head>
-
-<body>
-
-<div class="topbar">
+</style></head><body><div class="topbar">
 <span>🌍 IsokoHub — Global Marketplace</span>
 <span id="apiStatus">Connecting...</span>
-</div>
-
-<header>
-<div class="header">
-<div class="logo" onclick="home()">Isoko<span>Hub</span> 🌍</div>
-
-<form class="search" id="searchForm">
+</div><header>
+<div class="header"><div class="logo" onclick="home()">Isoko<span>Hub</span> 🌍</div><form class="search" id="searchForm">
 <input id="searchInput" type="search" placeholder="Search products, services, teachers, creators, jobs...">
 <button>Search</button>
-</form>
-
-<div class="actions">
+</form><div class="actions">
 <button class="icon" onclick="saved()">❤️<span class="badge" id="savedCount">0</span></button>
 <button class="icon" onclick="cartOpen()">🛒<span class="badge" id="cartCount">0</span></button>
 <button class="icon" onclick="messages()">💬</button>
 <button class="btn sm" id="authBtn" onclick="auth()">Login</button>
-</div>
-</div>
-
-<nav>
+</div></div><nav>
 <div class="nav">
 <button onclick="home()">🏠 Home</button>
 <button onclick="services()">🛠️ Services</button>
@@ -177,34 +169,27 @@ th{background:#f8fafc}
 <button id="adminBtn" style="display:none" onclick="admin()">🛠️ Admin</button>
 </div>
 </nav>
-</header>
-
-<section class="hero">
+</header><section class="hero">
 <div class="hero-inner">
 <h1>Find Anything. Buy Anything. Hire Anyone. 🌍</h1>
-<p>IsokoHub connects buyers, sellers, teachers, artists, creators, filmmakers, professionals and service providers worldwide.</p>
-
-<form class="hero-search" id="heroForm">
+<p>IsokoHub connects buyers, sellers, teachers, artists, creators, filmmakers, professionals and service providers worldwide.</p><form class="hero-search" id="heroForm">
 <input id="heroInput" placeholder="What product or service are you looking for?">
-<select id="heroCountry"><option value="">🌍 All Countries</option></select>
+<select id="heroCountry">
+<option value="">🌍 All Countries</option>
+</select>
 <button>🔎 Search</button>
 </form>
 </div>
-</section>
-
-<main class="container">
-
-<div id="status" class="status">Connecting to IsokoHub API...</div>
-
-<section class="section">
+</section><main class="container"><div id="status" class="status">Connecting to IsokoHub API...</div><section class="section">
 <div class="title">
-<div><h2>Popular Services</h2><p>Find professionals and services worldwide.</p></div>
+<div>
+<h2>Popular Services</h2>
+<p>Find professionals and services worldwide.</p>
+</div>
 <button class="btn sm" onclick="services()">View All</button>
 </div>
 <div id="quick" class="quick"></div>
-</section>
-
-<section class="section">
+</section><section class="section">
 <div class="service-info">
 <h2>🛠️ Find the service you need</h2>
 <p>
@@ -216,202 +201,207 @@ and many other services.
 </p>
 </div>
 <div id="categories" class="categories"></div>
-</section>
-
-<section>
+</section><section>
 <div class="title">
-<div><h2 id="resultTitle">Marketplace</h2><p id="resultSub">Products and services available worldwide.</p></div>
+<div>
+<h2 id="resultTitle">Marketplace</h2>
+<p id="resultSub">Products and services available worldwide.</p>
 </div>
-
-<div class="filters">
-<input class="field" id="filterSearch" placeholder="Search anything...">
-<select class="field" id="filterCategory"><option value="">All Categories</option></select>
-<select class="field" id="filterCountry"><option value="">All Countries</option></select>
-<select class="field" id="filterType">
+</div><div class="filters">
+<input class="field" id="filterSearch" placeholder="Search anything..."><select class="field" id="filterCategory">
+<option value="">All Categories</option>
+</select><select class="field" id="filterCountry">
+<option value="">All Countries</option>
+</select><select class="field" id="filterType">
 <option value="">Products + Services</option>
 <option value="service">Services Only</option>
 <option value="product">Products Only</option>
-</select>
-<button class="btn" onclick="filter()">Search</button>
-</div>
+</select><button class="btn" onclick="filter()">Search</button>
 
-<div id="products" class="grid"></div>
-</section>
-
-</main>
-
-<footer>
-<div class="footer">
-<div><h3>IsokoHub 🌍</h3><p>Global marketplace for products, services, education, creative work, business and opportunities.</p></div>
-<div><h4>Marketplace</h4><ul><li>Products</li><li>Services</li><li>Education</li><li>Creators</li><li>Business</li><li>Jobs & Freelance</li></ul></div>
-<div><h4>For Sellers</h4><ul><li>Sell on IsokoHub</li><li>Products</li><li>Orders</li><li>Seller Statistics</li></ul></div>
-<div><h4>Platform</h4><ul><li>Saved</li><li>Messages</li><li>Profile</li><li>Admin</li></ul></div>
-</div>
+</div><div id="products" class="grid"></div>
+</section></main><footer>
+<div class="footer"><div>
+<h3>IsokoHub 🌍</h3>
+<p>Global marketplace for products, services, education, creative work, business and opportunities.</p>
+</div><div>
+<h4>Marketplace</h4>
+<ul>
+<li>Products</li>
+<li>Services</li>
+<li>Education</li>
+<li>Creators</li>
+<li>Business</li>
+<li>Jobs & Freelance</li>
+</ul>
+</div><div>
+<h4>For Sellers</h4>
+<ul>
+<li>Sell on IsokoHub</li>
+<li>Products</li>
+<li>Orders</li>
+<li>Seller Statistics</li>
+</ul>
+</div><div>
+<h4>Platform</h4>
+<ul>
+<li>Saved</li>
+<li>Messages</li>
+<li>Profile</li>
+<li>Admin</li>
+</ul>
+</div></div>
 <div class="copy">© 2026 IsokoHub. Global marketplace.</div>
-</footer>
-
-
-<!-- AUTH -->
-<div class="overlay" id="authModal">
-<div class="modal">
-<div class="head"><strong>IsokoHub Account</strong><button class="close" onclick="closeM('authModal')">×</button></div>
-<div class="tabs">
+</footer><!-- AUTH --><div class="overlay" id="authModal">
+<div class="modal"><div class="head">
+<strong>IsokoHub Account</strong>
+<button class="close" onclick="closeM('authModal')">×</button>
+</div><div class="tabs">
 <button id="lt" class="active" onclick="authTab('login')">Login</button>
 <button id="rt" onclick="authTab('register')">Register</button>
-</div>
-<div class="modal-body">
+</div><div class="modal-body"><form id="loginForm">
+<label>Email</label>
+<input class="field" id="loginEmail" type="email" required>
+<br><br><label>Password</label>
+<input class="field" id="loginPassword" type="password" required>
+<br><br>
 
-<form id="loginForm">
-<label>Email</label><input class="field" id="loginEmail" type="email" required><br><br>
-<label>Password</label><input class="field" id="loginPassword" type="password" required><br><br>
 <button class="btn" style="width:100%">Login</button>
-</form>
 
-<form id="registerForm" style="display:none">
-<div class="form-grid">
-<div><label>Full Name</label><input class="field" id="regName" required></div>
-<div><label>Email</label><input class="field" id="regEmail" type="email" required></div>
-<div><label>Password</label><input class="field" id="regPassword" type="password" minlength="6" required></div>
-<div><label>Country</label><select class="field" id="regCountry" required></select></div>
-</div><br>
+</form><form id="registerForm" style="display:none">
+<div class="form-grid"><div>
+<label>Full Name</label>
+<input class="field" id="regName" required>
+</div><div>
+<label>Email</label>
+<input class="field" id="regEmail" type="email" required>
+</div><div>
+<label>Password</label>
+<input class="field" id="regPassword" type="password" minlength="6" required>
+</div><div>
+<label>Country</label>
+<select class="field" id="regCountry" required></select>
+</div></div>
+<br>
 <button class="btn" style="width:100%">Create Account</button>
-</form>
-
-<div id="authMsg"></div>
+</form><div id="authMsg"></div></div>
 </div>
-</div>
-</div>
-
-
-<!-- PRODUCT -->
-<div class="overlay" id="productModal">
-<div class="modal large">
-<div class="head"><strong id="productTitle">Product</strong><button class="close" onclick="closeM('productModal')">×</button></div>
-<div class="modal-body" id="productDetails"></div>
-</div>
-</div>
-
-
-<!-- CART -->
-<div class="overlay" id="cartModal">
-<div class="modal">
-<div class="head"><strong>🛒 Cart</strong><button class="close" onclick="closeM('cartModal')">×</button></div>
-<div class="modal-body">
+</div><!-- PRODUCT --><div class="overlay" id="productModal">
+<div class="modal large"><div class="head">
+<strong id="productTitle">Product</strong>
+<button class="close" onclick="closeM('productModal')">×</button>
+</div><div class="modal-body" id="productDetails"></div></div>
+</div><!-- CART --><div class="overlay" id="cartModal">
+<div class="modal"><div class="head">
+<strong>🛒 Cart</strong>
+<button class="close" onclick="closeM('cartModal')">×</button>
+</div><div class="modal-body">
 <div id="cartItems"></div>
-<div id="cartTotal" class="total"></div><br>
+<div id="cartTotal" class="total"></div>
+<br>
 <button class="btn green" style="width:100%" onclick="checkout()">Place Order</button>
-</div>
-</div>
-</div>
+</div></div>
+</div><!-- SAVED --><div class="overlay" id="savedModal">
+<div class="modal large"><div class="head">
+<strong>❤️ Saved Items</strong>
+<button class="close" onclick="closeM('savedModal')">×</button>
+</div><div class="modal-body">
+<div class="notice">❤️ Your saved products and services are linked to your IsokoHub account.</div>
+<div id="savedItems" class="grid"></div>
+</div></div>
+</div><!-- ORDERS --><div class="overlay" id="ordersModal">
+<div class="modal large"><div class="head">
+<strong>📦 Orders</strong>
+<button class="close" onclick="closeM('ordersModal')">×</button>
+</div><div class="modal-body">
+<div id="ordersArea"></div>
+</div></div>
+</div><!-- MESSAGES --><div class="overlay" id="messagesModal">
+<div class="modal"><div class="head">
+<strong>💬 Messages</strong>
+<button class="close" onclick="closeM('messagesModal')">×</button>
+</div><div class="modal-body"><div id="messagesArea" class="messages"></div><br><form id="messageForm"><label>Recipient User ID</label>
+<input class="field" id="msgTo" type="number" required>
 
+<br><br>
 
-<!-- SAVED -->
-<div class="overlay" id="savedModal">
-<div class="modal large">
-<div class="head"><strong>❤️ Saved Items</strong><button class="close" onclick="closeM('savedModal')">×</button></div>
-<div class="modal-body"><div id="savedItems" class="grid"></div></div>
-</div>
-</div>
+<label>Message</label>
 
+<textarea class="field" id="msgBody" rows="3" required></textarea><br><br>
 
-<!-- ORDERS -->
-<div class="overlay" id="ordersModal">
-<div class="modal large">
-<div class="head"><strong>📦 Orders</strong><button class="close" onclick="closeM('ordersModal')">×</button></div>
-<div class="modal-body"><div id="ordersArea"></div></div>
-</div>
-</div>
-
-
-<!-- MESSAGES -->
-<div class="overlay" id="messagesModal">
-<div class="modal">
-<div class="head"><strong>💬 Messages</strong><button class="close" onclick="closeM('messagesModal')">×</button></div>
-<div class="modal-body">
-<div id="messagesArea" class="messages"></div><br>
-<form id="messageForm">
-<label>Recipient User ID</label><input class="field" id="msgTo" type="number" required><br><br>
-<label>Message</label><textarea class="field" id="msgBody" rows="3" required></textarea><br><br>
 <button class="btn">Send Message</button>
-</form>
+
+</form></div>
 </div>
-</div>
-</div>
-
-
-<!-- PROFILE -->
-<div class="overlay" id="profileModal">
-<div class="modal">
-<div class="head"><strong>👤 Profile</strong><button class="close" onclick="closeM('profileModal')">×</button></div>
-<div class="modal-body" id="profileArea"></div>
-</div>
-</div>
-
-
-<!-- SELL -->
-<div class="overlay" id="sellModal">
-<div class="modal large">
-<div class="head"><strong>➕ Sell / Offer Service</strong><button class="close" onclick="closeM('sellModal')">×</button></div>
-<div class="modal-body">
-
-<form id="sellForm">
-<div class="form-grid">
-
-<div class="full"><label>Title</label><input class="field" id="sellTitle" placeholder="Example: Website Development Service" required></div>
-
-<div><label>Category</label><select class="field" id="sellCategory" required></select></div>
-<div><label>Country</label><select class="field" id="sellCountry" required></select></div>
-
-<div><label>Price</label><input class="field" id="sellPrice" type="number" min="0" required></div>
-<div><label>Currency</label><input class="field" id="sellCurrency" value="RWF" required></div>
-
-<div><label>Stock</label><input class="field" id="sellStock" type="number" min="0" value="1"></div>
-<div><label>Condition</label>
+</div><!-- PROFILE --><div class="overlay" id="profileModal">
+<div class="modal large"><div class="head">
+<strong>👤 My Profile</strong>
+<button class="close" onclick="closeM('profileModal')">×</button>
+</div><div class="modal-body" id="profileArea"></div></div>
+</div><!-- SELL --><div class="overlay" id="sellModal">
+<div class="modal large"><div class="head">
+<strong>➕ Sell / Offer Service</strong>
+<button class="close" onclick="closeM('sellModal')">×</button>
+</div><div class="modal-body"><div class="notice">
+📌 Publish a product or service. It will be connected to your IsokoHub account.
+</div><form id="sellForm"><div class="form-grid"><div class="full">
+<label>Title</label>
+<input class="field" id="sellTitle" placeholder="Example: Website Development Service" required>
+</div><div>
+<label>Category</label>
+<select class="field" id="sellCategory" required></select>
+</div><div>
+<label>Country</label>
+<select class="field" id="sellCountry" required></select>
+</div><div>
+<label>Price</label>
+<input class="field" id="sellPrice" type="number" min="0" required>
+</div><div>
+<label>Currency</label>
+<input class="field" id="sellCurrency" value="RWF" required>
+</div><div>
+<label>Stock</label>
+<input class="field" id="sellStock" type="number" min="0" value="1">
+</div><div>
+<label>Condition</label>
 <select class="field" id="sellCondition">
 <option value="new">New</option>
 <option value="used">Used</option>
 <option value="refurbished">Refurbished</option>
 <option value="has crack">Has crack</option>
-</select></div>
+</select>
+</div><div>
+<label>District / City</label>
+<input class="field" id="sellDistrict">
+</div><div>
+<label>Image URL</label>
+<input class="field" id="sellImage" placeholder="https://...">
+</div><div class="full">
+<label>Description / Specifications</label>
+<textarea class="field" id="sellSpecs" rows="5" placeholder="Describe your product or service..."></textarea>
+</div></div><br><button class="btn green" style="width:100%">Publish on IsokoHub</button>
 
-<div><label>District / City</label><input class="field" id="sellDistrict"></div>
-<div><label>Image URL</label><input class="field" id="sellImage" placeholder="https://..."></div>
-
-<div class="full"><label>Description / Specifications</label><textarea class="field" id="sellSpecs" rows="5"></textarea></div>
-</div><br>
-<button class="btn green" style="width:100%">Publish on IsokoHub</button>
-</form>
-<div id="sellMsg"></div>
-
+</form><div id="sellMsg"></div></div>
 </div>
-</div>
-</div>
+</div><!-- ADMIN --><div class="overlay" id="adminModal">
+<div class="modal large"><div class="head">
+<strong>🛠️ IsokoHub Admin Dashboard</strong>
+<button class="close" onclick="closeM('adminModal')">×</button>
+</div><div class="admin"><aside class="admin-side"><button data-admin="overview" onclick="adminSection('overview')">📊 Overview</button>
+<button data-admin="users" onclick="adminSection('users')">👥 Users</button>
+<button data-admin="sellers" onclick="adminSection('sellers')">🏪 Sellers</button>
+<button data-admin="products" onclick="adminSection('products')">📦 Products</button>
+<button data-admin="orders" onclick="adminSection('orders')">🛒 Orders</button>
+<button data-admin="payments" onclick="adminSection('payments')">💳 Payments</button>
+<button data-admin="services" onclick="adminSection('services')">🛠️ Services</button>
+<button data-admin="categories" onclick="adminSection('categories')">📚 Categories</button>
+<button data-admin="reports" onclick="adminSection('reports')">📈 Reports</button>
 
-
-<!-- ADMIN -->
-<div class="overlay" id="adminModal">
-<div class="modal large">
-<div class="head"><strong>🛠️ IsokoHub Admin Dashboard</strong><button class="close" onclick="closeM('adminModal')">×</button></div>
-
-<div class="admin">
-<aside class="admin-side">
-<button onclick="adminSection('overview')">📊 Overview</button>
-<button onclick="adminSection('users')">👥 Users</button>
-<button onclick="adminSection('sellers')">🏪 Sellers</button>
-<button onclick="adminSection('products')">📦 Products</button>
-<button onclick="adminSection('orders')">🛒 Orders</button>
-<button onclick="adminSection('payments')">💳 Payments</button>
-<button onclick="adminSection('services')">🛠️ Services</button>
-<button onclick="adminSection('categories')">📚 Categories</button>
-<button onclick="adminSection('reports')">📈 Reports</button>
-</aside>
-<section class="admin-main"><div id="adminContent"></div></section>
+</aside><section class="admin-main">
+<div id="adminContent"></div>
+</section></div>
 </div>
-</div>
-</div>
+</div><script>
 
-
-<script>
 const API=location.origin+"/api";
 
 let user=null;
@@ -421,88 +411,213 @@ let categories=[];
 let serviceCategories=[];
 
 let cartData=JSON.parse(localStorage.getItem("isokohub_cart")||"[]");
-let savedData=JSON.parse(localStorage.getItem("isokohub_saved")||"[]");
+let savedData=[];
 
 const icons={
-"Business & Professional":"💼","Engineering":"⚙️","IT & Technology":"💻",
-"Construction & Property":"🏗️","Education & Teachers":"📚","Art & Creative":"🎨",
-"Film & Entertainment":"🎬","Marketing & Communication":"📣",
-"Automotive & Transport":"🚗","Agriculture & Environment":"🌾",
-"Home Services":"🏠","Legal & Finance":"⚖️","Health & Wellness":"❤️",
-"Beauty & Personal Care":"💇","Food & Hospitality":"🍽️","Events":"🎉",
-"Logistics":"📦","Travel & Tourism":"✈️","Industrial & Manufacturing":"🏭",
-"Jobs & Freelance":"👨‍💻","Services":"🛠️","Other Services":"🔎"
+"Business & Professional":"💼",
+"Engineering":"⚙️",
+"IT & Technology":"💻",
+"Construction & Property":"🏗️",
+"Education & Teachers":"📚",
+"Art & Creative":"🎨",
+"Film & Entertainment":"🎬",
+"Marketing & Communication":"📣",
+"Automotive & Transport":"🚗",
+"Agriculture & Environment":"🌾",
+"Home Services":"🏠",
+"Legal & Finance":"⚖️",
+"Health & Wellness":"❤️",
+"Beauty & Personal Care":"💇",
+"Food & Hospitality":"🍽️",
+"Events":"🎉",
+"Logistics":"📦",
+"Travel & Tourism":"✈️",
+"Industrial & Manufacturing":"🏭",
+"Jobs & Freelance":"👨‍💻",
+"Services":"🛠️",
+"Other Services":"🔎"
 };
 
 const serviceWords=[
-"service","consultant","consulting","engineer","engineering","developer",
-"development","designer","design","teacher","teaching","tutor","education",
-"photography","photographer","videography","video","film","filmmaker",
-"producer","marketing","lawyer","legal","accountant","accounting","finance",
-"doctor","health","therapy","fitness","beauty","salon","barber","restaurant",
-"hotel","event","transport","driver","delivery","logistics","travel","tourism",
-"agriculture","construction","plumber","plumbing","electrician","cleaning",
-"mechanic","repair","installation","branding","social media","tax","chef",
-"catering","shipping","warehouse","courier","factory","machine","manufacturing",
-"freelance","job","jobs","software","website","app","mobile app"
+"service","consultant","consulting","engineer","engineering",
+"developer","development","designer","design","teacher","teaching",
+"tutor","education","photography","photographer","videography",
+"video","film","filmmaker","producer","marketing","lawyer","legal",
+"accountant","accounting","finance","doctor","health","therapy",
+"fitness","beauty","salon","barber","restaurant","hotel","event",
+"transport","driver","delivery","logistics","travel","tourism",
+"agriculture","construction","plumber","plumbing","electrician",
+"cleaning","mechanic","repair","installation","branding",
+"social media","tax","chef","catering","shipping","warehouse",
+"courier","factory","machine","manufacturing","freelance","job",
+"jobs","software","website","app","mobile app"
 ];
 
-function $(x){return document.getElementById(x)}
+function $(x){
+return document.getElementById(x)
+}
 
 function esc(v){
-return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;")
-.replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+return String(v??"")
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
 }
 
 function money(v,c="RWF"){
-try{return new Intl.NumberFormat("en-US",{maximumFractionDigits:0}).format(Number(v||0))+" "+c}
-catch(e){return Number(v||0)+" "+c}
+try{
+return new Intl.NumberFormat("en-US",{maximumFractionDigits:0})
+.format(Number(v||0))+" "+c
+}catch(e){
+return Number(v||0)+" "+c
+}
 }
 
-function openM(id){$(id).style.display="flex"}
-function closeM(id){$(id).style.display="none"}
+function openM(id){
+$(id).style.display="flex"
+}
+
+function closeM(id){
+$(id).style.display="none"
+}
 
 function closeAll(){
-document.querySelectorAll(".overlay").forEach(x=>x.style.display="none")
+document.querySelectorAll(".overlay")
+.forEach(x=>x.style.display="none")
 }
 
 function loginRequired(){
-if(!user){auth();return false}
+if(!user){
+auth();
+return false
+}
 return true
 }
 
-async function api(path,opt={}){
-let headers={"Content-Type":"application/json",...(opt.headers||{})};
-let token=localStorage.getItem("isokohub_token");
-if(token)headers.Authorization="Bearer "+token;
 
-let r=await fetch(API+path,{...opt,headers});
-let data={};
-try{data=await r.json()}catch(e){}
-if(!r.ok)throw new Error(data.error||data.message||"Request failed");
-return data;
+/* =========================
+   API
+========================= */
+
+async function api(path,opt={}){
+let headers={
+"Content-Type":"application/json",
+...(opt.headers||{})
+};
+
+let token=localStorage.getItem("isokohub_token");
+
+if(token){
+headers.Authorization="Bearer "+token
 }
+
+let r=await fetch(API+path,{
+...opt,
+headers
+});
+
+let data={};
+
+try{
+data=await r.json()
+}catch(e){}
+
+if(!r.ok){
+throw new Error(
+data.error||
+data.message||
+"Request failed"
+)
+}
+
+return data
+}
+
+
+/* =========================
+   COUNTS
+========================= */
 
 function updateCounts(){
+
 $("cartCount").textContent=cartData.length;
 $("savedCount").textContent=savedData.length;
-localStorage.setItem("isokohub_cart",JSON.stringify(cartData));
-localStorage.setItem("isokohub_saved",JSON.stringify(savedData));
+
+localStorage.setItem(
+"isokohub_cart",
+JSON.stringify(cartData)
+);
+
 }
 
+async function loadSavedFromServer(){
+
+if(!user){
+savedData=[];
+updateCounts();
+return
+}
+
+try{
+
+let d=await api("/saved");
+
+let list=Array.isArray(d)
+?d
+:(d.saved||d.items||[]);
+
+savedData=list.map(x=>{
+
+if(x.product){
+return x.product
+}
+
+return x
+
+});
+
+updateCounts();
+
+}catch(e){
+
+console.log("Saved loading:",e.message);
+
+}
+
+}
+
+
+/* =========================
+   INIT
+========================= */
+
 async function init(){
+
 updateCounts();
 bind();
 
 try{
+
 await api("/config");
+
 $("apiStatus").textContent="API connected";
+
 $("status").className="status ok";
-$("status").textContent="✅ IsokoHub API + D1 database connected.";
+
+$("status").textContent=
+"✅ IsokoHub API + D1 database connected.";
+
 }catch(e){
+
 $("apiStatus").textContent="API connection failed";
+
 $("status").className="status err";
-$("status").textContent="⚠️ Backend connection failed.";
+
+$("status").textContent=
+"⚠️ Backend connection failed.";
+
 }
 
 await countriesLoad();
@@ -510,560 +625,2038 @@ await categoriesLoad();
 await servicesLoad();
 await session();
 await loadProducts("?limit=100");
+
 }
 
+
+/* =========================
+   COUNTRIES
+========================= */
+
 async function countriesLoad(){
+
 try{
+
 let d=await api("/countries");
-countries=Array.isArray(d)?d:(d.countries||[]);
+
+countries=Array.isArray(d)
+?d
+:(d.countries||[]);
+
 fillCountries();
-}catch(e){console.log(e)}
+
+}catch(e){
+
+console.log(e)
+
+}
+
 }
 
 function fillCountries(){
-["heroCountry","filterCountry","regCountry","sellCountry"].forEach(id=>{
-let s=$(id);if(!s)return;
+
+[
+"heroCountry",
+"filterCountry",
+"regCountry",
+"sellCountry"
+].forEach(id=>{
+
+let s=$(id);
+
+if(!s)return;
+
 let first=s.options[0]?.outerHTML||"";
+
 s.innerHTML=first;
+
 countries.forEach(c=>{
+
 let o=document.createElement("option");
-o.value=c;o.textContent=c;s.appendChild(o)
+
+o.value=c;
+o.textContent=c;
+
+s.appendChild(o)
+
 });
+
 });
+
 }
 
+
+/* =========================
+   CATEGORIES
+========================= */
+
 async function categoriesLoad(){
+
 try{
+
 let d=await api("/categories");
-categories=Array.isArray(d)?d:(d.categories||[]);
+
+categories=Array.isArray(d)
+?d
+:(d.categories||[]);
+
 fillCategories();
-}catch(e){console.log(e)}
+
+}catch(e){
+
+console.log(e)
+
+}
+
 }
 
 function catName(c){
-return typeof c==="string"?c:(c.name||c.title||c.category||"")
+
+return typeof c==="string"
+?c
+:(c.name||c.title||c.category||"")
+
 }
 
 function fillCategories(){
-["filterCategory","sellCategory"].forEach(id=>{
-let s=$(id);if(!s)return;
-s.innerHTML='<option value="">All Categories</option>';
+
+let names=[];
+
 categories.forEach(c=>{
-let n=catName(c);if(!n)return;
-let o=document.createElement("option");
-o.value=n;o.textContent=n;s.appendChild(o)
-});
-if(id==="sellCategory")s.options[0].textContent="Choose Category";
-});
+
+let n=catName(c);
+
+if(n&&!names.includes(n)){
+names.push(n)
 }
 
-async function servicesLoad(){
-try{
-let d=await api("/service-categories");
-serviceCategories=Array.isArray(d)?d:(d.categories||[]);
-}catch(e){
-serviceCategories=Object.keys(icons);
+});
+
+Object.keys(icons).forEach(n=>{
+
+if(!names.includes(n)){
+names.push(n)
 }
+
+});
+
+["filterCategory","sellCategory"].forEach(id=>{
+
+let s=$(id);
+
+if(!s)return;
+
+s.innerHTML=
+id==="sellCategory"
+?'<option value="">Choose Category</option>'
+:'<option value="">All Categories</option>';
+
+names.forEach(n=>{
+
+let o=document.createElement("option");
+
+o.value=n;
+o.textContent=n;
+
+s.appendChild(o)
+
+});
+
+});
+
+}
+
+
+/* =========================
+   SERVICES
+========================= */
+
+async function servicesLoad(){
+
+try{
+
+let d=await api("/service-categories");
+
+serviceCategories=
+Array.isArray(d)
+?d
+:(d.categories||[]);
+
+}catch(e){
+
+serviceCategories=Object.keys(icons)
+
+}
+
 renderServices();
+
 }
 
 function renderServices(){
-$("quick").innerHTML=serviceCategories.slice(0,12).map(c=>{
-let n=catName(c),i=icons[n]||"🛠️";
-return `<button onclick="serviceSearch(${JSON.stringify(n)})">
-<div class="emoji">${i}</div><strong>${esc(n)}</strong><small>Find services</small>
-</button>`
-}).join("");
 
-$("categories").innerHTML=serviceCategories.map(c=>{
-let n=catName(c),i=icons[n]||"🛠️";
-return `<button class="cat" onclick="serviceSearch(${JSON.stringify(n)})">
-<span class="i">${i}</span><span><strong>${esc(n)}</strong><small>Explore services</small></span>
-</button>`
-}).join("");
+$("quick").innerHTML=
+serviceCategories
+.slice(0,12)
+.map(c=>{
+
+let n=catName(c);
+let i=icons[n]||"🛠️";
+
+return `
+<button onclick='serviceSearch(${JSON.stringify(n)})'>
+<div class="emoji">${i}</div>
+<strong>${esc(n)}</strong>
+<small>Find services</small>
+</button>
+`
+
+})
+.join("");
+
+$("categories").innerHTML=
+serviceCategories
+.map(c=>{
+
+let n=catName(c);
+let i=icons[n]||"🛠️";
+
+return `
+<button class="cat"
+onclick='serviceSearch(${JSON.stringify(n)})'>
+
+<span class="i">${i}</span>
+
+<span>
+<strong>${esc(n)}</strong>
+<small>Explore services</small>
+</span>
+
+</button>
+`
+
+})
+.join("");
+
 }
+
+
+/* =========================
+   PRODUCTS
+========================= */
 
 async function loadProducts(q="?limit=100"){
-$("products").innerHTML='<div class="empty">🔄 Loading marketplace...</div>';
+
+$("products").innerHTML=
+'<div class="empty">🔄 Loading marketplace...</div>';
+
 try{
+
 let d=await api("/products"+q);
-products=Array.isArray(d)?d:(d.products||d.items||[]);
-render(products)
+
+products=
+Array.isArray(d)
+?d
+:(d.products||d.items||[]);
+
+render(products);
+
 }catch(e){
-$("products").innerHTML=`<div class="empty">❌ ${esc(e.message)}</div>`
+
+$("products").innerHTML=
+`<div class="empty">❌ ${esc(e.message)}</div>`
+
 }
+
 }
 
 function isService(p){
-let text=[p.title,p.name,p.category,p.description,p.specs,p.type].join(" ").toLowerCase();
-return serviceWords.some(w=>text.includes(w))
+
+let text=[
+p.title,
+p.name,
+p.category,
+p.description,
+p.specs,
+p.type
+]
+.join(" ")
+.toLowerCase();
+
+return serviceWords.some(
+w=>text.includes(w)
+)
+
 }
 
 function render(list){
+
 if(!list.length){
-$("products").innerHTML='<div class="empty">🔎 No results found.<br>Try another product, service, category or country.</div>';
-return;
+
+$("products").innerHTML=
+'<div class="empty">🔎 No results found.<br>Try another product, service, category or country.</div>';
+
+return
+
 }
-$("products").innerHTML=list.map(card).join("")
+
+$("products").innerHTML=
+list.map(card).join("")
+
 }
 
 function card(p){
-let id=p.id;
-let title=p.title||p.name||"Untitled";
-let service=isService(p);
-let img=p.image_url||p.imageUrl||p.image||"";
-let country=p.country||p.seller_country||"";
-let loc=p.district||p.city||p.location||country;
-let seller=p.seller_name||p.sellerName||p.seller||"IsokoHub Seller";
-let saved=savedData.some(x=>String(x.id)===String(id));
 
-return `<article class="card">
+let id=p.id;
+
+let title=
+p.title||
+p.name||
+"Untitled";
+
+let service=isService(p);
+
+let img=
+p.image_url||
+p.imageUrl||
+p.image||
+"";
+
+let country=
+p.country||
+p.seller_country||
+"";
+
+let loc=
+p.district||
+p.city||
+p.location||
+country;
+
+let seller=
+p.seller_name||
+p.sellerName||
+p.seller||
+"IsokoHub Seller";
+
+let isSaved=savedData.some(
+x=>String(x.id)===String(id)
+);
+
+return `
+<article class="card">
+
 <div class="pic">
-${img?`<img src="${esc(img)}" alt="${esc(title)}" onerror="this.style.display='none'">`
-:`<div class="placeholder">${service?"🛠️":"📦"}</div>`}
-</div>
-<div class="body">
-<h3>${esc(title)}</h3>
-<span class="tag">${service?"SERVICE":"PRODUCT"}</span>
-${p.category?`<span class="tag">${esc(p.category)}</span>`:""}
-<div class="price">${money(p.price,p.currency||"RWF")}</div>
-<div class="meta">👤 ${esc(seller)}</div>
-<div class="meta">🌍 ${esc(country)}</div>
-${loc?`<div class="meta">📍 ${esc(loc)}</div>`:""}
-<div class="card-actions">
-<button class="btn sm" onclick="view(${JSON.stringify(String(id))})">View</button>
-<button class="btn gray sm" onclick="toggleSave(${JSON.stringify(String(id))})">${saved?"❤️":"♡"}</button>
-</div>
-<button class="btn green sm" style="width:100%;margin-top:7px" onclick="addById(${JSON.stringify(String(id))})">
-${service?"Contact / Order":"🛒 Add to Cart"}
-</button>
-</div></article>`
+
+${
+img
+?
+`<img src="${esc(img)}"
+alt="${esc(title)}"
+onerror="this.style.display='none'">`
+:
+`<div class="placeholder">
+${service?"🛠️":"📦"}
+</div>`
 }
 
+</div>
+
+<div class="body">
+
+<h3>${esc(title)}</h3>
+
+<span class="tag">
+${service?"SERVICE":"PRODUCT"}
+</span>
+
+${
+p.category
+?
+`<span class="tag">${esc(p.category)}</span>`
+:""
+}
+
+<div class="price">
+${money(p.price,p.currency||"RWF")}
+</div>
+
+<div class="meta">
+👤 ${esc(seller)}
+</div>
+
+<div class="meta">
+🌍 ${esc(country)}
+</div>
+
+${
+loc
+?
+`<div class="meta">📍 ${esc(loc)}</div>`
+:""
+}
+
+<div class="card-actions">
+
+<button class="btn sm"
+onclick='view(${JSON.stringify(String(id))})'>
+View
+</button>
+
+<button class="btn gray sm"
+onclick='toggleSave(${JSON.stringify(String(id))})'>
+${isSaved?"❤️":"♡"}
+</button>
+
+</div>
+
+<button
+class="btn green sm"
+style="width:100%;margin-top:7px"
+onclick='addById(${JSON.stringify(String(id))})'>
+
+${service?"Contact / Order":"🛒 Add to Cart"}
+
+</button>
+
+</div>
+
+</article>
+`
+
+}
+
+
+/* =========================
+   SEARCH
+========================= */
+
 async function search(q="",country=""){
+
 $("filterSearch").value=q;
-if(country)$("filterCountry").value=country;
+
+if(country){
+$("filterCountry").value=country
+}
 
 let type=$("filterType").value;
+
 let params=new URLSearchParams();
+
 if(q)params.set("search",q);
+
 if(country)params.set("country",country);
+
 params.set("limit","100");
 
-let endpoint=type==="service"?"/services":"/products";
+let endpoint=
+type==="service"
+?"/services"
+:"/products";
+
 try{
-let d=await api(endpoint+"?"+params);
-let r=Array.isArray(d)?d:(d.products||d.services||d.items||[]);
-$("resultTitle").textContent=q?`Search results for "${q}"`:"Marketplace";
+
+let d=await api(
+endpoint+"?"+params
+);
+
+let r=
+Array.isArray(d)
+?d
+:(d.products||d.services||d.items||[]);
+
+$("resultTitle").textContent=
+q
+?`Search results for "${q}"`
+:"Marketplace";
+
 render(r);
-}catch(e){$("products").innerHTML=`<div class="empty">❌ ${esc(e.message)}</div>`}
+
+}catch(e){
+
+$("products").innerHTML=
+`<div class="empty">❌ ${esc(e.message)}</div>`
+
+}
+
 }
 
 function filter(){
+
 let q=$("filterSearch").value.trim();
 let c=$("filterCategory").value;
 let country=$("filterCountry").value;
 let type=$("filterType").value;
+
 let p=new URLSearchParams();
+
 if(q)p.set("search",q);
 if(c)p.set("category",c);
 if(country)p.set("country",country);
+
 p.set("limit","100");
-let endpoint=type==="service"?"/services":"/products";
+
+let endpoint=
+type==="service"
+?"/services"
+:"/products";
+
 loadEndpoint(endpoint+"?"+p)
+
 }
 
 async function loadEndpoint(url){
-$("products").innerHTML='<div class="empty">🔄 Searching...</div>';
+
+$("products").innerHTML=
+'<div class="empty">🔄 Searching...</div>';
+
 try{
+
 let d=await api(url);
-let r=Array.isArray(d)?d:(d.products||d.services||d.items||[]);
-products=r;render(r)
-}catch(e){$("products").innerHTML=`<div class="empty">❌ ${esc(e.message)}</div>`}
+
+let r=
+Array.isArray(d)
+?d
+:(d.products||d.services||d.items||[]);
+
+products=r;
+
+render(r);
+
+}catch(e){
+
+$("products").innerHTML=
+`<div class="empty">❌ ${esc(e.message)}</div>`
+
+}
+
 }
 
 function serviceSearch(c){
+
 $("filterType").value="service";
 $("filterCategory").value="";
 $("filterSearch").value=c;
+
 $("heroInput").value=c;
 $("searchInput").value=c;
+
 $("resultTitle").textContent=c;
-$("resultSub").textContent="Services related to "+c;
+$("resultSub").textContent=
+"Services related to "+c;
+
 search(c);
-document.querySelector("main").scrollIntoView({behavior:"smooth"});
+
+document.querySelector("main")
+.scrollIntoView({behavior:"smooth"});
+
 }
 
+
+/* =========================
+   NAVIGATION
+========================= */
+
 function home(){
+
 closeAll();
+
 $("filterSearch").value="";
 $("filterCategory").value="";
 $("filterCountry").value="";
 $("filterType").value="";
+
 $("resultTitle").textContent="Marketplace";
-$("resultSub").textContent="Products and services available worldwide.";
+
+$("resultSub").textContent=
+"Products and services available worldwide.";
+
 loadProducts("?limit=100");
-scrollTo({top:0,behavior:"smooth"})
+
+scrollTo({
+top:0,
+behavior:"smooth"
+});
+
 }
 
 function services(){
+
 $("filterType").value="service";
-$("resultTitle").textContent="Global Services";
-$("resultSub").textContent="Find professionals and service providers worldwide.";
+
+$("resultTitle").textContent=
+"Global Services";
+
+$("resultSub").textContent=
+"Find professionals and service providers worldwide.";
+
 loadEndpoint("/services?limit=100");
-document.querySelector("main").scrollIntoView({behavior:"smooth"})
+
+document.querySelector("main")
+.scrollIntoView({behavior:"smooth"});
+
 }
 
-function education(){serviceSearch("Education & Teachers")}
-function creators(){serviceSearch("Art & Creative")}
-function business(){serviceSearch("Business & Professional")}
-function work(){serviceSearch("Jobs & Freelance")}
+function education(){
+serviceSearch("Education & Teachers")
+}
+
+function creators(){
+serviceSearch("Art & Creative")
+}
+
+function business(){
+serviceSearch("Business & Professional")
+}
+
+function work(){
+serviceSearch("Jobs & Freelance")
+}
 
 
-/* AUTH */
+/* =========================
+   AUTH
+========================= */
 
-function auth(){openM("authModal");authTab("login")}
+function auth(){
+
+openM("authModal");
+authTab("login")
+
+}
 
 function authTab(t){
-$("loginForm").style.display=t==="login"?"block":"none";
-$("registerForm").style.display=t==="register"?"block":"none";
-$("lt").classList.toggle("active",t==="login");
-$("rt").classList.toggle("active",t==="register");
+
+$("loginForm").style.display=
+t==="login"?"block":"none";
+
+$("registerForm").style.display=
+t==="register"?"block":"none";
+
+$("lt").classList.toggle(
+"active",
+t==="login"
+);
+
+$("rt").classList.toggle(
+"active",
+t==="register"
+);
+
 $("authMsg").textContent=""
+
 }
 
 async function login(e){
+
 e.preventDefault();
+
 try{
-let d=await api("/login",{method:"POST",body:JSON.stringify({
-email:$("loginEmail").value.trim(),password:$("loginPassword").value
-})});
-if(d.token)localStorage.setItem("isokohub_token",d.token);
+
+let d=await api("/login",{
+method:"POST",
+body:JSON.stringify({
+
+email:$("loginEmail").value.trim(),
+
+password:$("loginPassword").value
+
+})
+});
+
+if(d.token){
+
+localStorage.setItem(
+"isokohub_token",
+d.token
+)
+
+}
+
 user=d.user||null;
+
 updateUser();
+
+await loadSavedFromServer();
+
 closeM("authModal");
-}catch(e){$("authMsg").textContent="❌ "+e.message}
+
+}catch(e){
+
+$("authMsg").innerHTML=
+`<div class="error">❌ ${esc(e.message)}</div>`
+
+}
+
 }
 
 async function register(e){
+
 e.preventDefault();
+
 try{
-let d=await api("/register",{method:"POST",body:JSON.stringify({
+
+let d=await api("/register",{
+method:"POST",
+body:JSON.stringify({
+
 name:$("regName").value.trim(),
+
 email:$("regEmail").value.trim(),
+
 password:$("regPassword").value,
+
 country:$("regCountry").value
-})});
-if(d.token)localStorage.setItem("isokohub_token",d.token);
+
+})
+});
+
+if(d.token){
+
+localStorage.setItem(
+"isokohub_token",
+d.token
+)
+
+}
+
 user=d.user||null;
+
 updateUser();
+
+await loadSavedFromServer();
+
 closeM("authModal");
-}catch(e){$("authMsg").textContent="❌ "+e.message}
+
+}catch(e){
+
+$("authMsg").innerHTML=
+`<div class="error">❌ ${esc(e.message)}</div>`
+
+}
+
 }
 
 async function session(){
-if(!localStorage.getItem("isokohub_token")){updateUser();return}
-try{
-let d=await api("/me");user=d.user||d;updateUser()
-}catch(e){
-localStorage.removeItem("isokohub_token");user=null;updateUser()
+
+if(!localStorage.getItem("isokohub_token")){
+
+updateUser();
+
+return
+
 }
+
+try{
+
+let d=await api("/me");
+
+user=d.user||d;
+
+updateUser();
+
+await loadSavedFromServer();
+
+}catch(e){
+
+localStorage.removeItem(
+"isokohub_token"
+);
+
+user=null;
+
+savedData=[];
+
+updateUser();
+
+}
+
 }
 
 function updateUser(){
-$("authBtn").textContent=user?(user.name||user.email||"Profile"):"Login";
-$("adminBtn").style.display=user?.role==="admin"?"block":"none"
+
+$("authBtn").textContent=
+user
+?
+(user.name||user.email||"Profile")
+:"Login";
+
+$("adminBtn").style.display=
+user?.role==="admin"
+?"block"
+:"none";
+
+updateCounts();
+
 }
 
 async function logout(){
-try{await api("/logout",{method:"POST"})}catch(e){}
-localStorage.removeItem("isokohub_token");
-user=null;updateUser();closeAll()
+
+try{
+
+await api("/logout",{
+method:"POST"
+})
+
+}catch(e){}
+
+localStorage.removeItem(
+"isokohub_token"
+);
+
+user=null;
+savedData=[];
+
+updateUser();
+
+closeAll();
+
 }
 
 
-/* PRODUCT */
+/* =========================
+   PRODUCT VIEW
+========================= */
 
 async function view(id){
+
 openM("productModal");
-$("productDetails").innerHTML="🔄 Loading...";
+
+$("productDetails").innerHTML=
+"🔄 Loading...";
+
 try{
-let d=await api("/products/"+encodeURIComponent(id));
+
+let d=await api(
+"/products/"+encodeURIComponent(id)
+);
+
 let p=d.product||d;
-let img=p.image_url||p.imageUrl||p.image||"";
-$("productTitle").textContent=p.title||"Product";
+
+let img=
+p.image_url||
+p.imageUrl||
+p.image||
+"";
+
+$("productTitle").textContent=
+p.title||"Product";
+
 $("productDetails").innerHTML=`
+
 <div class="profile">
-<div>${img?`<img src="${esc(img)}" style="width:100%;max-width:300px;border-radius:12px">`
-:`<div class="pic" style="height:250px">${isService(p)?"🛠️":"📦"}</div>`}</div>
+
 <div>
+
+${
+img
+?
+`<img src="${esc(img)}"
+style="width:100%;max-width:300px;border-radius:12px">`
+:
+`<div class="pic" style="height:250px">
+${isService(p)?"🛠️":"📦"}
+</div>`
+}
+
+</div>
+
+<div>
+
 <h2>${esc(p.title||"")}</h2>
-<div class="price">${money(p.price,p.currency||"RWF")}</div>
-<p class="meta">Category: ${esc(p.category||"")}</p>
-<p class="meta">Country: ${esc(p.country||p.seller_country||"")}</p>
-<p class="meta">Location: ${esc(p.district||p.city||"")}</p>
-<p style="margin-top:15px">${esc(p.specs||p.description||"No description available.")}</p>
+
+<div class="price">
+${money(p.price,p.currency||"RWF")}
+</div>
+
+<p class="meta">
+Category: ${esc(p.category||"")}
+</p>
+
+<p class="meta">
+Country: ${esc(p.country||p.seller_country||"")}
+</p>
+
+<p class="meta">
+Location: ${esc(p.district||p.city||"")}
+</p>
+
+<p style="margin-top:15px">
+${esc(
+p.specs||
+p.description||
+"No description available."
+)}
+</p>
+
 <br>
-<button class="btn green" onclick="addById(${JSON.stringify(String(p.id))})">${isService(p)?"Contact / Order Service":"🛒 Add to Cart"}</button>
-<button class="btn gray" onclick="toggleSave(${JSON.stringify(String(p.id))})">❤️ Save</button>
-</div></div>`
-}catch(e){$("productDetails").innerHTML=`❌ ${esc(e.message)}`}
+
+<button class="btn green"
+onclick='addById(${JSON.stringify(String(p.id))})'>
+
+${isService(p)
+?"Contact / Order Service"
+:"🛒 Add to Cart"}
+
+</button>
+
+<button class="btn gray"
+onclick='toggleSave(${JSON.stringify(String(p.id))})'>
+
+❤️ Save
+
+</button>
+
+</div>
+
+</div>
+
+`
+
+}catch(e){
+
+$("productDetails").innerHTML=
+`<div class="error">❌ ${esc(e.message)}</div>`
+
+}
+
 }
 
 
-/* CART */
+/* =========================
+   CART
+========================= */
 
 async function addById(id){
-let p=products.find(x=>String(x.id)===String(id));
+
+let p=products.find(
+x=>String(x.id)===String(id)
+);
+
 if(!p){
-try{let d=await api("/products/"+encodeURIComponent(id));p=d.product||d}
-catch(e){alert(e.message);return}
+
+try{
+
+let d=await api(
+"/products/"+encodeURIComponent(id)
+);
+
+p=d.product||d;
+
+}catch(e){
+
+alert(e.message);
+
+return
+
 }
-if(!cartData.some(x=>String(x.id)===String(id))){
-cartData.push(p);updateCounts()
+
 }
-cartOpen()
+
+if(!cartData.some(
+x=>String(x.id)===String(id)
+)){
+
+cartData.push(p);
+
+updateCounts();
+
+}
+
+cartOpen();
+
 }
 
 function cartOpen(){
+
 $("cartItems").innerHTML="";
+
 if(!cartData.length){
-$("cartItems").innerHTML='<div class="empty">🛒 Your cart is empty.</div>';
+
+$("cartItems").innerHTML=
+'<div class="empty">🛒 Your cart is empty.</div>';
+
 $("cartTotal").textContent="";
-openM("cartModal");return
+
+openM("cartModal");
+
+return
+
 }
+
 let total=0;
-$("cartItems").innerHTML=cartData.map((p,i)=>{
+
+$("cartItems").innerHTML=
+cartData.map((p,i)=>{
+
 total+=Number(p.price||0);
-let img=p.image_url||p.image||"";
-return `<div class="cart-row">
-${img?`<img class="cart-img" src="${esc(img)}">`:`<div class="cart-img">📦</div>`}
-<div><strong>${esc(p.title||"")}</strong><div class="meta">${money(p.price,p.currency||"RWF")}</div></div>
-<button class="btn red sm" onclick="removeCart(${i})">Remove</button>
-</div>`
+
+let img=
+p.image_url||
+p.image||
+"";
+
+return `
+<div class="cart-row">
+
+${
+img
+?
+`<img class="cart-img"
+src="${esc(img)}">`
+:
+`<div class="cart-img">📦</div>`
+}
+
+<div>
+<strong>${esc(p.title||"")}</strong>
+<div class="meta">
+${money(p.price,p.currency||"RWF")}
+</div>
+</div>
+
+<button class="btn red sm"
+onclick="removeCart(${i})">
+Remove
+</button>
+
+</div>
+`
+
 }).join("");
-$("cartTotal").textContent="Total: "+money(total,cartData[0]?.currency||"RWF");
+
+$("cartTotal").textContent=
+"Total: "+
+money(
+total,
+cartData[0]?.currency||"RWF"
+);
+
 openM("cartModal")
+
 }
 
 function removeCart(i){
-cartData.splice(i,1);updateCounts();cartOpen()
+
+cartData.splice(i,1);
+
+updateCounts();
+
+cartOpen();
+
 }
 
 async function checkout(){
+
 if(!loginRequired()||!cartData.length)return;
+
 try{
+
 for(let p of cartData){
-await api("/orders",{method:"POST",body:JSON.stringify({product_id:p.id,quantity:1})})
+
+await api("/orders",{
+method:"POST",
+body:JSON.stringify({
+product_id:p.id,
+quantity:1
+})
+});
+
 }
-cartData=[];updateCounts();cartOpen();alert("✅ Order placed successfully.")
-}catch(e){alert("Order failed: "+e.message)}
+
+cartData=[];
+
+updateCounts();
+
+cartOpen();
+
+alert(
+"✅ Order placed successfully."
+);
+
+}catch(e){
+
+alert(
+"Order failed: "+e.message
+)
+
+}
+
 }
 
 
-/* SAVED */
+/* =========================
+   SAVED
+========================= */
 
 async function toggleSave(id){
+
 if(!loginRequired())return;
-let exists=savedData.some(x=>String(x.id)===String(id));
+
+let exists=savedData.some(
+x=>String(x.id)===String(id)
+);
+
 try{
+
 if(exists){
-savedData=savedData.filter(x=>String(x.id)!==String(id));
-try{await api("/saved/"+encodeURIComponent(id),{method:"DELETE"})}catch(e){}
+
+savedData=savedData.filter(
+x=>String(x.id)!==String(id)
+);
+
+await api(
+"/saved/"+encodeURIComponent(id),
+{method:"DELETE"}
+);
+
 }else{
-let p=products.find(x=>String(x.id)===String(id));
-if(p)savedData.push(p);
-await api("/saved",{method:"POST",body:JSON.stringify({product_id:id})})
+
+let p=products.find(
+x=>String(x.id)===String(id)
+);
+
+if(!p){
+
+let d=await api(
+"/products/"+encodeURIComponent(id)
+);
+
+p=d.product||d;
+
 }
-updateCounts();render(products)
-}catch(e){alert(e.message)}
+
+if(!savedData.some(
+x=>String(x.id)===String(id)
+)){
+
+savedData.push(p);
+
+}
+
+await api("/saved",{
+method:"POST",
+body:JSON.stringify({
+product_id:id
+})
+});
+
+}
+
+updateCounts();
+
+render(products);
+
+}catch(e){
+
+await loadSavedFromServer();
+
+alert(
+"Saved item update failed: "+
+e.message
+);
+
+}
+
 }
 
 async function saved(){
+
 if(!loginRequired())return;
+
 openM("savedModal");
-$("savedItems").innerHTML="🔄 Loading...";
+
+$("savedItems").innerHTML=
+'<div class="empty">🔄 Loading saved items...</div>';
+
 try{
+
 let d=await api("/saved");
-let list=Array.isArray(d)?d:(d.saved||d.items||[]);
-$("savedItems").innerHTML=list.length?list.map(card).join():'<div class="empty">❤️ No saved items.</div>'
+
+let list=
+Array.isArray(d)
+?d
+:(d.saved||d.items||[]);
+
+savedData=list.map(x=>
+x.product||x
+);
+
+updateCounts();
+
+$("savedItems").innerHTML=
+savedData.length
+?
+savedData.map(card).join("")
+:
+'<div class="empty">❤️ No saved items yet.</div>';
+
 }catch(e){
-$("savedItems").innerHTML=savedData.length?savedData.map(card).join():'<div class="empty">❤️ No saved items.</div>'
+
+$("savedItems").innerHTML=
+savedData.length
+?
+savedData.map(card).join("")
+:
+`<div class="empty">❌ ${esc(e.message)}</div>`;
+
 }
+
 }
 
 
-/* ORDERS */
+/* =========================
+   ORDERS
+========================= */
 
 async function orders(){
+
 if(!loginRequired())return;
+
 openM("ordersModal");
-$("ordersArea").innerHTML="🔄 Loading...";
+
+$("ordersArea").innerHTML=
+"🔄 Loading...";
+
 try{
+
 let d=await api("/orders");
-let list=Array.isArray(d)?d:(d.orders||d.items||[]);
-if(!list.length){$("ordersArea").innerHTML='<div class="empty">📦 No orders yet.</div>';return}
-$("ordersArea").innerHTML=`<div class="table"><table>
-<tr><th>ID</th><th>Product</th><th>Qty</th><th>Total</th><th>Status</th><th>Payment</th></tr>
-${list.map(o=>`<tr><td>${esc(o.id)}</td><td>${esc(o.product_title||o.title||"")}</td><td>${esc(o.quantity||1)}</td>
-<td>${money(o.total||o.total_amount||0,o.currency||"RWF")}</td><td>${esc(o.status||"")}</td><td>${esc(o.payment_status||"unpaid")}</td></tr>`).join("")}
-</table></div>`
-}catch(e){$("ordersArea").innerHTML=`❌ ${esc(e.message)}`}
+
+let list=
+Array.isArray(d)
+?d
+:(d.orders||d.items||[]);
+
+if(!list.length){
+
+$("ordersArea").innerHTML=
+'<div class="empty">📦 No orders yet.</div>';
+
+return
+
+}
+
+$("ordersArea").innerHTML=`
+
+<div class="table">
+
+<table>
+
+<tr>
+<th>ID</th>
+<th>Product</th>
+<th>Qty</th>
+<th>Total</th>
+<th>Status</th>
+<th>Payment</th>
+</tr>
+
+${list.map(o=>`
+
+<tr>
+
+<td>${esc(o.id)}</td>
+
+<td>
+${esc(o.product_title||o.title||"")}
+</td>
+
+<td>
+${esc(o.quantity||1)}
+</td>
+
+<td>
+${money(
+o.total||
+o.total_amount||
+0,
+o.currency||"RWF"
+)}
+</td>
+
+<td>
+${esc(o.status||"")}
+</td>
+
+<td>
+${esc(o.payment_status||"unpaid")}
+</td>
+
+</tr>
+
+`).join("")}
+
+</table>
+
+</div>
+`
+
+}catch(e){
+
+$("ordersArea").innerHTML=
+`<div class="error">❌ ${esc(e.message)}</div>`
+
+}
+
 }
 
 
-/* MESSAGES */
+/* =========================
+   MESSAGES
+========================= */
 
 async function messages(){
+
 if(!loginRequired())return;
+
 openM("messagesModal");
-$("messagesArea").innerHTML="🔄 Loading...";
+
+$("messagesArea").innerHTML=
+"🔄 Loading...";
+
 try{
+
 let d=await api("/messages");
-let list=Array.isArray(d)?d:(d.messages||d.items||[]);
-$("messagesArea").innerHTML=list.length?list.map(m=>{
-let mine=String(m.sender_id)===String(user?.id);
-return `<div class="msg ${mine?"mine":""}"><span class="bubble">${esc(m.body||m.message||"")}</span>
-<div class="meta">${esc(m.sender_name||"User "+(m.sender_id||""))}</div></div>`
-}).join(""):'<div class="empty">💬 No messages yet.</div>'
-}catch(e){$("messagesArea").innerHTML=`❌ ${esc(e.message)}`}
+
+let list=
+Array.isArray(d)
+?d
+:(d.messages||d.items||[]);
+
+$("messagesArea").innerHTML=
+list.length
+?
+list.map(m=>{
+
+let mine=
+String(m.sender_id)===
+String(user?.id);
+
+return `
+<div class="msg ${mine?"mine":""}">
+
+<span class="bubble">
+${esc(m.body||m.message||"")}
+</span>
+
+<div class="meta">
+${esc(
+m.sender_name||
+"User "+(m.sender_id||"")
+)}
+</div>
+
+</div>
+`
+
+}).join("")
+:
+'<div class="empty">💬 No messages yet.</div>';
+
+}catch(e){
+
+$("messagesArea").innerHTML=
+`<div class="error">❌ ${esc(e.message)}</div>`
+
+}
+
 }
 
 async function sendMessage(e){
+
 e.preventDefault();
+
 if(!loginRequired())return;
+
 try{
-await api("/messages",{method:"POST",body:JSON.stringify({
-receiver_id:Number($("msgTo").value),body:$("msgBody").value.trim()
-})});
+
+await api("/messages",{
+method:"POST",
+body:JSON.stringify({
+
+receiver_id:
+Number($("msgTo").value),
+
+body:
+$("msgBody").value.trim()
+
+})
+});
+
 $("msgBody").value="";
-messages()
-}catch(e){alert(e.message)}
+
+messages();
+
+}catch(e){
+
+alert(e.message)
+
+}
+
 }
 
 
-/* PROFILE */
+/* =========================
+   PROFILE + MY LISTINGS
+========================= */
 
 async function profile(){
+
 if(!loginRequired())return;
+
 openM("profileModal");
+
+$("profileArea").innerHTML=
+"🔄 Loading profile...";
+
 try{
-let d=await api("/me");user=d.user||d;updateUser();
+
+let d=await api("/me");
+
+user=d.user||d;
+
+updateUser();
+
+let myListings=[];
+
+try{
+
+let pd=await api("/products?limit=100");
+
+let all=
+Array.isArray(pd)
+?pd
+:(pd.products||pd.items||[]);
+
+myListings=all.filter(p=>
+String(
+p.seller_id||
+p.user_id||
+p.owner_id||
+""
+)===
+String(user.id)
+);
+
+}catch(e){
+
+console.log(
+"My listings unavailable:",
+e.message
+);
+
+}
+
 $("profileArea").innerHTML=`
-<div class="profile"><div><div class="avatar">👤</div></div>
-<div><h2>${esc(user.name||"IsokoHub User")}</h2>
-<p class="meta">${esc(user.email||"")}</p>
-<p class="meta">🌍 ${esc(user.country||"")}</p>
-<p class="meta">Role: ${esc(user.role||"buyer")}</p><br>
-<button class="btn" onclick="sell()">➕ Sell / Offer Service</button>
-<button class="btn gray" onclick="logout()">Logout</button>
-</div></div>`
-}catch(e){$("profileArea").innerHTML=`❌ ${esc(e.message)}`}
+
+<div class="profile">
+
+<div>
+<div class="avatar">👤</div>
+</div>
+
+<div>
+
+<h2>
+${esc(
+user.name||
+"IsokoHub User"
+)}
+</h2>
+
+<p class="meta">
+${esc(user.email||"")}
+</p>
+
+<p class="meta">
+🌍 ${esc(user.country||"")}
+</p>
+
+<p class="meta">
+Role: ${esc(user.role||"buyer")}
+</p>
+
+<div class="profile-actions">
+
+<button class="btn"
+onclick="sell()">
+➕ Sell / Offer Service
+</button>
+
+<button class="btn gray"
+onclick="saved()">
+❤️ My Saved
+</button>
+
+<button class="btn gray"
+onclick="orders()">
+📦 My Orders
+</button>
+
+<button class="btn red"
+onclick="logout()">
+Logout
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="profile-card">
+
+<div class="dashboard-title">
+
+<div>
+<h3>🏪 My Products & Services</h3>
+<p class="meta">
+Listings connected to your IsokoHub account.
+</p>
+</div>
+
+<button class="btn sm"
+onclick="sell()">
+➕ Add Listing
+</button>
+
+</div>
+
+<div id="myListingsArea"></div>
+
+</div>
+
+`;
+
+renderMyListings(myListings);
+
+}catch(e){
+
+$("profileArea").innerHTML=
+`<div class="error">❌ ${esc(e.message)}</div>`
+
+}
+
+}
+
+function renderMyListings(list){
+
+let area=$("myListingsArea");
+
+if(!area)return;
+
+if(!list.length){
+
+area.innerHTML=
+`
+<div class="empty">
+📦 You have not published a product or service yet.
+<br><br>
+<button class="btn green sm"
+onclick="sell()">
+➕ Publish your first listing
+</button>
+</div>
+`;
+
+return
+
+}
+
+area.innerHTML=
+`
+<div class="grid">
+${list.map(card).join("")}
+</div>
+`;
+
 }
 
 
-/* SELL */
+/* =========================
+   SELL
+========================= */
 
 function sell(){
+
 if(!loginRequired())return;
-openM("sellModal")
+
+openM("sellModal");
+
 }
 
 async function createProduct(e){
+
 e.preventDefault();
+
+if(!loginRequired())return;
+
+let button=e.submitter;
+
+if(button){
+
+button.disabled=true;
+button.textContent="Publishing..."
+
+}
+
+$("sellMsg").innerHTML="";
+
 try{
-await api("/products",{method:"POST",body:JSON.stringify({
-title:$("sellTitle").value.trim(),
-category:$("sellCategory").value,
-price:Number($("sellPrice").value),
-currency:$("sellCurrency").value.trim()||"RWF",
-stock:Number($("sellStock").value||1),
-condition:$("sellCondition").value,
-country:$("sellCountry").value,
-district:$("sellDistrict").value.trim(),
-image_url:$("sellImage").value.trim(),
-specs:$("sellSpecs").value.trim()
-})});
-$("sellMsg").innerHTML='<p style="color:#087443">✅ Published successfully.</p>';
+
+await api("/products",{
+method:"POST",
+body:JSON.stringify({
+
+title:
+$("sellTitle").value.trim(),
+
+category:
+$("sellCategory").value,
+
+price:
+Number($("sellPrice").value),
+
+currency:
+$("sellCurrency").value.trim()||
+"RWF",
+
+stock:
+Number(
+$("sellStock").value||1
+),
+
+condition:
+$("sellCondition").value,
+
+country:
+$("sellCountry").value,
+
+district:
+$("sellDistrict").value.trim(),
+
+image_url:
+$("sellImage").value.trim(),
+
+specs:
+$("sellSpecs").value.trim()
+
+})
+});
+
+$("sellMsg").innerHTML=
+'<div class="success">✅ Published successfully and connected to your account.</div>';
+
 $("sellForm").reset();
-await loadProducts("?limit=100")
-}catch(e){$("sellMsg").innerHTML=`<p style="color:#b42318">❌ ${esc(e.message)}</p>`}
+
+$("sellCurrency").value="RWF";
+
+await loadProducts("?limit=100");
+
+}catch(e){
+
+$("sellMsg").innerHTML=
+`<div class="error">❌ ${esc(e.message)}</div>`;
+
+}finally{
+
+if(button){
+
+button.disabled=false;
+button.textContent=
+"Publish on IsokoHub"
+
+}
+
+}
+
 }
 
 
-/* ADMIN */
+/* =========================
+   ADMIN
+========================= */
 
 function admin(){
+
 if(!loginRequired())return;
-if(user.role!=="admin"){alert("Admin access required.");return}
-openM("adminModal");adminSection("overview")
+
+if(user.role!=="admin"){
+
+alert(
+"Admin access required."
+);
+
+return
+
+}
+
+openM("adminModal");
+
+adminSection("overview");
+
 }
 
 async function adminSection(section){
-$("adminContent").innerHTML="🔄 Loading...";
-try{
-if(section==="overview"){
-let d=await api("/admin/stats"),s=d.stats||d;
-$("adminContent").innerHTML=`
-<h2>📊 Overview</h2><br><div class="stats">
-${stat("Users",s.users)}${stat("Sellers",s.sellers)}${stat("Products",s.products)}
-${stat("Orders",s.orders)}${stat("Revenue",money(s.revenue||0,"RWF"))}
-${stat("Commission",money(s.commission||0,"RWF"))}
-</div>`;
+
+if(!user||user.role!=="admin"){
+
+alert(
+"Admin access required."
+);
+
 return
+
+}
+
+document
+.querySelectorAll("[data-admin]")
+.forEach(btn=>{
+btn.classList.toggle(
+"active",
+btn.dataset.admin===section
+)
+});
+
+$("adminContent").innerHTML=
+"🔄 Loading "+esc(section)+"...";
+
+try{
+
+if(section==="overview"){
+
+let d=await api("/admin/stats");
+
+let s=d.stats||d;
+
+$("adminContent").innerHTML=`
+
+<div class="dashboard-title">
+
+<div>
+<h2>📊 Admin Overview</h2>
+<p class="meta">
+IsokoHub platform administration
+</p>
+</div>
+
+<span class="admin-badge">
+ADMIN
+</span>
+
+</div>
+
+<div class="stats">
+
+${stat("Users",s.users)}
+
+${stat("Sellers",s.sellers)}
+
+${stat("Products",s.products)}
+
+${stat("Orders",s.orders)}
+
+${stat(
+"Revenue",
+money(
+s.revenue||0,
+"RWF"
+)
+)}
+
+${stat(
+"Commission",
+money(
+s.commission||0,
+"RWF"
+)
+)}
+
+</div>
+
+<br>
+
+<div class="notice">
+🔐 Admin controls are connected to the IsokoHub API.
+</div>
+
+`;
+
+return
+
 }
 
 let map={
-users:"/admin/users",sellers:"/admin/sellers",products:"/admin/products",
-orders:"/admin/orders",payments:"/admin/payments",services:"/admin/services",
-categories:"/admin/categories",reports:"/admin/reports"
+
+users:"/admin/users",
+
+sellers:"/admin/sellers",
+
+products:"/admin/products",
+
+orders:"/admin/orders",
+
+payments:"/admin/payments",
+
+services:"/admin/services",
+
+categories:"/admin/categories",
+
+reports:"/admin/reports"
+
 };
 
-let d=await api(map[section]);
-let rows=Array.isArray(d)?d:(d.items||d.users||d.sellers||d.products||d.orders||d.payments||d.services||d.categories||d.reports||[]);
-adminTable(section,rows)
-}catch(e){$("adminContent").innerHTML=`<div class="empty">❌ ${esc(e.message)}</div>`}
+let endpoint=map[section];
+
+if(!endpoint){
+
+throw new Error(
+"Admin section not configured"
+)
+
+}
+
+let d=await api(endpoint);
+
+let rows=
+Array.isArray(d)
+?d
+:(
+d.items||
+d.users||
+d.sellers||
+d.products||
+d.orders||
+d.payments||
+d.services||
+d.categories||
+d.reports||
+[]
+);
+
+adminTable(
+section,
+rows
+);
+
+}catch(e){
+
+$("adminContent").innerHTML=`
+
+<div class="error">
+❌ ${esc(e.message)}
+</div>
+
+<br>
+
+<div class="notice">
+If this specific Admin section is not yet implemented in
+<code>src/index.js</code>, the frontend is ready to use it as soon
+as its API endpoint is available.
+</div>
+
+`;
+
+}
+
 }
 
 function stat(a,b){
-return `<div class="stat"><small>${esc(a)}</small><strong>${esc(b??0)}</strong></div>`
+
+return `
+<div class="stat">
+
+<small>${esc(a)}</small>
+
+<strong>${esc(b??0)}</strong>
+
+</div>
+`
+
 }
 
 function adminTable(section,rows){
+
 if(!rows.length){
-$("adminContent").innerHTML=`<h2>${esc(section)}</h2><br><div class="empty">No data available.</div>`;
-return
-}
-let keys=[...new Set(rows.flatMap(x=>Object.keys(x)))].slice(0,10);
+
 $("adminContent").innerHTML=`
-<h2>${esc(section.charAt(0).toUpperCase()+section.slice(1))}</h2><br>
-<div class="table"><table><tr>${keys.map(k=>`<th>${esc(k)}</th>`).join("")}</tr>
-${rows.map(r=>`<tr>${keys.map(k=>`<td>${esc(typeof r[k]==="object"?JSON.stringify(r[k]):r[k]??"")}</td>`).join("")}</tr>`).join("")}
-</table></div>`
+
+<div class="dashboard-title">
+<h2>
+${esc(
+section.charAt(0).toUpperCase()+
+section.slice(1)
+)}
+</h2>
+</div>
+
+<div class="empty">
+No data available.
+</div>
+
+`;
+
+return
+
+}
+
+let keys=[
+...new Set(
+rows.flatMap(
+x=>Object.keys(x)
+)
+)
+].slice(0,10);
+
+$("adminContent").innerHTML=`
+
+<div class="dashboard-title">
+
+<div>
+
+<h2>
+${esc(
+section.charAt(0).toUpperCase()+
+section.slice(1)
+)}
+</h2>
+
+<p class="meta">
+${rows.length} record(s)
+</p>
+
+</div>
+
+</div>
+
+<div class="table">
+
+<table>
+
+<tr>
+
+${keys.map(k=>
+`<th>${esc(k)}</th>`
+).join("")}
+
+</tr>
+
+${rows.map(r=>`
+
+<tr>
+
+${keys.map(k=>`
+
+<td>
+${esc(
+typeof r[k]==="object"
+?
+JSON.stringify(r[k])
+:
+r[k]??""
+)}
+</td>
+
+`).join("")}
+
+</tr>
+
+`).join("")}
+
+</table>
+
+</div>
+
+`
+
 }
 
 
-/* EVENTS */
+/* =========================
+   EVENTS
+========================= */
 
 function bind(){
-$("searchForm").addEventListener("submit",e=>{
-e.preventDefault();search($("searchInput").value.trim())
+
+$("searchForm")
+.addEventListener("submit",e=>{
+
+e.preventDefault();
+
+search(
+$("searchInput").value.trim()
+)
+
 });
-$("heroForm").addEventListener("submit",e=>{
-e.preventDefault();search($("heroInput").value.trim(),$("heroCountry").value)
+
+$("heroForm")
+.addEventListener("submit",e=>{
+
+e.preventDefault();
+
+search(
+$("heroInput").value.trim(),
+$("heroCountry").value
+)
+
 });
-$("loginForm").addEventListener("submit",login);
-$("registerForm").addEventListener("submit",register);
-$("messageForm").addEventListener("submit",sendMessage);
-$("sellForm").addEventListener("submit",createProduct);
-$("filterSearch").addEventListener("keydown",e=>{if(e.key==="Enter")filter()});
-document.querySelectorAll(".overlay").forEach(o=>o.addEventListener("click",e=>{
-if(e.target===o)o.style.display="none"
-}));
-document.addEventListener("keydown",e=>{if(e.key==="Escape")closeAll()})
+
+$("loginForm")
+.addEventListener(
+"submit",
+login
+);
+
+$("registerForm")
+.addEventListener(
+"submit",
+register
+);
+
+$("messageForm")
+.addEventListener(
+"submit",
+sendMessage
+);
+
+$("sellForm")
+.addEventListener(
+"submit",
+createProduct
+);
+
+$("filterSearch")
+.addEventListener(
+"keydown",
+e=>{
+if(e.key==="Enter")filter()
+}
+);
+
+document
+.querySelectorAll(".overlay")
+.forEach(o=>
+o.addEventListener("click",e=>{
+
+if(e.target===o){
+o.style.display="none"
 }
 
-window.addEventListener("DOMContentLoaded",init);
+})
+);
+
+document.addEventListener(
+"keydown",
+e=>{
+if(e.key==="Escape")closeAll()
+}
+);
+
+}
+
+
+/* =========================
+   GLOBAL FUNCTIONS
+========================= */
 
 window.home=home;
 window.services=services;
@@ -1071,8 +2664,10 @@ window.education=education;
 window.creators=creators;
 window.business=business;
 window.work=work;
+
 window.auth=auth;
 window.authTab=authTab;
+
 window.saved=saved;
 window.cartOpen=cartOpen;
 window.orders=orders;
@@ -1081,6 +2676,7 @@ window.profile=profile;
 window.sell=sell;
 window.admin=admin;
 window.adminSection=adminSection;
+
 window.closeM=closeM;
 window.view=view;
 window.addById=addById;
@@ -1089,7 +2685,16 @@ window.removeCart=removeCart;
 window.checkout=checkout;
 window.filter=filter;
 window.serviceSearch=serviceSearch;
-</script>
 
-</body>
+
+/* =========================
+   START
+========================= */
+
+window.addEventListener(
+"DOMContentLoaded",
+init
+);
+
+</script></body>
 </html>
