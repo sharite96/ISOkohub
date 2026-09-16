@@ -9,7 +9,7 @@ const COMMISSION_RATE = 0.05;
 
 /* =========================================================
    ISOKOHUB GLOBAL CONFIGURATION
-   ========================================================= */
+========================================================= */
 
 const SERVICE_CATEGORIES = [
   "Business & Professional",
@@ -36,7 +36,10 @@ const SERVICE_CATEGORIES = [
   "Other Services"
 ];
 
-/* 193 UN MEMBER STATES */
+/*
+  Global country list.
+  Used by /api/countries and frontend dropdowns.
+*/
 const COUNTRIES = [
   "Afghanistan","Albania","Algeria","Andorra","Angola",
   "Antigua and Barbuda","Argentina","Armenia","Australia",
@@ -46,7 +49,7 @@ const COUNTRIES = [
   "Brunei","Bulgaria","Burkina Faso","Burundi","Cabo Verde",
   "Cambodia","Cameroon","Canada","Central African Republic",
   "Chad","Chile","China","Colombia","Comoros","Congo",
-  "Costa Rica","Côte d'Ivoire","Croatia","Cuba","Cyprus",
+  "Costa Rica","Cote d'Ivoire","Croatia","Cuba","Cyprus",
   "Czechia","Democratic Republic of the Congo","Denmark",
   "Djibouti","Dominica","Dominican Republic","Ecuador",
   "Egypt","El Salvador","Equatorial Guinea","Eritrea",
@@ -55,112 +58,335 @@ const COUNTRIES = [
   "Grenada","Guatemala","Guinea","Guinea-Bissau","Guyana",
   "Haiti","Honduras","Hungary","Iceland","India","Indonesia",
   "Iran","Iraq","Ireland","Israel","Italy","Jamaica","Japan",
-  "Jordan","Kazakhstan","Kenya","Kiribati","Kuwait","Kyrgyzstan",
-  "Laos","Latvia","Lebanon","Lesotho","Liberia","Libya",
-  "Liechtenstein","Lithuania","Luxembourg","Madagascar",
+  "Jordan","Kazakhstan","Kenya","Kiribati","Kuwait",
+  "Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia",
+  "Libya","Liechtenstein","Lithuania","Luxembourg","Madagascar",
   "Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands",
   "Mauritania","Mauritius","Mexico","Micronesia","Moldova",
   "Monaco","Mongolia","Montenegro","Morocco","Mozambique",
   "Myanmar","Namibia","Nauru","Nepal","Netherlands",
   "New Zealand","Nicaragua","Niger","Nigeria","North Korea",
-  "North Macedonia","Norway","Oman","Pakistan","Palau","Panama",
-  "Papua New Guinea","Paraguay","Peru","Philippines","Poland",
-  "Portugal","Qatar","Romania","Russia","Rwanda",
-  "Saint Kitts and Nevis","Saint Lucia",
+  "North Macedonia","Norway","Oman","Pakistan","Palau",
+  "Palestine","Panama","Papua New Guinea","Paraguay","Peru",
+  "Philippines","Poland","Portugal","Qatar","Romania","Russia",
+  "Rwanda","Saint Kitts and Nevis","Saint Lucia",
   "Saint Vincent and the Grenadines","Samoa","San Marino",
   "Sao Tome and Principe","Saudi Arabia","Senegal","Serbia",
   "Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia",
   "Solomon Islands","Somalia","South Africa","South Korea",
-  "South Sudan","Spain","Sri Lanka","Sudan","Suriname","Sweden",
-  "Switzerland","Syria","Tajikistan","Tanzania","Thailand",
-  "Timor-Leste","Togo","Tonga","Trinidad and Tobago","Tunisia",
-  "Türkiye","Turkmenistan","Tuvalu","Uganda","Ukraine",
-  "United Arab Emirates","United Kingdom","United States",
-  "Uruguay","Uzbekistan","Vanuatu","Venezuela","Vietnam",
-  "Yemen","Zambia","Zimbabwe"
+  "South Sudan","Spain","Sri Lanka","Sudan","Suriname",
+  "Sweden","Switzerland","Syria","Tajikistan","Tanzania",
+  "Thailand","Timor-Leste","Togo","Tonga","Trinidad and Tobago",
+  "Tunisia","Türkiye","Turkmenistan","Tuvalu","Uganda",
+  "Ukraine","United Arab Emirates","United Kingdom",
+  "United States","Uruguay","Uzbekistan","Vanuatu","Vatican City",
+  "Venezuela","Vietnam","Yemen","Zambia","Zimbabwe"
 ];
 
 const SERVICE_KEYWORDS = [
-  "service","services","consultant","consulting","engineer",
-  "engineering","developer","development","designer","design",
-  "repair","installation","construction","architect","architecture",
-  "teacher","teaching","tutor","course","training","education",
-  "photographer","photography","videographer","video","film",
-  "filmmaker","actor","producer","marketing","advertising",
-  "lawyer","legal","accounting","accountant","finance","insurance",
-  "doctor","clinic","health","wellness","beauty","salon","barber",
-  "makeup","catering","restaurant","hotel","event","wedding",
-  "transport","driver","delivery","logistics","travel","tour",
-  "agriculture","farming","industrial","manufacturing","freelance",
-  "job","professional","business","software","website","app",
-  "plumbing","electrician","cleaning","moving","mechanic",
-  "branding","social media","tax","therapy","fitness","chef",
-  "hospitality","shipping","warehouse","courier","safari",
-  "factory","machine","production","remote","work"
+  "service",
+  "consultant",
+  "consulting",
+  "engineer",
+  "engineering",
+  "developer",
+  "development",
+  "designer",
+  "design",
+  "teacher",
+  "teaching",
+  "tutor",
+  "education",
+  "course",
+  "training",
+  "photography",
+  "photographer",
+  "videography",
+  "video",
+  "film",
+  "filmmaker",
+  "producer",
+  "marketing",
+  "lawyer",
+  "legal",
+  "accountant",
+  "accounting",
+  "finance",
+  "doctor",
+  "health",
+  "therapy",
+  "fitness",
+  "beauty",
+  "salon",
+  "barber",
+  "restaurant",
+  "hotel",
+  "event",
+  "transport",
+  "driver",
+  "delivery",
+  "logistics",
+  "travel",
+  "tourism",
+  "agriculture",
+  "construction",
+  "plumber",
+  "plumbing",
+  "electrician",
+  "cleaning",
+  "mechanic",
+  "repair",
+  "installation",
+  "branding",
+  "social media",
+  "tax",
+  "chef",
+  "catering",
+  "shipping",
+  "warehouse",
+  "courier",
+  "factory",
+  "machine",
+  "manufacturing",
+  "freelance",
+  "job",
+  "jobs",
+  "software",
+  "website",
+  "app",
+  "mobile app"
 ];
+
+const SERVICE_MAP = {
+  "Business & Professional": [
+    "business",
+    "consultant",
+    "consulting",
+    "management",
+    "professional"
+  ],
+  "Engineering": [
+    "engineer",
+    "engineering"
+  ],
+  "IT & Technology": [
+    "software",
+    "developer",
+    "development",
+    "website",
+    "app",
+    "technology",
+    "programming",
+    "computer",
+    "it support"
+  ],
+  "Construction & Property": [
+    "construction",
+    "builder",
+    "building",
+    "architect",
+    "property",
+    "real estate"
+  ],
+  "Education & Teachers": [
+    "teacher",
+    "teaching",
+    "tutor",
+    "education",
+    "course",
+    "training",
+    "lesson"
+  ],
+  "Art & Creative": [
+    "artist",
+    "art",
+    "design",
+    "designer",
+    "graphic",
+    "creative",
+    "photography",
+    "photographer"
+  ],
+  "Film & Entertainment": [
+    "film",
+    "filmmaker",
+    "producer",
+    "videography",
+    "video",
+    "actor",
+    "entertainment"
+  ],
+  "Marketing & Communication": [
+    "marketing",
+    "branding",
+    "advertising",
+    "social media",
+    "communication",
+    "copywriter"
+  ],
+  "Automotive & Transport": [
+    "car",
+    "automotive",
+    "mechanic",
+    "driver",
+    "transport",
+    "vehicle"
+  ],
+  "Agriculture & Environment": [
+    "agriculture",
+    "farming",
+    "farmer",
+    "environment",
+    "gardening"
+  ],
+  "Home Services": [
+    "plumber",
+    "plumbing",
+    "electrician",
+    "cleaning",
+    "cleaner",
+    "home repair",
+    "installation"
+  ],
+  "Legal & Finance": [
+    "lawyer",
+    "legal",
+    "accountant",
+    "accounting",
+    "finance",
+    "tax",
+    "audit"
+  ],
+  "Health & Wellness": [
+    "doctor",
+    "health",
+    "therapy",
+    "fitness",
+    "wellness"
+  ],
+  "Beauty & Personal Care": [
+    "beauty",
+    "salon",
+    "barber",
+    "hair",
+    "makeup"
+  ],
+  "Food & Hospitality": [
+    "restaurant",
+    "hotel",
+    "chef",
+    "catering",
+    "food",
+    "hospitality"
+  ],
+  "Events": [
+    "event",
+    "events",
+    "wedding",
+    "party"
+  ],
+  "Logistics": [
+    "logistics",
+    "delivery",
+    "shipping",
+    "warehouse",
+    "courier"
+  ],
+  "Travel & Tourism": [
+    "travel",
+    "tourism",
+    "tour",
+    "hotel"
+  ],
+  "Industrial & Manufacturing": [
+    "factory",
+    "machine",
+    "manufacturing",
+    "industrial"
+  ],
+  "Jobs & Freelance": [
+    "job",
+    "jobs",
+    "freelance",
+    "freelancer"
+  ],
+  "Services": [
+    "service",
+    "services"
+  ],
+  "Other Services": []
+};
+
 
 /* =========================================================
    HELPERS
-   ========================================================= */
+========================================================= */
 
-const json = (data, status = 200) =>
-  new Response(JSON.stringify(data), {
+function json(data, status = 200) {
+  return new Response(JSON.stringify(data), {
     status,
     headers: {
       ...CORS,
       "Content-Type": "application/json; charset=utf-8"
     }
   });
+}
 
-const readJSON = async request => {
+async function readJSON(request) {
   try {
     return await request.json();
   } catch {
     return {};
   }
-};
+}
 
-const sha256 = async value => {
+async function sha256(value) {
   const data = new TextEncoder().encode(String(value));
   const hash = await crypto.subtle.digest("SHA-256", data);
 
   return [...new Uint8Array(hash)]
-    .map(x => x.toString(16).padStart(2, "0"))
+    .map(b => b.toString(16).padStart(2, "0"))
     .join("");
-};
+}
 
-const normalize = value =>
-  String(value ?? "")
-    .trim()
-    .toLowerCase();
+function normalize(value) {
+  return String(value ?? "").trim().toLowerCase();
+}
 
-const number = (value, fallback = 0) => {
+function number(value, fallback = 0) {
   const n = Number(value);
   return Number.isFinite(n) ? n : fallback;
-};
+}
 
-const limitValue = value => {
-  const n = Math.floor(number(value, 24));
-  return Math.min(Math.max(n, 1), 100);
-};
+function limitValue(value, fallback = 100, max = 500) {
+  const n = Math.floor(Number(value));
 
-const tokenFromRequest = request => {
-  const auth = request.headers.get("Authorization") || "";
+  if (!Number.isFinite(n) || n <= 0) {
+    return fallback;
+  }
 
-  if (!auth.startsWith("Bearer ")) {
+  return Math.min(n, max);
+}
+
+function tokenFromRequest(request) {
+  const header = request.headers.get("Authorization") || "";
+
+  if (!header.startsWith("Bearer ")) {
     return null;
   }
 
-  return auth.slice(7).trim() || null;
-};
+  return header.slice(7).trim() || null;
+}
 
-const requireDB = env => {
-  if (!env?.DB) {
-    throw new Error("D1 database binding DB is not available.");
+function requireDB(env) {
+  if (!env || !env.DB) {
+    throw new Error("D1 database binding DB is not configured.");
   }
-};
 
-const safeUser = user => {
+  return env.DB;
+}
+
+function safeUser(user) {
   if (!user) return null;
 
   return {
@@ -173,78 +399,26 @@ const safeUser = user => {
     is_verified: user.is_verified,
     created_at: user.created_at
   };
-};
+}
 
-const authenticate = async (request, env) => {
-  const token = tokenFromRequest(request);
+function productText(product) {
+  return [
+    product.title,
+    product.name,
+    product.category,
+    product.description,
+    product.specs,
+    product.type,
+    product.brand,
+    product.model
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+}
 
-  if (!token) return null;
-
-  const tokenHash = await sha256(token);
-
-  const result = await env.DB.prepare(`
-    SELECT
-      s.id AS session_id,
-      s.user_id AS user_id,
-      s.expires_at,
-      u.id AS id,
-      u.name,
-      u.email,
-      u.country,
-      u.role,
-      u.is_active,
-      u.is_verified,
-      u.created_at
-    FROM sessions s
-    JOIN users u
-      ON u.id = s.user_id
-    WHERE s.token_hash = ?
-      AND s.expires_at > datetime('now')
-      AND u.is_active = 1
-    LIMIT 1
-  `).bind(tokenHash).first();
-
-  return result || null;
-};
-
-const requireUser = async (request, env) => {
-  requireDB(env);
-
-  const user = await authenticate(request, env);
-
-  if (!user) {
-    throw new Error("UNAUTHORIZED");
-  }
-
-  return user;
-};
-
-const requireAdmin = async (request, env) => {
-  const user = await requireUser(request, env);
-
-  if (user.role !== "admin") {
-    throw new Error("ADMIN_ONLY");
-  }
-
-  return user;
-};
-
-/* =========================================================
-   SERVICE DETECTION
-   ========================================================= */
-
-const productText = product =>
-  normalize(`
-    ${product?.title || ""}
-    ${product?.category || ""}
-    ${product?.description || ""}
-    ${product?.specs || ""}
-    ${product?.brand || ""}
-    ${product?.model || ""}
-  `);
-
-const isServiceProduct = product => {
-  const category = normalize(product?.category);
+function isServiceProduct(product) {
+  const category = normalize(product.category);
 
   if (
     SERVICE_CATEGORIES.some(
@@ -256,143 +430,91 @@ const isServiceProduct = product => {
 
   const text = productText(product);
 
-  return SERVICE_KEYWORDS.some(keyword =>
-    text.includes(normalize(keyword))
+  return SERVICE_KEYWORDS.some(word =>
+    text.includes(normalize(word))
   );
-};
+}
 
-const SERVICE_MAP = {
-  "business & professional": [
-    "business","consult","consulting","professional",
-    "management","accounting","accountant"
-  ],
-
-  "engineering": [
-    "engineer","engineering","civil","mechanical",
-    "electrical","software engineer","structural",
-    "chemical","environmental"
-  ],
-
-  "it & technology": [
-    "it","technology","software","developer","development",
-    "website","web","app","application","computer","cyber",
-    "programming","database","cloud","network"
-  ],
-
-  "construction & property": [
-    "construction","architect","architecture","property",
-    "building","plumbing","electrician","masonry",
-    "carpentry","real estate"
-  ],
-
-  "education & teachers": [
-    "teacher","teaching","tutor","education","course",
-    "training","school","lesson","language","english"
-  ],
-
-  "art & creative": [
-    "artist","graphic","design","designer","photography",
-    "photographer","creative","fashion","illustration",
-    "logo","painting","craft"
-  ],
-
-  "film & entertainment": [
-    "film","filmmaker","actor","producer","video",
-    "videographer","entertainment","cinema","production"
-  ],
-
-  "marketing & communication": [
-    "marketing","advertising","social media",
-    "communication","branding","seo","content"
-  ],
-
-  "automotive & transport": [
-    "car","automotive","transport","driver","vehicle",
-    "mechanic","motorcycle","truck"
-  ],
-
-  "agriculture & environment": [
-    "agriculture","farming","environment","garden",
-    "irrigation","livestock","agronomy"
-  ],
-
-  "home services": [
-    "cleaning","home","repair","plumbing","electrician",
-    "moving","painting","gardening"
-  ],
-
-  "legal & finance": [
-    "lawyer","legal","finance","accounting","accountant",
-    "tax","insurance","audit"
-  ],
-
-  "health & wellness": [
-    "health","doctor","clinic","wellness","fitness",
-    "therapy","nutrition","nurse"
-  ],
-
-  "beauty & personal care": [
-    "beauty","salon","barber","makeup","hair",
-    "spa","nails","personal care"
-  ],
-
-  "food & hospitality": [
-    "food","catering","restaurant","hotel","hospitality",
-    "chef","cooking","baking"
-  ],
-
-  "events": [
-    "event","wedding","party","decoration","dj",
-    "ceremony","entertainment"
-  ],
-
-  "logistics": [
-    "logistics","delivery","shipping","warehouse",
-    "courier","freight","transport"
-  ],
-
-  "travel & tourism": [
-    "travel","tour","tourism","hotel","guide",
-    "safari","vacation","trip"
-  ],
-
-  "industrial & manufacturing": [
-    "industrial","manufacturing","factory","machine",
-    "production","fabrication","welding"
-  ],
-
-  "jobs & freelance": [
-    "job","freelance","freelancer","remote","work",
-    "employment","contract"
-  ]
-};
-
-const serviceCategoryMatch = (product, category) => {
+function serviceCategoryMatch(product, category) {
   if (!category) return true;
 
-  const requested = normalize(category);
-  const actual = normalize(product?.category);
+  const wanted = normalize(category);
 
-  if (actual === requested) {
+  if (normalize(product.category) === wanted) {
     return true;
   }
 
-  const keywords = SERVICE_MAP[requested] || [];
-
-  if (!keywords.length) {
-    return true;
-  }
+  const words =
+    SERVICE_MAP[category] ||
+    SERVICE_MAP[
+      SERVICE_CATEGORIES.find(
+        x => normalize(x) === wanted
+      )
+    ] ||
+    [];
 
   const text = productText(product);
 
-  return keywords.some(keyword =>
-    text.includes(normalize(keyword))
+  return words.some(word =>
+    text.includes(normalize(word))
   );
-};
+}
+
+async function authenticate(env, request) {
+  const db = requireDB(env);
+  const token = tokenFromRequest(request);
+
+  if (!token) {
+    throw new Error("UNAUTHORIZED");
+  }
+
+  const tokenHash = await sha256(token);
+
+  const row = await db.prepare(`
+    SELECT
+      u.id,
+      u.name,
+      u.email,
+      u.country,
+      u.role,
+      u.is_active,
+      u.is_verified,
+      u.created_at
+    FROM sessions s
+    JOIN users u ON u.id = s.user_id
+    WHERE s.token_hash = ?
+      AND s.expires_at > datetime('now')
+      AND u.is_active = 1
+    LIMIT 1
+  `)
+    .bind(tokenHash)
+    .first();
+
+  if (!row) {
+    throw new Error("UNAUTHORIZED");
+  }
+
+  return row;
+}
+
+async function requireUser(env, request) {
+  return authenticate(env, request);
+}
+
+async function requireAdmin(env, request) {
+  const user = await authenticate(env, request);
+
+  if (String(user.role).toLowerCase() !== "admin") {
+    throw new Error("ADMIN_ONLY");
+  }
+
+  return user;
+}
+
 
 /* =========================================================
    MAIN WORKER
-   ========================================================= */
+========================================================= */
 
 export default {
   async fetch(request, env) {
@@ -407,92 +529,122 @@ export default {
       });
     }
 
+    /*
+      IMPORTANT:
+      productMatch is declared here once so GET / PUT / DELETE
+      can all safely use it.
+    */
+    const productMatch =
+      path.match(/^\/api\/products\/(\d+)$/);
+
     try {
-      requireDB(env);
 
       /* =====================================================
          HEALTH
-         ===================================================== */
+      ===================================================== */
 
       if (path === "/api/health" && method === "GET") {
-        let database = "connected";
+        let database = "not_connected";
+        let ok = false;
+        let error = null;
 
         try {
-          await env.DB.prepare("SELECT 1").first();
-        } catch {
+          requireDB(env);
+
+          await env.DB
+            .prepare("SELECT 1")
+            .first();
+
+          database = "connected";
+          ok = true;
+        } catch (e) {
           database = "error";
+          error = e.message;
         }
 
         return json({
-          ok: database === "connected",
+          ok,
           service: "IsokoHub API",
           database,
-          time: new Date().toISOString()
-        });
+          time: new Date().toISOString(),
+          ...(error ? { error } : {})
+        }, ok ? 200 : 503);
       }
+
 
       /* =====================================================
          CONFIG
-         ===================================================== */
+      ===================================================== */
 
       if (path === "/api/config" && method === "GET") {
         return json({
-          production: true,
+          ok: true,
+          environment: "production",
           platform: "cloudflare-workers",
           database: "D1",
-          assets: "Cloudflare Assets",
+          assets: "ASSETS",
           marketplace: "global",
           countries: COUNTRIES.length,
-          service_platform: true,
           service_categories: SERVICE_CATEGORIES.length,
           commission_rate: COMMISSION_RATE
         });
       }
 
+
+      /*
+        Everything below this point requires D1.
+      */
+      const db = requireDB(env);
+
+
       /* =====================================================
          COUNTRIES
-         ===================================================== */
+      ===================================================== */
 
       if (path === "/api/countries" && method === "GET") {
-        const search = normalize(
+        const q = normalize(
           url.searchParams.get("search")
         );
 
-        const countries = search
-          ? COUNTRIES.filter(country =>
-              normalize(country).includes(search)
+        const list = q
+          ? COUNTRIES.filter(c =>
+              normalize(c).includes(q)
             )
           : COUNTRIES;
 
         return json({
-          count: countries.length,
-          countries
+          ok: true,
+          countries: list,
+          count: list.length
         });
       }
 
+
       /* =====================================================
          SERVICE CATEGORIES
-         ===================================================== */
+      ===================================================== */
 
       if (
         path === "/api/service-categories" &&
         method === "GET"
       ) {
         return json({
-          count: SERVICE_CATEGORIES.length,
-          categories: SERVICE_CATEGORIES
+          ok: true,
+          categories: SERVICE_CATEGORIES,
+          count: SERVICE_CATEGORIES.length
         });
       }
 
+
       /* =====================================================
          DATABASE CATEGORIES
-         ===================================================== */
+      ===================================================== */
 
       if (
         path === "/api/categories" &&
         method === "GET"
       ) {
-        const result = await env.DB.prepare(`
+        const rows = await db.prepare(`
           SELECT *
           FROM categories
           WHERE is_active = 1
@@ -500,13 +652,15 @@ export default {
         `).all();
 
         return json({
-          categories: result.results || []
+          ok: true,
+          categories: rows.results || []
         });
       }
 
+
       /* =====================================================
-         PRODUCTS
-         ===================================================== */
+         PRODUCTS - GET LIST
+      ===================================================== */
 
       if (
         path === "/api/products" &&
@@ -523,144 +677,148 @@ export default {
 
         const limit =
           limitValue(
-            url.searchParams.get("limit")
+            url.searchParams.get("limit"),
+            100,
+            500
           );
 
-        const conditions = [
-          "p.status = 'active'",
-          "u.is_active = 1"
-        ];
-
-        const params = [];
-
-        if (search) {
-          conditions.push(`
-            (
-              p.title LIKE ?
-              OR p.description LIKE ?
-              OR p.category LIKE ?
-              OR p.brand LIKE ?
-              OR p.model LIKE ?
-              OR p.specs LIKE ?
-            )
-          `);
-
-          const q = `%${search}%`;
-
-          params.push(
-            q,q,q,q,q,q
-          );
-        }
-
-        if (category) {
-          conditions.push(
-            "p.category LIKE ?"
-          );
-
-          params.push(
-            `%${category}%`
-          );
-        }
-
-        if (country) {
-          conditions.push(
-            "p.country LIKE ?"
-          );
-
-          params.push(
-            `%${country}%`
-          );
-        }
-
-        params.push(limit);
-
-        const result = await env.DB.prepare(`
+        let sql = `
           SELECT
             p.*,
             u.name AS seller_name,
             u.email AS seller_email,
-            u.country AS seller_country,
-            u.is_verified AS seller_verified
+            u.country AS seller_country
           FROM products p
-          LEFT JOIN users u
+          JOIN users u
             ON u.id = p.seller_id
-          WHERE ${conditions.join(" AND ")}
-          ORDER BY p.created_at DESC
+          WHERE p.status = 'active'
+            AND u.is_active = 1
+        `;
+
+        const binds = [];
+
+        if (search) {
+          sql += `
+            AND (
+              p.title LIKE ?
+              OR p.description LIKE ?
+              OR p.specs LIKE ?
+              OR p.category LIKE ?
+              OR p.brand LIKE ?
+              OR p.model LIKE ?
+              OR p.country LIKE ?
+              OR p.district LIKE ?
+            )
+          `;
+
+          const s = `%${search}%`;
+
+          binds.push(
+            s,s,s,s,s,s,s,s
+          );
+        }
+
+        if (category) {
+          sql += `
+            AND p.category LIKE ?
+          `;
+
+          binds.push(`%${category}%`);
+        }
+
+        if (country) {
+          sql += `
+            AND p.country LIKE ?
+          `;
+
+          binds.push(`%${country}%`);
+        }
+
+        sql += `
+          ORDER BY p.id DESC
           LIMIT ?
-        `)
-          .bind(...params)
+        `;
+
+        binds.push(limit);
+
+        const rows = await db
+          .prepare(sql)
+          .bind(...binds)
           .all();
 
         return json({
-          products: result.results || [],
-          count: (result.results || []).length,
-          global: true
+          ok: true,
+          products: rows.results || [],
+          count: (rows.results || []).length
         });
       }
 
+
       /* =====================================================
          SINGLE PRODUCT
-         ===================================================== */
-
-      const productMatch =
-        path.match(/^\/api\/products\/(\d+)$/);
+      ===================================================== */
 
       if (
         productMatch &&
         method === "GET"
       ) {
-        const id = productMatch[1];
+        const id = Number(productMatch[1]);
 
-        const product =
-          await env.DB.prepare(`
-            SELECT
-              p.*,
-              u.name AS seller_name,
-              u.email AS seller_email,
-              u.country AS seller_country,
-              u.is_verified AS seller_verified
-            FROM products p
-            LEFT JOIN users u
-              ON u.id = p.seller_id
-            WHERE p.id = ?
-            LIMIT 1
-          `)
-            .bind(id)
-            .first();
+        const row = await db.prepare(`
+          SELECT
+            p.*,
+            u.name AS seller_name,
+            u.email AS seller_email,
+            u.country AS seller_country
+          FROM products p
+          JOIN users u
+            ON u.id = p.seller_id
+          WHERE p.id = ?
+          LIMIT 1
+        `)
+          .bind(id)
+          .first();
 
-        if (!product) {
+        if (!row) {
           return json({
-            error: "Product not found."
+            error: "Product not found"
           }, 404);
         }
 
         try {
-          await env.DB.prepare(`
+          await db.prepare(`
             UPDATE products
             SET views = COALESCE(views, 0) + 1
             WHERE id = ?
           `)
             .bind(id)
             .run();
-        } catch {}
+        } catch {
+          /*
+            Keep product viewing working even if the
+            locked schema does not expose a writable views column.
+          */
+        }
 
         return json({
-          product
+          ok: true,
+          product: row
         });
       }
 
+
       /* =====================================================
-         GLOBAL SERVICES
-         ===================================================== */
+         SERVICES
+      ===================================================== */
 
       if (
         path === "/api/services" &&
         method === "GET"
       ) {
         const search =
-          normalize(
-            url.searchParams.get("search")
-          );
+          url.searchParams.get("search") ||
+          url.searchParams.get("q") ||
+          "";
 
         const category =
           url.searchParams.get("category") || "";
@@ -675,7 +833,6 @@ export default {
 
         const provider =
           url.searchParams.get("provider") ||
-          url.searchParams.get("seller") ||
           "";
 
         const online =
@@ -685,166 +842,122 @@ export default {
 
         const limit =
           limitValue(
-            url.searchParams.get("limit")
+            url.searchParams.get("limit"),
+            100,
+            500
           );
 
-        const conditions = [
-          "p.status = 'active'",
-          "u.is_active = 1"
-        ];
+        let sql = `
+          SELECT
+            p.*,
+            u.name AS seller_name,
+            u.email AS seller_email,
+            u.country AS seller_country
+          FROM products p
+          JOIN users u
+            ON u.id = p.seller_id
+          WHERE p.status = 'active'
+            AND u.is_active = 1
+        `;
 
-        const params = [];
+        const binds = [];
 
         if (country) {
-          conditions.push(
-            "p.country LIKE ?"
-          );
-
-          params.push(
-            `%${country}%`
-          );
+          sql += ` AND p.country LIKE ? `;
+          binds.push(`%${country}%`);
         }
 
         if (city) {
-          conditions.push(
-            "p.district LIKE ?"
-          );
-
-          params.push(
-            `%${city}%`
-          );
+          sql += ` AND p.district LIKE ? `;
+          binds.push(`%${city}%`);
         }
 
         if (provider) {
-          conditions.push(
-            "u.name LIKE ?"
-          );
-
-          params.push(
-            `%${provider}%`
-          );
+          sql += ` AND u.name LIKE ? `;
+          binds.push(`%${provider}%`);
         }
 
         /*
-          IMPORTANT:
-          Search is performed against all major product fields.
-          This supports searches such as:
-          engineer
-          photographer
-          lawyer
-          teacher
-          web developer
-          business consultant
-          driver
-          filmmaker
-          etc.
+          Search across all relevant fields.
         */
-
         if (search) {
-          conditions.push(`
-            (
+          sql += `
+            AND (
               p.title LIKE ?
               OR p.description LIKE ?
-              OR p.category LIKE ?
               OR p.specs LIKE ?
+              OR p.category LIKE ?
               OR p.brand LIKE ?
               OR p.model LIKE ?
-              OR u.name LIKE ?
             )
-          `);
+          `;
 
-          const q = `%${search}%`;
+          const s = `%${search}%`;
 
-          params.push(
-            q,q,q,q,q,q,q
+          binds.push(
+            s,s,s,s,s,s
           );
         }
 
-        /*
-          Retrieve a larger global pool before JavaScript
-          service classification.
-        */
+        sql += `
+          ORDER BY p.id DESC
+          LIMIT 500
+        `;
 
-        const result =
-          await env.DB.prepare(`
-            SELECT
-              p.*,
-              u.name AS seller_name,
-              u.email AS seller_email,
-              u.country AS seller_country,
-              u.is_verified AS seller_verified
-            FROM products p
-            LEFT JOIN users u
-              ON u.id = p.seller_id
-            WHERE ${conditions.join(" AND ")}
-            ORDER BY p.created_at DESC
-            LIMIT 500
-          `)
-            .bind(...params)
-            .all();
+        const rows = await db
+          .prepare(sql)
+          .bind(...binds)
+          .all();
 
         let services =
-          (result.results || [])
+          (rows.results || [])
             .filter(isServiceProduct)
-            .filter(product =>
+            .filter(p =>
               serviceCategoryMatch(
-                product,
+                p,
                 category
               )
             );
 
-        if (online === "true") {
-          services =
-            services.filter(product => {
-              const text =
-                productText(product);
+        if (online === "true" || online === "1") {
+          services = services.filter(p => {
+            const text = productText(p);
 
-              return (
-                text.includes("online") ||
-                text.includes("remote") ||
-                text.includes("virtual")
-              );
-            });
+            return (
+              text.includes("online") ||
+              text.includes("remote") ||
+              text.includes("virtual")
+            );
+          });
         }
 
-        services =
-          services.slice(0, limit);
+        services = services.slice(0, limit);
 
         return json({
           ok: true,
           services,
           count: services.length,
-          country:
-            country || "All countries",
-          city:
-            city || "All cities",
-          category:
-            category || "All services",
-          provider:
-            provider || "All providers",
           global: true,
           countries: COUNTRIES.length
         });
       }
 
+
       /* =====================================================
          REGISTER
-         ===================================================== */
+      ===================================================== */
 
       if (
         path === "/api/register" &&
         method === "POST"
       ) {
-        const body =
-          await readJSON(request);
+        const body = await readJSON(request);
 
         const name =
           String(body.name || "").trim();
 
         const email =
-          String(body.email || "")
-            .trim()
-            .toLowerCase();
+          normalize(body.email);
 
         const password =
           String(body.password || "");
@@ -854,22 +967,27 @@ export default {
             body.country || "Rwanda"
           ).trim();
 
-        if (!name || !email || !password) {
+        if (!name) {
           return json({
-            error:
-              "Name, email and password are required."
+            error: "Full name is required"
+          }, 400);
+        }
+
+        if (!email) {
+          return json({
+            error: "Email is required"
           }, 400);
         }
 
         if (password.length < 6) {
           return json({
             error:
-              "Password must be at least 6 characters."
+              "Password must contain at least 6 characters"
           }, 400);
         }
 
         const existing =
-          await env.DB.prepare(`
+          await db.prepare(`
             SELECT id
             FROM users
             WHERE email = ?
@@ -880,8 +998,7 @@ export default {
 
         if (existing) {
           return json({
-            error:
-              "Email already registered."
+            error: "An account with this email already exists"
           }, 409);
         }
 
@@ -889,19 +1006,19 @@ export default {
           await sha256(password);
 
         const result =
-          await env.DB.prepare(`
+          await db.prepare(`
             INSERT INTO users
-            (
-              name,
-              email,
-              password_hash,
-              country,
-              role,
-              is_active,
-              is_verified
-            )
+              (
+                name,
+                email,
+                password_hash,
+                country,
+                role,
+                is_active,
+                is_verified
+              )
             VALUES
-            (?, ?, ?, ?, 'buyer', 1, 0)
+              (?, ?, ?, ?, 'buyer', 1, 0)
           `)
             .bind(
               name,
@@ -911,44 +1028,62 @@ export default {
             )
             .run();
 
+        const userId =
+          result.meta?.last_row_id;
+
+        const user =
+          await db.prepare(`
+            SELECT
+              id,
+              name,
+              email,
+              country,
+              role,
+              is_active,
+              is_verified,
+              created_at
+            FROM users
+            WHERE id = ?
+            LIMIT 1
+          `)
+            .bind(userId)
+            .first();
+
         return json({
           ok: true,
-          user_id:
-            result.meta.last_row_id
+          user: safeUser(user)
         }, 201);
       }
 
+
       /* =====================================================
          LOGIN
-         ===================================================== */
+      ===================================================== */
 
       if (
         path === "/api/login" &&
         method === "POST"
       ) {
-        const body =
-          await readJSON(request);
+        const body = await readJSON(request);
 
         const email =
-          String(body.email || "")
-            .trim()
-            .toLowerCase();
+          normalize(body.email);
 
         const password =
           String(body.password || "");
 
         if (!email || !password) {
           return json({
-            error:
-              "Email and password are required."
+            error: "Email and password are required"
           }, 400);
         }
 
         const user =
-          await env.DB.prepare(`
+          await db.prepare(`
             SELECT *
             FROM users
             WHERE email = ?
+              AND is_active = 1
             LIMIT 1
           `)
             .bind(email)
@@ -956,16 +1091,8 @@ export default {
 
         if (!user) {
           return json({
-            error:
-              "Invalid email or password."
+            error: "Invalid email or password"
           }, 401);
-        }
-
-        if (!user.is_active) {
-          return json({
-            error:
-              "This account is inactive."
-          }, 403);
         }
 
         const passwordHash =
@@ -976,51 +1103,47 @@ export default {
           user.password_hash
         ) {
           return json({
-            error:
-              "Invalid email or password."
+            error: "Invalid email or password"
           }, 401);
         }
 
-        const rawToken =
-          crypto.randomUUID() +
-          "-" +
-          crypto.randomUUID();
+        const token =
+          `${crypto.randomUUID()}-${crypto.randomUUID()}`;
 
         const tokenHash =
-          await sha256(rawToken);
+          await sha256(token);
 
-        const expiresAt =
-          new Date(
-            Date.now() +
-            30 * 24 * 60 * 60 * 1000
-          ).toISOString();
-
-        await env.DB.prepare(`
+        await db.prepare(`
           INSERT INTO sessions
-          (
-            user_id,
-            token_hash,
-            expires_at
-          )
-          VALUES (?, ?, ?)
+            (
+              user_id,
+              token_hash,
+              expires_at
+            )
+          VALUES
+            (
+              ?,
+              ?,
+              datetime('now', '+30 days')
+            )
         `)
           .bind(
             user.id,
-            tokenHash,
-            expiresAt
+            tokenHash
           )
           .run();
 
         return json({
           ok: true,
-          token: rawToken,
+          token,
           user: safeUser(user)
         });
       }
 
+
       /* =====================================================
          ME
-         ===================================================== */
+      ===================================================== */
 
       if (
         path === "/api/me" &&
@@ -1028,14 +1151,20 @@ export default {
       ) {
         const user =
           await requireUser(
-            request,
-            env
+            env,
+            request
           );
 
         return json({
+          ok: true,
           user: safeUser(user)
         });
       }
+
+
+      /* =====================================================
+         UPDATE ME
+      ===================================================== */
 
       if (
         path === "/api/me" &&
@@ -1043,8 +1172,8 @@ export default {
       ) {
         const user =
           await requireUser(
-            request,
-            env
+            env,
+            request
           );
 
         const body =
@@ -1060,7 +1189,7 @@ export default {
             ? String(body.country).trim()
             : user.country;
 
-        await env.DB.prepare(`
+        await db.prepare(`
           UPDATE users
           SET
             name = ?,
@@ -1070,18 +1199,25 @@ export default {
           .bind(
             name,
             country,
-            user.user_id
+            user.id
           )
           .run();
 
         const updated =
-          await env.DB.prepare(`
-            SELECT *
+          await db.prepare(`
+            SELECT
+              id,
+              name,
+              email,
+              country,
+              role,
+              is_active,
+              is_verified,
+              created_at
             FROM users
             WHERE id = ?
-            LIMIT 1
           `)
-            .bind(user.user_id)
+            .bind(user.id)
             .first();
 
         return json({
@@ -1090,9 +1226,10 @@ export default {
         });
       }
 
+
       /* =====================================================
          LOGOUT
-         ===================================================== */
+      ===================================================== */
 
       if (
         path === "/api/logout" &&
@@ -1105,7 +1242,7 @@ export default {
           const hash =
             await sha256(token);
 
-          await env.DB.prepare(`
+          await db.prepare(`
             DELETE FROM sessions
             WHERE token_hash = ?
           `)
@@ -1114,13 +1251,15 @@ export default {
         }
 
         return json({
-          ok: true
+          ok: true,
+          message: "Logged out"
         });
       }
 
+
       /* =====================================================
          CREATE PRODUCT / SERVICE
-         ===================================================== */
+      ===================================================== */
 
       if (
         path === "/api/products" &&
@@ -1128,27 +1267,24 @@ export default {
       ) {
         const user =
           await requireUser(
-            request,
-            env
+            env,
+            request
           );
 
         const body =
           await readJSON(request);
 
         const title =
-          String(
-            body.title || ""
-          ).trim();
+          String(body.title || "").trim();
 
         const category =
-          String(
-            body.category || "Other"
-          ).trim();
+          String(body.category || "").trim();
 
         const description =
-          String(
-            body.description || ""
-          ).trim();
+          String(body.description || "").trim();
+
+        const specs =
+          String(body.specs || "").trim();
 
         const price =
           number(body.price, 0);
@@ -1159,12 +1295,12 @@ export default {
           ).trim();
 
         const stock =
-          Math.max(
-            0,
-            Math.floor(
-              number(body.stock, 1)
-            )
-          );
+          number(body.stock, 1);
+
+        const condition =
+          String(
+            body.condition || "new"
+          ).trim();
 
         const country =
           String(
@@ -1175,9 +1311,7 @@ export default {
 
         const district =
           String(
-            body.district ||
-            body.city ||
-            ""
+            body.district || ""
           ).trim();
 
         const brand =
@@ -1200,30 +1334,15 @@ export default {
             body.ram || ""
           ).trim();
 
-        const imageUrl =
+        const image_url =
           String(
-            body.image_url || ""
-          ).trim();
-
-        const specs =
-          String(
-            body.specs || ""
+            body.image_url ||
+            body.imageUrl ||
+            ""
           ).trim();
 
         const negotiable =
           body.negotiable ? 1 : 0;
-
-        const condition =
-          String(
-            body.condition || "new"
-          ).trim();
-
-        if (!title) {
-          return json({
-            error:
-              "Title is required."
-          }, 400);
-        }
 
         const validConditions = [
           "new",
@@ -1232,18 +1351,67 @@ export default {
           "refurbished"
         ];
 
-        const safeCondition =
-          validConditions.includes(
-            condition
+        if (!title) {
+          return json({
+            error: "Title is required"
+          }, 400);
+        }
+
+        if (!category) {
+          return json({
+            error: "Category is required"
+          }, 400);
+        }
+
+        if (price < 0) {
+          return json({
+            error: "Price cannot be negative"
+          }, 400);
+        }
+
+        if (
+          !validConditions.includes(
+            normalize(condition)
           )
-            ? condition
-            : "new";
+        ) {
+          return json({
+            error:
+              "Invalid condition"
+          }, 400);
+        }
 
         const result =
-          await env.DB.prepare(`
+          await db.prepare(`
             INSERT INTO products
-            (
-              seller_id,
+              (
+                seller_id,
+                title,
+                category,
+                description,
+                price,
+                currency,
+                stock,
+                brand,
+                model,
+                condition,
+                country,
+                district,
+                storage,
+                ram,
+                image_url,
+                specs,
+                negotiable,
+                status,
+                views
+              )
+            VALUES
+              (
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                ?, ?, ?, ?, ?, ?, ?, 'active', 0
+              )
+          `)
+            .bind(
+              user.id,
               title,
               category,
               description,
@@ -1259,44 +1427,22 @@ export default {
               ram,
               image_url,
               specs,
-              negotiable,
-              status,
-              views
-            )
-            VALUES
-            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', 0)
-          `)
-            .bind(
-              user.user_id,
-              title,
-              category,
-              description,
-              price,
-              currency,
-              stock,
-              brand,
-              model,
-              safeCondition,
-              country,
-              district,
-              storage,
-              ram,
-              imageUrl,
-              specs,
               negotiable
             )
             .run();
 
         return json({
           ok: true,
-          product_id:
-            result.meta.last_row_id
+          message:
+            "Product/service published successfully",
+          id: result.meta?.last_row_id
         }, 201);
       }
 
+
       /* =====================================================
          UPDATE PRODUCT
-         ===================================================== */
+      ===================================================== */
 
       if (
         productMatch &&
@@ -1304,15 +1450,15 @@ export default {
       ) {
         const user =
           await requireUser(
-            request,
-            env
+            env,
+            request
           );
 
         const id =
-          productMatch[1];
+          Number(productMatch[1]);
 
-        const product =
-          await env.DB.prepare(`
+        const existing =
+          await db.prepare(`
             SELECT *
             FROM products
             WHERE id = ?
@@ -1321,87 +1467,164 @@ export default {
             .bind(id)
             .first();
 
-        if (!product) {
+        if (!existing) {
           return json({
-            error:
-              "Product not found."
+            error: "Product not found"
           }, 404);
         }
 
         if (
-          String(product.seller_id) !==
-            String(user.user_id) &&
+          Number(existing.seller_id) !==
+            Number(user.id) &&
           user.role !== "admin"
         ) {
           return json({
-            error:
-              "Not allowed."
+            error: "Not allowed"
           }, 403);
         }
 
         const body =
           await readJSON(request);
 
-        const fields = [
-          "title",
-          "category",
-          "description",
-          "price",
-          "currency",
-          "stock",
-          "brand",
-          "model",
-          "condition",
-          "country",
-          "district",
-          "storage",
-          "ram",
-          "image_url",
-          "specs",
-          "negotiable",
-          "status"
-        ];
+        const title =
+          body.title !== undefined
+            ? String(body.title).trim()
+            : existing.title;
 
-        const updates = [];
-        const values = [];
+        const category =
+          body.category !== undefined
+            ? String(body.category).trim()
+            : existing.category;
 
-        for (const field of fields) {
-          if (body[field] !== undefined) {
-            updates.push(
-              `${field} = ?`
-            );
+        const description =
+          body.description !== undefined
+            ? String(body.description)
+            : existing.description;
 
-            values.push(
-              body[field]
-            );
-          }
-        }
+        const price =
+          body.price !== undefined
+            ? number(body.price, existing.price)
+            : existing.price;
 
-        if (!updates.length) {
-          return json({
-            error:
-              "No changes supplied."
-          }, 400);
-        }
+        const currency =
+          body.currency !== undefined
+            ? String(body.currency).trim()
+            : existing.currency;
 
-        values.push(id);
+        const stock =
+          body.stock !== undefined
+            ? number(body.stock, existing.stock)
+            : existing.stock;
 
-        await env.DB.prepare(`
+        const brand =
+          body.brand !== undefined
+            ? String(body.brand)
+            : existing.brand;
+
+        const model =
+          body.model !== undefined
+            ? String(body.model)
+            : existing.model;
+
+        const condition =
+          body.condition !== undefined
+            ? String(body.condition)
+            : existing.condition;
+
+        const country =
+          body.country !== undefined
+            ? String(body.country)
+            : existing.country;
+
+        const district =
+          body.district !== undefined
+            ? String(body.district)
+            : existing.district;
+
+        const storage =
+          body.storage !== undefined
+            ? String(body.storage)
+            : existing.storage;
+
+        const ram =
+          body.ram !== undefined
+            ? String(body.ram)
+            : existing.ram;
+
+        const image_url =
+          body.image_url !== undefined
+            ? String(body.image_url)
+            : existing.image_url;
+
+        const specs =
+          body.specs !== undefined
+            ? String(body.specs)
+            : existing.specs;
+
+        const negotiable =
+          body.negotiable !== undefined
+            ? (body.negotiable ? 1 : 0)
+            : existing.negotiable;
+
+        const status =
+          body.status !== undefined
+            ? String(body.status)
+            : existing.status;
+
+        await db.prepare(`
           UPDATE products
-          SET ${updates.join(", ")}
+          SET
+            title = ?,
+            category = ?,
+            description = ?,
+            price = ?,
+            currency = ?,
+            stock = ?,
+            brand = ?,
+            model = ?,
+            condition = ?,
+            country = ?,
+            district = ?,
+            storage = ?,
+            ram = ?,
+            image_url = ?,
+            specs = ?,
+            negotiable = ?,
+            status = ?
           WHERE id = ?
         `)
-          .bind(...values)
+          .bind(
+            title,
+            category,
+            description,
+            price,
+            currency,
+            stock,
+            brand,
+            model,
+            condition,
+            country,
+            district,
+            storage,
+            ram,
+            image_url,
+            specs,
+            negotiable,
+            status,
+            id
+          )
           .run();
 
         return json({
-          ok: true
+          ok: true,
+          message: "Product updated successfully"
         });
       }
 
+
       /* =====================================================
          DELETE PRODUCT
-         ===================================================== */
+      ===================================================== */
 
       if (
         productMatch &&
@@ -1409,56 +1632,60 @@ export default {
       ) {
         const user =
           await requireUser(
-            request,
-            env
+            env,
+            request
           );
 
         const id =
-          productMatch[1];
+          Number(productMatch[1]);
 
-        const product =
-          await env.DB.prepare(`
+        const existing =
+          await db.prepare(`
             SELECT *
             FROM products
             WHERE id = ?
-            LIMIT 1
           `)
             .bind(id)
             .first();
 
-        if (!product) {
+        if (!existing) {
           return json({
-            error:
-              "Product not found."
+            error: "Product not found"
           }, 404);
         }
 
         if (
-          String(product.seller_id) !==
-            String(user.user_id) &&
+          Number(existing.seller_id) !==
+            Number(user.id) &&
           user.role !== "admin"
         ) {
           return json({
-            error:
-              "Not allowed."
+            error: "Not allowed"
           }, 403);
         }
 
-        await env.DB.prepare(`
-          DELETE FROM products
+        /*
+          Soft-delete by changing status.
+          This keeps historical order relationships safe.
+        */
+        await db.prepare(`
+          UPDATE products
+          SET status = 'inactive'
           WHERE id = ?
         `)
           .bind(id)
           .run();
 
         return json({
-          ok: true
+          ok: true,
+          message: "Product removed successfully"
         });
       }
 
+
       /* =====================================================
-         SAVED
-         ===================================================== */
+         SAVED - GET
+      ===================================================== */
 
       if (
         path === "/api/saved" &&
@@ -1466,35 +1693,38 @@ export default {
       ) {
         const user =
           await requireUser(
-            request,
-            env
+            env,
+            request
           );
 
-        const result =
-          await env.DB.prepare(`
+        const rows =
+          await db.prepare(`
             SELECT
               sp.*,
-              p.title,
-              p.price,
-              p.currency,
-              p.image_url,
-              p.country,
-              p.district,
-              p.status
+              p.*,
+              u.name AS seller_name,
+              u.country AS seller_country
             FROM saved_products sp
             JOIN products p
               ON p.id = sp.product_id
+            JOIN users u
+              ON u.id = p.seller_id
             WHERE sp.user_id = ?
-            ORDER BY sp.created_at DESC
+            ORDER BY sp.id DESC
           `)
-            .bind(user.user_id)
+            .bind(user.id)
             .all();
 
         return json({
-          saved:
-            result.results || []
+          ok: true,
+          saved: rows.results || []
         });
       }
+
+
+      /* =====================================================
+         SAVED - POST
+      ===================================================== */
 
       if (
         path === "/api/saved" &&
@@ -1502,8 +1732,8 @@ export default {
       ) {
         const user =
           await requireUser(
-            request,
-            env
+            env,
+            request
           );
 
         const body =
@@ -1511,40 +1741,72 @@ export default {
 
         const productId =
           number(
-            body.product_id,
-            0
+            body.product_id ||
+            body.productId
           );
 
         if (!productId) {
           return json({
-            error:
-              "product_id is required."
+            error: "product_id is required"
           }, 400);
         }
 
-        await env.DB.prepare(`
-          INSERT OR IGNORE INTO saved_products
-          (
-            user_id,
-            product_id
-          )
-          VALUES (?, ?)
-        `)
-          .bind(
-            user.user_id,
-            productId
-          )
-          .run();
+        const product =
+          await db.prepare(`
+            SELECT id
+            FROM products
+            WHERE id = ?
+          `)
+            .bind(productId)
+            .first();
+
+        if (!product) {
+          return json({
+            error: "Product not found"
+          }, 404);
+        }
+
+        const existing =
+          await db.prepare(`
+            SELECT id
+            FROM saved_products
+            WHERE user_id = ?
+              AND product_id = ?
+            LIMIT 1
+          `)
+            .bind(
+              user.id,
+              productId
+            )
+            .first();
+
+        if (!existing) {
+          await db.prepare(`
+            INSERT INTO saved_products
+              (user_id, product_id)
+            VALUES
+              (?, ?)
+          `)
+            .bind(
+              user.id,
+              productId
+            )
+            .run();
+        }
 
         return json({
-          ok: true
-        });
+          ok: true,
+          message: "Saved"
+        }, 201);
       }
 
+
+      /* =====================================================
+         SAVED - DELETE
+      ===================================================== */
+
       const savedMatch =
-        path.match(
-          /^\/api\/saved\/(\d+)$/
-        );
+        path.match(/^\/api\/saved\/(\d+)$/);
 
       if (
         savedMatch &&
@@ -1552,29 +1814,34 @@ export default {
       ) {
         const user =
           await requireUser(
-            request,
-            env
+            env,
+            request
           );
 
-        await env.DB.prepare(`
+        const productId =
+          Number(savedMatch[1]);
+
+        await db.prepare(`
           DELETE FROM saved_products
           WHERE user_id = ?
             AND product_id = ?
         `)
           .bind(
-            user.user_id,
-            savedMatch[1]
+            user.id,
+            productId
           )
           .run();
 
         return json({
-          ok: true
+          ok: true,
+          message: "Removed from saved"
         });
       }
 
+
       /* =====================================================
-         ORDERS
-         ===================================================== */
+         ORDERS - GET
+      ===================================================== */
 
       if (
         path === "/api/orders" &&
@@ -1582,21 +1849,18 @@ export default {
       ) {
         const user =
           await requireUser(
-            request,
-            env
+            env,
+            request
           );
 
-        const result =
-          await env.DB.prepare(`
+        const rows =
+          await db.prepare(`
             SELECT
               o.*,
-              p.title,
-              p.image_url,
-              p.currency,
+              p.title AS product_title,
+              p.currency AS currency,
               buyer.name AS buyer_name,
-              buyer.email AS buyer_email,
-              seller.name AS seller_name,
-              seller.email AS seller_email
+              seller.name AS seller_name
             FROM orders o
             JOIN products p
               ON p.id = o.product_id
@@ -1607,19 +1871,24 @@ export default {
             WHERE
               o.buyer_id = ?
               OR p.seller_id = ?
-            ORDER BY o.created_at DESC
+            ORDER BY o.id DESC
           `)
             .bind(
-              user.user_id,
-              user.user_id
+              user.id,
+              user.id
             )
             .all();
 
         return json({
-          orders:
-            result.results || []
+          ok: true,
+          orders: rows.results || []
         });
       }
+
+
+      /* =====================================================
+         CREATE ORDER
+      ===================================================== */
 
       if (
         path === "/api/orders" &&
@@ -1627,8 +1896,8 @@ export default {
       ) {
         const user =
           await requireUser(
-            request,
-            env
+            env,
+            request
           );
 
         const body =
@@ -1636,8 +1905,8 @@ export default {
 
         const productId =
           number(
-            body.product_id,
-            0
+            body.product_id ||
+            body.productId
           );
 
         const quantity =
@@ -1653,13 +1922,12 @@ export default {
 
         if (!productId) {
           return json({
-            error:
-              "product_id is required."
+            error: "product_id is required"
           }, 400);
         }
 
         const product =
-          await env.DB.prepare(`
+          await db.prepare(`
             SELECT *
             FROM products
             WHERE id = ?
@@ -1671,89 +1939,135 @@ export default {
 
         if (!product) {
           return json({
-            error:
-              "Product not found or inactive."
+            error: "Product is not available"
           }, 404);
         }
 
         if (
-          String(product.seller_id) ===
-          String(user.user_id)
+          Number(product.seller_id) ===
+          Number(user.id)
         ) {
           return json({
-            error:
-              "You cannot order your own product."
+            error: "You cannot order your own listing"
           }, 400);
         }
 
         if (
-          number(product.stock) <
+          Number(product.stock) <
           quantity
         ) {
           return json({
-            error:
-              "Insufficient stock."
+            error: "Not enough stock available"
           }, 400);
         }
 
+        const unitPrice =
+          number(product.price);
+
         const total =
-          number(product.price) *
-          quantity;
+          unitPrice * quantity;
 
         const commission =
-          total *
-          COMMISSION_RATE;
+          total * COMMISSION_RATE;
 
-        const result =
-          await env.DB.prepare(`
-            INSERT INTO orders
-            (
-              buyer_id,
-              product_id,
-              quantity,
-              unit_price,
-              total_amount,
-              commission_amount,
-              status,
-              payment_status
-            )
-            VALUES
-            (?, ?, ?, ?, ?, ?, 'pending', 'unpaid')
+        /*
+          Keep the stock update guarded.
+        */
+        const stockUpdate =
+          await db.prepare(`
+            UPDATE products
+            SET stock = stock - ?
+            WHERE id = ?
+              AND status = 'active'
+              AND stock >= ?
           `)
             .bind(
-              user.user_id,
-              productId,
               quantity,
-              product.price,
-              total,
-              commission
+              productId,
+              quantity
             )
             .run();
 
-        await env.DB.prepare(`
-          UPDATE products
-          SET stock = stock - ?
-          WHERE id = ?
-        `)
-          .bind(
-            quantity,
-            productId
-          )
-          .run();
+        if (
+          !stockUpdate.success ||
+          Number(
+            stockUpdate.meta?.changes || 0
+          ) < 1
+        ) {
+          return json({
+            error: "Stock is no longer available"
+          }, 409);
+        }
 
-        return json({
-          ok: true,
-          order_id:
-            result.meta.last_row_id,
-          total_amount: total,
-          commission_amount:
-            commission
-        }, 201);
+        try {
+
+          const result =
+            await db.prepare(`
+              INSERT INTO orders
+                (
+                  buyer_id,
+                  product_id,
+                  quantity,
+                  total,
+                  commission,
+                  status,
+                  payment_status
+                )
+              VALUES
+                (
+                  ?,
+                  ?,
+                  ?,
+                  ?,
+                  ?,
+                  'pending',
+                  'unpaid'
+                )
+            `)
+              .bind(
+                user.id,
+                productId,
+                quantity,
+                total,
+                commission
+              )
+              .run();
+
+          return json({
+            ok: true,
+            message: "Order placed successfully",
+            order_id:
+              result.meta?.last_row_id,
+            total,
+            commission,
+            currency:
+              product.currency || "RWF"
+          }, 201);
+
+        } catch (e) {
+
+          /*
+            Restore stock if order insertion fails.
+          */
+          await db.prepare(`
+            UPDATE products
+            SET stock = stock + ?
+            WHERE id = ?
+          `)
+            .bind(
+              quantity,
+              productId
+            )
+            .run();
+
+          throw e;
+        }
       }
 
+
       /* =====================================================
-         MESSAGES
-         ===================================================== */
+         MESSAGES - GET
+      ===================================================== */
 
       if (
         path === "/api/messages" &&
@@ -1761,12 +2075,12 @@ export default {
       ) {
         const user =
           await requireUser(
-            request,
-            env
+            env,
+            request
           );
 
-        const result =
-          await env.DB.prepare(`
+        const rows =
+          await db.prepare(`
             SELECT
               m.*,
               sender.name AS sender_name,
@@ -1779,19 +2093,24 @@ export default {
             WHERE
               m.sender_id = ?
               OR m.receiver_id = ?
-            ORDER BY m.created_at ASC
+            ORDER BY m.id ASC
           `)
             .bind(
-              user.user_id,
-              user.user_id
+              user.id,
+              user.id
             )
             .all();
 
         return json({
-          messages:
-            result.results || []
+          ok: true,
+          messages: rows.results || []
         });
       }
+
+
+      /* =====================================================
+         MESSAGES - POST
+      ===================================================== */
 
       if (
         path === "/api/messages" &&
@@ -1799,8 +2118,8 @@ export default {
       ) {
         const user =
           await requireUser(
-            request,
-            env
+            env,
+            request
           );
 
         const body =
@@ -1808,37 +2127,67 @@ export default {
 
         const receiverId =
           number(
-            body.receiver_id,
-            0
+            body.receiver_id ||
+            body.receiverId
           );
 
         const message =
           String(
-            body.message || ""
+            body.body ||
+            body.message ||
+            ""
           ).trim();
 
-        if (
-          !receiverId ||
-          !message
-        ) {
+        if (!receiverId) {
           return json({
-            error:
-              "receiver_id and message are required."
+            error: "receiver_id is required"
           }, 400);
         }
 
+        if (!message) {
+          return json({
+            error: "Message is required"
+          }, 400);
+        }
+
+        if (
+          receiverId ===
+          Number(user.id)
+        ) {
+          return json({
+            error: "You cannot message yourself"
+          }, 400);
+        }
+
+        const receiver =
+          await db.prepare(`
+            SELECT id
+            FROM users
+            WHERE id = ?
+              AND is_active = 1
+          `)
+            .bind(receiverId)
+            .first();
+
+        if (!receiver) {
+          return json({
+            error: "Recipient not found"
+          }, 404);
+        }
+
         const result =
-          await env.DB.prepare(`
+          await db.prepare(`
             INSERT INTO messages
-            (
-              sender_id,
-              receiver_id,
-              message
-            )
-            VALUES (?, ?, ?)
+              (
+                sender_id,
+                receiver_id,
+                body
+              )
+            VALUES
+              (?, ?, ?)
           `)
             .bind(
-              user.user_id,
+              user.id,
               receiverId,
               message
             )
@@ -1846,14 +2195,15 @@ export default {
 
         return json({
           ok: true,
-          message_id:
-            result.meta.last_row_id
+          message: "Message sent",
+          id: result.meta?.last_row_id
         }, 201);
       }
 
+
       /* =====================================================
          SELLER PRODUCTS
-         ===================================================== */
+      ===================================================== */
 
       if (
         path === "/api/seller/products" &&
@@ -1861,29 +2211,30 @@ export default {
       ) {
         const user =
           await requireUser(
-            request,
-            env
+            env,
+            request
           );
 
-        const result =
-          await env.DB.prepare(`
+        const rows =
+          await db.prepare(`
             SELECT *
             FROM products
             WHERE seller_id = ?
-            ORDER BY created_at DESC
+            ORDER BY id DESC
           `)
-            .bind(user.user_id)
+            .bind(user.id)
             .all();
 
         return json({
-          products:
-            result.results || []
+          ok: true,
+          products: rows.results || []
         });
       }
 
+
       /* =====================================================
          SELLER STATS
-         ===================================================== */
+      ===================================================== */
 
       if (
         path === "/api/seller/stats" &&
@@ -1891,212 +2242,203 @@ export default {
       ) {
         const user =
           await requireUser(
-            request,
-            env
+            env,
+            request
           );
 
-        const products =
-          await env.DB.prepare(`
+        const productCount =
+          await db.prepare(`
             SELECT COUNT(*) AS count
             FROM products
             WHERE seller_id = ?
           `)
-            .bind(user.user_id)
+            .bind(user.id)
             .first();
 
-        const orders =
-          await env.DB.prepare(`
+        const orderCount =
+          await db.prepare(`
             SELECT COUNT(*) AS count
             FROM orders o
             JOIN products p
               ON p.id = o.product_id
             WHERE p.seller_id = ?
           `)
-            .bind(user.user_id)
+            .bind(user.id)
             .first();
 
         const sales =
-          await env.DB.prepare(`
+          await db.prepare(`
             SELECT
               COALESCE(
-                SUM(o.total_amount),
+                SUM(o.total),
                 0
               ) AS total
             FROM orders o
             JOIN products p
               ON p.id = o.product_id
-            WHERE
-              p.seller_id = ?
+            WHERE p.seller_id = ?
               AND o.payment_status = 'paid'
           `)
-            .bind(user.user_id)
+            .bind(user.id)
             .first();
 
         return json({
-          products:
-            number(products?.count),
-          orders:
-            number(orders?.count),
-          sales:
-            number(sales?.total)
+          ok: true,
+          stats: {
+            products:
+              Number(productCount?.count || 0),
+            orders:
+              Number(orderCount?.count || 0),
+            paid_sales:
+              Number(sales?.total || 0)
+          }
         });
       }
 
+
+      /* =====================================================
+         ADMIN AUTH
+      ===================================================== */
+
+      const isAdminPath =
+        path.startsWith("/api/admin/");
+
+      if (isAdminPath) {
+        await requireAdmin(
+          env,
+          request
+        );
+      }
+
+
       /* =====================================================
          ADMIN STATS
-         ===================================================== */
+      ===================================================== */
 
       if (
         path === "/api/admin/stats" &&
         method === "GET"
       ) {
-        await requireAdmin(
-          request,
-          env
-        );
-
         const users =
-          await env.DB.prepare(`
+          await db.prepare(`
             SELECT COUNT(*) AS count
             FROM users
           `).first();
 
         const sellers =
-          await env.DB.prepare(`
-            SELECT
-              COUNT(DISTINCT seller_id) AS count
+          await db.prepare(`
+            SELECT COUNT(DISTINCT seller_id) AS count
             FROM products
-            WHERE seller_id IS NOT NULL
           `).first();
 
         const products =
-          await env.DB.prepare(`
+          await db.prepare(`
             SELECT COUNT(*) AS count
-            FROM products
-          `).first();
-
-        const serviceRows =
-          await env.DB.prepare(`
-            SELECT
-              id,
-              title,
-              description,
-              category,
-              specs,
-              brand,
-              model
             FROM products
             WHERE status = 'active'
-            LIMIT 2000
-          `).all();
-
-        const serviceCount =
-          (serviceRows.results || [])
-            .filter(isServiceProduct)
-            .length;
+          `).first();
 
         const orders =
-          await env.DB.prepare(`
+          await db.prepare(`
             SELECT COUNT(*) AS count
             FROM orders
           `).first();
 
-        const pendingOrders =
-          await env.DB.prepare(`
-            SELECT COUNT(*) AS count
-            FROM orders
-            WHERE status = 'pending'
-          `).first();
-
-        const paid =
-          await env.DB.prepare(`
+        const revenue =
+          await db.prepare(`
             SELECT
               COALESCE(
-                SUM(total_amount),
+                SUM(total),
                 0
-              ) AS total,
-              COALESCE(
-                SUM(commission_amount),
-                0
-              ) AS commission
+              ) AS total
             FROM orders
             WHERE payment_status = 'paid'
           `).first();
 
-        const categories =
-          await env.DB.prepare(`
-            SELECT COUNT(*) AS count
-            FROM categories
-            WHERE is_active = 1
+        const commission =
+          await db.prepare(`
+            SELECT
+              COALESCE(
+                SUM(commission),
+                0
+              ) AS total
+            FROM orders
+            WHERE payment_status = 'paid'
           `).first();
 
         const messages =
-          await env.DB.prepare(`
+          await db.prepare(`
             SELECT COUNT(*) AS count
             FROM messages
           `).first();
 
+        const countries =
+          await db.prepare(`
+            SELECT COUNT(DISTINCT country) AS count
+            FROM users
+            WHERE country IS NOT NULL
+              AND country != ''
+          `).first();
+
+        let serviceCount = 0;
+
+        try {
+          const serviceRows =
+            await db.prepare(`
+              SELECT
+                title,
+                category,
+                description,
+                specs,
+                brand,
+                model
+              FROM products
+              WHERE status = 'active'
+              LIMIT 2000
+            `).all();
+
+          serviceCount =
+            (serviceRows.results || [])
+              .filter(isServiceProduct)
+              .length;
+        } catch {}
+
         return json({
-          users:
-            number(users?.count),
-
-          sellers:
-            number(sellers?.count),
-
-          products:
-            number(products?.count),
-
-          services:
-            serviceCount,
-
-          orders:
-            number(orders?.count),
-
-          pending_orders:
-            number(
-              pendingOrders?.count
-            ),
-
-          paid_amount:
-            number(
-              paid?.total
-            ),
-
-          commission:
-            number(
-              paid?.commission
-            ),
-
-          categories:
-            number(
-              categories?.count
-            ),
-
-          messages:
-            number(
-              messages?.count
-            ),
-
-          countries:
-            COUNTRIES.length
+          ok: true,
+          stats: {
+            users:
+              Number(users?.count || 0),
+            sellers:
+              Number(sellers?.count || 0),
+            products:
+              Number(products?.count || 0),
+            orders:
+              Number(orders?.count || 0),
+            revenue:
+              Number(revenue?.total || 0),
+            commission:
+              Number(commission?.total || 0),
+            messages:
+              Number(messages?.count || 0),
+            countries:
+              Number(countries?.count || 0),
+            services:
+              serviceCount
+          }
         });
       }
 
+
       /* =====================================================
          ADMIN USERS
-         ===================================================== */
+      ===================================================== */
 
       if (
         path === "/api/admin/users" &&
         method === "GET"
       ) {
-        await requireAdmin(
-          request,
-          env
-        );
-
-        const result =
-          await env.DB.prepare(`
+        const rows =
+          await db.prepare(`
             SELECT
               id,
               name,
@@ -2107,81 +2449,62 @@ export default {
               is_verified,
               created_at
             FROM users
-            ORDER BY created_at DESC
+            ORDER BY id DESC
           `).all();
 
         return json({
-          users:
-            result.results || []
+          ok: true,
+          users: rows.results || []
         });
       }
 
+
       /* =====================================================
          ADMIN SELLERS
-         ===================================================== */
+      ===================================================== */
 
       if (
         path === "/api/admin/sellers" &&
         method === "GET"
       ) {
-        await requireAdmin(
-          request,
-          env
-        );
-
-        const result =
-          await env.DB.prepare(`
+        const rows =
+          await db.prepare(`
             SELECT
               u.id,
               u.name,
               u.email,
               u.country,
-              u.is_active,
-              u.is_verified,
-              COUNT(DISTINCT p.id)
-                AS product_count,
-              COUNT(DISTINCT o.id)
-                AS order_count,
-              COALESCE(
-                SUM(
-                  CASE
-                    WHEN o.payment_status = 'paid'
-                    THEN o.total_amount
-                    ELSE 0
-                  END
-                ),
-                0
-              ) AS paid_sales
+              u.role,
+              COUNT(p.id) AS product_count
             FROM users u
             JOIN products p
               ON p.seller_id = u.id
-            LEFT JOIN orders o
-              ON o.product_id = p.id
-            GROUP BY u.id
+            GROUP BY
+              u.id,
+              u.name,
+              u.email,
+              u.country,
+              u.role
             ORDER BY product_count DESC
           `).all();
 
         return json({
-          sellers:
-            result.results || []
+          ok: true,
+          sellers: rows.results || []
         });
       }
 
+
       /* =====================================================
          ADMIN PRODUCTS
-         ===================================================== */
+      ===================================================== */
 
       if (
         path === "/api/admin/products" &&
         method === "GET"
       ) {
-        await requireAdmin(
-          request,
-          env
-        );
-
-        const result =
-          await env.DB.prepare(`
+        const rows =
+          await db.prepare(`
             SELECT
               p.*,
               u.name AS seller_name,
@@ -2189,33 +2512,31 @@ export default {
             FROM products p
             LEFT JOIN users u
               ON u.id = p.seller_id
-            ORDER BY p.created_at DESC
+            ORDER BY p.id DESC
+            LIMIT 2000
           `).all();
 
         return json({
-          products:
-            result.results || []
+          ok: true,
+          products: rows.results || []
         });
       }
 
+
       /* =====================================================
          ADMIN ORDERS
-         ===================================================== */
+      ===================================================== */
 
       if (
         path === "/api/admin/orders" &&
         method === "GET"
       ) {
-        await requireAdmin(
-          request,
-          env
-        );
-
-        const result =
-          await env.DB.prepare(`
+        const rows =
+          await db.prepare(`
             SELECT
               o.*,
-              p.title,
+              p.title AS product_title,
+              p.currency,
               buyer.name AS buyer_name,
               buyer.email AS buyer_email,
               seller.name AS seller_name,
@@ -2227,203 +2548,182 @@ export default {
               ON buyer.id = o.buyer_id
             JOIN users seller
               ON seller.id = p.seller_id
-            ORDER BY o.created_at DESC
+            ORDER BY o.id DESC
+            LIMIT 2000
           `).all();
 
         return json({
-          orders:
-            result.results || []
+          ok: true,
+          orders: rows.results || []
         });
       }
 
+
       /* =====================================================
          ADMIN PAYMENTS
-         ===================================================== */
+      ===================================================== */
 
       if (
         path === "/api/admin/payments" &&
         method === "GET"
       ) {
-        await requireAdmin(
-          request,
-          env
-        );
-
         const rows =
-          await env.DB.prepare(`
+          await db.prepare(`
             SELECT
               o.id,
-              o.product_id,
               o.buyer_id,
-              o.quantity,
-              o.unit_price,
-              o.total_amount,
-              o.commission_amount,
+              o.product_id,
+              o.total,
+              o.commission,
               o.status,
               o.payment_status,
               o.created_at,
-              p.title,
-              buyer.name AS buyer_name,
-              seller.name AS seller_name
+              p.title AS product_title,
+              p.currency,
+              u.name AS buyer_name,
+              u.email AS buyer_email
             FROM orders o
             JOIN products p
               ON p.id = o.product_id
-            JOIN users buyer
-              ON buyer.id = o.buyer_id
-            JOIN users seller
-              ON seller.id = p.seller_id
-            ORDER BY o.created_at DESC
+            JOIN users u
+              ON u.id = o.buyer_id
+            ORDER BY o.id DESC
+            LIMIT 2000
           `).all();
 
-        const summary =
-          await env.DB.prepare(`
-            SELECT
-              COALESCE(
-                SUM(
-                  CASE
-                    WHEN payment_status = 'paid'
-                    THEN total_amount
-                    ELSE 0
-                  END
-                ),
-                0
-              ) AS paid_amount,
+        const payments =
+          rows.results || [];
 
-              COALESCE(
-                SUM(
-                  CASE
-                    WHEN payment_status = 'paid'
-                    THEN commission_amount
-                    ELSE 0
-                  END
-                ),
-                0
-              ) AS commission
-            FROM orders
-          `).first();
+        const summary = {
+          total_orders:
+            payments.length,
+
+          paid:
+            payments.filter(
+              x =>
+                normalize(
+                  x.payment_status
+                ) === "paid"
+            ).length,
+
+          unpaid:
+            payments.filter(
+              x =>
+                normalize(
+                  x.payment_status
+                ) !== "paid"
+            ).length,
+
+          total_amount:
+            payments.reduce(
+              (sum, x) =>
+                sum + number(x.total),
+              0
+            ),
+
+          total_commission:
+            payments.reduce(
+              (sum, x) =>
+                sum + number(x.commission),
+              0
+            )
+        };
 
         return json({
-          payments:
-            rows.results || [],
-
-          summary: {
-            paid_amount:
-              number(
-                summary?.paid_amount
-              ),
-
-            commission:
-              number(
-                summary?.commission
-              )
-          }
+          ok: true,
+          payments,
+          summary
         });
       }
 
+
       /* =====================================================
          ADMIN SERVICES
-         ===================================================== */
+      ===================================================== */
 
       if (
         path === "/api/admin/services" &&
         method === "GET"
       ) {
-        await requireAdmin(
-          request,
-          env
-        );
-
         const search =
-          normalize(
-            url.searchParams.get(
-              "search"
-            )
-          );
+          url.searchParams.get("search") ||
+          "";
 
         const country =
-          url.searchParams.get(
-            "country"
-          ) || "";
+          url.searchParams.get("country") ||
+          "";
 
         const category =
-          url.searchParams.get(
-            "category"
-          ) || "";
+          url.searchParams.get("category") ||
+          "";
 
         const rows =
-          await env.DB.prepare(`
+          await db.prepare(`
             SELECT
               p.*,
               u.name AS seller_name,
               u.email AS seller_email,
-              u.country AS seller_country,
-              u.is_verified AS seller_verified
+              u.country AS seller_country
             FROM products p
-            LEFT JOIN users u
+            JOIN users u
               ON u.id = p.seller_id
             WHERE p.status = 'active'
-            ORDER BY p.created_at DESC
+            ORDER BY p.id DESC
             LIMIT 2000
           `).all();
 
         let services =
           (rows.results || [])
-            .filter(isServiceProduct);
+            .filter(isServiceProduct)
+            .filter(p =>
+              serviceCategoryMatch(
+                p,
+                category
+              )
+            );
 
         if (search) {
+          const q =
+            normalize(search);
+
           services =
-            services.filter(product =>
-              productText(product)
-                .includes(search)
+            services.filter(p =>
+              productText(p)
+                .includes(q)
             );
         }
 
         if (country) {
-          services =
-            services.filter(product =>
-              normalize(
-                product.country
-              ).includes(
-                normalize(country)
-              )
-            );
-        }
+          const q =
+            normalize(country);
 
-        if (category) {
           services =
-            services.filter(product =>
-              serviceCategoryMatch(
-                product,
-                category
-              )
+            services.filter(p =>
+              normalize(
+                p.country ||
+                p.seller_country
+              ).includes(q)
             );
         }
 
         return json({
+          ok: true,
           services,
-          count: services.length,
-          categories:
-            SERVICE_CATEGORIES,
-          countries:
-            COUNTRIES.length
+          count: services.length
         });
       }
 
+
       /* =====================================================
          ADMIN REPORTS
-         ===================================================== */
+      ===================================================== */
 
       if (
         path === "/api/admin/reports" &&
         method === "GET"
       ) {
-        await requireAdmin(
-          request,
-          env
-        );
-
         const usersByCountry =
-          await env.DB.prepare(`
+          await db.prepare(`
             SELECT
               country,
               COUNT(*) AS count
@@ -2433,7 +2733,7 @@ export default {
           `).all();
 
         const productsByCategory =
-          await env.DB.prepare(`
+          await db.prepare(`
             SELECT
               category,
               COUNT(*) AS count
@@ -2443,197 +2743,208 @@ export default {
           `).all();
 
         const orderStatuses =
-          await env.DB.prepare(`
+          await db.prepare(`
             SELECT
               status,
               COUNT(*) AS count
             FROM orders
             GROUP BY status
+            ORDER BY count DESC
           `).all();
 
         const paymentStatuses =
-          await env.DB.prepare(`
+          await db.prepare(`
             SELECT
               payment_status,
               COUNT(*) AS count
             FROM orders
             GROUP BY payment_status
+            ORDER BY count DESC
           `).all();
 
         const topProducts =
-          await env.DB.prepare(`
+          await db.prepare(`
             SELECT
               p.id,
               p.title,
-              p.views,
+              COUNT(o.id) AS orders,
               COALESCE(
-                SUM(o.quantity),
+                SUM(o.total),
                 0
-              ) AS sold_quantity
+              ) AS sales
             FROM products p
             LEFT JOIN orders o
               ON o.product_id = p.id
-            GROUP BY p.id
-            ORDER BY sold_quantity DESC
+            GROUP BY
+              p.id,
+              p.title
+            ORDER BY orders DESC
             LIMIT 20
           `).all();
 
         return json({
-          users_by_country:
-            usersByCountry.results || [],
+          ok: true,
+          reports: {
+            users_by_country:
+              usersByCountry.results || [],
 
-          products_by_category:
-            productsByCategory.results || [],
+            products_by_category:
+              productsByCategory.results || [],
 
-          order_statuses:
-            orderStatuses.results || [],
+            order_statuses:
+              orderStatuses.results || [],
 
-          payment_statuses:
-            paymentStatuses.results || [],
+            payment_statuses:
+              paymentStatuses.results || [],
 
-          top_products:
-            topProducts.results || [],
-
-          global_countries:
-            COUNTRIES.length
+            top_products:
+              topProducts.results || []
+          }
         });
       }
 
+
       /* =====================================================
          ADMIN REVIEWS
-         ===================================================== */
+         Locked schema has no reviews table.
+      ===================================================== */
 
       if (
         path === "/api/admin/reviews" &&
         method === "GET"
       ) {
-        await requireAdmin(
-          request,
-          env
-        );
-
         return json({
+          ok: true,
           supported: false,
           reviews: [],
           message:
-            "Reviews are prepared in the interface, but the locked schema.sql does not contain a reviews table."
+            "Reviews are not enabled because the locked schema has no reviews table."
         });
       }
 
+
       /* =====================================================
          ADMIN PROMOTIONS
-         ===================================================== */
+      ===================================================== */
 
       if (
         path === "/api/admin/promotions" &&
         method === "GET"
       ) {
-        await requireAdmin(
-          request,
-          env
-        );
-
         return json({
+          ok: true,
           supported: false,
           promotions: [],
           message:
-            "Promotions are prepared in the interface, but the locked schema.sql does not contain a promotions table."
+            "Promotions are not enabled in the locked schema."
         });
       }
 
+
       /* =====================================================
          ADMIN ADS
-         ===================================================== */
+      ===================================================== */
 
       if (
         path === "/api/admin/ads" &&
         method === "GET"
       ) {
-        await requireAdmin(
-          request,
-          env
-        );
-
         return json({
+          ok: true,
           supported: false,
           ads: [],
           message:
-            "Ads are prepared in the interface, but the locked schema.sql does not contain an ads table."
+            "Advertising management is not enabled in the locked schema."
         });
       }
 
+
       /* =====================================================
-         ADMIN CATEGORIES
-         ===================================================== */
+         ADMIN CATEGORIES - GET
+      ===================================================== */
 
       if (
         path === "/api/admin/categories" &&
         method === "GET"
       ) {
-        await requireAdmin(
-          request,
-          env
-        );
-
-        const result =
-          await env.DB.prepare(`
+        const rows =
+          await db.prepare(`
             SELECT *
             FROM categories
-            ORDER BY name ASC
+            ORDER BY id DESC
           `).all();
 
         return json({
-          categories:
-            result.results || []
+          ok: true,
+          categories: rows.results || []
         });
       }
+
+
+      /* =====================================================
+         ADMIN CATEGORIES - POST
+      ===================================================== */
 
       if (
         path === "/api/admin/categories" &&
         method === "POST"
       ) {
-        await requireAdmin(
-          request,
-          env
-        );
-
         const body =
           await readJSON(request);
 
         const name =
           String(
-            body.name || ""
+            body.name ||
+            body.title ||
+            ""
           ).trim();
 
         if (!name) {
           return json({
-            error:
-              "Category name is required."
+            error: "Category name is required"
           }, 400);
         }
 
+        const existing =
+          await db.prepare(`
+            SELECT id
+            FROM categories
+            WHERE name = ?
+            LIMIT 1
+          `)
+            .bind(name)
+            .first();
+
+        if (existing) {
+          return json({
+            error: "Category already exists"
+          }, 409);
+        }
+
         const result =
-          await env.DB.prepare(`
+          await db.prepare(`
             INSERT INTO categories
-            (
-              name,
-              is_active
-            )
-            VALUES (?, 1)
+              (
+                name,
+                is_active
+              )
+            VALUES
+              (?, 1)
           `)
             .bind(name)
             .run();
 
         return json({
           ok: true,
-          category_id:
-            result.meta.last_row_id
+          message: "Category created",
+          id: result.meta?.last_row_id
         }, 201);
       }
 
+
       /* =====================================================
-         ADMIN UPDATE ORDER
-         ===================================================== */
+         ADMIN ORDER UPDATE
+      ===================================================== */
 
       const adminOrderMatch =
         path.match(
@@ -2644,71 +2955,86 @@ export default {
         adminOrderMatch &&
         method === "PATCH"
       ) {
-        await requireAdmin(
-          request,
-          env
-        );
-
         const id =
-          adminOrderMatch[1];
+          Number(
+            adminOrderMatch[1]
+          );
 
         const body =
           await readJSON(request);
 
-        const updates = [];
-        const values = [];
-
-        if (
+        const status =
           body.status !== undefined
-        ) {
-          updates.push(
-            "status = ?"
-          );
+            ? String(body.status)
+            : null;
 
-          values.push(
-            String(body.status)
-          );
-        }
+        const paymentStatus =
+          body.payment_status !== undefined
+            ? String(body.payment_status)
+            : null;
 
         if (
-          body.payment_status !== undefined
+          status !== null &&
+          paymentStatus !== null
         ) {
-          updates.push(
-            "payment_status = ?"
-          );
-
-          values.push(
-            String(
-              body.payment_status
+          await db.prepare(`
+            UPDATE orders
+            SET
+              status = ?,
+              payment_status = ?
+            WHERE id = ?
+          `)
+            .bind(
+              status,
+              paymentStatus,
+              id
             )
-          );
-        }
+            .run();
 
-        if (!updates.length) {
+        } else if (
+          status !== null
+        ) {
+          await db.prepare(`
+            UPDATE orders
+            SET status = ?
+            WHERE id = ?
+          `)
+            .bind(
+              status,
+              id
+            )
+            .run();
+
+        } else if (
+          paymentStatus !== null
+        ) {
+          await db.prepare(`
+            UPDATE orders
+            SET payment_status = ?
+            WHERE id = ?
+          `)
+            .bind(
+              paymentStatus,
+              id
+            )
+            .run();
+        } else {
           return json({
             error:
-              "No changes supplied."
+              "status or payment_status is required"
           }, 400);
         }
 
-        values.push(id);
-
-        await env.DB.prepare(`
-          UPDATE orders
-          SET ${updates.join(", ")}
-          WHERE id = ?
-        `)
-          .bind(...values)
-          .run();
-
         return json({
-          ok: true
+          ok: true,
+          message: "Order updated"
         });
       }
 
+
       /* =====================================================
-         ADMIN UPDATE USER
-         ===================================================== */
+         ADMIN USER UPDATE
+      ===================================================== */
 
       const adminUserMatch =
         path.match(
@@ -2721,105 +3047,89 @@ export default {
       ) {
         const admin =
           await requireAdmin(
-            request,
-            env
+            env,
+            request
           );
 
         const id =
-          adminUserMatch[1];
+          Number(
+            adminUserMatch[1]
+          );
 
         const body =
           await readJSON(request);
 
-        const updates = [];
-        const values = [];
+        const target =
+          await db.prepare(`
+            SELECT *
+            FROM users
+            WHERE id = ?
+          `)
+            .bind(id)
+            .first();
 
-        if (
+        if (!target) {
+          return json({
+            error: "User not found"
+          }, 404);
+        }
+
+        let role =
           body.role !== undefined
-        ) {
-          const role =
-            String(body.role);
+            ? String(body.role)
+            : target.role;
 
-          if (
-            ![
-              "buyer",
-              "seller",
-              "admin"
-            ].includes(role)
-          ) {
-            return json({
-              error:
-                "Invalid role."
-            }, 400);
-          }
-
-          updates.push(
-            "role = ?"
-          );
-
-          values.push(role);
-        }
-
-        if (
+        let isActive =
           body.is_active !== undefined
-        ) {
-          updates.push(
-            "is_active = ?"
-          );
+            ? (body.is_active ? 1 : 0)
+            : target.is_active;
 
-          values.push(
-            body.is_active ? 1 : 0
-          );
-        }
-
-        if (
+        let isVerified =
           body.is_verified !== undefined
-        ) {
-          updates.push(
-            "is_verified = ?"
-          );
+            ? (body.is_verified ? 1 : 0)
+            : target.is_verified;
 
-          values.push(
-            body.is_verified ? 1 : 0
-          );
-        }
-
-        if (!updates.length) {
-          return json({
-            error:
-              "No changes supplied."
-          }, 400);
-        }
-
+        /*
+          Prevent admin from accidentally
+          disabling their own account.
+        */
         if (
-          String(id) ===
-            String(admin.user_id) &&
-          body.is_active === false
+          Number(id) ===
+            Number(admin.id) &&
+          !isActive
         ) {
           return json({
             error:
-              "You cannot deactivate your own admin account."
+              "You cannot deactivate your own admin account"
           }, 400);
         }
 
-        values.push(id);
-
-        await env.DB.prepare(`
+        await db.prepare(`
           UPDATE users
-          SET ${updates.join(", ")}
+          SET
+            role = ?,
+            is_active = ?,
+            is_verified = ?
           WHERE id = ?
         `)
-          .bind(...values)
+          .bind(
+            role,
+            isActive,
+            isVerified,
+            id
+          )
           .run();
 
         return json({
-          ok: true
+          ok: true,
+          message: "User updated"
         });
       }
 
+
       /* =====================================================
-         ADMIN UPDATE PRODUCT
-         ===================================================== */
+         ADMIN PRODUCT STATUS UPDATE
+      ===================================================== */
 
       const adminProductMatch =
         path.match(
@@ -2830,171 +3140,157 @@ export default {
         adminProductMatch &&
         method === "PATCH"
       ) {
-        await requireAdmin(
-          request,
-          env
-        );
-
         const id =
-          adminProductMatch[1];
+          Number(
+            adminProductMatch[1]
+          );
 
         const body =
           await readJSON(request);
 
-        if (
-          body.status === undefined
-        ) {
+        const status =
+          String(
+            body.status || ""
+          ).trim();
+
+        if (!status) {
           return json({
-            error:
-              "status is required."
+            error: "status is required"
           }, 400);
         }
 
-        await env.DB.prepare(`
+        await db.prepare(`
           UPDATE products
           SET status = ?
           WHERE id = ?
         `)
           .bind(
-            String(body.status),
+            status,
             id
           )
           .run();
 
         return json({
-          ok: true
+          ok: true,
+          message: "Product status updated"
         });
       }
 
+
       /* =====================================================
-         GLOBAL SERVICE SEARCH
-         ===================================================== */
+         SERVICE SEARCH
+      ===================================================== */
 
       if (
         path === "/api/service-search" &&
         method === "GET"
       ) {
         const search =
-          url.searchParams.get("q") ||
           url.searchParams.get("search") ||
-          "";
-
-        const country =
-          url.searchParams.get(
-            "country"
-          ) || "";
-
-        const city =
-          url.searchParams.get(
-            "city"
-          ) ||
-          url.searchParams.get(
-            "district"
-          ) ||
+          url.searchParams.get("q") ||
           "";
 
         const category =
-          url.searchParams.get(
-            "category"
-          ) || "";
+          url.searchParams.get("category") ||
+          "";
+
+        const country =
+          url.searchParams.get("country") ||
+          "";
+
+        const city =
+          url.searchParams.get("city") ||
+          url.searchParams.get("district") ||
+          "";
 
         const provider =
-          url.searchParams.get(
-            "provider"
-          ) || "";
+          url.searchParams.get("provider") ||
+          "";
 
         const limit =
           limitValue(
-            url.searchParams.get(
-              "limit"
-            )
+            url.searchParams.get("limit"),
+            100,
+            500
           );
 
-        const conditions = [
-          "p.status = 'active'",
-          "u.is_active = 1"
-        ];
-
-        const params = [];
-
-        if (country) {
-          conditions.push(
-            "p.country LIKE ?"
-          );
-
-          params.push(
-            `%${country}%`
-          );
-        }
-
-        if (city) {
-          conditions.push(
-            "p.district LIKE ?"
-          );
-
-          params.push(
-            `%${city}%`
-          );
-        }
-
-        if (provider) {
-          conditions.push(
-            "u.name LIKE ?"
-          );
-
-          params.push(
-            `%${provider}%`
-          );
-        }
-
-        if (search) {
-          conditions.push(`
-            (
-              p.title LIKE ?
-              OR p.description LIKE ?
-              OR p.category LIKE ?
-              OR p.specs LIKE ?
-              OR p.brand LIKE ?
-              OR p.model LIKE ?
-              OR u.name LIKE ?
-            )
-          `);
-
-          const q =
-            `%${search}%`;
-
-          params.push(
-            q,q,q,q,q,q,q
-          );
-        }
-
-        const result =
-          await env.DB.prepare(`
+        const rows =
+          await db.prepare(`
             SELECT
               p.*,
               u.name AS seller_name,
               u.email AS seller_email,
-              u.country AS seller_country,
-              u.is_verified AS seller_verified
+              u.country AS seller_country
             FROM products p
-            LEFT JOIN users u
+            JOIN users u
               ON u.id = p.seller_id
-            WHERE ${conditions.join(" AND ")}
-            ORDER BY p.created_at DESC
-            LIMIT 500
-          `)
-            .bind(...params)
-            .all();
+            WHERE p.status = 'active'
+              AND u.is_active = 1
+            ORDER BY p.id DESC
+            LIMIT 2000
+          `).all();
 
         let services =
-          (result.results || [])
-            .filter(isServiceProduct)
-            .filter(product =>
+          (rows.results || [])
+            .filter(isServiceProduct);
+
+        if (search) {
+          const q =
+            normalize(search);
+
+          services =
+            services.filter(p =>
+              productText(p)
+                .includes(q)
+            );
+        }
+
+        if (category) {
+          services =
+            services.filter(p =>
               serviceCategoryMatch(
-                product,
+                p,
                 category
               )
             );
+        }
+
+        if (country) {
+          const q =
+            normalize(country);
+
+          services =
+            services.filter(p =>
+              normalize(
+                p.country ||
+                p.seller_country
+              ).includes(q)
+            );
+        }
+
+        if (city) {
+          const q =
+            normalize(city);
+
+          services =
+            services.filter(p =>
+              normalize(
+                p.district
+              ).includes(q)
+            );
+        }
+
+        if (provider) {
+          const q =
+            normalize(provider);
+
+          services =
+            services.filter(p =>
+              normalize(
+                p.seller_name
+              ).includes(q)
+            );
+        }
 
         services =
           services.slice(0, limit);
@@ -3003,80 +3299,58 @@ export default {
           ok: true,
           services,
           count: services.length,
-
-          query: {
-            service:
-              search,
-
-            country:
-              country ||
-              "All countries",
-
-            city:
-              city ||
-              "All cities",
-
-            category:
-              category ||
-              "All service categories",
-
-            provider:
-              provider ||
-              "All providers"
-          },
-
-          countries:
-            COUNTRIES.length,
-
           global: true
         });
       }
 
-      /* =====================================================
-         FRONTEND ASSETS
-         ===================================================== */
 
-      if (env.ASSETS) {
+      /* =====================================================
+         FALLBACK TO CLOUDFLARE ASSETS
+      ===================================================== */
+
+      if (
+        env.ASSETS &&
+        !path.startsWith("/api/")
+      ) {
         return env.ASSETS.fetch(request);
       }
 
       return json({
-        error:
-          "Not found"
+        error: "API route not found",
+        path
       }, 404);
 
     } catch (error) {
+
       console.error(
         "IsokoHub API error:",
         error
       );
 
       if (
-        error?.message ===
+        error.message ===
         "UNAUTHORIZED"
       ) {
         return json({
           error:
-            "Unauthorized"
+            "Authentication required"
         }, 401);
       }
 
       if (
-        error?.message ===
+        error.message ===
         "ADMIN_ONLY"
       ) {
         return json({
           error:
-            "Admin access required."
+            "Admin access required"
         }, 403);
       }
 
       return json({
         error:
-          "Internal server error.",
-        message:
-          error?.message ||
-          "Unknown error"
+          error.message ||
+          "Internal server error"
       }, 500);
     }
   }
