@@ -55,6 +55,7 @@ header{
   outline:none;
 }
 .search input:focus{border-color:#1261d8}
+
 .btn{
   border:0;
   border-radius:10px;
@@ -69,6 +70,9 @@ header{
   color:#172033;
 }
 .btn.orange{background:#f97316}
+.btn.danger{background:#dc2626}
+.btn.green{background:#16a34a}
+
 .authArea{display:flex;gap:8px}
 
 .nav{
@@ -102,11 +106,14 @@ header{
   font-size:14px;
 }
 
-main{max-width:1400px;margin:auto;padding:0 18px 50px}
-
-.section{
-  margin:28px 0;
+main{
+  max-width:1400px;
+  margin:auto;
+  padding:0 18px 50px;
 }
+
+.section{margin:28px 0}
+
 .hero{
   margin-top:20px;
   padding:45px 30px;
@@ -114,13 +121,20 @@ main{max-width:1400px;margin:auto;padding:0 18px 50px}
   background:linear-gradient(135deg,#1261d8,#4f46e5);
   color:#fff;
 }
-.hero h1{font-size:42px;margin:0 0 12px}
+.hero h1{
+  font-size:42px;
+  margin:0 0 12px;
+}
 .hero p{
   max-width:850px;
   font-size:18px;
   line-height:1.7;
 }
-.heroActions{display:flex;gap:10px;flex-wrap:wrap}
+.heroActions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
 
 .sectionTitle{
   display:flex;
@@ -131,11 +145,17 @@ main{max-width:1400px;margin:auto;padding:0 18px 50px}
 }
 .sectionTitle h2{margin:0}
 
-.categories,.products,.serviceGrid,.opportunities,.features,.dashboardGrid{
+.categories,
+.products,
+.serviceGrid,
+.opportunities,
+.features,
+.dashboardGrid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
   gap:14px;
 }
+
 .card{
   background:#fff;
   border:1px solid #e5e7eb;
@@ -144,13 +164,18 @@ main{max-width:1400px;margin:auto;padding:0 18px 50px}
   box-shadow:0 3px 12px rgba(0,0,0,.04);
 }
 .card h3{margin-top:0}
+
 .category{
   text-align:center;
   font-size:16px;
   font-weight:700;
   transition:.2s;
 }
-.category:hover{transform:translateY(-2px);border-color:#1261d8}
+.category:hover{
+  transform:translateY(-2px);
+  border-color:#1261d8;
+}
+
 .product{
   overflow:hidden;
   padding:0;
@@ -169,12 +194,22 @@ main{max-width:1400px;margin:auto;padding:0 18px 50px}
   font-weight:900;
   color:#1261d8;
 }
-.muted{color:#64748b;font-size:14px}
-.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.muted{
+  color:#64748b;
+  font-size:14px;
+}
+.actions{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
 
 .serviceGrid .card,
 .opportunities .card,
-.features .card{min-height:145px}
+.features .card{
+  min-height:145px;
+}
 
 .empty{
   padding:35px;
@@ -203,12 +238,14 @@ main{max-width:1400px;margin:auto;padding:0 18px 50px}
   background:#1261d8;
   color:#fff;
 }
+
 .adminPanel{
   background:#fff;
   border:1px solid #e5e7eb;
   border-radius:15px;
   padding:20px;
 }
+
 .stat{
   padding:20px;
   background:#fff;
@@ -219,6 +256,33 @@ main{max-width:1400px;margin:auto;padding:0 18px 50px}
   display:block;
   font-size:28px;
   margin-top:7px;
+}
+
+.adminTableWrap{
+  overflow-x:auto;
+}
+.adminTable{
+  width:100%;
+  border-collapse:collapse;
+  min-width:700px;
+}
+.adminTable th,
+.adminTable td{
+  border-bottom:1px solid #e5e7eb;
+  padding:12px;
+  text-align:left;
+}
+.adminTable th{
+  background:#f8fafc;
+}
+
+.badge{
+  display:inline-block;
+  padding:5px 9px;
+  border-radius:999px;
+  background:#eef2f7;
+  font-size:12px;
+  font-weight:700;
 }
 
 footer{
@@ -308,6 +372,12 @@ footer a{
 }
 .quick:hover{border-color:#1261d8}
 
+.loading{
+  padding:30px;
+  text-align:center;
+  color:#64748b;
+}
+
 @media(max-width:700px){
   .hero h1{font-size:30px}
   .hero{padding:30px 20px}
@@ -321,45 +391,47 @@ footer a{
 <body>
 
 <header>
-  <div class="topbar">
-    <div class="logo">IsokoHub 🌍</div>
+<div class="topbar">
 
-    <form class="search" id="searchForm">
-      <input id="searchInput" type="search"
-        placeholder="Search products, services, teachers, creators...">
-      <button class="btn" type="submit">Search</button>
-    </form>
+<div class="logo">IsokoHub 🌍</div>
 
-    <div class="authArea" id="authArea">
-      <button class="btn secondary" onclick="openModal('loginModal')">Login</button>
-      <button class="btn" onclick="openModal('registerModal')">Register</button>
-    </div>
-  </div>
+<form class="search" id="searchForm">
+<input id="searchInput" type="search"
+placeholder="Search products, services, teachers, creators...">
+<button class="btn" type="submit">Search</button>
+</form>
 
-  <nav class="nav">
-    <button onclick="showSection('home')">🏠 Home</button>
-    <button onclick="showSection('saved')">❤️ Saved <span id="savedCount">0</span></button>
-    <button onclick="showSection('cart')">🛒 Cart <span id="cartCount">0</span></button>
-    <button onclick="showSection('orders')">📦 Orders</button>
-    <button onclick="showSection('messages')">💬 Messages</button>
-    <button onclick="openModal('sellModal')">➕ Sell</button>
-    <button onclick="showSection('profile')">👤 Profile</button>
-    <button onclick="showSection('services')">🛠️ Services</button>
-    <button onclick="showSection('requests')">📋 Requests</button>
-    <button onclick="showSection('education')">🎓 Education</button>
-    <button onclick="showSection('creators')">🎨 Creators</button>
-    <button onclick="showSection('business')">🏢 Business</button>
-    <button onclick="showSection('work')">💼 Work</button>
-    <button onclick="showSection('deals')">🔥 Deals</button>
-    <button onclick="showSection('community')">🤝 Community</button>
-    <button onclick="showSection('admin')">⚙️ Admin</button>
-  </nav>
+<div class="authArea" id="authArea">
+<button class="btn secondary" onclick="openModal('loginModal')">Login</button>
+<button class="btn" onclick="openModal('registerModal')">Register</button>
+</div>
+
+</div>
+
+<nav class="nav">
+<button onclick="showSection('home')">🏠 Home</button>
+<button onclick="showSection('saved')">❤️ Saved <span id="savedCount">0</span></button>
+<button onclick="showSection('cart')">🛒 Cart <span id="cartCount">0</span></button>
+<button onclick="showSection('orders')">📦 Orders</button>
+<button onclick="showSection('messages')">💬 Messages</button>
+<button onclick="openModal('sellModal')">➕ Sell</button>
+<button onclick="showSection('profile')">👤 Profile</button>
+<button onclick="showSection('services')">🛠️ Services</button>
+<button onclick="showSection('requests')">📋 Requests</button>
+<button onclick="showSection('education')">🎓 Education</button>
+<button onclick="showSection('creators')">🎨 Creators</button>
+<button onclick="showSection('business')">🏢 Business</button>
+<button onclick="showSection('work')">💼 Work</button>
+<button onclick="showSection('deals')">🔥 Deals</button>
+<button onclick="showSection('community')">🤝 Community</button>
+<button onclick="showSection('admin')">⚙️ Admin</button>
+</nav>
 </header>
 
 <div class="status">
-  <div class="statusBox" id="connectionStatus">
-    Connecting to IsokoHub API + D1 database...
-  </div>
+<div class="statusBox" id="connectionStatus">
+Connecting to IsokoHub API + D1 database...
+</div>
 </div>
 
 <main>
@@ -367,997 +439,2494 @@ footer a{
 <!-- HOME -->
 <section id="home" class="pageSection active">
 
-  <div class="hero">
-    <h1>Welcome to IsokoHub 🌍</h1>
-    <p>
-      A global marketplace connecting buyers, sellers, teachers, artists,
-      creators, filmmakers, professionals and service providers.
-    </p>
-    <div class="heroActions">
-      <button class="btn orange" onclick="scrollToProducts()">Explore Marketplace</button>
-      <button class="btn secondary" onclick="openModal('sellModal')">Start Selling</button>
-      <button class="btn secondary" onclick="showSection('requests')">Post a Request</button>
-    </div>
-  </div>
+<div class="hero">
+<h1>Welcome to IsokoHub 🌍</h1>
+<p>
+A global marketplace connecting buyers, sellers, teachers, artists,
+creators, filmmakers, professionals and service providers.
+</p>
 
-  <div class="section">
-    <div class="sectionTitle">
-      <h2>🚀 IsokoHub Services</h2>
-    </div>
+<div class="heroActions">
+<button class="btn orange" onclick="scrollToProducts()">Explore Marketplace</button>
+<button class="btn secondary" onclick="openModal('sellModal')">Start Selling</button>
+<button class="btn secondary" onclick="showSection('requests')">Post a Request</button>
+</div>
+</div>
 
-    <div class="quickGrid">
-      <button class="quick" onclick="showSection('services')">🛠️ Services</button>
-      <button class="quick" onclick="showSection('requests')">📋 Requests</button>
-      <button class="quick" onclick="showSection('education')">🎓 LearnHub</button>
-      <button class="quick" onclick="showSection('creators')">🎨 CreatorHub</button>
-      <button class="quick" onclick="showSection('business')">🏢 BusinessHub</button>
-      <button class="quick" onclick="showSection('work')">💼 WorkHub</button>
-      <button class="quick" onclick="showSection('deals')">🔥 IsokoDeals</button>
-      <button class="quick" onclick="showSection('community')">🤝 Community</button>
-      <button class="quick" onclick="openModal('aiModal')">🤖 IsokoAI</button>
-      <button class="quick" onclick="openModal('matchModal')">🤝 IsokoMatch</button>
-      <button class="quick" onclick="openModal('quoteModal')">📑 Get Quote</button>
-      <button class="quick" onclick="openModal('bookingModal')">📅 Book Service</button>
-    </div>
-  </div>
+<div class="section">
+<div class="sectionTitle">
+<h2>🚀 IsokoHub Services</h2>
+</div>
 
-  <div class="section">
-    <div class="sectionTitle">
-      <h2>Shop by Category</h2>
-    </div>
-    <div class="categories" id="categories"></div>
-  </div>
+<div class="quickGrid">
+<button class="quick" onclick="showSection('services')">🛠️ Services</button>
+<button class="quick" onclick="showSection('requests')">📋 Requests</button>
+<button class="quick" onclick="showSection('education')">🎓 LearnHub</button>
+<button class="quick" onclick="showSection('creators')">🎨 CreatorHub</button>
+<button class="quick" onclick="showSection('business')">🏢 BusinessHub</button>
+<button class="quick" onclick="showSection('work')">💼 WorkHub</button>
+<button class="quick" onclick="showSection('deals')">🔥 IsokoDeals</button>
+<button class="quick" onclick="showSection('community')">🤝 Community</button>
+<button class="quick" onclick="openModal('aiModal')">🤖 IsokoAI</button>
+<button class="quick" onclick="openModal('matchModal')">🤝 IsokoMatch</button>
+<button class="quick" onclick="openModal('quoteModal')">📑 Get Quote</button>
+<button class="quick" onclick="openModal('bookingModal')">📅 Book Service</button>
+</div>
+</div>
 
-  <div class="section" id="productsSection">
-    <div class="sectionTitle">
-      <h2>Featured Products & Services</h2>
-      <button class="btn secondary" onclick="loadProducts()">Refresh</button>
-    </div>
-    <div class="products" id="products"></div>
-  </div>
+<div class="section">
+<div class="sectionTitle">
+<h2>Shop by Category</h2>
+</div>
+<div class="categories" id="categories"></div>
+</div>
 
-  <div class="section">
-    <div class="sectionTitle"><h2>🌟 Explore IsokoHub</h2></div>
+<div class="section" id="productsSection">
+<div class="sectionTitle">
+<h2>Featured Products & Services</h2>
+<button class="btn secondary" onclick="loadProducts()">Refresh</button>
+</div>
+<div class="products" id="products"></div>
+</div>
 
-    <div class="features">
-      <div class="card">
-        <h3>🤝 IsokoMatch</h3>
-        <p>Buyers can describe what they need and receive relevant offers.</p>
-        <button class="btn" onclick="openModal('matchModal')">Find a Provider</button>
-      </div>
+<div class="section">
+<div class="sectionTitle"><h2>🌟 Explore IsokoHub</h2></div>
 
-      <div class="card">
-        <h3>📋 Request a Service</h3>
-        <p>Post a service request and let qualified providers respond.</p>
-        <button class="btn" onclick="showSection('requests')">Create Request</button>
-      </div>
+<div class="features">
 
-      <div class="card">
-        <h3>📑 Request for Quote</h3>
-        <p>Businesses can request quotations from sellers and professionals.</p>
-        <button class="btn" onclick="openModal('quoteModal')">Request Quote</button>
-      </div>
+<div class="card">
+<h3>🤝 IsokoMatch</h3>
+<p>Buyers can describe what they need and receive relevant offers.</p>
+<button class="btn" onclick="openModal('matchModal')">Find a Provider</button>
+</div>
 
-      <div class="card">
-        <h3>🏪 IsokoStore</h3>
-        <p>Create a professional storefront and build your marketplace identity.</p>
-        <button class="btn" onclick="showSection('profile')">My Store</button>
-      </div>
-    </div>
-  </div>
+<div class="card">
+<h3>📋 Request a Service</h3>
+<p>Post a service request and let qualified providers respond.</p>
+<button class="btn" onclick="showSection('requests')">Create Request</button>
+</div>
 
-  <div class="section">
-    <div class="sectionTitle"><h2>💰 Business Opportunities</h2></div>
-    <div class="opportunities">
-      <div class="card"><h3>📣 IsokoAds</h3><p>Businesses can advertise products, services and brands.</p></div>
-      <div class="card"><h3>🚀 BoostHub</h3><p>Promote listings and increase marketplace visibility.</p></div>
-      <div class="card"><h3>⭐ Premium Sellers</h3><p>Premium marketplace tools for sellers and businesses.</p></div>
-      <div class="card"><h3>💳 Commission</h3><p>Marketplace commission from successful transactions.</p></div>
-      <div class="card"><h3>🎁 IsokoRewards</h3><p>Loyalty points and rewards for marketplace activity.</p></div>
-      <div class="card"><h3>🔗 IsokoRefer</h3><p>Referral and affiliate opportunities.</p></div>
-    </div>
-  </div>
+<div class="card">
+<h3>📑 Request for Quote</h3>
+<p>Businesses can request quotations from sellers and professionals.</p>
+<button class="btn" onclick="openModal('quoteModal')">Request Quote</button>
+</div>
+
+<div class="card">
+<h3>🏪 IsokoStore</h3>
+<p>Create a professional storefront and build your marketplace identity.</p>
+<button class="btn" onclick="showSection('profile')">My Store</button>
+</div>
+
+</div>
+</div>
+
+<div class="section">
+<div class="sectionTitle"><h2>💰 Business Opportunities</h2></div>
+
+<div class="opportunities">
+
+<div class="card"><h3>📣 IsokoAds</h3><p>Businesses can advertise products, services and brands.</p></div>
+<div class="card"><h3>🚀 BoostHub</h3><p>Promote listings and increase marketplace visibility.</p></div>
+<div class="card"><h3>⭐ Premium Sellers</h3><p>Premium marketplace tools for sellers and businesses.</p></div>
+<div class="card"><h3>💳 Commission</h3><p>Marketplace commission from successful transactions.</p></div>
+<div class="card"><h3>🎁 IsokoRewards</h3><p>Loyalty points and rewards for marketplace activity.</p></div>
+<div class="card"><h3>🔗 IsokoRefer</h3><p>Referral and affiliate opportunities.</p></div>
+
+</div>
+</div>
 
 </section>
 
 <!-- SERVICES -->
 <section id="services" class="pageSection">
-  <div class="sectionTitle"><h2>🛠️ IsokoHub Services</h2></div>
-  <div class="serviceGrid">
-    <div class="card"><h3>🧑‍🔧 Professional Services</h3><p>Find professionals and service providers.</p><button class="btn" onclick="openModal('bookingModal')">Book</button></div>
-    <div class="card"><h3>📋 Service Requests</h3><p>Tell providers what you need.</p><button class="btn" onclick="showSection('requests')">Request</button></div>
-    <div class="card"><h3>💰 Make an Offer</h3><p>Negotiate prices directly with sellers.</p><button class="btn" onclick="openModal('offerModal')">Make Offer</button></div>
-    <div class="card"><h3>📑 Quotes</h3><p>Request quotations from businesses.</p><button class="btn" onclick="openModal('quoteModal')">Get Quote</button></div>
-    <div class="card"><h3>📅 Booking</h3><p>Schedule professional services.</p><button class="btn" onclick="openModal('bookingModal')">Book Service</button></div>
-    <div class="card"><h3>🤝 IsokoMatch</h3><p>Match your needs with providers.</p><button class="btn" onclick="openModal('matchModal')">Match Me</button></div>
-  </div>
+<div class="sectionTitle"><h2>🛠️ IsokoHub Services</h2></div>
+
+<div class="serviceGrid">
+<div class="card"><h3>🧑‍🔧 Professional Services</h3><p>Find professionals and service providers.</p><button class="btn" onclick="openModal('bookingModal')">Book</button></div>
+<div class="card"><h3>📋 Service Requests</h3><p>Tell providers what you need.</p><button class="btn" onclick="showSection('requests')">Request</button></div>
+<div class="card"><h3>💰 Make an Offer</h3><p>Negotiate prices directly with sellers.</p><button class="btn" onclick="openModal('offerModal')">Make Offer</button></div>
+<div class="card"><h3>📑 Quotes</h3><p>Request quotations from businesses.</p><button class="btn" onclick="openModal('quoteModal')">Get Quote</button></div>
+<div class="card"><h3>📅 Booking</h3><p>Schedule professional services.</p><button class="btn" onclick="openModal('bookingModal')">Book Service</button></div>
+<div class="card"><h3>🤝 IsokoMatch</h3><p>Match your needs with providers.</p><button class="btn" onclick="openModal('matchModal')">Match Me</button></div>
+</div>
 </section>
 
 <!-- REQUESTS -->
 <section id="requests" class="pageSection">
-  <div class="sectionTitle">
-    <h2>📋 IsokoHub Requests</h2>
-    <button class="btn" onclick="openModal('requestModal')">+ New Request</button>
-  </div>
-  <div class="empty">
-    <h3>What do you need?</h3>
-    <p>Post your request and sellers, professionals or service providers can respond.</p>
-    <button class="btn" onclick="openModal('requestModal')">Post a Request</button>
-  </div>
+<div class="sectionTitle">
+<h2>📋 IsokoHub Requests</h2>
+<button class="btn" onclick="openModal('requestModal')">+ New Request</button>
+</div>
+
+<div class="empty">
+<h3>What do you need?</h3>
+<p>Post your request and sellers, professionals or service providers can respond.</p>
+<button class="btn" onclick="openModal('requestModal')">Post a Request</button>
+</div>
 </section>
 
 <!-- EDUCATION -->
 <section id="education" class="pageSection">
-  <div class="sectionTitle"><h2>🎓 LearnHub</h2></div>
-  <div class="serviceGrid">
-    <div class="card"><h3>👨‍🏫 Teachers</h3><p>Find teachers and instructors.</p></div>
-    <div class="card"><h3>📚 Courses</h3><p>Discover online courses and educational content.</p></div>
-    <div class="card"><h3>🎥 Video Lessons</h3><p>Learn through digital lessons.</p></div>
-    <div class="card"><h3>📝 Assignments</h3><p>Courses can include assignments and learning activities.</p></div>
-    <div class="card"><h3>🧪 Quizzes</h3><p>Interactive educational assessments.</p></div>
-    <div class="card"><h3>🏆 Certificates</h3><p>Educational completion certificates.</p></div>
-  </div>
+<div class="sectionTitle"><h2>🎓 LearnHub</h2></div>
+
+<div class="serviceGrid">
+<div class="card"><h3>👨‍🏫 Teachers</h3><p>Find teachers and instructors.</p></div>
+<div class="card"><h3>📚 Courses</h3><p>Discover online courses and educational content.</p></div>
+<div class="card"><h3>🎥 Video Lessons</h3><p>Learn through digital lessons.</p></div>
+<div class="card"><h3>📝 Assignments</h3><p>Courses can include assignments and learning activities.</p></div>
+<div class="card"><h3>🧪 Quizzes</h3><p>Interactive educational assessments.</p></div>
+<div class="card"><h3>🏆 Certificates</h3><p>Educational completion certificates.</p></div>
+</div>
 </section>
 
 <!-- CREATORS -->
 <section id="creators" class="pageSection">
-  <div class="sectionTitle"><h2>🎨 CreatorHub</h2></div>
-  <div class="serviceGrid">
-    <div class="card"><h3>🎨 Artists</h3><p>Sell artwork and creative work.</p></div>
-    <div class="card"><h3>📸 Photographers</h3><p>Photography services and portfolios.</p></div>
-    <div class="card"><h3>🎬 Filmmakers</h3><p>Film production and creative services.</p></div>
-    <div class="card"><h3>🎭 Actors</h3><p>Creative profiles and opportunities.</p></div>
-    <div class="card"><h3>🎨 Designers</h3><p>Graphic, fashion and creative design services.</p></div>
-    <div class="card"><h3>📹 Videographers</h3><p>Professional video services.</p></div>
-  </div>
+<div class="sectionTitle"><h2>🎨 CreatorHub</h2></div>
+
+<div class="serviceGrid">
+<div class="card"><h3>🎨 Artists</h3><p>Sell artwork and creative work.</p></div>
+<div class="card"><h3>📸 Photographers</h3><p>Photography services and portfolios.</p></div>
+<div class="card"><h3>🎬 Filmmakers</h3><p>Film production and creative services.</p></div>
+<div class="card"><h3>🎭 Actors</h3><p>Creative profiles and opportunities.</p></div>
+<div class="card"><h3>🎨 Designers</h3><p>Graphic, fashion and creative design services.</p></div>
+<div class="card"><h3>📹 Videographers</h3><p>Professional video services.</p></div>
+</div>
 </section>
 
 <!-- BUSINESS -->
 <section id="business" class="pageSection">
-  <div class="sectionTitle"><h2>🏢 BusinessHub</h2></div>
-  <div class="serviceGrid">
-    <div class="card"><h3>🏢 Company Profiles</h3><p>Businesses can build public profiles.</p></div>
-    <div class="card"><h3>🤝 B2B Marketplace</h3><p>Connect businesses with suppliers and customers.</p></div>
-    <div class="card"><h3>🏭 Wholesale</h3><p>Wholesale products and bulk purchasing.</p></div>
-    <div class="card"><h3>📑 Business Quotes</h3><p>Request and compare quotations.</p></div>
-    <div class="card"><h3>👥 Team Accounts</h3><p>Business staff and account permissions.</p></div>
-    <div class="card"><h3>📊 Business Analytics</h3><p>Track marketplace activity and sales.</p></div>
-  </div>
+<div class="sectionTitle"><h2>🏢 BusinessHub</h2></div>
+
+<div class="serviceGrid">
+<div class="card"><h3>🏢 Company Profiles</h3><p>Businesses can build public profiles.</p></div>
+<div class="card"><h3>🤝 B2B Marketplace</h3><p>Connect businesses with suppliers and customers.</p></div>
+<div class="card"><h3>🏭 Wholesale</h3><p>Wholesale products and bulk purchasing.</p></div>
+<div class="card"><h3>📑 Business Quotes</h3><p>Request and compare quotations.</p></div>
+<div class="card"><h3>👥 Team Accounts</h3><p>Business staff and account permissions.</p></div>
+<div class="card"><h3>📊 Business Analytics</h3><p>Track marketplace activity and sales.</p></div>
+</div>
 </section>
 
 <!-- WORK -->
 <section id="work" class="pageSection">
-  <div class="sectionTitle"><h2>💼 WorkHub</h2></div>
-  <div class="serviceGrid">
-    <div class="card"><h3>💼 Jobs</h3><p>Discover job opportunities.</p></div>
-    <div class="card"><h3>🧑‍💻 Freelance</h3><p>Find freelance projects and clients.</p></div>
-    <div class="card"><h3>📋 Projects</h3><p>Post and discover projects.</p></div>
-    <div class="card"><h3>🧑‍💼 Professional Profiles</h3><p>Showcase skills and experience.</p></div>
-  </div>
+<div class="sectionTitle"><h2>💼 WorkHub</h2></div>
+
+<div class="serviceGrid">
+<div class="card"><h3>💼 Jobs</h3><p>Discover job opportunities.</p></div>
+<div class="card"><h3>🧑‍💻 Freelance</h3><p>Find freelance projects and clients.</p></div>
+<div class="card"><h3>📋 Projects</h3><p>Post and discover projects.</p></div>
+<div class="card"><h3>🧑‍💼 Professional Profiles</h3><p>Showcase skills and experience.</p></div>
+</div>
 </section>
 
 <!-- DEALS -->
 <section id="deals" class="pageSection">
-  <div class="sectionTitle"><h2>🔥 IsokoDeals</h2></div>
-  <div class="serviceGrid">
-    <div class="card"><h3>🔥 Flash Sales</h3><p>Limited promotional offers.</p></div>
-    <div class="card"><h3>🏷️ Discounts</h3><p>Seller discounts and special prices.</p></div>
-    <div class="card"><h3>🎁 Bundles</h3><p>Products and services packaged together.</p></div>
-    <div class="card"><h3>🎟️ Coupons</h3><p>Promotional codes and marketplace offers.</p></div>
-    <div class="card"><h3>🆕 New Arrivals</h3><p>Discover newly listed items.</p></div>
-    <div class="card"><h3>📈 Trending</h3><p>Explore popular marketplace listings.</p></div>
-  </div>
+<div class="sectionTitle"><h2>🔥 IsokoDeals</h2></div>
+
+<div class="serviceGrid">
+<div class="card"><h3>🔥 Flash Sales</h3><p>Limited promotional offers.</p></div>
+<div class="card"><h3>🏷️ Discounts</h3><p>Seller discounts and special prices.</p></div>
+<div class="card"><h3>🎁 Bundles</h3><p>Products and services packaged together.</p></div>
+<div class="card"><h3>🎟️ Coupons</h3><p>Promotional codes and marketplace offers.</p></div>
+<div class="card"><h3>🆕 New Arrivals</h3><p>Discover newly listed items.</p></div>
+<div class="card"><h3>📈 Trending</h3><p>Explore popular marketplace listings.</p></div>
+</div>
 </section>
 
 <!-- COMMUNITY -->
 <section id="community" class="pageSection">
-  <div class="sectionTitle">
-    <h2>🤝 IsokoCommunity</h2>
-    <button class="btn" onclick="openModal('communityModal')">Create Post</button>
-  </div>
-  <div class="empty">
-    <h3>Connect beyond transactions</h3>
-    <p>Share announcements, marketplace knowledge, opportunities and creator content.</p>
-  </div>
+<div class="sectionTitle">
+<h2>🤝 IsokoCommunity</h2>
+<button class="btn" onclick="openModal('communityModal')">Create Post</button>
+</div>
+
+<div class="empty">
+<h3>Connect beyond transactions</h3>
+<p>Share announcements, marketplace knowledge, opportunities and creator content.</p>
+</div>
 </section>
 
 <!-- SAVED -->
 <section id="saved" class="pageSection">
-  <div class="sectionTitle"><h2>❤️ Saved Items</h2></div>
-  <div id="savedItems" class="products"></div>
+<div class="sectionTitle"><h2>❤️ Saved Items</h2></div>
+<div id="savedItems" class="products"></div>
 </section>
 
 <!-- CART -->
 <section id="cart" class="pageSection">
-  <div class="sectionTitle"><h2>🛒 Shopping Cart</h2></div>
-  <div id="cartItems"></div>
+<div class="sectionTitle"><h2>🛒 Shopping Cart</h2></div>
+<div id="cartItems"></div>
 </section>
 
 <!-- ORDERS -->
 <section id="orders" class="pageSection">
-  <div class="sectionTitle">
-    <h2>📦 My Orders</h2>
-    <button class="btn secondary" onclick="loadOrders()">Refresh</button>
-  </div>
-  <div id="ordersContent" class="empty">Login to view your orders.</div>
+<div class="sectionTitle">
+<h2>📦 My Orders</h2>
+<button class="btn secondary" onclick="loadOrders()">Refresh</button>
+</div>
+<div id="ordersContent" class="empty">Login to view your orders.</div>
 </section>
 
 <!-- MESSAGES -->
 <section id="messages" class="pageSection">
-  <div class="sectionTitle">
-    <h2>💬 Messages</h2>
-    <button class="btn" onclick="openModal('messageModal')">New Message</button>
-  </div>
-  <div class="empty">
-    <p>Communicate directly with sellers, buyers, teachers and service providers.</p>
-    <button class="btn" onclick="openModal('messageModal')">Send a Message</button>
-  </div>
+<div class="sectionTitle">
+<h2>💬 Messages</h2>
+<button class="btn" onclick="openModal('messageModal')">New Message</button>
+</div>
+
+<div class="empty">
+<p>Communicate directly with sellers, buyers, teachers and service providers.</p>
+<button class="btn" onclick="openModal('messageModal')">Send a Message</button>
+</div>
 </section>
 
 <!-- PROFILE -->
 <section id="profile" class="pageSection">
-  <div class="sectionTitle"><h2>👤 My Profile</h2></div>
-  <div id="profileContent" class="empty">
-    <p>Login to view and manage your profile.</p>
-    <button class="btn" onclick="openModal('loginModal')">Login</button>
-  </div>
+<div class="sectionTitle"><h2>👤 My Profile</h2></div>
+<div id="profileContent" class="empty">
+<p>Login to view and manage your profile.</p>
+<button class="btn" onclick="openModal('loginModal')">Login</button>
+</div>
 </section>
 
 <!-- ADMIN -->
 <section id="admin" class="pageSection">
-  <div class="sectionTitle">
-    <h2>⚙️ IsokoHub Admin Dashboard</h2>
-  </div>
 
-  <div class="adminTabs" id="adminTabs">
-    <button onclick="adminTab('overview')" class="active">Overview</button>
-    <button onclick="adminTab('users')">Users</button>
-    <button onclick="adminTab('sellers')">Sellers</button>
-    <button onclick="adminTab('products')">Products</button>
-    <button onclick="adminTab('services')">Services</button>
-    <button onclick="adminTab('requests')">Requests</button>
-    <button onclick="adminTab('orders')">Orders</button>
-    <button onclick="adminTab('payments')">Payments</button>
-    <button onclick="adminTab('wallet')">Wallet</button>
-    <button onclick="adminTab('categories')">Categories</button>
-    <button onclick="adminTab('promotions')">Promotions</button>
-    <button onclick="adminTab('ads')">Ads</button>
-    <button onclick="adminTab('reviews')">Reviews</button>
-    <button onclick="adminTab('reports')">Reports</button>
-    <button onclick="adminTab('disputes')">Disputes</button>
-    <button onclick="adminTab('verification')">Verification</button>
-    <button onclick="adminTab('notifications')">Notifications</button>
-    <button onclick="adminTab('settings')">Settings</button>
-    <button onclick="adminTab('logs')">Audit Logs</button>
-  </div>
+<div class="sectionTitle">
+<h2>⚙️ IsokoHub Admin Dashboard</h2>
+<button class="btn secondary" onclick="adminTab(currentAdminTab)">Refresh</button>
+</div>
 
-  <div id="adminContent" class="adminPanel"></div>
+<div id="adminGuard" class="empty" style="display:none">
+<h3>🔒 Admin Access Required</h3>
+<p>You must be logged in with an administrator account.</p>
+<button class="btn" onclick="openModal('loginModal')">Login</button>
+</div>
+
+<div id="adminArea">
+
+<div class="adminTabs" id="adminTabs">
+
+<button onclick="adminTab('overview')" class="active">Overview</button>
+<button onclick="adminTab('users')">Users</button>
+<button onclick="adminTab('sellers')">Sellers</button>
+<button onclick="adminTab('products')">Products</button>
+<button onclick="adminTab('services')">Services</button>
+<button onclick="adminTab('requests')">Requests</button>
+<button onclick="adminTab('orders')">Orders</button>
+<button onclick="adminTab('payments')">Payments</button>
+<button onclick="adminTab('wallet')">Wallet</button>
+<button onclick="adminTab('categories')">Categories</button>
+<button onclick="adminTab('promotions')">Promotions</button>
+<button onclick="adminTab('ads')">Ads</button>
+<button onclick="adminTab('reviews')">Reviews</button>
+<button onclick="adminTab('reports')">Reports</button>
+<button onclick="adminTab('disputes')">Disputes</button>
+<button onclick="adminTab('verification')">Verification</button>
+<button onclick="adminTab('notifications')">Notifications</button>
+<button onclick="adminTab('settings')">Settings</button>
+<button onclick="adminTab('logs')">Audit Logs</button>
+
+</div>
+
+<div id="adminContent" class="adminPanel"></div>
+
+</div>
 </section>
 
 </main>
 
 <footer>
-  <div class="footerGrid">
-    <div>
-      <h3>IsokoHub 🌍</h3>
-      <p>Global marketplace for products, services, education, businesses and creativity.</p>
-    </div>
+<div class="footerGrid">
 
-    <div>
-      <h3>Marketplace</h3>
-      <a href="#" onclick="showSection('home');return false">Home</a>
-      <a href="#" onclick="showSection('saved');return false">Saved</a>
-      <a href="#" onclick="showSection('cart');return false">Cart</a>
-      <a href="#" onclick="showSection('orders');return false">Orders</a>
-      <a href="#" onclick="showSection('deals');return false">Deals</a>
-    </div>
+<div>
+<h3>IsokoHub 🌍</h3>
+<p>Global marketplace for products, services, education, businesses and creativity.</p>
+</div>
 
-    <div>
-      <h3>Services</h3>
-      <a href="#" onclick="showSection('services');return false">Services</a>
-      <a href="#" onclick="showSection('requests');return false">Requests</a>
-      <a href="#" onclick="showSection('education');return false">Education</a>
-      <a href="#" onclick="showSection('creators');return false">Creators</a>
-    </div>
+<div>
+<h3>Marketplace</h3>
+<a href="#" onclick="showSection('home');return false">Home</a>
+<a href="#" onclick="showSection('saved');return false">Saved</a>
+<a href="#" onclick="showSection('cart');return false">Cart</a>
+<a href="#" onclick="showSection('orders');return false">Orders</a>
+<a href="#" onclick="showSection('deals');return false">Deals</a>
+</div>
 
-    <div>
-      <h3>Account</h3>
-      <a href="#" onclick="showSection('profile');return false">Profile</a>
-      <a href="#" onclick="openModal('loginModal');return false">Login</a>
-      <a href="#" onclick="openModal('registerModal');return false">Register</a>
-      <a href="#" onclick="openModal('sellModal');return false">Start Selling</a>
-    </div>
-  </div>
+<div>
+<h3>Services</h3>
+<a href="#" onclick="showSection('services');return false">Services</a>
+<a href="#" onclick="showSection('requests');return false">Requests</a>
+<a href="#" onclick="showSection('education');return false">Education</a>
+<a href="#" onclick="showSection('creators');return false">Creators</a>
+</div>
+
+<div>
+<h3>Account</h3>
+<a href="#" onclick="showSection('profile');return false">Profile</a>
+<a href="#" onclick="openModal('loginModal');return false">Login</a>
+<a href="#" onclick="openModal('registerModal');return false">Register</a>
+<a href="#" onclick="openModal('sellModal');return false">Start Selling</a>
+</div>
+
+</div>
 </footer>
 
 <!-- LOGIN -->
 <div class="modal" id="loginModal">
-  <div class="modalBox">
-    <div class="modalHead">
-      <h2>Login</h2>
-      <button class="close" onclick="closeModal('loginModal')">×</button>
-    </div>
-    <form id="loginForm">
-      <div class="formGroup">
-        <label>Email</label>
-        <input id="loginEmail" type="email" required>
-      </div>
-      <div class="formGroup">
-        <label>Password</label>
-        <input id="loginPassword" type="password" required>
-      </div>
-      <div id="loginMessage" class="formMessage"></div>
-      <button class="btn" type="submit">Login</button>
-      <button class="btn secondary" type="button"
-        onclick="closeModal('loginModal');openModal('registerModal')">Create Account</button>
-    </form>
-  </div>
+<div class="modalBox">
+
+<div class="modalHead">
+<h2>Login</h2>
+<button class="close" onclick="closeModal('loginModal')">×</button>
+</div>
+
+<form id="loginForm">
+
+<div class="formGroup">
+<label>Email</label>
+<input id="loginEmail" type="email" required>
+</div>
+
+<div class="formGroup">
+<label>Password</label>
+<input id="loginPassword" type="password" required>
+</div>
+
+<div id="loginMessage" class="formMessage"></div>
+
+<button class="btn" type="submit">Login</button>
+
+<button class="btn secondary" type="button"
+onclick="closeModal('loginModal');openModal('registerModal')">
+Create Account
+</button>
+
+</form>
+</div>
 </div>
 
 <!-- REGISTER -->
 <div class="modal" id="registerModal">
-  <div class="modalBox">
-    <div class="modalHead">
-      <h2>Create Account</h2>
-      <button class="close" onclick="closeModal('registerModal')">×</button>
-    </div>
-    <form id="registerForm">
-      <div class="formGroup"><label>Name</label><input id="registerName" required></div>
-      <div class="formGroup"><label>Email</label><input id="registerEmail" type="email" required></div>
-      <div class="formGroup"><label>Phone</label><input id="registerPhone"></div>
-      <div class="formGroup"><label>Country</label><input id="registerCountry" value="Rwanda"></div>
-      <div class="formGroup"><label>Password</label><input id="registerPassword" type="password" minlength="6" required></div>
-      <div id="registerMessage" class="formMessage"></div>
-      <button class="btn" type="submit">Register</button>
-    </form>
-  </div>
+<div class="modalBox">
+
+<div class="modalHead">
+<h2>Create Account</h2>
+<button class="close" onclick="closeModal('registerModal')">×</button>
+</div>
+
+<form id="registerForm">
+
+<div class="formGroup">
+<label>Name</label>
+<input id="registerName" required>
+</div>
+
+<div class="formGroup">
+<label>Email</label>
+<input id="registerEmail" type="email" required>
+</div>
+
+<div class="formGroup">
+<label>Phone</label>
+<input id="registerPhone">
+</div>
+
+<div class="formGroup">
+<label>Country</label>
+<input id="registerCountry" value="Rwanda">
+</div>
+
+<div class="formGroup">
+<label>Password</label>
+<input id="registerPassword" type="password" minlength="6" required>
+</div>
+
+<div id="registerMessage" class="formMessage"></div>
+
+<button class="btn" type="submit">Register</button>
+
+</form>
+</div>
 </div>
 
 <!-- SELL -->
 <div class="modal" id="sellModal">
-  <div class="modalBox">
-    <div class="modalHead">
-      <h2>Sell on IsokoHub</h2>
-      <button class="close" onclick="closeModal('sellModal')">×</button>
-    </div>
+<div class="modalBox">
 
-    <form id="sellForm">
-      <div class="formGroup">
-        <label>What are you offering?</label>
-        <select id="sellType">
-          <option value="product">Physical Product</option>
-          <option value="service">Service</option>
-          <option value="course">Course / Education</option>
-          <option value="digital">Digital Product</option>
-          <option value="creative">Creative Work</option>
-          <option value="real_estate">Real Estate</option>
-          <option value="job">Job / Freelance</option>
-        </select>
-      </div>
+<div class="modalHead">
+<h2>Sell on IsokoHub</h2>
+<button class="close" onclick="closeModal('sellModal')">×</button>
+</div>
 
-      <div class="formGroup"><label>Title</label><input id="sellTitle" required></div>
-      <div class="formGroup"><label>Category</label><select id="sellCategory" required></select></div>
+<form id="sellForm">
 
-      <div class="formRow">
-        <div class="formGroup"><label>Price</label><input id="sellPrice" type="number" min="0" required></div>
-        <div class="formGroup">
-          <label>Currency</label>
-          <select id="sellCurrency">
-            <option>RWF</option><option>USD</option><option>EUR</option>
-            <option>KES</option><option>UGX</option><option>TZS</option>
-            <option>NGN</option><option>ZAR</option><option>GBP</option>
-          </select>
-        </div>
-      </div>
+<div class="formGroup">
+<label>What are you offering?</label>
+<select id="sellType">
+<option value="product">Physical Product</option>
+<option value="service">Service</option>
+<option value="course">Course / Education</option>
+<option value="digital">Digital Product</option>
+<option value="creative">Creative Work</option>
+<option value="real_estate">Real Estate</option>
+<option value="job">Job / Freelance</option>
+</select>
+</div>
 
-      <div class="formRow">
-        <div class="formGroup"><label>Country</label><input id="sellCountry" value="Rwanda"></div>
-        <div class="formGroup"><label>District / City</label><input id="sellDistrict"></div>
-      </div>
+<div class="formGroup">
+<label>Title</label>
+<input id="sellTitle" required>
+</div>
 
-      <div class="formGroup">
-        <label>Description / Specifications</label>
-        <textarea id="sellSpecs"></textarea>
-      </div>
+<div class="formGroup">
+<label>Category</label>
+<select id="sellCategory" required></select>
+</div>
 
-      <div id="sellMessage" class="formMessage"></div>
-      <button class="btn" type="submit">Publish Listing</button>
-    </form>
-  </div>
+<div class="formRow">
+
+<div class="formGroup">
+<label>Price</label>
+<input id="sellPrice" type="number" min="0" required>
+</div>
+
+<div class="formGroup">
+<label>Currency</label>
+<select id="sellCurrency">
+<option>RWF</option>
+<option>USD</option>
+<option>EUR</option>
+<option>KES</option>
+<option>UGX</option>
+<option>TZS</option>
+<option>NGN</option>
+<option>ZAR</option>
+<option>GBP</option>
+</select>
+</div>
+
+</div>
+
+<div class="formRow">
+
+<div class="formGroup">
+<label>Country</label>
+<input id="sellCountry" value="Rwanda">
+</div>
+
+<div class="formGroup">
+<label>District / City</label>
+<input id="sellDistrict">
+</div>
+
+</div>
+
+<div class="formGroup">
+<label>Description / Specifications</label>
+<textarea id="sellSpecs"></textarea>
+</div>
+
+<div id="sellMessage" class="formMessage"></div>
+
+<button class="btn" type="submit">Publish Listing</button>
+
+</form>
+</div>
 </div>
 
 <!-- MESSAGE -->
 <div class="modal" id="messageModal">
-  <div class="modalBox">
-    <div class="modalHead">
-      <h2>New Message</h2>
-      <button class="close" onclick="closeModal('messageModal')">×</button>
-    </div>
-    <form id="messageForm">
-      <div class="formGroup"><label>Recipient User ID</label><input id="messageRecipient" type="number" required></div>
-      <div class="formGroup"><label>Message</label><textarea id="messageText" required></textarea></div>
-      <div id="messageStatus" class="formMessage"></div>
-      <button class="btn" type="submit">Send Message</button>
-    </form>
-  </div>
+<div class="modalBox">
+
+<div class="modalHead">
+<h2>New Message</h2>
+<button class="close" onclick="closeModal('messageModal')">×</button>
+</div>
+
+<form id="messageForm">
+
+<div class="formGroup">
+<label>Recipient User ID</label>
+<input id="messageRecipient" type="number" required>
+</div>
+
+<div class="formGroup">
+<label>Message</label>
+<textarea id="messageText" required></textarea>
+</div>
+
+<div id="messageStatus" class="formMessage"></div>
+
+<button class="btn" type="submit">Send Message</button>
+
+</form>
+</div>
 </div>
 
 <!-- REQUEST -->
 <div class="modal" id="requestModal">
-  <div class="modalBox">
-    <div class="modalHead">
-      <h2>📋 Post a Request</h2>
-      <button class="close" onclick="closeModal('requestModal')">×</button>
-    </div>
-    <form>
-      <div class="formGroup"><label>What do you need?</label><input required placeholder="Example: I need a photographer..."></div>
-      <div class="formGroup"><label>Category</label><input placeholder="Photography, design, construction..."></div>
-      <div class="formGroup"><label>Budget</label><input type="number"></div>
-      <div class="formGroup"><label>Location</label><input placeholder="Country / City"></div>
-      <div class="formGroup"><label>Details</label><textarea></textarea></div>
-      <button class="btn" type="button" onclick="demoAction('Request created successfully')">Post Request</button>
-    </form>
-  </div>
+<div class="modalBox">
+
+<div class="modalHead">
+<h2>📋 Post a Request</h2>
+<button class="close" onclick="closeModal('requestModal')">×</button>
+</div>
+
+<form>
+
+<div class="formGroup">
+<label>What do you need?</label>
+<input required placeholder="Example: I need a photographer...">
+</div>
+
+<div class="formGroup">
+<label>Category</label>
+<input placeholder="Photography, design, construction...">
+</div>
+
+<div class="formGroup">
+<label>Budget</label>
+<input type="number">
+</div>
+
+<div class="formGroup">
+<label>Location</label>
+<input placeholder="Country / City">
+</div>
+
+<div class="formGroup">
+<label>Details</label>
+<textarea></textarea>
+</div>
+
+<button class="btn" type="button"
+onclick="demoAction('Request created successfully')">
+Post Request
+</button>
+
+</form>
+</div>
 </div>
 
 <!-- OFFER -->
 <div class="modal" id="offerModal">
-  <div class="modalBox">
-    <div class="modalHead"><h2>💰 Make an Offer</h2><button class="close" onclick="closeModal('offerModal')">×</button></div>
-    <div class="formGroup"><label>Product / Service</label><input id="offerItem"></div>
-    <div class="formGroup"><label>Your Offer</label><input id="offerPrice" type="number"></div>
-    <div class="formGroup"><label>Message</label><textarea id="offerText"></textarea></div>
-    <button class="btn" onclick="demoAction('Offer submitted')">Submit Offer</button>
-  </div>
+<div class="modalBox">
+
+<div class="modalHead">
+<h2>💰 Make an Offer</h2>
+<button class="close" onclick="closeModal('offerModal')">×</button>
+</div>
+
+<div class="formGroup">
+<label>Product / Service</label>
+<input id="offerItem">
+</div>
+
+<div class="formGroup">
+<label>Your Offer</label>
+<input id="offerPrice" type="number">
+</div>
+
+<div class="formGroup">
+<label>Message</label>
+<textarea id="offerText"></textarea>
+</div>
+
+<button class="btn" onclick="demoAction('Offer submitted')">
+Submit Offer
+</button>
+
+</div>
 </div>
 
 <!-- QUOTE -->
 <div class="modal" id="quoteModal">
-  <div class="modalBox">
-    <div class="modalHead"><h2>📑 Request for Quote</h2><button class="close" onclick="closeModal('quoteModal')">×</button></div>
-    <div class="formGroup"><label>Business / Service Needed</label><input></div>
-    <div class="formGroup"><label>Quantity</label><input type="number"></div>
-    <div class="formGroup"><label>Budget</label><input type="number"></div>
-    <div class="formGroup"><label>Details</label><textarea></textarea></div>
-    <button class="btn" onclick="demoAction('Quote request created')">Request Quote</button>
-  </div>
+<div class="modalBox">
+
+<div class="modalHead">
+<h2>📑 Request for Quote</h2>
+<button class="close" onclick="closeModal('quoteModal')">×</button>
+</div>
+
+<div class="formGroup">
+<label>Business / Service Needed</label>
+<input>
+</div>
+
+<div class="formGroup">
+<label>Quantity</label>
+<input type="number">
+</div>
+
+<div class="formGroup">
+<label>Budget</label>
+<input type="number">
+</div>
+
+<div class="formGroup">
+<label>Details</label>
+<textarea></textarea>
+</div>
+
+<button class="btn" onclick="demoAction('Quote request created')">
+Request Quote
+</button>
+
+</div>
 </div>
 
 <!-- BOOKING -->
 <div class="modal" id="bookingModal">
-  <div class="modalBox">
-    <div class="modalHead"><h2>📅 Book a Service</h2><button class="close" onclick="closeModal('bookingModal')">×</button></div>
-    <div class="formGroup"><label>Service</label><input></div>
-    <div class="formRow">
-      <div class="formGroup"><label>Date</label><input type="date"></div>
-      <div class="formGroup"><label>Time</label><input type="time"></div>
-    </div>
-    <div class="formGroup"><label>Notes</label><textarea></textarea></div>
-    <button class="btn" onclick="demoAction('Booking request created')">Request Booking</button>
-  </div>
+<div class="modalBox">
+
+<div class="modalHead">
+<h2>📅 Book a Service</h2>
+<button class="close" onclick="closeModal('bookingModal')">×</button>
+</div>
+
+<div class="formGroup">
+<label>Service</label>
+<input>
+</div>
+
+<div class="formRow">
+
+<div class="formGroup">
+<label>Date</label>
+<input type="date">
+</div>
+
+<div class="formGroup">
+<label>Time</label>
+<input type="time">
+</div>
+
+</div>
+
+<div class="formGroup">
+<label>Notes</label>
+<textarea></textarea>
+</div>
+
+<button class="btn" onclick="demoAction('Booking request created')">
+Request Booking
+</button>
+
+</div>
 </div>
 
 <!-- MATCH -->
 <div class="modal" id="matchModal">
-  <div class="modalBox">
-    <div class="modalHead"><h2>🤝 IsokoMatch</h2><button class="close" onclick="closeModal('matchModal')">×</button></div>
-    <p>Describe what you need and IsokoHub can match you with relevant marketplace providers.</p>
-    <div class="formGroup"><label>What are you looking for?</label><textarea id="matchNeed" placeholder="Example: wedding photographer in Kigali"></textarea></div>
-    <div class="formGroup"><label>Country / City</label><input id="matchLocation"></div>
-    <button class="btn" onclick="demoAction('Matching request submitted')">Find Matches</button>
-  </div>
+<div class="modalBox">
+
+<div class="modalHead">
+<h2>🤝 IsokoMatch</h2>
+<button class="close" onclick="closeModal('matchModal')">×</button>
+</div>
+
+<p>
+Describe what you need and IsokoHub can match you with relevant marketplace providers.
+</p>
+
+<div class="formGroup">
+<label>What are you looking for?</label>
+<textarea id="matchNeed"
+placeholder="Example: wedding photographer in Kigali"></textarea>
+</div>
+
+<div class="formGroup">
+<label>Country / City</label>
+<input id="matchLocation">
+</div>
+
+<button class="btn"
+onclick="demoAction('Matching request submitted')">
+Find Matches
+</button>
+
+</div>
 </div>
 
 <!-- AI -->
 <div class="modal" id="aiModal">
-  <div class="modalBox">
-    <div class="modalHead"><h2>🤖 IsokoAI</h2><button class="close" onclick="closeModal('aiModal')">×</button></div>
-    <p>Smart marketplace assistant for finding products, services and opportunities.</p>
-    <div class="formGroup"><label>Ask IsokoAI</label><textarea placeholder="What are you looking for?"></textarea></div>
-    <button class="btn" onclick="demoAction('AI request submitted')">Ask IsokoAI</button>
-  </div>
+<div class="modalBox">
+
+<div class="modalHead">
+<h2>🤖 IsokoAI</h2>
+<button class="close" onclick="closeModal('aiModal')">×</button>
+</div>
+
+<p>
+Smart marketplace assistant for finding products, services and opportunities.
+</p>
+
+<div class="formGroup">
+<label>Ask IsokoAI</label>
+<textarea placeholder="What are you looking for?"></textarea>
+</div>
+
+<button class="btn"
+onclick="demoAction('AI request submitted')">
+Ask IsokoAI
+</button>
+
+</div>
 </div>
 
 <!-- COMMUNITY -->
 <div class="modal" id="communityModal">
-  <div class="modalBox">
-    <div class="modalHead"><h2>🤝 Community Post</h2><button class="close" onclick="closeModal('communityModal')">×</button></div>
-    <div class="formGroup"><label>Title</label><input></div>
-    <div class="formGroup"><label>Post</label><textarea></textarea></div>
-    <button class="btn" onclick="demoAction('Community post created')">Publish</button>
-  </div>
+<div class="modalBox">
+
+<div class="modalHead">
+<h2>🤝 Community Post</h2>
+<button class="close" onclick="closeModal('communityModal')">×</button>
+</div>
+
+<div class="formGroup">
+<label>Title</label>
+<input>
+</div>
+
+<div class="formGroup">
+<label>Post</label>
+<textarea></textarea>
+</div>
+
+<button class="btn"
+onclick="demoAction('Community post created')">
+Publish
+</button>
+
+</div>
 </div>
 
 <script>
+
 const API_BASE = "";
 
 let currentUser = null;
 let categoriesCache = [];
 let productsCache = [];
-let saved = JSON.parse(localStorage.getItem("isokohub_saved") || "[]");
-let cart = JSON.parse(localStorage.getItem("isokohub_cart") || "[]");
 
-function api(path, options = {}) {
-  return fetch(API_BASE + path, {
-    ...options,
-    headers:{
-      "Content-Type":"application/json",
-      ...(options.headers || {})
-    }
-  }).then(async r=>{
-    const data = await r.json().catch(()=>({}));
-    if(!r.ok) throw new Error(data.error || "Request failed");
-    return data;
-  });
+let saved =
+JSON.parse(localStorage.getItem("isokohub_saved") || "[]");
+
+let cart =
+JSON.parse(localStorage.getItem("isokohub_cart") || "[]");
+
+let currentAdminTab = "overview";
+
+/* ================= API ================= */
+
+function api(path, options = {}){
+
+const token = localStorage.getItem("isokohub_token");
+
+const headers = {
+"Content-Type":"application/json",
+...(options.headers || {})
+};
+
+if(token){
+headers.Authorization = "Bearer " + token;
 }
 
+return fetch(API_BASE + path,{
+...options,
+headers
+}).then(async r=>{
+
+const data = await r.json().catch(()=>({}));
+
+if(!r.ok){
+throw new Error(data.error || data.message || "Request failed");
+}
+
+return data;
+
+});
+
+}
+
+/* ================= MODALS ================= */
+
 function openModal(id){
-  const el=document.getElementById(id);
-  if(el) el.classList.add("open");
+
+const el=document.getElementById(id);
+
+if(el) el.classList.add("open");
+
 }
 
 function closeModal(id){
-  const el=document.getElementById(id);
-  if(el) el.classList.remove("open");
+
+const el=document.getElementById(id);
+
+if(el) el.classList.remove("open");
+
 }
 
 document.querySelectorAll(".modal").forEach(m=>{
-  m.addEventListener("click",e=>{
-    if(e.target===m) m.classList.remove("open");
-  });
+
+m.addEventListener("click",e=>{
+
+if(e.target===m)
+m.classList.remove("open");
+
 });
 
+});
+
+/* ================= NAVIGATION ================= */
+
 function showSection(id){
-  document.querySelectorAll(".pageSection").forEach(s=>s.classList.remove("active"));
-  const section=document.getElementById(id);
-  if(section) section.classList.add("active");
 
-  if(id==="saved") renderSaved();
-  if(id==="cart") renderCart();
-  if(id==="orders") loadOrders();
-  if(id==="profile") loadProfile();
-  if(id==="admin") adminTab("overview");
+document.querySelectorAll(".pageSection")
+.forEach(s=>s.classList.remove("active"));
 
-  window.scrollTo({top:0,behavior:"smooth"});
+const section=document.getElementById(id);
+
+if(section)
+section.classList.add("active");
+
+if(id==="saved")
+renderSaved();
+
+if(id==="cart")
+renderCart();
+
+if(id==="orders")
+loadOrders();
+
+if(id==="profile")
+loadProfile();
+
+if(id==="admin")
+openAdmin();
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
 }
 
 function scrollToProducts(){
-  showSection("home");
-  setTimeout(()=>{
-    document.getElementById("productsSection")?.scrollIntoView({behavior:"smooth"});
-  },100);
+
+showSection("home");
+
+setTimeout(()=>{
+
+document
+.getElementById("productsSection")
+?.scrollIntoView({behavior:"smooth"});
+
+},100);
+
 }
+
+/* ================= LOCAL STATE ================= */
 
 function saveState(){
-  localStorage.setItem("isokohub_saved",JSON.stringify(saved));
-  localStorage.setItem("isokohub_cart",JSON.stringify(cart));
-  document.getElementById("savedCount").textContent=saved.length;
-  document.getElementById("cartCount").textContent=cart.reduce((a,b)=>a+(b.qty||1),0);
+
+localStorage.setItem(
+"isokohub_saved",
+JSON.stringify(saved)
+);
+
+localStorage.setItem(
+"isokohub_cart",
+JSON.stringify(cart)
+);
+
+document.getElementById("savedCount").textContent =
+saved.length;
+
+document.getElementById("cartCount").textContent =
+cart.reduce((a,b)=>a+(b.qty||1),0);
+
 }
+
+/* ================= SAVED ================= */
 
 function toggleSaved(product){
-  const id=product.id;
-  const exists=saved.some(x=>x.id===id);
-  saved=exists?saved.filter(x=>x.id!==id):[...saved,product];
-  saveState();
-  renderProducts(productsCache);
-}
 
-function addCart(product){
-  const existing=cart.find(x=>x.id===product.id);
-  if(existing) existing.qty=(existing.qty||1)+1;
-  else cart.push({...product,qty:1});
-  saveState();
-  alert("Added to cart");
-}
+const id=product.id;
 
-function removeCart(id){
-  cart=cart.filter(x=>x.id!==id);
-  saveState();
-  renderCart();
-}
+const exists=saved.some(x=>x.id===id);
 
-function renderCart(){
-  const el=document.getElementById("cartItems");
-  if(!cart.length){
-    el.innerHTML='<div class="empty"><h3>Your cart is empty</h3><p>Add products or services to your cart.</p></div>';
-    return;
-  }
+saved=exists
+?saved.filter(x=>x.id!==id)
+:[...saved,product];
 
-  let total=0;
-  el.innerHTML=cart.map(item=>{
-    const qty=item.qty||1;
-    total+=Number(item.price||0)*qty;
-    return `
-      <div class="card" style="margin-bottom:10px">
-        <h3>${escapeHtml(item.title||"Item")}</h3>
-        <p>${qty} × ${item.currency||"RWF"} ${Number(item.price||0).toLocaleString()}</p>
-        <button class="btn secondary" onclick="removeCart(${Number(item.id)})">Remove</button>
-      </div>`;
-  }).join("")+
-  `<div class="card"><h2>Total: ${total.toLocaleString()}</h2><button class="btn" onclick="demoAction('Checkout started')">Proceed to Checkout</button></div>`;
+saveState();
+
+renderProducts(productsCache);
+
 }
 
 function renderSaved(){
-  const el=document.getElementById("savedItems");
-  if(!saved.length){
-    el.innerHTML='<div class="empty">No saved items yet.</div>';
-    return;
-  }
-  renderProducts(saved,"savedItems");
+
+const el=document.getElementById("savedItems");
+
+if(!saved.length){
+
+el.innerHTML=
+'<div class="empty">No saved items yet.</div>';
+
+return;
+
 }
 
+renderProducts(saved,"savedItems");
+
+}
+
+/* ================= CART ================= */
+
+function addCart(product){
+
+const existing=cart.find(x=>x.id===product.id);
+
+if(existing)
+existing.qty=(existing.qty||1)+1;
+else
+cart.push({...product,qty:1});
+
+saveState();
+
+alert("Added to cart");
+
+}
+
+function removeCart(id){
+
+cart=cart.filter(x=>x.id!==id);
+
+saveState();
+
+renderCart();
+
+}
+
+function renderCart(){
+
+const el=document.getElementById("cartItems");
+
+if(!cart.length){
+
+el.innerHTML=
+'<div class="empty"><h3>Your cart is empty</h3><p>Add products or services to your cart.</p></div>';
+
+return;
+
+}
+
+let total=0;
+
+el.innerHTML=cart.map(item=>{
+
+const qty=item.qty||1;
+
+total+=Number(item.price||0)*qty;
+
+return `
+
+<div class="card" style="margin-bottom:10px">
+
+<h3>${escapeHtml(item.title||"Item")}</h3>
+
+<p>
+${qty} ×
+${escapeHtml(item.currency||"RWF")}
+${Number(item.price||0).toLocaleString()}
+</p>
+
+<button class="btn secondary"
+onclick="removeCart(${Number(item.id)})">
+Remove
+</button>
+
+</div>
+
+`;
+
+}).join("")+
+
+`
+
+<div class="card">
+
+<h2>Total: ${total.toLocaleString()}</h2>
+
+<button class="btn"
+onclick="demoAction('Checkout started')">
+Proceed to Checkout
+</button>
+
+</div>
+
+`;
+
+}
+
+/* ================= CATEGORIES ================= */
+
 function renderCategories(){
-  const el=document.getElementById("categories");
-  const defaults=[
-    ["📱","Electronics"],
-    ["👕","Fashion"],
-    ["🏠","Home"],
-    ["🎓","Education"],
-    ["🎨","Art & Creative"],
-    ["🎬","Film & Entertainment"],
-    ["🛠️","Services"],
-    ["💼","Jobs & Freelance"],
-    ["🏢","Business"],
-    ["🏠","Real Estate"],
-    ["🚗","Vehicles"],
-    ["💻","Digital Products"]
-  ];
 
-  const data=categoriesCache.length
-    ? categoriesCache.map(c=>["📦",c.name||c.title])
-    : defaults;
+const el=document.getElementById("categories");
 
-  el.innerHTML=data.map(x=>`
-    <button class="card category" onclick="searchCategory('${escapeAttr(x[1])}')">
-      <div style="font-size:32px">${x[0]}</div>${escapeHtml(x[1])}
-    </button>`).join("");
+const defaults=[
 
-  const select=document.getElementById("sellCategory");
-  if(select){
-    select.innerHTML=data.map(x=>`<option value="${escapeAttr(x[1])}">${escapeHtml(x[1])}</option>`).join("");
-  }
+["📱","Electronics"],
+["👕","Fashion"],
+["🏠","Home"],
+["🎓","Education"],
+["🎨","Art & Creative"],
+["🎬","Film & Entertainment"],
+["🛠️","Services"],
+["💼","Jobs & Freelance"],
+["🏢","Business"],
+["🏠","Real Estate"],
+["🚗","Vehicles"],
+["💻","Digital Products"]
+
+];
+
+const data=categoriesCache.length
+
+?categoriesCache.map(c=>[
+"📦",
+c.name||c.title
+])
+
+:defaults;
+
+el.innerHTML=data.map(x=>`
+
+<button class="card category"
+onclick="searchCategory('${escapeAttr(x[1])}')">
+
+<div style="font-size:32px">${x[0]}</div>
+
+${escapeHtml(x[1])}
+
+</button>
+
+`).join("");
+
+const select=document.getElementById("sellCategory");
+
+if(select){
+
+select.innerHTML=data.map(x=>`
+
+<option value="${escapeAttr(x[1])}">
+${escapeHtml(x[1])}
+</option>
+
+`).join("");
+
+}
+
 }
 
 function searchCategory(category){
-  document.getElementById("searchInput").value=category;
-  showSection("home");
-  loadProducts(category);
-  scrollToProducts();
+
+document.getElementById("searchInput").value=category;
+
+showSection("home");
+
+loadProducts(category);
+
+setTimeout(()=>{
+
+document
+.getElementById("productsSection")
+?.scrollIntoView({behavior:"smooth"});
+
+},100);
+
 }
 
-function renderProducts(items, target="products"){
-  const el=document.getElementById(target);
-  if(!el) return;
+/* ================= PRODUCTS ================= */
 
-  if(!items || !items.length){
-    el.innerHTML='<div class="empty"><p>No listings found.</p></div>';
-    return;
-  }
+function renderProducts(items,target="products"){
 
-  el.innerHTML=items.map(p=>{
-    const isSaved=saved.some(x=>x.id===p.id);
-    return `
-      <div class="card product">
-        <div class="productImage">🛍️</div>
-        <div class="productBody">
-          <h3>${escapeHtml(p.title||"Untitled")}</h3>
-          <div class="price">${escapeHtml(p.currency||"RWF")} ${Number(p.price||0).toLocaleString()}</div>
-          <p class="muted">${escapeHtml(p.category||"Marketplace")}</p>
-          <p class="muted">${escapeHtml(p.country||"")} ${p.district? "• "+escapeHtml(p.district):""}</p>
-          <div class="actions">
-            <button class="btn" onclick='addCart(${JSON.stringify(p).replace(/'/g,"&#39;")})'>🛒 Cart</button>
-            <button class="btn secondary" onclick='toggleSaved(${JSON.stringify(p).replace(/'/g,"&#39;")})'>
-              ${isSaved?"❤️ Saved":"♡ Save"}
-            </button>
-            <button class="btn secondary" onclick="openModal('offerModal')">💰 Offer</button>
-          </div>
-        </div>
-      </div>`;
-  }).join("");
+const el=document.getElementById(target);
+
+if(!el)return;
+
+if(!items || !items.length){
+
+el.innerHTML=
+'<div class="empty"><p>No listings found.</p></div>';
+
+return;
+
+}
+
+el.innerHTML=items.map(p=>{
+
+const isSaved=saved.some(x=>x.id===p.id);
+
+const productJSON =
+JSON.stringify(p)
+.replace(/\\/g,"\\\\")
+.replace(/'/g,"&#39;");
+
+return `
+
+<div class="card product">
+
+<div class="productImage">🛍️</div>
+
+<div class="productBody">
+
+<h3>
+${escapeHtml(p.title||"Untitled")}
+</h3>
+
+<div class="price">
+${escapeHtml(p.currency||"RWF")}
+${Number(p.price||0).toLocaleString()}
+</div>
+
+<p class="muted">
+${escapeHtml(p.category||"Marketplace")}
+</p>
+
+<p class="muted">
+${escapeHtml(p.country||"")}
+${p.district?" • "+escapeHtml(p.district):""}
+</p>
+
+<div class="actions">
+
+<button class="btn"
+onclick='addCart(${productJSON})'>
+🛒 Cart
+</button>
+
+<button class="btn secondary"
+onclick='toggleSaved(${productJSON})'>
+${isSaved?"❤️ Saved":"♡ Save"}
+</button>
+
+<button class="btn secondary"
+onclick="openModal('offerModal')">
+💰 Offer
+</button>
+
+</div>
+
+</div>
+</div>
+
+`;
+
+}).join("");
+
 }
 
 async function loadProducts(category=""){
-  try{
-    const q=category
-      ? "?category="+encodeURIComponent(category)+"&limit=30"
-      : "?limit=30";
 
-    const data=await api("/api/products"+q);
-    productsCache=data.products||data.data||[];
-    renderProducts(productsCache);
-  }catch(e){
-    document.getElementById("products").innerHTML=
-      '<div class="empty"><p>Products could not be loaded from the API.</p></div>';
-  }
+try{
+
+const q=category
+
+?"?category="+encodeURIComponent(category)+"&limit=30"
+:"?limit=30";
+
+const data=await api("/api/products"+q);
+
+productsCache=data.products||data.data||[];
+
+renderProducts(productsCache);
+
+}catch(e){
+
+document.getElementById("products").innerHTML=
+
+'<div class="empty"><p>Products could not be loaded from the API.</p></div>';
+
+}
+
 }
 
 async function loadCategories(){
-  try{
-    const data=await api("/api/categories");
-    categoriesCache=data.categories||data.data||[];
-  }catch(e){}
-  renderCategories();
+
+try{
+
+const data=await api("/api/categories");
+
+categoriesCache=data.categories||data.data||[];
+
+}catch(e){}
+
+renderCategories();
+
 }
+
+/* ================= CONNECTION ================= */
 
 async function checkConnection(){
-  try{
-    const data=await api("/api/health");
-    document.getElementById("connectionStatus").textContent=
-      "Connected ✓ IsokoHub API + D1 database";
-  }catch(e){
-    document.getElementById("connectionStatus").textContent=
-      "Backend connection failed — check Cloudflare D1/API settings";
-  }
+
+try{
+
+const data=await api("/api/health");
+
+document.getElementById("connectionStatus").textContent =
+"Connected ✓ IsokoHub API + D1 database";
+
+}catch(e){
+
+document.getElementById("connectionStatus").textContent =
+"Backend connection failed — check Cloudflare D1/API settings";
+
 }
 
-document.getElementById("searchForm").addEventListener("submit",async e=>{
-  e.preventDefault();
-  const q=document.getElementById("searchInput").value.trim();
+}
 
-  if(!q){
-    loadProducts();
-    return;
-  }
+/* ================= SEARCH ================= */
 
-  try{
-    const data=await api("/api/products?search="+encodeURIComponent(q)+"&limit=30");
-    productsCache=data.products||data.data||[];
-    showSection("home");
-    renderProducts(productsCache);
-    scrollToProducts();
-  }catch(e){
-    alert("Search failed");
-  }
+document
+.getElementById("searchForm")
+.addEventListener("submit",async e=>{
+
+e.preventDefault();
+
+const q=document
+.getElementById("searchInput")
+.value.trim();
+
+if(!q){
+
+loadProducts();
+
+return;
+
+}
+
+try{
+
+const data=await api(
+"/api/products?search="+
+encodeURIComponent(q)+
+"&limit=30"
+);
+
+productsCache=data.products||data.data||[];
+
+showSection("home");
+
+renderProducts(productsCache);
+
+setTimeout(()=>{
+
+document
+.getElementById("productsSection")
+?.scrollIntoView({behavior:"smooth"});
+
+},100);
+
+}catch(e){
+
+alert("Search failed");
+
+}
+
 });
 
-document.getElementById("registerForm").addEventListener("submit",async e=>{
-  e.preventDefault();
+/* ================= REGISTER ================= */
 
-  try{
-    const data=await api("/api/register",{
-      method:"POST",
-      body:JSON.stringify({
-        name:registerName.value,
-        email:registerEmail.value,
-        phone:registerPhone.value,
-        country:registerCountry.value,
-        password:registerPassword.value
-      })
-    });
+document
+.getElementById("registerForm")
+.addEventListener("submit",async e=>{
 
-    registerMessage.textContent=data.message||"Account created successfully.";
-    registerMessage.style.color="green";
-  }catch(err){
-    registerMessage.textContent=err.message;
-    registerMessage.style.color="crimson";
-  }
+e.preventDefault();
+
+const msg=document.getElementById("registerMessage");
+
+try{
+
+const data=await api("/api/register",{
+
+method:"POST",
+
+body:JSON.stringify({
+
+name:registerName.value.trim(),
+email:registerEmail.value.trim(),
+phone:registerPhone.value.trim(),
+country:registerCountry.value.trim(),
+password:registerPassword.value
+
+})
+
 });
 
-document.getElementById("loginForm").addEventListener("submit",async e=>{
-  e.preventDefault();
+msg.textContent =
+data.message ||
+"Account created successfully.";
 
-  try{
-    const data=await api("/api/login",{
-      method:"POST",
-      body:JSON.stringify({
-        email:loginEmail.value,
-        password:loginPassword.value
-      })
-    });
+msg.style.color="green";
 
-    currentUser=data.user||data;
-    localStorage.setItem("isokohub_user",JSON.stringify(currentUser));
+document.getElementById("registerForm").reset();
 
-    loginMessage.textContent="Login successful.";
-    loginMessage.style.color="green";
+}catch(err){
 
-    closeModal("loginModal");
-    updateAuth();
-    loadProfile();
-  }catch(err){
-    loginMessage.textContent=err.message;
-    loginMessage.style.color="crimson";
-  }
+msg.textContent=err.message;
+msg.style.color="crimson";
+
+}
+
 });
 
-document.getElementById("sellForm").addEventListener("submit",async e=>{
-  e.preventDefault();
+/* ================= LOGIN ================= */
 
-  const token=localStorage.getItem("isokohub_token");
+document
+.getElementById("loginForm")
+.addEventListener("submit",async e=>{
 
-  try{
-    const data=await api("/api/products",{
-      method:"POST",
-      headers:token?{Authorization:"Bearer "+token}:{},
-      body:JSON.stringify({
-        title:sellTitle.value,
-        category:sellCategory.value,
-        price:Number(sellPrice.value),
-        currency:sellCurrency.value,
-        country:sellCountry.value,
-        district:sellDistrict.value,
-        specs:sellSpecs.value,
-        type:sellType.value
-      })
-    });
+e.preventDefault();
 
-    sellMessage.textContent=data.message||"Listing published successfully.";
-    sellMessage.style.color="green";
-    loadProducts();
-  }catch(err){
-    sellMessage.textContent=err.message||"Please login before publishing.";
-    sellMessage.style.color="crimson";
-  }
+const msg=document.getElementById("loginMessage");
+
+try{
+
+const data=await api("/api/login",{
+
+method:"POST",
+
+body:JSON.stringify({
+
+email:loginEmail.value.trim(),
+password:loginPassword.value
+
+})
+
 });
 
-document.getElementById("messageForm").addEventListener("submit",async e=>{
-  e.preventDefault();
+currentUser=data.user||data;
 
-  try{
-    await api("/api/messages",{
-      method:"POST",
-      body:JSON.stringify({
-        recipient_id:Number(messageRecipient.value),
-        message:messageText.value
-      })
-    });
+if(data.token)
+localStorage.setItem(
+"isokohub_token",
+data.token
+);
 
-    messageStatus.textContent="Message sent successfully.";
-    messageStatus.style.color="green";
-    messageText.value="";
-  }catch(err){
-    messageStatus.textContent=err.message;
-    messageStatus.style.color="crimson";
-  }
+if(data.session_token)
+localStorage.setItem(
+"isokohub_token",
+data.session_token
+);
+
+if(data.access_token)
+localStorage.setItem(
+"isokohub_token",
+data.access_token
+);
+
+localStorage.setItem(
+"isokohub_user",
+JSON.stringify(currentUser)
+);
+
+msg.textContent="Login successful.";
+msg.style.color="green";
+
+closeModal("loginModal");
+
+updateAuth();
+
+loadProfile();
+
+}catch(err){
+
+msg.textContent=err.message;
+msg.style.color="crimson";
+
+}
+
 });
+
+/* ================= SELL ================= */
+
+document
+.getElementById("sellForm")
+.addEventListener("submit",async e=>{
+
+e.preventDefault();
+
+const msg=document.getElementById("sellMessage");
+
+try{
+
+const data=await api("/api/products",{
+
+method:"POST",
+
+body:JSON.stringify({
+
+title:sellTitle.value.trim(),
+category:sellCategory.value,
+price:Number(sellPrice.value),
+currency:sellCurrency.value,
+country:sellCountry.value.trim(),
+district:sellDistrict.value.trim(),
+specs:sellSpecs.value.trim(),
+type:sellType.value
+
+})
+
+});
+
+msg.textContent =
+data.message ||
+"Listing published successfully.";
+
+msg.style.color="green";
+
+loadProducts();
+
+}catch(err){
+
+msg.textContent =
+err.message ||
+"Please login before publishing.";
+
+msg.style.color="crimson";
+
+}
+
+});
+
+/* ================= MESSAGES ================= */
+
+document
+.getElementById("messageForm")
+.addEventListener("submit",async e=>{
+
+e.preventDefault();
+
+const status=document.getElementById("messageStatus");
+
+try{
+
+await api("/api/messages",{
+
+method:"POST",
+
+body:JSON.stringify({
+
+recipient_id:Number(messageRecipient.value),
+message:messageText.value.trim()
+
+})
+
+});
+
+status.textContent="Message sent successfully.";
+status.style.color="green";
+
+messageText.value="";
+
+}catch(err){
+
+status.textContent=err.message;
+status.style.color="crimson";
+
+}
+
+});
+
+/* ================= ORDERS ================= */
 
 async function loadOrders(){
-  const el=document.getElementById("ordersContent");
-  try{
-    const data=await api("/api/orders");
-    const orders=data.orders||data.data||[];
 
-    if(!orders.length){
-      el.innerHTML='<div class="empty">No orders yet.</div>';
-      return;
-    }
+const el=document.getElementById("ordersContent");
 
-    el.innerHTML=orders.map(o=>`
-      <div class="card" style="margin-bottom:10px">
-        <h3>Order #${escapeHtml(String(o.id))}</h3>
-        <p>Status: <strong>${escapeHtml(o.status||"pending")}</strong></p>
-        <p>${escapeHtml(o.currency||"RWF")} ${Number(o.total||o.amount||0).toLocaleString()}</p>
-      </div>`).join("");
-  }catch(e){
-    el.innerHTML='<div class="empty">Login to view your orders.</div>';
-  }
+try{
+
+const data=await api("/api/orders");
+
+const orders=data.orders||data.data||[];
+
+if(!orders.length){
+
+el.innerHTML=
+'<div class="empty">No orders yet.</div>';
+
+return;
+
 }
+
+el.innerHTML=orders.map(o=>`
+
+<div class="card" style="margin-bottom:10px">
+
+<h3>
+Order #${escapeHtml(String(o.id))}
+</h3>
+
+<p>
+Status:
+<strong>
+${escapeHtml(o.status||"pending")}
+</strong>
+</p>
+
+<p>
+${escapeHtml(o.currency||"RWF")}
+${Number(o.total||o.amount||0).toLocaleString()}
+</p>
+
+</div>
+
+`).join("");
+
+}catch(e){
+
+el.innerHTML=
+'<div class="empty">Login to view your orders.</div>';
+
+}
+
+}
+
+/* ================= PROFILE ================= */
 
 async function loadProfile(){
-  const el=document.getElementById("profileContent");
-  try{
-    const data=await api("/api/me");
-    currentUser=data.user||data;
 
-    el.innerHTML=`
-      <div class="card">
-        <h3>${escapeHtml(currentUser.name||"User")}</h3>
-        <p>${escapeHtml(currentUser.email||"")}</p>
-        <p>${escapeHtml(currentUser.country||"")}</p>
-        <p>Role: <strong>${escapeHtml(currentUser.role||"buyer")}</strong></p>
-        <button class="btn" onclick="logout()">Logout</button>
-      </div>`;
-  }catch(e){
-    el.innerHTML='<div class="empty"><p>Login to view your profile.</p><button class="btn" onclick="openModal(\'loginModal\')">Login</button></div>';
-  }
+const el=document.getElementById("profileContent");
+
+try{
+
+const data=await api("/api/me");
+
+currentUser=data.user||data;
+
+localStorage.setItem(
+"isokohub_user",
+JSON.stringify(currentUser)
+);
+
+updateAuth();
+
+el.innerHTML=`
+
+<div class="card">
+
+<h3>
+${escapeHtml(currentUser.name||"User")}
+</h3>
+
+<p>
+${escapeHtml(currentUser.email||"")}
+</p>
+
+<p>
+${escapeHtml(currentUser.country||"")}
+</p>
+
+<p>
+Role:
+<strong>
+${escapeHtml(currentUser.role||"buyer")}
+</strong>
+</p>
+
+<button class="btn danger"
+onclick="logout()">
+Logout
+</button>
+
+</div>
+
+`;
+
+}catch(e){
+
+currentUser=null;
+
+el.innerHTML=
+
+'<div class="empty"><p>Login to view your profile.</p><button class="btn" onclick="openModal(\'loginModal\')">Login</button></div>';
+
 }
+
+}
+
+/* ================= AUTH UI ================= */
 
 function updateAuth(){
-  const area=document.getElementById("authArea");
 
-  if(currentUser){
-    area.innerHTML=`
-      <button class="btn secondary" onclick="showSection('profile')">
-        👤 ${escapeHtml(currentUser.name||"Profile")}
-      </button>
-      <button class="btn" onclick="logout()">Logout</button>`;
-  }
+const area=document.getElementById("authArea");
+
+if(currentUser){
+
+area.innerHTML=`
+
+<button class="btn secondary"
+onclick="showSection('profile')">
+
+👤 ${escapeHtml(currentUser.name||"Profile")}
+
+</button>
+
+<button class="btn danger"
+onclick="logout()">
+
+Logout
+
+</button>
+
+`;
+
+}else{
+
+area.innerHTML=`
+
+<button class="btn secondary"
+onclick="openModal('loginModal')">
+Login
+</button>
+
+<button class="btn"
+onclick="openModal('registerModal')">
+Register
+</button>
+
+`;
+
 }
 
-function logout(){
-  currentUser=null;
-  localStorage.removeItem("isokohub_user");
-  localStorage.removeItem("isokohub_token");
-  updateAuth();
-  showSection("home");
 }
 
-function adminTab(tab){
-  document.querySelectorAll("#adminTabs button").forEach(b=>{
-    b.classList.remove("active");
-    if(b.textContent.toLowerCase().includes(tab.toLowerCase())) b.classList.add("active");
-  });
+/* ================= LOGOUT ================= */
 
-  const c=document.getElementById("adminContent");
+async function logout(){
 
-  const data={
-    overview:["📊 Overview","Monitor marketplace activity, users, sellers, products, orders and revenue."],
-    users:["👥 Users","Manage buyers, accounts, profiles and account status."],
-    sellers:["🏪 Sellers","Review sellers, storefronts, verification and performance."],
-    products:["🛍️ Products","Manage product listings, approvals and status."],
-    services:["🛠️ Services","Manage service listings and professional providers."],
-    requests:["📋 Requests","Review buyer requests and provider offers."],
-    orders:["📦 Orders","Monitor marketplace orders and statuses."],
-    payments:["💳 Payments","Monitor payments, fees and marketplace transactions."],
-    wallet:["💰 Wallet","Seller earnings, payouts and marketplace balances."],
-    categories:["🗂️ Categories","Manage marketplace categories and organization."],
-    promotions:["🚀 Promotions","Manage featured listings, boosts, coupons and deals."],
-    ads:["📣 Advertising","Manage business advertisements and campaigns."],
-    reviews:["⭐ Reviews","Review marketplace ratings and feedback."],
-    reports:["📈 Reports","Marketplace, sales and business reports."],
-    disputes:["⚠️ Disputes","Manage transaction disputes and resolution requests."],
-    verification:["🛡️ Verification","Review seller and business verification."],
-    notifications:["🔔 Notifications","Manage marketplace notifications."],
-    settings:["⚙️ Settings","Configure marketplace settings."],
-    logs:["📋 Audit Logs","Review administrative activity and system actions."]
-  };
+try{
 
-  const d=data[tab]||data.overview;
+await api("/api/logout",{
+method:"POST"
+});
 
-  if(tab==="overview"){
-    c.innerHTML=`
-      <h2>${d[0]}</h2>
-      <p>${d[1]}</p>
-      <div class="dashboardGrid">
-        <div class="stat">👥 Users<strong>—</strong></div>
-        <div class="stat">🏪 Sellers<strong>—</strong></div>
-        <div class="stat">🛍️ Products<strong>—</strong></div>
-        <div class="stat">📦 Orders<strong>—</strong></div>
-        <div class="stat">💳 Payments<strong>—</strong></div>
-        <div class="stat">📋 Requests<strong>—</strong></div>
-      </div>`;
-  }else{
-    c.innerHTML=`
-      <h2>${d[0]}</h2>
-      <p>${d[1]}</p>
-      <div class="empty">
-        <p>Admin controls for <strong>${escapeHtml(tab)}</strong> are ready to connect to the corresponding API endpoint.</p>
-      </div>`;
-  }
+}catch(e){}
+
+currentUser=null;
+
+localStorage.removeItem("isokohub_user");
+localStorage.removeItem("isokohub_token");
+
+updateAuth();
+
+showSection("home");
+
 }
+
+/* ================= ADMIN ================= */
+
+function isAdmin(){
+
+if(!currentUser)return false;
+
+const role=String(
+currentUser.role||""
+).toLowerCase();
+
+return [
+"admin",
+"administrator",
+"super_admin",
+"superadmin"
+].includes(role);
+
+}
+
+function openAdmin(){
+
+const guard=document.getElementById("adminGuard");
+const area=document.getElementById("adminArea");
+
+if(!isAdmin()){
+
+guard.style.display="block";
+area.style.display="none";
+
+return;
+
+}
+
+guard.style.display="none";
+area.style.display="block";
+
+adminTab(currentAdminTab);
+
+}
+
+async function adminTab(tab){
+
+currentAdminTab=tab;
+
+if(!isAdmin()){
+
+openAdmin();
+
+return;
+
+}
+
+document
+.querySelectorAll("#adminTabs button")
+.forEach(b=>{
+
+b.classList.remove("active");
+
+if(
+b.textContent
+.toLowerCase()
+.includes(tab.toLowerCase())
+)
+b.classList.add("active");
+
+});
+
+const c=document.getElementById("adminContent");
+
+c.innerHTML=
+'<div class="loading">Loading admin data...</div>';
+
+if(tab==="overview"){
+
+await adminOverview(c);
+return;
+
+}
+
+if(tab==="users"){
+
+await adminUsers(c);
+return;
+
+}
+
+if(tab==="sellers"){
+
+await adminSellers(c);
+return;
+
+}
+
+if(tab==="products"){
+
+await adminProducts(c);
+return;
+
+}
+
+if(tab==="categories"){
+
+await adminCategories(c);
+return;
+
+}
+
+if(tab==="orders"){
+
+await adminOrders(c);
+return;
+
+}
+
+renderAdminPlaceholder(tab,c);
+
+}
+
+/* ================= ADMIN OVERVIEW ================= */
+
+async function adminOverview(c){
+
+try{
+
+const results=await Promise.allSettled([
+
+api("/api/admin/users"),
+api("/api/admin/products"),
+api("/api/admin/orders"),
+api("/api/admin/sellers")
+
+]);
+
+const users=
+results[0].status==="fulfilled"
+?(results[0].value.users||
+results[0].value.data||[])
+:[];
+
+const products=
+results[1].status==="fulfilled"
+?(results[1].value.products||
+results[1].value.data||[])
+:[];
+
+const orders=
+results[2].status==="fulfilled"
+?(results[2].value.orders||
+results[2].value.data||[])
+:[];
+
+const sellers=
+results[3].status==="fulfilled"
+?(results[3].value.sellers||
+results[3].value.data||[])
+:[];
+
+c.innerHTML=`
+
+<h2>📊 Overview</h2>
+
+<p>
+Monitor marketplace activity, users, sellers,
+products and orders.
+</p>
+
+<div class="dashboardGrid">
+
+<div class="stat">
+👥 Users
+<strong>${users.length}</strong>
+</div>
+
+<div class="stat">
+🏪 Sellers
+<strong>${sellers.length}</strong>
+</div>
+
+<div class="stat">
+🛍️ Products
+<strong>${products.length}</strong>
+</div>
+
+<div class="stat">
+📦 Orders
+<strong>${orders.length}</strong>
+</div>
+
+<div class="stat">
+💳 Payments
+<strong>—</strong>
+</div>
+
+<div class="stat">
+📋 Requests
+<strong>—</strong>
+</div>
+
+</div>
+
+<div class="section">
+
+<div class="quickGrid">
+
+<button class="quick"
+onclick="adminTab('users')">
+👥 Manage Users
+</button>
+
+<button class="quick"
+onclick="adminTab('sellers')">
+🏪 Manage Sellers
+</button>
+
+<button class="quick"
+onclick="adminTab('products')">
+🛍️ Manage Products
+</button>
+
+<button class="quick"
+onclick="adminTab('orders')">
+📦 Manage Orders
+</button>
+
+<button class="quick"
+onclick="adminTab('categories')">
+🗂️ Categories
+</button>
+
+<button class="quick"
+onclick="adminTab('reports')">
+📈 Reports
+</button>
+
+</div>
+
+</div>
+
+`;
+
+}catch(e){
+
+c.innerHTML=`
+
+<h2>📊 Overview</h2>
+
+<div class="empty">
+
+<p>
+Admin dashboard is connected, but some
+admin API endpoints are not available yet.
+</p>
+
+<button class="btn"
+onclick="adminTab('users')">
+Try Users
+</button>
+
+</div>
+
+`;
+
+}
+
+}
+
+/* ================= ADMIN USERS ================= */
+
+async function adminUsers(c){
+
+try{
+
+const data=await api("/api/admin/users");
+
+const users=data.users||data.data||[];
+
+if(!users.length){
+
+c.innerHTML=
+'<div class="empty">No users found.</div>';
+
+return;
+
+}
+
+c.innerHTML=`
+
+<h2>👥 Users</h2>
+
+<div class="adminTableWrap">
+
+<table class="adminTable">
+
+<thead>
+
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Email</th>
+<th>Role</th>
+<th>Country</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+${users.map(u=>`
+
+<tr>
+
+<td>${escapeHtml(u.id)}</td>
+
+<td>${escapeHtml(u.name||"")}</td>
+
+<td>${escapeHtml(u.email||"")}</td>
+
+<td>
+<span class="badge">
+${escapeHtml(u.role||"buyer")}
+</span>
+</td>
+
+<td>${escapeHtml(u.country||"")}</td>
+
+</tr>
+
+`).join("")}
+
+</tbody>
+
+</table>
+
+</div>
+
+`;
+
+}catch(e){
+
+renderAdminEndpointError(
+c,
+"Users",
+e.message
+);
+
+}
+
+}
+
+/* ================= ADMIN SELLERS ================= */
+
+async function adminSellers(c){
+
+try{
+
+const data=await api("/api/admin/sellers");
+
+const sellers=
+data.sellers||data.data||[];
+
+if(!sellers.length){
+
+c.innerHTML=
+'<div class="empty">No sellers found.</div>';
+
+return;
+
+}
+
+c.innerHTML=`
+
+<h2>🏪 Sellers</h2>
+
+<div class="adminTableWrap">
+
+<table class="adminTable">
+
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Email</th>
+<th>Country</th>
+</tr>
+</thead>
+
+<tbody>
+
+${sellers.map(s=>`
+
+<tr>
+
+<td>${escapeHtml(s.id)}</td>
+
+<td>${escapeHtml(s.name||"")}</td>
+
+<td>${escapeHtml(s.email||"")}</td>
+
+<td>${escapeHtml(s.country||"")}</td>
+
+</tr>
+
+`).join("")}
+
+</tbody>
+
+</table>
+
+</div>
+
+`;
+
+}catch(e){
+
+renderAdminEndpointError(
+c,
+"Sellers",
+e.message
+);
+
+}
+
+}
+
+/* ================= ADMIN PRODUCTS ================= */
+
+async function adminProducts(c){
+
+try{
+
+const data=await api("/api/products?limit=100");
+
+const products=
+data.products||data.data||[];
+
+if(!products.length){
+
+c.innerHTML=
+'<div class="empty">No products found.</div>';
+
+return;
+
+}
+
+c.innerHTML=`
+
+<h2>🛍️ Products</h2>
+
+<div class="adminTableWrap">
+
+<table class="adminTable">
+
+<thead>
+
+<tr>
+<th>ID</th>
+<th>Title</th>
+<th>Category</th>
+<th>Price</th>
+<th>Status</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+${products.map(p=>`
+
+<tr>
+
+<td>${escapeHtml(p.id)}</td>
+
+<td>${escapeHtml(p.title||"")}</td>
+
+<td>${escapeHtml(p.category||"")}</td>
+
+<td>
+${escapeHtml(p.currency||"RWF")}
+${Number(p.price||0).toLocaleString()}
+</td>
+
+<td>
+<span class="badge">
+${escapeHtml(p.status||"active")}
+</span>
+</td>
+
+</tr>
+
+`).join("")}
+
+</tbody>
+
+</table>
+
+</div>
+
+`;
+
+}catch(e){
+
+renderAdminEndpointError(
+c,
+"Products",
+e.message
+);
+
+}
+
+}
+
+/* ================= ADMIN CATEGORIES ================= */
+
+async function adminCategories(c){
+
+try{
+
+const data=await api("/api/categories");
+
+const categories=
+data.categories||data.data||[];
+
+c.innerHTML=`
+
+<h2>🗂️ Categories</h2>
+
+<div class="categories">
+
+${categories.map(cat=>`
+
+<div class="card">
+
+<h3>
+📦 ${escapeHtml(cat.name||cat.title||"Category")}
+</h3>
+
+<p class="muted">
+ID: ${escapeHtml(cat.id||"")}
+</p>
+
+</div>
+
+`).join("")}
+
+</div>
+
+`;
+
+}catch(e){
+
+renderAdminEndpointError(
+c,
+"Categories",
+e.message
+);
+
+}
+
+}
+
+/* ================= ADMIN ORDERS ================= */
+
+async function adminOrders(c){
+
+try{
+
+const data=await api("/api/orders");
+
+const orders=
+data.orders||data.data||[];
+
+if(!orders.length){
+
+c.innerHTML=
+'<div class="empty">No orders found.</div>';
+
+return;
+
+}
+
+c.innerHTML=`
+
+<h2>📦 Orders</h2>
+
+<div class="adminTableWrap">
+
+<table class="adminTable">
+
+<thead>
+
+<tr>
+<th>ID</th>
+<th>Status</th>
+<th>Total</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+${orders.map(o=>`
+
+<tr>
+
+<td>#${escapeHtml(o.id)}</td>
+
+<td>
+<span class="badge">
+${escapeHtml(o.status||"pending")}
+</span>
+</td>
+
+<td>
+${escapeHtml(o.currency||"RWF")}
+${Number(o.total||o.amount||0).toLocaleString()}
+</td>
+
+</tr>
+
+`).join("")}
+
+</tbody>
+
+</table>
+
+</div>
+
+`;
+
+}catch(e){
+
+renderAdminEndpointError(
+c,
+"Orders",
+e.message
+);
+
+}
+
+}
+
+/* ================= ADMIN PLACEHOLDER ================= */
+
+function renderAdminPlaceholder(tab,c){
+
+const titles={
+
+services:"🛠️ Services",
+requests:"📋 Requests",
+payments:"💳 Payments",
+wallet:"💰 Wallet",
+promotions:"🚀 Promotions",
+ads:"📣 Advertising",
+reviews:"⭐ Reviews",
+reports:"📈 Reports",
+disputes:"⚠️ Disputes",
+verification:"🛡️ Verification",
+notifications:"🔔 Notifications",
+settings:"⚙️ Settings",
+logs:"📋 Audit Logs"
+
+};
+
+const descriptions={
+
+services:"Manage service listings and professional providers.",
+requests:"Review buyer requests and provider offers.",
+payments:"Monitor payments, fees and marketplace transactions.",
+wallet:"Seller earnings, payouts and marketplace balances.",
+promotions:"Manage featured listings, boosts, coupons and deals.",
+ads:"Manage business advertisements and campaigns.",
+reviews:"Review marketplace ratings and feedback.",
+reports:"Marketplace, sales and business reports.",
+disputes:"Manage transaction disputes and resolution requests.",
+verification:"Review seller and business verification.",
+notifications:"Manage marketplace notifications.",
+settings:"Configure marketplace settings.",
+logs:"Review administrative activity and system actions."
+
+};
+
+c.innerHTML=`
+
+<h2>
+${titles[tab]||"Admin"}
+</h2>
+
+<p>
+${descriptions[tab]||"Manage IsokoHub."}
+</p>
+
+<div class="empty">
+
+<p>
+This dashboard section is ready for its
+corresponding backend API endpoint.
+</p>
+
+<button class="btn secondary"
+onclick="adminTab('overview')">
+← Back to Overview
+</button>
+
+</div>
+
+`;
+
+}
+
+function renderAdminEndpointError(c,name,error){
+
+c.innerHTML=`
+
+<h2>${escapeHtml(name)}</h2>
+
+<div class="empty">
+
+<h3>Unable to load ${escapeHtml(name)}</h3>
+
+<p>
+${escapeHtml(error||"Admin API endpoint unavailable.")}
+</p>
+
+<button class="btn"
+onclick="adminTab(currentAdminTab)">
+Retry
+</button>
+
+</div>
+
+`;
+
+}
+
+/* ================= UTILITIES ================= */
 
 function demoAction(message){
-  alert(message);
+
+alert(message);
+
 }
 
 function escapeHtml(value){
-  return String(value??"")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+
+return String(value??"")
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+
 }
 
 function escapeAttr(value){
-  return escapeHtml(value);
+
+return escapeHtml(value);
+
 }
 
-function init(){
-  try{
-    currentUser=JSON.parse(localStorage.getItem("isokohub_user")||"null");
-  }catch(e){currentUser=null}
+/* ================= INIT ================= */
 
-  saveState();
-  updateAuth();
-  renderCategories();
-  checkConnection();
-  loadCategories();
-  loadProducts();
+async function init(){
+
+try{
+
+currentUser=
+JSON.parse(
+localStorage.getItem("isokohub_user")||"null"
+);
+
+}catch(e){
+
+currentUser=null;
+
+}
+
+saveState();
+
+updateAuth();
+
+renderCategories();
+
+checkConnection();
+
+loadCategories();
+
+loadProducts();
+
+if(currentUser){
+
+loadProfile();
+
+}
+
 }
 
 init();
+
 </script>
 
 </body>
