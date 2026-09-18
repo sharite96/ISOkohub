@@ -431,8 +431,10 @@ async function verifyPassword(password, storedHash) {
     const expectedHash = parts[3];
 
     if (
-      !Number.isInteger(iterations) ||
-      iterations < 10000 ||
+    if (!Number.isInteger(iterations) || iterations < 100000 || iterations > 1000000) {
+  return false;
+}
+}
       !saltHex ||
       !expectedHash
     ) {
@@ -1726,7 +1728,7 @@ export default {
             user.id,
             user.role,
             env
-          );
+          ); 
 
         return json({
           ok: true,
