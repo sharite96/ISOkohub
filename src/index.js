@@ -430,11 +430,10 @@ async function verifyPassword(password, storedHash) {
     const saltHex = parts[2];
     const expectedHash = parts[3];
 
-    
-    if (!Number.isInteger(iterations) || iterations < 100000 || iterations > 1000000) {
-  return false;
-}
-}
+    if (
+      !Number.isInteger(iterations) ||
+      iterations < 100000 ||
+      iterations > 1000000 ||
       !saltHex ||
       !expectedHash
     ) {
@@ -4561,3 +4560,4 @@ export default {
     }
   }
 };
+
