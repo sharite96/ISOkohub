@@ -430,7 +430,7 @@ async function verifyPassword(password, storedHash) {
     const saltHex = parts[2];
     const expectedHash = parts[3];
 
-    if (
+    
     if (!Number.isInteger(iterations) || iterations < 100000 || iterations > 1000000) {
   return false;
 }
