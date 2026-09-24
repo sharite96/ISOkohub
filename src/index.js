@@ -683,7 +683,7 @@ async function authenticate(request, env) {
   return {
     session,
     user: {
-      id: session.id,
+       id: session.user_id,
       name: session.name,
       email: session.email,
       country: session.country,
