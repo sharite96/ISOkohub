@@ -1,6 +1,7 @@
 // ============================================================
 // IsokoHub — FINAL Cloudflare Worker API
 // Global Marketplace & Services
+// Domain: isokohub.online
 // Security: PBKDF2 + HMAC sessions + rate limiting + validation
 // ============================================================
 
@@ -112,7 +113,9 @@ const STATIC_SECURITY_HEADERS = {
     "img-src 'self' https: data:; " +
     "style-src 'self' 'unsafe-inline'; " +
     "script-src 'self' 'unsafe-inline'; " +
-    "connect-src 'self' https://isokohub-rwr.majyamberepierre00.workers.dev https://api.isokohub.com; " +
+    "connect-src 'self' " +
+    "https://isokohub-rwr.majyamberepierre00.workers.dev " +
+    "https://api.isokohub.online; " +
     "form-action 'self'"
 };
 
@@ -128,8 +131,9 @@ function allowedOrigins(env) {
 
   const defaults = [
     "https://isokohub-rw.pages.dev",
-    "https://isokohub.com",
-    "https://www.isokohub.com",
+    "https://isokohub.online",
+    "https://www.isokohub.online",
+    "https://api.isokohub.online",
     "https://isokohub-rwr.majyamberepierre00.workers.dev"
   ];
 
@@ -528,10 +532,9 @@ async function verifyPassword(password, stored) {
     }
   }
 
-  // Legacy SHA-256 password support.
-  // Successful login will upgrade the password hash.
   if (/^[0-9a-f]{64}$/i.test(stored)) {
     const legacy = await sha256(password);
+
     return safeEqual(
       legacy.toLowerCase(),
       stored.toLowerCase()
@@ -683,7 +686,7 @@ async function authenticate(request, env) {
   return {
     session,
     user: {
-       id: session.user_id,
+      id: session.user_id,
       name: session.name,
       email: session.email,
       country: session.country,
@@ -1288,7 +1291,6 @@ export default {
           );
         }
 
-        // Upgrade legacy SHA-256 password hashes.
         if (
           /^[0-9a-f]{64}$/i.test(
             String(user.password_hash)
@@ -1310,7 +1312,6 @@ export default {
             .run();
         }
 
-        // Clean expired sessions.
         await env.DB
           .prepare(
             `DELETE FROM sessions
@@ -3818,7 +3819,6 @@ export default {
             body.is_verified ? 1 : 0;
         }
 
-        // Prevent removing the last active admin.
         if (
           target.role === "admin" &&
           (
@@ -3865,7 +3865,6 @@ export default {
           )
           .run();
 
-        // Role/status changes immediately invalidate sessions.
         await env.DB
           .prepare(
             `DELETE FROM sessions
