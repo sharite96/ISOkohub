@@ -1,9 +1,12 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>IsokoHub — Global Marketplace & Services</title>
-<meta name="description" content="IsokoHub global marketplace for products, services, education, creators, business, work and opportunities worldwide."><style>
+<meta name="description" content="IsokoHub global marketplace for products, services, education, creators, business, work and opportunities worldwide.">
+
+<style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Arial,Helvetica,sans-serif;background:#f5f7fb;color:#172033;line-height:1.5}
 button,input,select,textarea{font:inherit}
@@ -125,12 +128,14 @@ th{background:#f8fafc}
 .notice{padding:11px 13px;border-radius:9px;background:#eef4ff;color:#175cd3;margin-bottom:15px}
 .success{padding:10px;border-radius:8px;background:#ecfdf3;color:#087443;margin-top:12px}
 .error{padding:10px;border-radius:8px;background:#fff1f2;color:#b42318;margin-top:12px}
+
 @media(max-width:900px){
 .header{flex-wrap:wrap}.search{order:3;flex-basis:100%}
 .filters{grid-template-columns:1fr 1fr}.filters input:first-child{grid-column:1/-1}
 .admin{grid-template-columns:1fr}.admin-side{display:flex;overflow-x:auto;border-right:0;border-bottom:1px solid var(--border)}
 .admin-side button{min-width:max-content}.footer{grid-template-columns:1fr 1fr}
 }
+
 @media(max-width:600px){
 .topbar{display:none}.header{padding:10px}.logo{font-size:20px}
 .hero{padding:35px 12px}.hero-search{display:grid}.hero-search select{border:0;border-top:1px solid var(--border);padding:12px}.hero-search button{padding:13px}
@@ -140,19 +145,36 @@ th{background:#f8fafc}
 .footer{grid-template-columns:1fr}.price{font-size:16px}
 .cart-row{grid-template-columns:55px 1fr}.cart-row .btn{grid-column:2}
 }
-</style></head><body><div class="topbar">
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
 <span>🌍 IsokoHub — Global Marketplace</span>
 <span id="apiStatus">Connecting...</span>
-</div><header>
-<div class="header"><div class="logo" onclick="home()">Isoko<span>Hub</span> 🌍</div><form class="search" id="searchForm">
+</div>
+
+<header>
+<div class="header">
+
+<div class="logo" onclick="home()">Isoko<span>Hub</span> 🌍</div>
+
+<form class="search" id="searchForm">
 <input id="searchInput" type="search" placeholder="Search products, services, teachers, creators, jobs...">
 <button>Search</button>
-</form><div class="actions">
+</form>
+
+<div class="actions">
 <button class="icon" onclick="saved()">❤️<span class="badge" id="savedCount">0</span></button>
 <button class="icon" onclick="cartOpen()">🛒<span class="badge" id="cartCount">0</span></button>
 <button class="icon" onclick="messages()">💬</button>
 <button class="btn sm" id="authBtn" onclick="auth()">Login</button>
-</div></div><nav>
+</div>
+
+</div>
+
+<nav>
 <div class="nav">
 <button onclick="home()">🏠 Home</button>
 <button onclick="services()">🛠️ Services</button>
@@ -169,18 +191,31 @@ th{background:#f8fafc}
 <button id="adminBtn" style="display:none" onclick="admin()">🛠️ Admin</button>
 </div>
 </nav>
-</header><section class="hero">
+</header>
+
+<section class="hero">
 <div class="hero-inner">
 <h1>Find Anything. Buy Anything. Hire Anyone. 🌍</h1>
-<p>IsokoHub connects buyers, sellers, teachers, artists, creators, filmmakers, professionals and service providers worldwide.</p><form class="hero-search" id="heroForm">
+<p>IsokoHub connects buyers, sellers, teachers, artists, creators, filmmakers, professionals and service providers worldwide.</p>
+
+<form class="hero-search" id="heroForm">
 <input id="heroInput" placeholder="What product or service are you looking for?">
 <select id="heroCountry">
 <option value="">🌍 All Countries</option>
 </select>
 <button>🔎 Search</button>
 </form>
+
 </div>
-</section><main class="container"><div id="status" class="status">Connecting to IsokoHub API...</div><section class="section">
+</section>
+
+<main class="container">
+
+<div id="status" class="status">
+Connecting to IsokoHub API...
+</div>
+
+<section class="section">
 <div class="title">
 <div>
 <h2>Popular Services</h2>
@@ -189,7 +224,10 @@ th{background:#f8fafc}
 <button class="btn sm" onclick="services()">View All</button>
 </div>
 <div id="quick" class="quick"></div>
-</section><section class="section">
+</section>
+
+<section class="section">
+
 <div class="service-info">
 <h2>🛠️ Find the service you need</h2>
 <p>
@@ -200,30 +238,58 @@ beauty, catering, logistics, travel, manufacturing, freelance work
 and many other services.
 </p>
 </div>
+
 <div id="categories" class="categories"></div>
-</section><section>
+
+</section>
+
+<section>
+
 <div class="title">
 <div>
 <h2 id="resultTitle">Marketplace</h2>
 <p id="resultSub">Products and services available worldwide.</p>
 </div>
-</div><div class="filters">
-<input class="field" id="filterSearch" placeholder="Search anything..."><select class="field" id="filterCategory">
+</div>
+
+<div class="filters">
+
+<input class="field" id="filterSearch" placeholder="Search anything...">
+
+<select class="field" id="filterCategory">
 <option value="">All Categories</option>
-</select><select class="field" id="filterCountry">
+</select>
+
+<select class="field" id="filterCountry">
 <option value="">All Countries</option>
-</select><select class="field" id="filterType">
+</select>
+
+<select class="field" id="filterType">
 <option value="">Products + Services</option>
 <option value="service">Services Only</option>
 <option value="product">Products Only</option>
-</select><button class="btn" onclick="filter()">Search</button>
+</select>
 
-</div><div id="products" class="grid"></div>
-</section></main><footer>
-<div class="footer"><div>
+<button class="btn" onclick="filter()">Search</button>
+
+</div>
+
+<div id="products" class="grid"></div>
+
+</section>
+
+</main>
+
+<footer>
+
+<div class="footer">
+
+<div>
 <h3>IsokoHub 🌍</h3>
 <p>Global marketplace for products, services, education, creative work, business and opportunities.</p>
-</div><div>
+</div>
+
+<div>
 <h4>Marketplace</h4>
 <ul>
 <li>Products</li>
@@ -233,7 +299,9 @@ and many other services.
 <li>Business</li>
 <li>Jobs & Freelance</li>
 </ul>
-</div><div>
+</div>
+
+<div>
 <h4>For Sellers</h4>
 <ul>
 <li>Sell on IsokoHub</li>
@@ -241,7 +309,9 @@ and many other services.
 <li>Orders</li>
 <li>Seller Statistics</li>
 </ul>
-</div><div>
+</div>
+
+<div>
 <h4>Platform</h4>
 <ul>
 <li>Saved</li>
@@ -249,119 +319,287 @@ and many other services.
 <li>Profile</li>
 <li>Admin</li>
 </ul>
-</div></div>
-<div class="copy">© 2026 IsokoHub. Global marketplace.</div>
-</footer><!-- AUTH --><div class="overlay" id="authModal">
-<div class="modal"><div class="head">
+</div>
+
+</div>
+
+<div class="copy">
+© 2026 IsokoHub. Global marketplace.
+</div>
+
+</footer>
+
+
+<!-- AUTH -->
+
+<div class="overlay" id="authModal">
+<div class="modal">
+
+<div class="head">
 <strong>IsokoHub Account</strong>
 <button class="close" onclick="closeM('authModal')">×</button>
-</div><div class="tabs">
+</div>
+
+<div class="tabs">
 <button id="lt" class="active" onclick="authTab('login')">Login</button>
 <button id="rt" onclick="authTab('register')">Register</button>
-</div><div class="modal-body"><form id="loginForm">
+</div>
+
+<div class="modal-body">
+
+<form id="loginForm">
+
 <label>Email</label>
 <input class="field" id="loginEmail" type="email" required>
-<br><br><label>Password</label>
+
+<br><br>
+
+<label>Password</label>
 <input class="field" id="loginPassword" type="password" required>
+
 <br><br>
 
 <button class="btn" style="width:100%">Login</button>
 
-</form><form id="registerForm" style="display:none">
-<div class="form-grid"><div>
+</form>
+
+
+<form id="registerForm" style="display:none">
+
+<div class="form-grid">
+
+<div>
 <label>Full Name</label>
 <input class="field" id="regName" required>
-</div><div>
+</div>
+
+<div>
 <label>Email</label>
 <input class="field" id="regEmail" type="email" required>
-</div><div>
+</div>
+
+<div>
 <label>Password</label>
 <input class="field" id="regPassword" type="password" minlength="6" required>
-</div><div>
+</div>
+
+<div>
 <label>Country</label>
 <select class="field" id="regCountry" required></select>
-</div></div>
-<br>
-<button class="btn" style="width:100%">Create Account</button>
-</form><div id="authMsg"></div></div>
 </div>
-</div><!-- PRODUCT --><div class="overlay" id="productModal">
-<div class="modal large"><div class="head">
+
+</div>
+
+<br>
+
+<button class="btn" style="width:100%">
+Create Account
+</button>
+
+</form>
+
+<div id="authMsg"></div>
+
+</div>
+</div>
+</div>
+
+
+<!-- PRODUCT -->
+
+<div class="overlay" id="productModal">
+
+<div class="modal large">
+
+<div class="head">
 <strong id="productTitle">Product</strong>
 <button class="close" onclick="closeM('productModal')">×</button>
-</div><div class="modal-body" id="productDetails"></div></div>
-</div><!-- CART --><div class="overlay" id="cartModal">
-<div class="modal"><div class="head">
+</div>
+
+<div class="modal-body" id="productDetails"></div>
+
+</div>
+</div>
+
+
+<!-- CART -->
+
+<div class="overlay" id="cartModal">
+
+<div class="modal">
+
+<div class="head">
 <strong>🛒 Cart</strong>
 <button class="close" onclick="closeM('cartModal')">×</button>
-</div><div class="modal-body">
+</div>
+
+<div class="modal-body">
+
 <div id="cartItems"></div>
+
 <div id="cartTotal" class="total"></div>
+
 <br>
-<button class="btn green" style="width:100%" onclick="checkout()">Place Order</button>
-</div></div>
-</div><!-- SAVED --><div class="overlay" id="savedModal">
-<div class="modal large"><div class="head">
+
+<button class="btn green" style="width:100%" onclick="checkout()">
+Place Order
+</button>
+
+</div>
+</div>
+</div>
+
+
+<!-- SAVED -->
+
+<div class="overlay" id="savedModal">
+
+<div class="modal large">
+
+<div class="head">
 <strong>❤️ Saved Items</strong>
 <button class="close" onclick="closeM('savedModal')">×</button>
-</div><div class="modal-body">
-<div class="notice">❤️ Your saved products and services are linked to your IsokoHub account.</div>
+</div>
+
+<div class="modal-body">
+
+<div class="notice">
+❤️ Your saved products and services are linked to your IsokoHub account.
+</div>
+
 <div id="savedItems" class="grid"></div>
-</div></div>
-</div><!-- ORDERS --><div class="overlay" id="ordersModal">
-<div class="modal large"><div class="head">
+
+</div>
+</div>
+</div>
+
+
+<!-- ORDERS -->
+
+<div class="overlay" id="ordersModal">
+
+<div class="modal large">
+
+<div class="head">
 <strong>📦 Orders</strong>
 <button class="close" onclick="closeM('ordersModal')">×</button>
-</div><div class="modal-body">
+</div>
+
+<div class="modal-body">
 <div id="ordersArea"></div>
-</div></div>
-</div><!-- MESSAGES --><div class="overlay" id="messagesModal">
-<div class="modal"><div class="head">
+</div>
+
+</div>
+</div>
+
+
+<!-- MESSAGES -->
+
+<div class="overlay" id="messagesModal">
+
+<div class="modal">
+
+<div class="head">
 <strong>💬 Messages</strong>
 <button class="close" onclick="closeM('messagesModal')">×</button>
-</div><div class="modal-body"><div id="messagesArea" class="messages"></div><br><form id="messageForm"><label>Recipient User ID</label>
+</div>
+
+<div class="modal-body">
+
+<div id="messagesArea" class="messages"></div>
+
+<br>
+
+<form id="messageForm">
+
+<label>Recipient User ID</label>
 <input class="field" id="msgTo" type="number" required>
 
 <br><br>
 
 <label>Message</label>
+<textarea class="field" id="msgBody" rows="3" required></textarea>
 
-<textarea class="field" id="msgBody" rows="3" required></textarea><br><br>
+<br><br>
 
 <button class="btn">Send Message</button>
 
-</form></div>
+</form>
+
 </div>
-</div><!-- PROFILE --><div class="overlay" id="profileModal">
-<div class="modal large"><div class="head">
+</div>
+</div>
+
+
+<!-- PROFILE -->
+
+<div class="overlay" id="profileModal">
+
+<div class="modal large">
+
+<div class="head">
 <strong>👤 My Profile</strong>
 <button class="close" onclick="closeM('profileModal')">×</button>
-</div><div class="modal-body" id="profileArea"></div></div>
-</div><!-- SELL --><div class="overlay" id="sellModal">
-<div class="modal large"><div class="head">
+</div>
+
+<div class="modal-body" id="profileArea"></div>
+
+</div>
+</div>
+
+
+<!-- SELL -->
+
+<div class="overlay" id="sellModal">
+
+<div class="modal large">
+
+<div class="head">
 <strong>➕ Sell / Offer Service</strong>
 <button class="close" onclick="closeM('sellModal')">×</button>
-</div><div class="modal-body"><div class="notice">
+</div>
+
+<div class="modal-body">
+
+<div class="notice">
 📌 Publish a product or service. It will be connected to your IsokoHub account.
-</div><form id="sellForm"><div class="form-grid"><div class="full">
+</div>
+
+<form id="sellForm">
+
+<div class="form-grid">
+
+<div class="full">
 <label>Title</label>
 <input class="field" id="sellTitle" placeholder="Example: Website Development Service" required>
-</div><div>
+</div>
+
+<div>
 <label>Category</label>
 <select class="field" id="sellCategory" required></select>
-</div><div>
+</div>
+
+<div>
 <label>Country</label>
 <select class="field" id="sellCountry" required></select>
-</div><div>
+</div>
+
+<div>
 <label>Price</label>
 <input class="field" id="sellPrice" type="number" min="0" required>
-</div><div>
+</div>
+
+<div>
 <label>Currency</label>
 <input class="field" id="sellCurrency" value="RWF" required>
-</div><div>
+</div>
+
+<div>
 <label>Stock</label>
 <input class="field" id="sellStock" type="number" min="0" value="1">
-</div><div>
+</div>
+
+<div>
 <label>Condition</label>
 <select class="field" id="sellCondition">
 <option value="new">New</option>
@@ -369,43 +607,108 @@ and many other services.
 <option value="refurbished">Refurbished</option>
 <option value="has crack">Has crack</option>
 </select>
-</div><div>
+</div>
+
+<div>
 <label>District / City</label>
 <input class="field" id="sellDistrict">
-</div><div>
+</div>
+
+<div>
 <label>Image URL</label>
 <input class="field" id="sellImage" placeholder="https://...">
-</div><div class="full">
+</div>
+
+<div class="full">
 <label>Description / Specifications</label>
 <textarea class="field" id="sellSpecs" rows="5" placeholder="Describe your product or service..."></textarea>
-</div></div><br><button class="btn green" style="width:100%">Publish on IsokoHub</button>
-
-</form><div id="sellMsg"></div></div>
 </div>
-</div><!-- ADMIN --><div class="overlay" id="adminModal">
-<div class="modal large"><div class="head">
+
+</div>
+
+<br>
+
+<button class="btn green" style="width:100%">
+Publish on IsokoHub
+</button>
+
+</form>
+
+<div id="sellMsg"></div>
+
+</div>
+</div>
+</div>
+
+
+<!-- ADMIN -->
+
+<div class="overlay" id="adminModal">
+
+<div class="modal large">
+
+<div class="head">
 <strong>🛠️ IsokoHub Admin Dashboard</strong>
 <button class="close" onclick="closeM('adminModal')">×</button>
-</div><div class="admin"><aside class="admin-side"><button data-admin="overview" onclick="adminSection('overview')">📊 Overview</button>
-<button data-admin="users" onclick="adminSection('users')">👥 Users</button>
-<button data-admin="sellers" onclick="adminSection('sellers')">🏪 Sellers</button>
-<button data-admin="products" onclick="adminSection('products')">📦 Products</button>
-<button data-admin="orders" onclick="adminSection('orders')">🛒 Orders</button>
-<button data-admin="payments" onclick="adminSection('payments')">💳 Payments</button>
-<button data-admin="services" onclick="adminSection('services')">🛠️ Services</button>
-<button data-admin="categories" onclick="adminSection('categories')">📚 Categories</button>
-<button data-admin="reports" onclick="adminSection('reports')">📈 Reports</button>
-
-</aside><section class="admin-main">
-<div id="adminContent"></div>
-</section></div>
 </div>
-</div><script>
 
-/* =========================
-   ISOKOHUB API
-   Production domain
-========================= */
+<div class="admin">
+
+<aside class="admin-side">
+
+<button data-admin="overview" onclick="adminSection('overview')">
+📊 Overview
+</button>
+
+<button data-admin="users" onclick="adminSection('users')">
+👥 Users
+</button>
+
+<button data-admin="sellers" onclick="adminSection('sellers')">
+🏪 Sellers
+</button>
+
+<button data-admin="products" onclick="adminSection('products')">
+📦 Products
+</button>
+
+<button data-admin="orders" onclick="adminSection('orders')">
+🛒 Orders
+</button>
+
+<button data-admin="payments" onclick="adminSection('payments')">
+💳 Payments
+</button>
+
+<button data-admin="services" onclick="adminSection('services')">
+🛠️ Services
+</button>
+
+<button data-admin="categories" onclick="adminSection('categories')">
+📚 Categories
+</button>
+
+<button data-admin="reports" onclick="adminSection('reports')">
+📈 Reports
+</button>
+
+</aside>
+
+<section class="admin-main">
+<div id="adminContent"></div>
+</section>
+
+</div>
+</div>
+</div>
+
+
+<script>
+
+/* =========================================================
+   ISOKOHUB — PRODUCTION FRONTEND
+   API: https://api.isokohub.online/api
+========================================================= */
 
 const API="https://api.isokohub.online/api";
 
@@ -415,8 +718,16 @@ let countries=[];
 let categories=[];
 let serviceCategories=[];
 
-let cartData=JSON.parse(localStorage.getItem("isokohub_cart")||"[]");
+let cartData=JSON.parse(
+localStorage.getItem("isokohub_cart")||"[]"
+);
+
 let savedData=[];
+
+
+/* =========================================================
+   ICONS
+========================================================= */
 
 const icons={
 "Business & Professional":"💼",
@@ -443,6 +754,11 @@ const icons={
 "Other Services":"🔎"
 };
 
+
+/* =========================================================
+   SERVICE WORDS
+========================================================= */
+
 const serviceWords=[
 "service","consultant","consulting","engineer","engineering",
 "developer","development","designer","design","teacher","teaching",
@@ -458,9 +774,15 @@ const serviceWords=[
 "jobs","software","website","app","mobile app"
 ];
 
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
 function $(x){
-return document.getElementById(x)
+return document.getElementById(x);
 }
+
 
 function esc(v){
 return String(v??"")
@@ -471,84 +793,194 @@ return String(v??"")
 .replace(/'/g,"&#039;");
 }
 
+
 function money(v,c="RWF"){
 try{
-return new Intl.NumberFormat("en-US",{maximumFractionDigits:0})
-.format(Number(v||0))+" "+c
+return new Intl.NumberFormat("en-US",{
+maximumFractionDigits:0
+}).format(Number(v||0))+" "+c;
 }catch(e){
-return Number(v||0)+" "+c
+return Number(v||0)+" "+c;
 }
 }
+
 
 function openM(id){
-$(id).style.display="flex"
+let el=$(id);
+if(el)el.style.display="flex";
 }
 
+
 function closeM(id){
-$(id).style.display="none"
+let el=$(id);
+if(el)el.style.display="none";
 }
+
 
 function closeAll(){
 document.querySelectorAll(".overlay")
-.forEach(x=>x.style.display="none")
+.forEach(x=>x.style.display="none");
 }
+
 
 function loginRequired(){
 if(!user){
 auth();
-return false
+return false;
 }
-return true
+return true;
 }
 
 
-/* =========================
+/* =========================================================
+   NORMALIZATION
+========================================================= */
+
+function nameValue(v){
+
+if(typeof v==="string")return v;
+
+if(v&&typeof v==="object"){
+return v.name||
+v.title||
+v.country||
+v.category||
+v.value||
+v.label||
+v.code||
+"";
+}
+
+return "";
+}
+
+
+function catName(c){
+return nameValue(c);
+}
+
+
+function normalizeList(d,keys=[]){
+
+if(Array.isArray(d))return d;
+
+if(!d||typeof d!=="object")return [];
+
+for(const k of keys){
+
+if(Array.isArray(d[k])){
+return d[k];
+}
+
+}
+
+return [];
+}
+
+
+function itemKind(item){
+
+if(item?.__kind){
+return item.__kind;
+}
+
+if(
+item?.type==="service"||
+item?.listing_type==="service"||
+item?.kind==="service"
+){
+return "service";
+}
+
+return isService(item)?"service":"product";
+}
+
+
+/* =========================================================
    API
-========================= */
+========================================================= */
 
 async function api(path,opt={}){
+
 let headers={
-"Content-Type":"application/json",
+"Accept":"application/json",
 ...(opt.headers||{})
 };
 
-let token=localStorage.getItem("isokohub_token");
+let token=
+localStorage.getItem("isokohub_token");
 
 if(token){
-headers.Authorization="Bearer "+token
+headers.Authorization="Bearer "+token;
 }
 
-let r=await fetch(API+path,{
+if(
+opt.body!==undefined &&
+opt.body!==null &&
+!headers["Content-Type"]
+){
+headers["Content-Type"]="application/json";
+}
+
+let r;
+
+try{
+
+r=await fetch(API+path,{
 ...opt,
 headers
 });
 
+}catch(e){
+
+throw new Error(
+"Cannot connect to IsokoHub API."
+);
+
+}
+
 let data={};
 
 try{
-data=await r.json()
+
+const text=await r.text();
+
+if(text){
+try{
+data=JSON.parse(text);
+}catch(e){
+data={message:text};
+}
+}
+
 }catch(e){}
 
 if(!r.ok){
+
 throw new Error(
 data.error||
 data.message||
-"Request failed"
-)
+`Request failed (${r.status})`
+);
+
 }
 
-return data
+return data;
+
 }
 
 
-/* =========================
+/* =========================================================
    COUNTS
-========================= */
+========================================================= */
 
 function updateCounts(){
 
-$("cartCount").textContent=cartData.length;
-$("savedCount").textContent=savedData.length;
+$("cartCount").textContent=
+cartData.length;
+
+$("savedCount").textContent=
+savedData.length;
 
 localStorage.setItem(
 "isokohub_cart",
@@ -557,86 +989,108 @@ JSON.stringify(cartData)
 
 }
 
+
+/* =========================================================
+   SAVED FROM SERVER
+========================================================= */
+
 async function loadSavedFromServer(){
 
 if(!user){
+
 savedData=[];
 updateCounts();
-return
+return;
+
 }
 
 try{
 
 let d=await api("/saved");
 
-let list=Array.isArray(d)
-?d
-:(d.saved||d.items||[]);
+let list=normalizeList(
+d,
+["saved","items","products"]
+);
 
-savedData=list.map(x=>{
-
-if(x.product){
-return x.product
-}
-
-return x
-
-});
+savedData=list.map(x=>
+x?.product||x?.item||x
+).filter(Boolean);
 
 updateCounts();
 
 }catch(e){
 
-console.log("Saved loading:",e.message);
+console.log(
+"Saved loading:",
+e.message
+);
 
 }
 
 }
 
 
-/* =========================
+/* =========================================================
    INIT
-========================= */
+========================================================= */
 
 async function init(){
 
 updateCounts();
 bind();
 
+let apiOK=false;
+
 try{
 
 await api("/config");
 
-$("apiStatus").textContent="API connected";
+apiOK=true;
 
-$("status").className="status ok";
+$("apiStatus").textContent=
+"API connected";
+
+$("status").className=
+"status ok";
 
 $("status").textContent=
 "✅ IsokoHub API + D1 database connected.";
 
 }catch(e){
 
-$("apiStatus").textContent="API connection failed";
+$("apiStatus").textContent=
+"API connection failed";
 
-$("status").className="status err";
+$("status").className=
+"status err";
 
 $("status").textContent=
 "⚠️ Backend connection failed.";
 
+console.error(e);
+
 }
 
+
+/* These can still load independently */
 await countriesLoad();
 await categoriesLoad();
 await servicesLoad();
 await session();
-await loadProducts("?limit=100");
+
+if(apiOK){
+await loadMarketplace();
+}else{
+await loadMarketplace();
+}
 
 }
 
 
-/* =========================
+/* =========================================================
    COUNTRIES
-========================= */
+========================================================= */
 
 async function countriesLoad(){
 
@@ -644,19 +1098,30 @@ try{
 
 let d=await api("/countries");
 
-countries=Array.isArray(d)
-?d
-:(d.countries||[]);
+countries=normalizeList(
+d,
+["countries","items","data"]
+)
+.map(nameValue)
+.filter(Boolean);
+
+countries=[
+...new Set(countries)
+];
 
 fillCountries();
 
 }catch(e){
 
-console.log(e)
+console.log(
+"Countries loading:",
+e.message
+);
 
 }
 
 }
+
 
 function fillCountries(){
 
@@ -671,9 +1136,25 @@ let s=$(id);
 
 if(!s)return;
 
-let first=s.options[0]?.outerHTML||"";
+let first=s.options[0]
+?{
+text:s.options[0].textContent,
+value:s.options[0].value
+}
+:null;
 
-s.innerHTML=first;
+s.innerHTML="";
+
+if(first){
+
+let o=document.createElement("option");
+
+o.value=first.value;
+o.textContent=first.text;
+
+s.appendChild(o);
+
+}
 
 countries.forEach(c=>{
 
@@ -682,7 +1163,7 @@ let o=document.createElement("option");
 o.value=c;
 o.textContent=c;
 
-s.appendChild(o)
+s.appendChild(o);
 
 });
 
@@ -691,9 +1172,9 @@ s.appendChild(o)
 }
 
 
-/* =========================
+/* =========================================================
    CATEGORIES
-========================= */
+========================================================= */
 
 async function categoriesLoad(){
 
@@ -701,27 +1182,26 @@ try{
 
 let d=await api("/categories");
 
-categories=Array.isArray(d)
-?d
-:(d.categories||[]);
+categories=normalizeList(
+d,
+["categories","items","data"]
+);
 
 fillCategories();
 
 }catch(e){
 
-console.log(e)
+console.log(
+"Categories loading:",
+e.message
+);
+
+fillCategories();
 
 }
 
 }
 
-function catName(c){
-
-return typeof c==="string"
-?c
-:(c.name||c.title||c.category||"")
-
-}
 
 function fillCategories(){
 
@@ -731,8 +1211,11 @@ categories.forEach(c=>{
 
 let n=catName(c);
 
-if(n&&!names.includes(n)){
-names.push(n)
+if(
+n &&
+!names.includes(n)
+){
+names.push(n);
 }
 
 });
@@ -740,12 +1223,15 @@ names.push(n)
 Object.keys(icons).forEach(n=>{
 
 if(!names.includes(n)){
-names.push(n)
+names.push(n);
 }
 
 });
 
-["filterCategory","sellCategory"].forEach(id=>{
+[
+"filterCategory",
+"sellCategory"
+].forEach(id=>{
 
 let s=$(id);
 
@@ -753,8 +1239,10 @@ if(!s)return;
 
 s.innerHTML=
 id==="sellCategory"
-?'<option value="">Choose Category</option>'
-:'<option value="">All Categories</option>';
+?
+'<option value="">Choose Category</option>'
+:
+'<option value="">All Categories</option>';
 
 names.forEach(n=>{
 
@@ -763,7 +1251,7 @@ let o=document.createElement("option");
 o.value=n;
 o.textContent=n;
 
-s.appendChild(o)
+s.appendChild(o);
 
 });
 
@@ -772,30 +1260,39 @@ s.appendChild(o)
 }
 
 
-/* =========================
+/* =========================================================
    SERVICES
-========================= */
+========================================================= */
 
 async function servicesLoad(){
 
 try{
 
-let d=await api("/service-categories");
+let d=await api(
+"/service-categories"
+);
 
 serviceCategories=
-Array.isArray(d)
-?d
-:(d.categories||[]);
+normalizeList(
+d,
+["categories","serviceCategories","items","data"]
+);
+
+if(!serviceCategories.length){
+serviceCategories=Object.keys(icons);
+}
 
 }catch(e){
 
-serviceCategories=Object.keys(icons)
+serviceCategories=
+Object.keys(icons);
 
 }
 
 renderServices();
 
 }
+
 
 function renderServices(){
 
@@ -805,6 +1302,9 @@ serviceCategories
 .map(c=>{
 
 let n=catName(c);
+
+if(!n)return "";
+
 let i=icons[n]||"🛠️";
 
 return `
@@ -813,16 +1313,20 @@ return `
 <strong>${esc(n)}</strong>
 <small>Find services</small>
 </button>
-`
+`;
 
 })
 .join("");
+
 
 $("categories").innerHTML=
 serviceCategories
 .map(c=>{
 
 let n=catName(c);
+
+if(!n)return "";
+
 let i=icons[n]||"🛠️";
 
 return `
@@ -837,7 +1341,7 @@ onclick='serviceSearch(${JSON.stringify(n)})'>
 </span>
 
 </button>
-`
+`;
 
 })
 .join("");
@@ -845,107 +1349,287 @@ onclick='serviceSearch(${JSON.stringify(n)})'>
 }
 
 
-/* =========================
-   PRODUCTS
-========================= */
-
-async function loadProducts(q="?limit=100"){
-
-$("products").innerHTML=
-'<div class="empty">🔄 Loading marketplace...</div>';
-
-try{
-
-let d=await api("/products"+q);
-
-products=
-Array.isArray(d)
-?d
-:(d.products||d.items||[]);
-
-render(products);
-
-}catch(e){
-
-$("products").innerHTML=
-`<div class="empty">❌ ${esc(e.message)}</div>`
-
-}
-
-}
+/* =========================================================
+   SERVICE DETECTION
+========================================================= */
 
 function isService(p){
 
+if(p?.__kind==="service"){
+return true;
+}
+
+if(
+p?.type==="service"||
+p?.listing_type==="service"||
+p?.kind==="service"
+){
+return true;
+}
+
 let text=[
-p.title,
-p.name,
-p.category,
-p.description,
-p.specs,
-p.type
+p?.title,
+p?.name,
+p?.category,
+p?.description,
+p?.specs,
+p?.type
 ]
 .join(" ")
 .toLowerCase();
 
 return serviceWords.some(
 w=>text.includes(w)
-)
+);
 
 }
+
+
+/* =========================================================
+   LIST EXTRACTION
+========================================================= */
+
+function extractItems(d,type){
+
+if(Array.isArray(d)){
+return d;
+}
+
+if(!d||typeof d!=="object"){
+return [];
+}
+
+if(type==="service"){
+
+return normalizeList(
+d,
+["services","items","data","results"]
+);
+
+}
+
+return normalizeList(
+d,
+["products","items","data","results"]
+);
+
+}
+
+
+/* =========================================================
+   LOAD MARKETPLACE — PRODUCTS + SERVICES
+========================================================= */
+
+async function loadMarketplace(params=""){
+
+$("products").innerHTML=
+'<div class="empty">🔄 Loading marketplace...</div>';
+
+let query=params;
+
+if(query && !query.startsWith("?")){
+query="?"+query;
+}
+
+if(!query){
+query="?limit=100";
+}
+
+let productResult=[];
+let serviceResult=[];
+
+const results=
+await Promise.allSettled([
+
+api("/products"+query),
+
+api("/services"+query)
+
+]);
+
+
+if(results[0].status==="fulfilled"){
+
+productResult=
+extractItems(
+results[0].value,
+"product"
+).map(x=>({
+...x,
+__kind:"product"
+}));
+
+}
+
+
+if(results[1].status==="fulfilled"){
+
+serviceResult=
+extractItems(
+results[1].value,
+"service"
+).map(x=>({
+...x,
+__kind:"service"
+}));
+
+}
+
+
+let combined=[
+...productResult,
+...serviceResult
+];
+
+
+/*
+Avoid duplicate exact records when backend
+returns a service through both endpoints.
+*/
+let seen=new Set();
+
+combined=combined.filter(x=>{
+
+let key=
+(itemKind(x))+
+":"+
+String(x.id);
+
+if(
+x.id!==undefined &&
+x.id!==null &&
+seen.has(key)
+){
+return false;
+}
+
+if(
+x.id!==undefined &&
+x.id!==null
+){
+seen.add(key);
+}
+
+return true;
+
+});
+
+products=combined;
+
+render(products);
+
+}
+
+
+/* =========================================================
+   PRODUCTS ONLY
+========================================================= */
+
+async function loadProducts(q="?limit=100"){
+
+$("products").innerHTML=
+'<div class="empty">🔄 Loading products...</div>';
+
+try{
+
+let d=await api(
+"/products"+q
+);
+
+products=
+extractItems(
+d,
+"product"
+).map(x=>({
+...x,
+__kind:"product"
+}));
+
+render(products);
+
+}catch(e){
+
+$("products").innerHTML=
+`<div class="empty">❌ ${esc(e.message)}</div>`;
+
+}
+
+}
+
+
+/* =========================================================
+   RENDER
+========================================================= */
 
 function render(list){
 
-if(!list.length){
+if(!Array.isArray(list)||!list.length){
 
 $("products").innerHTML=
-'<div class="empty">🔎 No results found.<br>Try another product, service, category or country.</div>';
+`
+<div class="empty">
+🔎 No results found.<br>
+Try another product, service, category or country.
+</div>
+`;
 
-return
+return;
 
 }
 
 $("products").innerHTML=
-list.map(card).join("")
+list.map(card).join("");
 
 }
+
 
 function card(p){
 
-let id=p.id;
+let id=p?.id;
 
 let title=
-p.title||
-p.name||
+p?.title||
+p?.name||
 "Untitled";
 
-let service=isService(p);
+let service=
+itemKind(p)==="service";
 
 let img=
-p.image_url||
-p.imageUrl||
-p.image||
+p?.image_url||
+p?.imageUrl||
+p?.image||
 "";
 
 let country=
-p.country||
-p.seller_country||
+p?.country||
+p?.seller_country||
 "";
 
 let loc=
-p.district||
-p.city||
-p.location||
+p?.district||
+p?.city||
+p?.location||
 country;
 
 let seller=
-p.seller_name||
-p.sellerName||
-p.seller||
+p?.seller_name||
+p?.sellerName||
+(
+typeof p?.seller==="string"
+?p.seller
+:p?.seller?.name
+)||
 "IsokoHub Seller";
 
-let isSaved=savedData.some(
-x=>String(x.id)===String(id)
+let isSaved=
+savedData.some(
+x=>String(x?.id)===String(id)
 );
+
+let kind=service
+?"service"
+:"product";
 
 return `
 <article class="card">
@@ -955,13 +1639,20 @@ return `
 ${
 img
 ?
-`<img src="${esc(img)}"
+`
+<img
+src="${esc(img)}"
 alt="${esc(title)}"
-onerror="this.style.display='none'">`
+loading="lazy"
+onerror="this.style.display='none'"
+>
+`
 :
-`<div class="placeholder">
+`
+<div class="placeholder">
 ${service?"🛠️":"📦"}
-</div>`
+</div>
+`
 }
 
 </div>
@@ -975,23 +1666,29 @@ ${service?"SERVICE":"PRODUCT"}
 </span>
 
 ${
-p.category
+p?.category
 ?
 `<span class="tag">${esc(p.category)}</span>`
 :""
 }
 
 <div class="price">
-${money(p.price,p.currency||"RWF")}
+${money(
+p?.price,
+p?.currency||"RWF"
+)}
 </div>
 
 <div class="meta">
 👤 ${esc(seller)}
 </div>
 
-<div class="meta">
-🌍 ${esc(country)}
-</div>
+${
+country
+?
+`<div class="meta">🌍 ${esc(country)}</div>`
+:""
+}
 
 ${
 loc
@@ -1002,13 +1699,21 @@ loc
 
 <div class="card-actions">
 
-<button class="btn sm"
-onclick='view(${JSON.stringify(String(id))})'>
+<button
+class="btn sm"
+onclick='view(
+${JSON.stringify(String(id))},
+${JSON.stringify(kind)}
+)'>
 View
 </button>
 
-<button class="btn gray sm"
-onclick='toggleSave(${JSON.stringify(String(id))})'>
+<button
+class="btn gray sm"
+onclick='toggleSave(
+${JSON.stringify(String(id))},
+${JSON.stringify(kind)}
+)'>
 ${isSaved?"❤️":"♡"}
 </button>
 
@@ -1017,80 +1722,159 @@ ${isSaved?"❤️":"♡"}
 <button
 class="btn green sm"
 style="width:100%;margin-top:7px"
-onclick='addById(${JSON.stringify(String(id))})'>
+onclick='addById(
+${JSON.stringify(String(id))},
+${JSON.stringify(kind)}
+)'>
 
 ${service?"Contact / Order":"🛒 Add to Cart"}
 
 </button>
 
 </div>
-
 </article>
-`
+`;
 
 }
 
 
-/* =========================
+/* =========================================================
    SEARCH
-========================= */
+========================================================= */
 
-async function search(q="",country=""){
+async function search(
+q="",
+country="",
+category=""
+){
+
+q=String(q||"").trim();
+country=String(country||"").trim();
+category=String(category||"").trim();
 
 $("filterSearch").value=q;
 
 if(country){
-$("filterCountry").value=country
+$("filterCountry").value=country;
+}
+
+if(category){
+$("filterCategory").value=category;
 }
 
 let type=$("filterType").value;
 
 let params=new URLSearchParams();
 
-if(q)params.set("search",q);
+if(q){
+params.set("search",q);
+}
 
-if(country)params.set("country",country);
+if(category){
+params.set("category",category);
+}
+
+if(country){
+params.set("country",country);
+}
 
 params.set("limit","100");
 
-let endpoint=
-type==="service"
-?"/services"
-:"/products";
+$("products").innerHTML=
+'<div class="empty">🔄 Searching...</div>';
 
 try{
 
+if(type==="service"){
+
 let d=await api(
-endpoint+"?"+params
+"/services?"+params.toString()
 );
 
-let r=
-Array.isArray(d)
-?d
-:(d.products||d.services||d.items||[]);
+products=
+extractItems(
+d,
+"service"
+).map(x=>({
+...x,
+__kind:"service"
+}));
+
+render(products);
+
+}
+else if(type==="product"){
+
+let d=await api(
+"/products?"+params.toString()
+);
+
+products=
+extractItems(
+d,
+"product"
+).map(x=>({
+...x,
+__kind:"product"
+}));
+
+render(products);
+
+}
+else{
+
+await loadMarketplace(
+"?"+params.toString()
+);
+
+}
 
 $("resultTitle").textContent=
 q
 ?`Search results for "${q}"`
+:
+category
+?category
 :"Marketplace";
 
-render(r);
+$("resultSub").textContent=
+type==="service"
+?
+"Services available worldwide."
+:
+type==="product"
+?
+"Products available worldwide."
+:
+"Products and services available worldwide.";
 
 }catch(e){
 
 $("products").innerHTML=
-`<div class="empty">❌ ${esc(e.message)}</div>`
+`<div class="empty">❌ ${esc(e.message)}</div>`;
 
 }
 
 }
+
+
+/* =========================================================
+   FILTER
+========================================================= */
 
 function filter(){
 
-let q=$("filterSearch").value.trim();
-let c=$("filterCategory").value;
-let country=$("filterCountry").value;
-let type=$("filterType").value;
+let q=
+$("filterSearch").value.trim();
+
+let c=
+$("filterCategory").value;
+
+let country=
+$("filterCountry").value;
+
+let type=
+$("filterType").value;
 
 let p=new URLSearchParams();
 
@@ -1100,16 +1884,41 @@ if(country)p.set("country",country);
 
 p.set("limit","100");
 
-let endpoint=
-type==="service"
-?"/services"
-:"/products";
+if(type==="service"){
 
-loadEndpoint(endpoint+"?"+p)
+loadEndpoint(
+"/services?"+p.toString(),
+"service"
+);
+
+}
+else if(type==="product"){
+
+loadEndpoint(
+"/products?"+p.toString(),
+"product"
+);
+
+}
+else{
+
+loadMarketplace(
+"?"+p.toString()
+);
 
 }
 
-async function loadEndpoint(url){
+}
+
+
+/* =========================================================
+   LOAD ENDPOINT
+========================================================= */
+
+async function loadEndpoint(
+url,
+type="product"
+){
 
 $("products").innerHTML=
 '<div class="empty">🔄 Searching...</div>';
@@ -1118,48 +1927,62 @@ try{
 
 let d=await api(url);
 
-let r=
-Array.isArray(d)
-?d
-:(d.products||d.services||d.items||[]);
+products=
+extractItems(
+d,
+type
+).map(x=>({
+...x,
+__kind:type
+}));
 
-products=r;
-
-render(r);
+render(products);
 
 }catch(e){
 
 $("products").innerHTML=
-`<div class="empty">❌ ${esc(e.message)}</div>`
+`<div class="empty">❌ ${esc(e.message)}</div>`;
 
 }
 
 }
+
+
+/* =========================================================
+   SERVICE SEARCH
+========================================================= */
 
 function serviceSearch(c){
 
 $("filterType").value="service";
-$("filterCategory").value="";
-$("filterSearch").value=c;
+$("filterCategory").value=c;
+$("filterSearch").value="";
 
 $("heroInput").value=c;
 $("searchInput").value=c;
 
 $("resultTitle").textContent=c;
+
 $("resultSub").textContent=
 "Services related to "+c;
 
-search(c);
+search(
+"",
+"",
+c
+);
 
 document.querySelector("main")
-.scrollIntoView({behavior:"smooth"});
+.scrollIntoView({
+behavior:"smooth"
+});
 
 }
 
 
-/* =========================
+/* =========================================================
    NAVIGATION
-========================= */
+========================================================= */
 
 function home(){
 
@@ -1170,12 +1993,13 @@ $("filterCategory").value="";
 $("filterCountry").value="";
 $("filterType").value="";
 
-$("resultTitle").textContent="Marketplace";
+$("resultTitle").textContent=
+"Marketplace";
 
 $("resultSub").textContent=
 "Products and services available worldwide.";
 
-loadProducts("?limit=100");
+loadMarketplace();
 
 scrollTo({
 top:0,
@@ -1184,9 +2008,14 @@ behavior:"smooth"
 
 }
 
+
 function services(){
 
+closeAll();
+
 $("filterType").value="service";
+$("filterCategory").value="";
+$("filterSearch").value="";
 
 $("resultTitle").textContent=
 "Global Services";
@@ -1194,40 +2023,50 @@ $("resultTitle").textContent=
 $("resultSub").textContent=
 "Find professionals and service providers worldwide.";
 
-loadEndpoint("/services?limit=100");
+loadEndpoint(
+"/services?limit=100",
+"service"
+);
 
 document.querySelector("main")
-.scrollIntoView({behavior:"smooth"});
+.scrollIntoView({
+behavior:"smooth"
+});
 
 }
+
 
 function education(){
-serviceSearch("Education & Teachers")
+serviceSearch("Education & Teachers");
 }
+
 
 function creators(){
-serviceSearch("Art & Creative")
+serviceSearch("Art & Creative");
 }
+
 
 function business(){
-serviceSearch("Business & Professional")
+serviceSearch("Business & Professional");
 }
+
 
 function work(){
-serviceSearch("Jobs & Freelance")
+serviceSearch("Jobs & Freelance");
 }
 
 
-/* =========================
+/* =========================================================
    AUTH
-========================= */
+========================================================= */
 
 function auth(){
 
 openM("authModal");
-authTab("login")
+authTab("login");
 
 }
+
 
 function authTab(t){
 
@@ -1247,9 +2086,10 @@ $("rt").classList.toggle(
 t==="register"
 );
 
-$("authMsg").textContent=""
+$("authMsg").textContent="";
 
 }
+
 
 async function login(e){
 
@@ -1257,23 +2097,28 @@ e.preventDefault();
 
 try{
 
-let d=await api("/login",{
+let d=await api(
+"/login",
+{
 method:"POST",
 body:JSON.stringify({
 
-email:$("loginEmail").value.trim(),
+email:
+$("loginEmail").value.trim(),
 
-password:$("loginPassword").value
+password:
+$("loginPassword").value
 
 })
-});
+}
+);
 
 if(d.token){
 
 localStorage.setItem(
 "isokohub_token",
 d.token
-)
+);
 
 }
 
@@ -1288,11 +2133,16 @@ closeM("authModal");
 }catch(e){
 
 $("authMsg").innerHTML=
-`<div class="error">❌ ${esc(e.message)}</div>`
+`
+<div class="error">
+❌ ${esc(e.message)}
+</div>
+`;
 
 }
 
 }
+
 
 async function register(e){
 
@@ -1300,27 +2150,34 @@ e.preventDefault();
 
 try{
 
-let d=await api("/register",{
+let d=await api(
+"/register",
+{
 method:"POST",
 body:JSON.stringify({
 
-name:$("regName").value.trim(),
+name:
+$("regName").value.trim(),
 
-email:$("regEmail").value.trim(),
+email:
+$("regEmail").value.trim(),
 
-password:$("regPassword").value,
+password:
+$("regPassword").value,
 
-country:$("regCountry").value
+country:
+$("regCountry").value
 
 })
-});
+}
+);
 
 if(d.token){
 
 localStorage.setItem(
 "isokohub_token",
 d.token
-)
+);
 
 }
 
@@ -1335,19 +2192,27 @@ closeM("authModal");
 }catch(e){
 
 $("authMsg").innerHTML=
-`<div class="error">❌ ${esc(e.message)}</div>`
+`
+<div class="error">
+❌ ${esc(e.message)}
+</div>
+`;
 
 }
 
 }
+
 
 async function session(){
 
-if(!localStorage.getItem("isokohub_token")){
+if(
+!localStorage.getItem(
+"isokohub_token"
+)
+){
 
 updateUser();
-
-return
+return;
 
 }
 
@@ -1368,7 +2233,6 @@ localStorage.removeItem(
 );
 
 user=null;
-
 savedData=[];
 
 updateUser();
@@ -1377,30 +2241,42 @@ updateUser();
 
 }
 
+
 function updateUser(){
 
 $("authBtn").textContent=
 user
 ?
-(user.name||user.email||"Profile")
-:"Login";
+(
+user.name||
+user.email||
+"Profile"
+)
+:
+"Login";
 
 $("adminBtn").style.display=
 user?.role==="admin"
-?"block"
-:"none";
+?
+"block"
+:
+"none";
 
 updateCounts();
 
 }
 
+
 async function logout(){
 
 try{
 
-await api("/logout",{
+await api(
+"/logout",
+{
 method:"POST"
-})
+}
+);
 
 }catch(e){}
 
@@ -1418,11 +2294,102 @@ closeAll();
 }
 
 
-/* =========================
-   PRODUCT VIEW
-========================= */
+/* =========================================================
+   FIND LISTING BY ID
+========================================================= */
 
-async function view(id){
+async function getListingById(
+id,
+kind=""
+){
+
+let endpoints=[];
+
+if(kind==="service"){
+
+endpoints=[
+"/services/"+encodeURIComponent(id),
+"/products/"+encodeURIComponent(id)
+];
+
+}
+else if(kind==="product"){
+
+endpoints=[
+"/products/"+encodeURIComponent(id)
+];
+
+}
+else{
+
+endpoints=[
+"/products/"+encodeURIComponent(id),
+"/services/"+encodeURIComponent(id)
+];
+
+}
+
+for(const endpoint of endpoints){
+
+try{
+
+let d=await api(endpoint);
+
+let item=
+d?.product||
+d?.service||
+d?.item||
+d;
+
+if(item&&typeof item==="object"){
+
+if(
+endpoint.startsWith("/services/")
+){
+item={
+...item,
+__kind:"service"
+};
+}
+else{
+item={
+...item,
+__kind:item.__kind||
+"product"
+};
+}
+
+return item;
+
+}
+
+}catch(e){
+
+console.log(
+"Listing lookup:",
+endpoint,
+e.message
+);
+
+}
+
+}
+
+throw new Error(
+"Listing not found."
+);
+
+}
+
+
+/* =========================================================
+   VIEW
+========================================================= */
+
+async function view(
+id,
+kind=""
+){
 
 openM("productModal");
 
@@ -1431,20 +2398,37 @@ $("productDetails").innerHTML=
 
 try{
 
-let d=await api(
-"/products/"+encodeURIComponent(id)
+let p=
+products.find(x=>
+String(x?.id)===String(id) &&
+(
+!kind ||
+itemKind(x)===kind
+)
 );
 
-let p=d.product||d;
+if(!p){
+
+p=await getListingById(
+id,
+kind
+);
+
+}
+
+let service=
+itemKind(p)==="service";
 
 let img=
-p.image_url||
-p.imageUrl||
-p.image||
+p?.image_url||
+p?.imageUrl||
+p?.image||
 "";
 
 $("productTitle").textContent=
-p.title||"Product";
+p?.title||
+p?.name||
+(service?"Service":"Product");
 
 $("productDetails").innerHTML=`
 
@@ -1455,113 +2439,192 @@ $("productDetails").innerHTML=`
 ${
 img
 ?
-`<img src="${esc(img)}"
-style="width:100%;max-width:300px;border-radius:12px">`
+`
+<img
+src="${esc(img)}"
+style="width:100%;max-width:300px;border-radius:12px"
+onerror="this.style.display='none'"
+>
+`
 :
-`<div class="pic" style="height:250px">
-${isService(p)?"🛠️":"📦"}
-</div>`
+`
+<div class="pic" style="height:250px">
+${service?"🛠️":"📦"}
+</div>
+`
 }
 
 </div>
 
 <div>
 
-<h2>${esc(p.title||"")}</h2>
+<h2>
+${esc(
+p?.title||
+p?.name||
+""
+)}
+</h2>
 
 <div class="price">
-${money(p.price,p.currency||"RWF")}
+${money(
+p?.price,
+p?.currency||"RWF"
+)}
 </div>
 
 <p class="meta">
-Category: ${esc(p.category||"")}
+Category:
+${esc(p?.category||"")}
 </p>
 
 <p class="meta">
-Country: ${esc(p.country||p.seller_country||"")}
+Country:
+${esc(
+p?.country||
+p?.seller_country||
+""
+)}
 </p>
 
 <p class="meta">
-Location: ${esc(p.district||p.city||"")}
+Location:
+${esc(
+p?.district||
+p?.city||
+p?.location||
+""
+)}
+</p>
+
+<p class="meta">
+Type:
+${service?"Service":"Product"}
 </p>
 
 <p style="margin-top:15px">
 ${esc(
-p.specs||
-p.description||
+p?.specs||
+p?.description||
 "No description available."
 )}
 </p>
 
 <br>
 
-<button class="btn green"
-onclick='addById(${JSON.stringify(String(p.id))})'>
+<button
+class="btn green"
+onclick='addById(
+${JSON.stringify(String(p?.id))},
+${JSON.stringify(service?"service":"product")}
+)'>
 
-${isService(p)
-?"Contact / Order Service"
-:"🛒 Add to Cart"}
+${
+service
+?
+"Contact / Order Service"
+:
+"🛒 Add to Cart"
+}
 
 </button>
 
-<button class="btn gray"
-onclick='toggleSave(${JSON.stringify(String(p.id))})'>
+<button
+class="btn gray"
+onclick='toggleSave(
+${JSON.stringify(String(p?.id))},
+${JSON.stringify(service?"service":"product")}
+)'>
 
 ❤️ Save
 
 </button>
 
 </div>
-
 </div>
-
-`
+`;
 
 }catch(e){
 
 $("productDetails").innerHTML=
-`<div class="error">❌ ${esc(e.message)}</div>`
+`
+<div class="error">
+❌ ${esc(e.message)}
+</div>
+`;
 
 }
 
 }
 
 
-/* =========================
-   CART
-========================= */
+/* =========================================================
+   ADD TO CART
+========================================================= */
 
-async function addById(id){
+async function addById(
+id,
+kind=""
+){
 
-let p=products.find(
-x=>String(x.id)===String(id)
+let p=
+products.find(x=>
+String(x?.id)===String(id) &&
+(
+!kind ||
+itemKind(x)===kind
+)
 );
 
 if(!p){
 
 try{
 
-let d=await api(
-"/products/"+encodeURIComponent(id)
+p=await getListingById(
+id,
+kind
 );
-
-p=d.product||d;
 
 }catch(e){
 
 alert(e.message);
-
-return
-
-}
+return;
 
 }
 
-if(!cartData.some(
-x=>String(x.id)===String(id)
-)){
+}
 
-cartData.push(p);
+
+/*
+Services are kept visible and viewable,
+but orders are only sent to /orders when
+the listing is a product.
+*/
+
+if(itemKind(p)==="service"){
+
+view(
+id,
+"service"
+);
+
+return;
+
+}
+
+
+if(
+!cartData.some(
+x=>
+String(x?.id)===String(id) &&
+itemKind(x)==="product"
+)
+){
+
+cartData.push({
+...p,
+__kind:"product"
+});
 
 updateCounts();
 
@@ -1571,6 +2634,11 @@ cartOpen();
 
 }
 
+
+/* =========================================================
+   CART
+========================================================= */
+
 function cartOpen(){
 
 $("cartItems").innerHTML="";
@@ -1578,13 +2646,17 @@ $("cartItems").innerHTML="";
 if(!cartData.length){
 
 $("cartItems").innerHTML=
-'<div class="empty">🛒 Your cart is empty.</div>';
+`
+<div class="empty">
+🛒 Your cart is empty.
+</div>
+`;
 
 $("cartTotal").textContent="";
 
 openM("cartModal");
 
-return
+return;
 
 }
 
@@ -1593,11 +2665,13 @@ let total=0;
 $("cartItems").innerHTML=
 cartData.map((p,i)=>{
 
-total+=Number(p.price||0);
+total+=Number(
+p?.price||0
+);
 
 let img=
-p.image_url||
-p.image||
+p?.image_url||
+p?.image||
 "";
 
 return `
@@ -1606,26 +2680,48 @@ return `
 ${
 img
 ?
-`<img class="cart-img"
-src="${esc(img)}">`
+`
+<img
+class="cart-img"
+src="${esc(img)}"
+alt="${esc(p?.title||"Product")}"
+>
+`
 :
-`<div class="cart-img">📦</div>`
+`
+<div class="cart-img">
+📦
+</div>
+`
 }
 
 <div>
-<strong>${esc(p.title||"")}</strong>
+
+<strong>
+${esc(
+p?.title||
+p?.name||
+""
+)}
+</strong>
+
 <div class="meta">
-${money(p.price,p.currency||"RWF")}
-</div>
+${money(
+p?.price,
+p?.currency||"RWF"
+)}
 </div>
 
-<button class="btn red sm"
+</div>
+
+<button
+class="btn red sm"
 onclick="removeCart(${i})">
 Remove
 </button>
 
 </div>
-`
+`;
 
 }).join("");
 
@@ -1636,9 +2732,10 @@ total,
 cartData[0]?.currency||"RWF"
 );
 
-openM("cartModal")
+openM("cartModal");
 
 }
+
 
 function removeCart(i){
 
@@ -1650,21 +2747,39 @@ cartOpen();
 
 }
 
+
+/* =========================================================
+   CHECKOUT
+========================================================= */
+
 async function checkout(){
 
-if(!loginRequired()||!cartData.length)return;
+if(
+!loginRequired() ||
+!cartData.length
+)return;
 
 try{
 
 for(let p of cartData){
 
-await api("/orders",{
+if(itemKind(p)==="service"){
+continue;
+}
+
+await api(
+"/orders",
+{
 method:"POST",
 body:JSON.stringify({
+
 product_id:p.id,
+
 quantity:1
+
 })
-});
+}
+);
 
 }
 
@@ -1681,24 +2796,28 @@ alert(
 }catch(e){
 
 alert(
-"Order failed: "+e.message
-)
+"Order failed: "+
+e.message
+);
 
 }
 
 }
 
 
-/* =========================
+/* =========================================================
    SAVED
-========================= */
+========================================================= */
 
-async function toggleSave(id){
+async function toggleSave(
+id,
+kind=""
+){
 
 if(!loginRequired())return;
 
 let exists=savedData.some(
-x=>String(x.id)===String(id)
+x=>String(x?.id)===String(id)
 );
 
 try{
@@ -1706,44 +2825,48 @@ try{
 if(exists){
 
 savedData=savedData.filter(
-x=>String(x.id)!==String(id)
+x=>String(x?.id)!==String(id)
 );
 
 await api(
 "/saved/"+encodeURIComponent(id),
-{method:"DELETE"}
+{
+method:"DELETE"
+}
 );
 
-}else{
+}
+else{
 
-let p=products.find(
-x=>String(x.id)===String(id)
+let p=
+products.find(x=>
+String(x?.id)===String(id) &&
+(
+!kind ||
+itemKind(x)===kind
+)
 );
 
 if(!p){
 
-let d=await api(
-"/products/"+encodeURIComponent(id)
+p=await getListingById(
+id,
+kind
 );
 
-p=d.product||d;
-
 }
-
-if(!savedData.some(
-x=>String(x.id)===String(id)
-)){
 
 savedData.push(p);
 
-}
-
-await api("/saved",{
+await api(
+"/saved",
+{
 method:"POST",
 body:JSON.stringify({
 product_id:id
 })
-});
+}
+);
 
 }
 
@@ -1764,6 +2887,11 @@ e.message
 
 }
 
+
+/* =========================================================
+   SAVED PAGE
+========================================================= */
+
 async function saved(){
 
 if(!loginRequired())return;
@@ -1771,20 +2899,24 @@ if(!loginRequired())return;
 openM("savedModal");
 
 $("savedItems").innerHTML=
-'<div class="empty">🔄 Loading saved items...</div>';
+`
+<div class="empty">
+🔄 Loading saved items...
+</div>
+`;
 
 try{
 
 let d=await api("/saved");
 
-let list=
-Array.isArray(d)
-?d
-:(d.saved||d.items||[]);
-
-savedData=list.map(x=>
-x.product||x
+let list=normalizeList(
+d,
+["saved","items","products"]
 );
+
+savedData=list.map(
+x=>x?.product||x?.item||x
+).filter(Boolean);
 
 updateCounts();
 
@@ -1793,7 +2925,11 @@ savedData.length
 ?
 savedData.map(card).join("")
 :
-'<div class="empty">❤️ No saved items yet.</div>';
+`
+<div class="empty">
+❤️ No saved items yet.
+</div>
+`;
 
 }catch(e){
 
@@ -1802,16 +2938,20 @@ savedData.length
 ?
 savedData.map(card).join("")
 :
-`<div class="empty">❌ ${esc(e.message)}</div>`;
+`
+<div class="empty">
+❌ ${esc(e.message)}
+</div>
+`;
 
 }
 
 }
 
 
-/* =========================
+/* =========================================================
    ORDERS
-========================= */
+========================================================= */
 
 async function orders(){
 
@@ -1826,17 +2966,21 @@ try{
 
 let d=await api("/orders");
 
-let list=
-Array.isArray(d)
-?d
-:(d.orders||d.items||[]);
+let list=normalizeList(
+d,
+["orders","items","data"]
+);
 
 if(!list.length){
 
 $("ordersArea").innerHTML=
-'<div class="empty">📦 No orders yet.</div>';
+`
+<div class="empty">
+📦 No orders yet.
+</div>
+`;
 
-return
+return;
 
 }
 
@@ -1859,31 +3003,44 @@ ${list.map(o=>`
 
 <tr>
 
-<td>${esc(o.id)}</td>
-
 <td>
-${esc(o.product_title||o.title||"")}
+${esc(o?.id)}
 </td>
 
 <td>
-${esc(o.quantity||1)}
-</td>
-
-<td>
-${money(
-o.total||
-o.total_amount||
-0,
-o.currency||"RWF"
+${esc(
+o?.product_title||
+o?.title||
+o?.product_name||
+""
 )}
 </td>
 
 <td>
-${esc(o.status||"")}
+${esc(o?.quantity||1)}
 </td>
 
 <td>
-${esc(o.payment_status||"unpaid")}
+${money(
+o?.total||
+o?.total_amount||
+(
+Number(o?.price||0)*
+Number(o?.quantity||1)
+),
+o?.currency||"RWF"
+)}
+</td>
+
+<td>
+${esc(o?.status||"")}
+</td>
+
+<td>
+${esc(
+o?.payment_status||
+"unpaid"
+)}
 </td>
 
 </tr>
@@ -1893,21 +3050,25 @@ ${esc(o.payment_status||"unpaid")}
 </table>
 
 </div>
-`
+`;
 
 }catch(e){
 
 $("ordersArea").innerHTML=
-`<div class="error">❌ ${esc(e.message)}</div>`
+`
+<div class="error">
+❌ ${esc(e.message)}
+</div>
+`;
 
 }
 
 }
 
 
-/* =========================
+/* =========================================================
    MESSAGES
-========================= */
+========================================================= */
 
 async function messages(){
 
@@ -1922,10 +3083,10 @@ try{
 
 let d=await api("/messages");
 
-let list=
-Array.isArray(d)
-?d
-:(d.messages||d.items||[]);
+let list=normalizeList(
+d,
+["messages","items","data"]
+);
 
 $("messagesArea").innerHTML=
 list.length
@@ -1933,38 +3094,51 @@ list.length
 list.map(m=>{
 
 let mine=
-String(m.sender_id)===
+String(m?.sender_id)===
 String(user?.id);
 
 return `
 <div class="msg ${mine?"mine":""}">
 
 <span class="bubble">
-${esc(m.body||m.message||"")}
+${esc(
+m?.body||
+m?.message||
+""
+)}
 </span>
 
 <div class="meta">
 ${esc(
-m.sender_name||
-"User "+(m.sender_id||"")
+m?.sender_name||
+"User "+(m?.sender_id||"")
 )}
 </div>
 
 </div>
-`
+`;
 
 }).join("")
 :
-'<div class="empty">💬 No messages yet.</div>';
+`
+<div class="empty">
+💬 No messages yet.
+</div>
+`;
 
 }catch(e){
 
 $("messagesArea").innerHTML=
-`<div class="error">❌ ${esc(e.message)}</div>`
+`
+<div class="error">
+❌ ${esc(e.message)}
+</div>
+`;
 
 }
 
 }
+
 
 async function sendMessage(e){
 
@@ -1974,18 +3148,23 @@ if(!loginRequired())return;
 
 try{
 
-await api("/messages",{
+await api(
+"/messages",
+{
 method:"POST",
 body:JSON.stringify({
 
 receiver_id:
-Number($("msgTo").value),
+Number(
+$("msgTo").value
+),
 
 body:
 $("msgBody").value.trim()
 
 })
-});
+}
+);
 
 $("msgBody").value="";
 
@@ -1993,16 +3172,16 @@ messages();
 
 }catch(e){
 
-alert(e.message)
+alert(e.message);
 
 }
 
 }
 
 
-/* =========================
-   PROFILE + MY LISTINGS
-========================= */
+/* =========================================================
+   PROFILE
+========================================================= */
 
 async function profile(){
 
@@ -2023,81 +3202,140 @@ updateUser();
 
 let myListings=[];
 
+
+/* PRODUCTS */
+
 try{
 
-let pd=await api("/products?limit=100");
+let pd=await api(
+"/products?limit=100"
+);
 
-let all=
-Array.isArray(pd)
-?pd
-:(pd.products||pd.items||[]);
+let all=extractItems(
+pd,
+"product"
+);
 
-myListings=all.filter(p=>
+myListings.push(
+...all.map(x=>({
+...x,
+__kind:"product"
+}))
+.filter(p=>
 String(
-p.seller_id||
-p.user_id||
-p.owner_id||
+p?.seller_id||
+p?.user_id||
+p?.owner_id||
 ""
 )===
-String(user.id)
+String(user?.id)
+)
 );
 
 }catch(e){
 
 console.log(
-"My listings unavailable:",
+"My products unavailable:",
 e.message
 );
 
 }
+
+
+/* SERVICES */
+
+try{
+
+let sd=await api(
+"/services?limit=100"
+);
+
+let all=extractItems(
+sd,
+"service"
+);
+
+myListings.push(
+...all.map(x=>({
+...x,
+__kind:"service"
+}))
+.filter(p=>
+String(
+p?.seller_id||
+p?.user_id||
+p?.owner_id||
+p?.provider_id||
+""
+)===
+String(user?.id)
+)
+);
+
+}catch(e){
+
+console.log(
+"My services unavailable:",
+e.message
+);
+
+}
+
 
 $("profileArea").innerHTML=`
 
 <div class="profile">
 
 <div>
-<div class="avatar">👤</div>
+<div class="avatar">
+👤
+</div>
 </div>
 
 <div>
 
 <h2>
 ${esc(
-user.name||
+user?.name||
 "IsokoHub User"
 )}
 </h2>
 
 <p class="meta">
-${esc(user.email||"")}
+${esc(user?.email||"")}
 </p>
 
 <p class="meta">
-🌍 ${esc(user.country||"")}
+🌍 ${esc(user?.country||"")}
 </p>
 
 <p class="meta">
-Role: ${esc(user.role||"buyer")}
+Role:
+${esc(user?.role||"buyer")}
 </p>
 
 <div class="profile-actions">
 
-<button class="btn"
+<button
+class="btn"
 onclick="sell()">
 ➕ Sell / Offer Service
 </button>
 
-<button class="btn gray"
+<button
+class="btn gray"
 onclick="saved()">
 ❤️ My Saved
 </button>
 
-<button class="btn gray"
+<button
+class="btn gray"
 onclick="orders()">
 📦 My Orders
 </button>
 
-<button class="btn red"
+<button
+class="btn red"
 onclick="logout()">
 Logout
 </button>
@@ -2105,7 +3343,6 @@ Logout
 </div>
 
 </div>
-
 </div>
 
 <div class="profile-card">
@@ -2113,13 +3350,19 @@ Logout
 <div class="dashboard-title">
 
 <div>
-<h3>🏪 My Products & Services</h3>
+
+<h3>
+🏪 My Products & Services
+</h3>
+
 <p class="meta">
 Listings connected to your IsokoHub account.
 </p>
+
 </div>
 
-<button class="btn sm"
+<button
+class="btn sm"
 onclick="sell()">
 ➕ Add Listing
 </button>
@@ -2129,46 +3372,57 @@ onclick="sell()">
 <div id="myListingsArea"></div>
 
 </div>
-
 `;
 
-renderMyListings(myListings);
+renderMyListings(
+myListings
+);
 
 }catch(e){
 
 $("profileArea").innerHTML=
-`<div class="error">❌ ${esc(e.message)}</div>`
+`
+<div class="error">
+❌ ${esc(e.message)}
+</div>
+`;
 
 }
 
 }
+
 
 function renderMyListings(list){
 
-let area=$("myListingsArea");
+let area=$(
+"myListingsArea"
+);
 
 if(!area)return;
 
 if(!list.length){
 
-area.innerHTML=
-`
+area.innerHTML=`
 <div class="empty">
+
 📦 You have not published a product or service yet.
+
 <br><br>
-<button class="btn green sm"
+
+<button
+class="btn green sm"
 onclick="sell()">
 ➕ Publish your first listing
 </button>
+
 </div>
 `;
 
-return
+return;
 
 }
 
-area.innerHTML=
-`
+area.innerHTML=`
 <div class="grid">
 ${list.map(card).join("")}
 </div>
@@ -2177,9 +3431,9 @@ ${list.map(card).join("")}
 }
 
 
-/* =========================
+/* =========================================================
    SELL
-========================= */
+========================================================= */
 
 function sell(){
 
@@ -2188,6 +3442,7 @@ if(!loginRequired())return;
 openM("sellModal");
 
 }
+
 
 async function createProduct(e){
 
@@ -2200,7 +3455,8 @@ let button=e.submitter;
 if(button){
 
 button.disabled=true;
-button.textContent="Publishing..."
+button.textContent=
+"Publishing...";
 
 }
 
@@ -2208,7 +3464,9 @@ $("sellMsg").innerHTML="";
 
 try{
 
-await api("/products",{
+await api(
+"/products",
+{
 method:"POST",
 body:JSON.stringify({
 
@@ -2219,7 +3477,9 @@ category:
 $("sellCategory").value,
 
 price:
-Number($("sellPrice").value),
+Number(
+$("sellPrice").value
+),
 
 currency:
 $("sellCurrency").value.trim()||
@@ -2246,29 +3506,39 @@ specs:
 $("sellSpecs").value.trim()
 
 })
-});
+}
+);
 
 $("sellMsg").innerHTML=
-'<div class="success">✅ Published successfully and connected to your account.</div>';
+`
+<div class="success">
+✅ Published successfully and connected to your account.
+</div>
+`;
 
 $("sellForm").reset();
 
 $("sellCurrency").value="RWF";
 
-await loadProducts("?limit=100");
+await loadMarketplace();
 
 }catch(e){
 
 $("sellMsg").innerHTML=
-`<div class="error">❌ ${esc(e.message)}</div>`;
+`
+<div class="error">
+❌ ${esc(e.message)}
+</div>
+`;
 
 }finally{
 
 if(button){
 
 button.disabled=false;
+
 button.textContent=
-"Publish on IsokoHub"
+"Publish on IsokoHub";
 
 }
 
@@ -2277,59 +3547,71 @@ button.textContent=
 }
 
 
-/* =========================
+/* =========================================================
    ADMIN
-========================= */
+========================================================= */
 
 function admin(){
 
 if(!loginRequired())return;
 
-if(user.role!=="admin"){
+if(user?.role!=="admin"){
 
 alert(
 "Admin access required."
 );
 
-return
+return;
 
 }
 
 openM("adminModal");
 
-adminSection("overview");
+adminSection(
+"overview"
+);
 
 }
 
+
 async function adminSection(section){
 
-if(!user||user.role!=="admin"){
+if(
+!user||
+user.role!=="admin"
+){
 
 alert(
 "Admin access required."
 );
 
-return
+return;
 
 }
 
 document
 .querySelectorAll("[data-admin]")
 .forEach(btn=>{
+
 btn.classList.toggle(
 "active",
 btn.dataset.admin===section
-)
+);
+
 });
 
 $("adminContent").innerHTML=
-"🔄 Loading "+esc(section)+"...";
+"🔄 Loading "+
+esc(section)+
+"...";
 
 try{
 
 if(section==="overview"){
 
-let d=await api("/admin/stats");
+let d=await api(
+"/admin/stats"
+);
 
 let s=d.stats||d;
 
@@ -2338,10 +3620,15 @@ $("adminContent").innerHTML=`
 <div class="dashboard-title">
 
 <div>
-<h2>📊 Admin Overview</h2>
+
+<h2>
+📊 Admin Overview
+</h2>
+
 <p class="meta">
 IsokoHub platform administration
 </p>
+
 </div>
 
 <span class="admin-badge">
@@ -2352,18 +3639,30 @@ ADMIN
 
 <div class="stats">
 
-${stat("Users",s.users)}
+${stat(
+"Users",
+s?.users
+)}
 
-${stat("Sellers",s.sellers)}
+${stat(
+"Sellers",
+s?.sellers
+)}
 
-${stat("Products",s.products)}
+${stat(
+"Products",
+s?.products
+)}
 
-${stat("Orders",s.orders)}
+${stat(
+"Orders",
+s?.orders
+)}
 
 ${stat(
 "Revenue",
 money(
-s.revenue||0,
+s?.revenue||0,
 "RWF"
 )
 )}
@@ -2371,7 +3670,7 @@ s.revenue||0,
 ${stat(
 "Commission",
 money(
-s.commission||0,
+s?.commission||0,
 "RWF"
 )
 )}
@@ -2383,58 +3682,59 @@ s.commission||0,
 <div class="notice">
 🔐 Admin controls are connected to the IsokoHub API.
 </div>
-
 `;
 
-return
+return;
 
 }
 
+
+/*
+Admin endpoint map
+*/
 let map={
 
 users:"/admin/users",
-
 sellers:"/admin/sellers",
-
 products:"/admin/products",
-
 orders:"/admin/orders",
-
 payments:"/admin/payments",
-
 services:"/admin/services",
-
 categories:"/admin/categories",
-
 reports:"/admin/reports"
 
 };
 
-let endpoint=map[section];
+let endpoint=
+map[section];
 
 if(!endpoint){
 
 throw new Error(
 "Admin section not configured"
-)
+);
 
 }
 
-let d=await api(endpoint);
+let d=await api(
+endpoint
+);
 
 let rows=
 Array.isArray(d)
-?d
-:(
-d.items||
-d.users||
-d.sellers||
-d.products||
-d.orders||
-d.payments||
-d.services||
-d.categories||
-d.reports||
+?
+d
+:
+(
+d?.items||
+d?.users||
+d?.sellers||
+d?.products||
+d?.orders||
+d?.payments||
+d?.services||
+d?.categories||
+d?.reports||
 []
 );
 
@@ -2454,60 +3754,74 @@ $("adminContent").innerHTML=`
 <br>
 
 <div class="notice">
-If this specific Admin section is not yet implemented in
-<code>src/index.js</code>, the frontend is ready to use it as soon
-as its API endpoint is available.
-</div>
 
+If this specific Admin section is not yet implemented
+in <code>src/index.js</code>, the frontend is ready to
+use it as soon as its API endpoint is available.
+
+</div>
 `;
 
 }
 
 }
+
 
 function stat(a,b){
 
 return `
 <div class="stat">
 
-<small>${esc(a)}</small>
+<small>
+${esc(a)}
+</small>
 
-<strong>${esc(b??0)}</strong>
+<strong>
+${esc(b??0)}
+</strong>
 
 </div>
-`
+`;
 
 }
 
-function adminTable(section,rows){
+
+function adminTable(
+section,
+rows
+){
 
 if(!rows.length){
 
 $("adminContent").innerHTML=`
 
 <div class="dashboard-title">
+
 <h2>
 ${esc(
 section.charAt(0).toUpperCase()+
 section.slice(1)
 )}
 </h2>
+
 </div>
 
 <div class="empty">
 No data available.
 </div>
-
 `;
 
-return
+return;
 
 }
 
 let keys=[
 ...new Set(
 rows.flatMap(
-x=>Object.keys(x)
+x=>
+Object.keys(
+x||{}
+)
 )
 )
 ].slice(0,10);
@@ -2553,11 +3867,11 @@ ${keys.map(k=>`
 
 <td>
 ${esc(
-typeof r[k]==="object"
+typeof r?.[k]==="object"
 ?
 JSON.stringify(r[k])
 :
-r[k]??""
+r?.[k]??""
 )}
 </td>
 
@@ -2570,40 +3884,47 @@ r[k]??""
 </table>
 
 </div>
-
-`
+`;
 
 }
 
 
-/* =========================
+/* =========================================================
    EVENTS
-========================= */
+========================================================= */
 
 function bind(){
 
 $("searchForm")
-.addEventListener("submit",e=>{
+.addEventListener(
+"submit",
+e=>{
 
 e.preventDefault();
 
 search(
 $("searchInput").value.trim()
-)
+);
 
-});
+}
+);
+
 
 $("heroForm")
-.addEventListener("submit",e=>{
+.addEventListener(
+"submit",
+e=>{
 
 e.preventDefault();
 
 search(
 $("heroInput").value.trim(),
 $("heroCountry").value
-)
+);
 
-});
+}
+);
+
 
 $("loginForm")
 .addEventListener(
@@ -2611,11 +3932,13 @@ $("loginForm")
 login
 );
 
+
 $("registerForm")
 .addEventListener(
 "submit",
 register
 );
+
 
 $("messageForm")
 .addEventListener(
@@ -2623,45 +3946,95 @@ $("messageForm")
 sendMessage
 );
 
+
 $("sellForm")
 .addEventListener(
 "submit",
 createProduct
 );
 
+
 $("filterSearch")
 .addEventListener(
 "keydown",
 e=>{
-if(e.key==="Enter")filter()
+
+if(e.key==="Enter"){
+
+e.preventDefault();
+
+filter();
+
+}
+
 }
 );
+
+
+$("filterCategory")
+.addEventListener(
+"change",
+()=>{
+/* category is applied when Search is pressed */
+}
+);
+
+
+$("filterCountry")
+.addEventListener(
+"change",
+()=>{
+/* country is applied when Search is pressed */
+}
+);
+
+
+$("filterType")
+.addEventListener(
+"change",
+()=>{
+/* type is applied when Search is pressed */
+}
+);
+
 
 document
 .querySelectorAll(".overlay")
 .forEach(o=>
-o.addEventListener("click",e=>{
+
+o.addEventListener(
+"click",
+e=>{
 
 if(e.target===o){
-o.style.display="none"
+
+o.style.display="none";
+
 }
 
-})
+}
+)
+
 );
+
 
 document.addEventListener(
 "keydown",
 e=>{
-if(e.key==="Escape")closeAll()
+
+if(e.key==="Escape"){
+closeAll();
+}
+
 }
 );
 
 }
 
 
-/* =========================
+/* =========================================================
    GLOBAL FUNCTIONS
-========================= */
+========================================================= */
 
 window.home=home;
 window.services=services;
@@ -2682,24 +4055,35 @@ window.sell=sell;
 window.admin=admin;
 window.adminSection=adminSection;
 
+window.logout=logout;
+
 window.closeM=closeM;
+
 window.view=view;
+
 window.addById=addById;
+
 window.toggleSave=toggleSave;
+
 window.removeCart=removeCart;
+
 window.checkout=checkout;
+
 window.filter=filter;
+
 window.serviceSearch=serviceSearch;
 
 
-/* =========================
+/* =========================================================
    START
-========================= */
+========================================================= */
 
 window.addEventListener(
 "DOMContentLoaded",
 init
 );
 
-</script></body>
+</script>
+
+</body>
 </html>
