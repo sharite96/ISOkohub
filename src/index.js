@@ -354,7 +354,8 @@ async function readJSON(request) {
 
   const raw = await request.text();
 
-  const bytes = new TextEncoder().encode(raw).byteLength;
+  const bytes =
+    new TextEncoder().encode(raw).byteLength;
 
   if (bytes > MAX_JSON_BODY) {
     throw new Error("Request body is too large");
@@ -395,35 +396,43 @@ function hexToBytes(hex) {
 }
 
 async function sha256(value) {
-  const data = new TextEncoder().encode(value);
+  const data =
+    new TextEncoder().encode(value);
 
-  const hash = await crypto.subtle.digest(
-    "SHA-256",
-    data
+  const hash =
+    await crypto.subtle.digest(
+      "SHA-256",
+      data
+    );
+
+  return bytesToHex(
+    new Uint8Array(hash)
   );
-
-  return bytesToHex(new Uint8Array(hash));
 }
 
 async function hmacSHA256(secret, value) {
-  const key = await crypto.subtle.importKey(
-    "raw",
-    new TextEncoder().encode(secret),
-    {
-      name: "HMAC",
-      hash: "SHA-256"
-    },
-    false,
-    ["sign"]
-  );
+  const key =
+    await crypto.subtle.importKey(
+      "raw",
+      new TextEncoder().encode(secret),
+      {
+        name: "HMAC",
+        hash: "SHA-256"
+      },
+      false,
+      ["sign"]
+    );
 
-  const signature = await crypto.subtle.sign(
-    "HMAC",
-    key,
-    new TextEncoder().encode(value)
-  );
+  const signature =
+    await crypto.subtle.sign(
+      "HMAC",
+      key,
+      new TextEncoder().encode(value)
+    );
 
-  return bytesToHex(new Uint8Array(signature));
+  return bytesToHex(
+    new Uint8Array(signature)
+  );
 }
 
 function safeEqual(a, b) {
@@ -438,7 +447,9 @@ function safeEqual(a, b) {
   let result = 0;
 
   for (let i = 0; i < a.length; i++) {
-    result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+    result |=
+      a.charCodeAt(i) ^
+      b.charCodeAt(i);
   }
 
   return result === 0;
@@ -449,44 +460,55 @@ function safeEqual(a, b) {
 // ------------------------------------------------------------
 
 async function hashPassword(password) {
-  const salt = crypto.getRandomValues(
-    new Uint8Array(16)
-  );
+  const salt =
+    crypto.getRandomValues(
+      new Uint8Array(16)
+    );
 
-  const key = await crypto.subtle.importKey(
-    "raw",
-    new TextEncoder().encode(password),
-    "PBKDF2",
-    false,
-    ["deriveBits"]
-  );
+  const key =
+    await crypto.subtle.importKey(
+      "raw",
+      new TextEncoder().encode(password),
+      "PBKDF2",
+      false,
+      ["deriveBits"]
+    );
 
-  const bits = await crypto.subtle.deriveBits(
-    {
-      name: "PBKDF2",
-      salt,
-      iterations: PBKDF2_ITERATIONS,
-      hash: "SHA-256"
-    },
-    key,
-    256
-  );
+  const bits =
+    await crypto.subtle.deriveBits(
+      {
+        name: "PBKDF2",
+        salt,
+        iterations: PBKDF2_ITERATIONS,
+        hash: "SHA-256"
+      },
+      key,
+      256
+    );
 
   return [
     "pbkdf2",
     PBKDF2_ITERATIONS,
     bytesToHex(salt),
-    bytesToHex(new Uint8Array(bits))
+    bytesToHex(
+      new Uint8Array(bits)
+    )
   ].join("$");
 }
 
 async function verifyPassword(password, stored) {
   if (!stored) return false;
 
-  const parts = String(stored).split("$");
+  const parts =
+    String(stored).split("$");
 
-  if (parts.length === 4 && parts[0] === "pbkdf2") {
-    const iterations = Number(parts[1]);
+  if (
+    parts.length === 4 &&
+    parts[0] === "pbkdf2"
+  ) {
+    const iterations =
+      Number(parts[1]);
+
     const saltHex = parts[2];
     const expected = parts[3];
 
@@ -500,28 +522,31 @@ async function verifyPassword(password, stored) {
     }
 
     try {
-      const key = await crypto.subtle.importKey(
-        "raw",
-        new TextEncoder().encode(password),
-        "PBKDF2",
-        false,
-        ["deriveBits"]
-      );
+      const key =
+        await crypto.subtle.importKey(
+          "raw",
+          new TextEncoder().encode(password),
+          "PBKDF2",
+          false,
+          ["deriveBits"]
+        );
 
-      const bits = await crypto.subtle.deriveBits(
-        {
-          name: "PBKDF2",
-          salt: hexToBytes(saltHex),
-          iterations,
-          hash: "SHA-256"
-        },
-        key,
-        256
-      );
+      const bits =
+        await crypto.subtle.deriveBits(
+          {
+            name: "PBKDF2",
+            salt: hexToBytes(saltHex),
+            iterations,
+            hash: "SHA-256"
+          },
+          key,
+          256
+        );
 
-      const actual = bytesToHex(
-        new Uint8Array(bits)
-      );
+      const actual =
+        bytesToHex(
+          new Uint8Array(bits)
+        );
 
       return safeEqual(
         actual.toLowerCase(),
@@ -532,8 +557,11 @@ async function verifyPassword(password, stored) {
     }
   }
 
-  if (/^[0-9a-f]{64}$/i.test(stored)) {
-    const legacy = await sha256(password);
+  if (
+    /^[0-9a-f]{64}$/i.test(stored)
+  ) {
+    const legacy =
+      await sha256(password);
 
     return safeEqual(
       legacy.toLowerCase(),
@@ -549,26 +577,42 @@ async function verifyPassword(password, stored) {
 // ------------------------------------------------------------
 
 function sessionSecret(env) {
-  return env.Session_secret || env.SESSION_SECRET || "";
+  return (
+    env.Session_secret ||
+    env.SESSION_SECRET ||
+    ""
+  );
 }
 
 function adminSecret(env) {
-  return env.Admin_secret || env.ADMIN_SECRET || "";
+  return (
+    env.Admin_secret ||
+    env.ADMIN_SECRET ||
+    ""
+  );
 }
 
 async function createSession(db, user, env) {
-  const secret = sessionSecret(env);
+  const secret =
+    sessionSecret(env);
 
-  if (!secret || secret.length < 32) {
+  if (
+    !secret ||
+    secret.length < 32
+  ) {
     throw new Error(
       "Session_secret is missing or too short"
     );
   }
 
   if (user.role === "admin") {
-    const admin = adminSecret(env);
+    const admin =
+      adminSecret(env);
 
-    if (!admin || admin.length < 32) {
+    if (
+      !admin ||
+      admin.length < 32
+    ) {
       throw new Error(
         "Admin_secret is missing or too short"
       );
@@ -580,16 +624,22 @@ async function createSession(db, user, env) {
     "." +
     crypto.randomUUID();
 
-  const tokenHash = await hmacSHA256(
-    user.role === "admin"
-      ? secret + ":" + adminSecret(env)
-      : secret,
-    token
-  );
+  const tokenHash =
+    await hmacSHA256(
+      user.role === "admin"
+        ? secret +
+          ":" +
+          adminSecret(env)
+        : secret,
+      token
+    );
 
   const expiresAt =
     Math.floor(Date.now() / 1000) +
-    SESSION_DAYS * 24 * 60 * 60;
+    SESSION_DAYS *
+      24 *
+      60 *
+      60;
 
   await db
     .prepare(
@@ -611,13 +661,18 @@ async function createSession(db, user, env) {
 
 async function authenticate(request, env) {
   const header =
-    request.headers.get("Authorization") || "";
+    request.headers.get(
+      "Authorization"
+    ) || "";
 
-  if (!header.startsWith("Bearer ")) {
+  if (
+    !header.startsWith("Bearer ")
+  ) {
     return null;
   }
 
-  const token = header.slice(7).trim();
+  const token =
+    header.slice(7).trim();
 
   if (
     !token ||
@@ -627,57 +682,73 @@ async function authenticate(request, env) {
     return null;
   }
 
-  const secret = sessionSecret(env);
+  const secret =
+    sessionSecret(env);
 
-  if (!secret || secret.length < 32) {
+  if (
+    !secret ||
+    secret.length < 32
+  ) {
     return null;
   }
 
-  const normalHash = await hmacSHA256(
-    secret,
-    token
-  );
+  const normalHash =
+    await hmacSHA256(
+      secret,
+      token
+    );
 
-  const adminKey = adminSecret(env);
+  const adminKey =
+    adminSecret(env);
 
   let adminHash = null;
 
-  if (adminKey && adminKey.length >= 32) {
-    adminHash = await hmacSHA256(
-      secret + ":" + adminKey,
-      token
-    );
+  if (
+    adminKey &&
+    adminKey.length >= 32
+  ) {
+    adminHash =
+      await hmacSHA256(
+        secret +
+          ":" +
+          adminKey,
+        token
+      );
   }
 
-  const session = await env.DB
-    .prepare(
-      `SELECT
-         s.id,
-         s.user_id,
-         s.role AS session_role,
-         s.expires_at,
-         u.id,
-         u.name,
-         u.email,
-         u.country,
-         u.role,
-         u.is_active,
-         u.is_verified,
-         u.created_at
-       FROM sessions s
-       JOIN users u ON u.id=s.user_id
-       WHERE
-         (s.token_hash=? OR s.token_hash=?)
-         AND s.expires_at>?
-         AND u.is_active=1
-       LIMIT 1`
-    )
-    .bind(
-      normalHash,
-      adminHash || "",
-      Math.floor(Date.now() / 1000)
-    )
-    .first();
+  const session =
+    await env.DB
+      .prepare(
+        `SELECT
+           s.id,
+           s.user_id,
+           s.role AS session_role,
+           s.expires_at,
+           u.id,
+           u.name,
+           u.email,
+           u.country,
+           u.role,
+           u.is_active,
+           u.is_verified,
+           u.created_at
+         FROM sessions s
+         JOIN users u
+           ON u.id=s.user_id
+         WHERE
+           (s.token_hash=? OR s.token_hash=?)
+           AND s.expires_at>?
+           AND u.is_active=1
+         LIMIT 1`
+      )
+      .bind(
+        normalHash,
+        adminHash || "",
+        Math.floor(
+          Date.now() / 1000
+        )
+      )
+      .first();
 
   if (!session) {
     return null;
@@ -691,16 +762,23 @@ async function authenticate(request, env) {
       email: session.email,
       country: session.country,
       role: session.role,
-      is_active: session.is_active,
-      is_verified: session.is_verified,
-      created_at: session.created_at
+      is_active:
+        session.is_active,
+      is_verified:
+        session.is_verified,
+      created_at:
+        session.created_at
     },
     token
   };
 }
 
 async function requireAuth(request, env) {
-  const auth = await authenticate(request, env);
+  const auth =
+    await authenticate(
+      request,
+      env
+    );
 
   if (!auth) {
     return {
@@ -717,7 +795,11 @@ async function requireAuth(request, env) {
 }
 
 async function requireAdmin(request, env) {
-  const auth = await authenticate(request, env);
+  const auth =
+    await authenticate(
+      request,
+      env
+    );
 
   if (!auth) {
     return {
@@ -730,7 +812,9 @@ async function requireAdmin(request, env) {
     };
   }
 
-  if (auth.user.role !== "admin") {
+  if (
+    auth.user.role !== "admin"
+  ) {
     return {
       error: errorResponse(
         "Admin access required",
@@ -768,20 +852,28 @@ async function rateLimit(
 ) {
   await ensureRateLimitTable(db);
 
-  const now = Math.floor(Date.now() / 1000);
+  const now =
+    Math.floor(
+      Date.now() / 1000
+    );
 
-  const row = await db
-    .prepare(
-      `SELECT window_start, count
-       FROM rate_limits
-       WHERE rate_key=?`
-    )
-    .bind(key)
-    .first();
+  const row =
+    await db
+      .prepare(
+        `SELECT
+           window_start,
+           count
+         FROM rate_limits
+         WHERE rate_key=?`
+      )
+      .bind(key)
+      .first();
 
   if (
     !row ||
-    now - Number(row.window_start) >= windowSeconds
+    now -
+      Number(row.window_start) >=
+      windowSeconds
   ) {
     await db
       .prepare(
@@ -793,24 +885,36 @@ async function rateLimit(
            window_start=excluded.window_start,
            count=1`
       )
-      .bind(key, now)
+      .bind(
+        key,
+        now
+      )
       .run();
 
     return {
       allowed: true,
-      retryAfter: windowSeconds
+      retryAfter:
+        windowSeconds
     };
   }
 
-  const count = Number(row.count || 0);
+  const count =
+    Number(row.count || 0);
 
-  if (count >= max) {
+  if (
+    count >= max
+  ) {
     return {
       allowed: false,
       retryAfter: Math.max(
         1,
         windowSeconds -
-          (now - Number(row.window_start))
+          (
+            now -
+            Number(
+              row.window_start
+            )
+          )
       )
     };
   }
@@ -829,7 +933,12 @@ async function rateLimit(
     retryAfter: Math.max(
       1,
       windowSeconds -
-        (now - Number(row.window_start))
+        (
+          now -
+          Number(
+            row.window_start
+          )
+        )
     )
   };
 }
@@ -860,39 +969,60 @@ function safeUser(user) {
 export default {
   async fetch(request, env, ctx) {
     try {
-      const url = new URL(request.url);
+      const url =
+        new URL(request.url);
 
       const path =
-        url.pathname.replace(/\/+$/, "") || "/";
+        url.pathname.replace(
+          /\/+$/,
+          ""
+        ) || "/";
 
-      const method = request.method.toUpperCase();
+      const method =
+        request.method.toUpperCase();
 
       // ------------------------------------------------------
       // CORS PREFLIGHT
       // ------------------------------------------------------
 
-      if (method === "OPTIONS") {
-        const origin = request.headers.get("Origin");
+      if (
+        method === "OPTIONS"
+      ) {
+        const origin =
+          request.headers.get(
+            "Origin"
+          );
 
         if (
           origin &&
-          !allowedOrigins(env).has(origin)
+          !allowedOrigins(env).has(
+            origin
+          )
         ) {
-          return new Response(null, {
-            status: 403,
-            headers: {
-              ...API_SECURITY_HEADERS
+          return new Response(
+            null,
+            {
+              status: 403,
+              headers: {
+                ...API_SECURITY_HEADERS
+              }
             }
-          });
+          );
         }
 
-        return new Response(null, {
-          status: 204,
-          headers: {
-            ...API_SECURITY_HEADERS,
-            ...corsHeaders(request, env)
+        return new Response(
+          null,
+          {
+            status: 204,
+            headers: {
+              ...API_SECURITY_HEADERS,
+              ...corsHeaders(
+                request,
+                env
+              )
+            }
           }
-        });
+        );
       }
 
       // ------------------------------------------------------
@@ -906,17 +1036,23 @@ export default {
         return json(
           {
             ok: true,
-            service: "IsokoHub API",
-            environment: "production",
-            platform: "cloudflare-workers",
+            service:
+              "IsokoHub API",
+            environment:
+              "production",
+            platform:
+              "cloudflare-workers",
             database: "D1",
             assets: "ASSETS",
             global: true,
-            countries: COUNTRIES.length,
+            countries:
+              COUNTRIES.length,
             service_categories:
               SERVICE_CATEGORIES.length,
-            commission_rate: COMMISSION_RATE,
-            time: new Date().toISOString()
+            commission_rate:
+              COMMISSION_RATE,
+            time:
+              new Date().toISOString()
           },
           200,
           request,
@@ -935,15 +1071,19 @@ export default {
         return json(
           {
             ok: true,
-            environment: "production",
-            platform: "cloudflare-workers",
+            environment:
+              "production",
+            platform:
+              "cloudflare-workers",
             database: "D1",
             assets: "ASSETS",
             global: true,
-            countries: COUNTRIES.length,
+            countries:
+              COUNTRIES.length,
             service_categories:
               SERVICE_CATEGORIES.length,
-            commission_rate: COMMISSION_RATE
+            commission_rate:
+              COMMISSION_RATE
           },
           200,
           request,
@@ -961,7 +1101,8 @@ export default {
       ) {
         return json(
           {
-            countries: COUNTRIES
+            countries:
+              COUNTRIES
           },
           200,
           request,
@@ -974,7 +1115,8 @@ export default {
       // ------------------------------------------------------
 
       if (
-        path === "/api/service-categories" &&
+        path ===
+          "/api/service-categories" &&
         method === "GET"
       ) {
         return json(
@@ -996,14 +1138,15 @@ export default {
         path === "/api/categories" &&
         method === "GET"
       ) {
-        const rows = await env.DB
-          .prepare(
-            `SELECT *
-             FROM categories
-             WHERE COALESCE(is_active,1)=1
-             ORDER BY name ASC`
-          )
-          .all();
+        const rows =
+          await env.DB
+            .prepare(
+              `SELECT *
+               FROM categories
+               WHERE COALESCE(is_active,1)=1
+               ORDER BY name ASC`
+            )
+            .all();
 
         return json(
           {
@@ -1024,17 +1167,21 @@ export default {
         path === "/api/register" &&
         method === "POST"
       ) {
-        const ip = getIP(request);
+        const ip =
+          getIP(request);
 
-        const ipLimit = await rateLimit(
-          env.DB,
-          "register:ip:" +
-            await sha256(ip),
-          5,
-          60 * 60
-        );
+        const ipLimit =
+          await rateLimit(
+            env.DB,
+            "register:ip:" +
+              await sha256(ip),
+            5,
+            60 * 60
+          );
 
-        if (!ipLimit.allowed) {
+        if (
+          !ipLimit.allowed
+        ) {
           return errorResponse(
             "Too many registration attempts. Try again later.",
             429,
@@ -1042,24 +1189,41 @@ export default {
             env,
             {
               "Retry-After":
-                String(ipLimit.retryAfter)
+                String(
+                  ipLimit.retryAfter
+                )
             }
           );
         }
 
-        const body = await readJSON(request);
+        const body =
+          await readJSON(request);
 
-        const name = cleanText(body.name, 120);
-        const email = normalizeEmail(body.email);
-        const password = String(
-          body.password ?? ""
-        );
-        const country = cleanText(
-          body.country,
-          100
-        );
+        const name =
+          cleanText(
+            body.name,
+            120
+          );
 
-        if (name.length < 2) {
+        const email =
+          normalizeEmail(
+            body.email
+          );
+
+        const password =
+          String(
+            body.password ?? ""
+          );
+
+        const country =
+          cleanText(
+            body.country,
+            100
+          );
+
+        if (
+          name.length < 2
+        ) {
           return errorResponse(
             "Name is required",
             400,
@@ -1068,7 +1232,9 @@ export default {
           );
         }
 
-        if (!validEmail(email)) {
+        if (
+          !validEmail(email)
+        ) {
           return errorResponse(
             "Valid email is required",
             400,
@@ -1077,7 +1243,11 @@ export default {
           );
         }
 
-        if (!validPassword(password)) {
+        if (
+          !validPassword(
+            password
+          )
+        ) {
           return errorResponse(
             "Password must be 8 to 128 characters",
             400,
@@ -1086,7 +1256,11 @@ export default {
           );
         }
 
-        if (!validCountry(country)) {
+        if (
+          !validCountry(
+            country
+          )
+        ) {
           return errorResponse(
             "Invalid country",
             400,
@@ -1095,15 +1269,16 @@ export default {
           );
         }
 
-        const existing = await env.DB
-          .prepare(
-            `SELECT id
-             FROM users
-             WHERE email=?
-             LIMIT 1`
-          )
-          .bind(email)
-          .first();
+        const existing =
+          await env.DB
+            .prepare(
+              `SELECT id
+               FROM users
+               WHERE email=?
+               LIMIT 1`
+            )
+            .bind(email)
+            .first();
 
         if (existing) {
           return errorResponse(
@@ -1115,16 +1290,29 @@ export default {
         }
 
         const passwordHash =
-          await hashPassword(password);
+          await hashPassword(
+            password
+          );
 
         const now =
-          Math.floor(Date.now() / 1000);
+          Math.floor(
+            Date.now() / 1000
+          );
 
         try {
           await env.DB
             .prepare(
               `INSERT INTO users
-               (name,email,password_hash,country,role,is_active,is_verified,created_at)
+               (
+                 name,
+                 email,
+                 password_hash,
+                 country,
+                 role,
+                 is_active,
+                 is_verified,
+                 created_at
+               )
                VALUES (?,?,?,?,?,?,?,?)`
             )
             .bind(
@@ -1147,17 +1335,24 @@ export default {
           );
         }
 
-        const user = await env.DB
-          .prepare(
-            `SELECT
-              id,name,email,country,role,
-              is_active,is_verified,created_at
-             FROM users
-             WHERE email=?
-             LIMIT 1`
-          )
-          .bind(email)
-          .first();
+        const user =
+          await env.DB
+            .prepare(
+              `SELECT
+                 id,
+                 name,
+                 email,
+                 country,
+                 role,
+                 is_active,
+                 is_verified,
+                 created_at
+               FROM users
+               WHERE email=?
+               LIMIT 1`
+            )
+            .bind(email)
+            .first();
 
         const token =
           await createSession(
@@ -1170,7 +1365,8 @@ export default {
           {
             ok: true,
             token,
-            user: safeUser(user)
+            user:
+              safeUser(user)
           },
           201,
           request,
@@ -1186,17 +1382,21 @@ export default {
         path === "/api/login" &&
         method === "POST"
       ) {
-        const ip = getIP(request);
+        const ip =
+          getIP(request);
 
-        const ipLimit = await rateLimit(
-          env.DB,
-          "login:ip:" +
-            await sha256(ip),
-          20,
-          15 * 60
-        );
+        const ipLimit =
+          await rateLimit(
+            env.DB,
+            "login:ip:" +
+              await sha256(ip),
+            20,
+            15 * 60
+          );
 
-        if (!ipLimit.allowed) {
+        if (
+          !ipLimit.allowed
+        ) {
           return errorResponse(
             "Too many login attempts. Try again later.",
             429,
@@ -1204,19 +1404,29 @@ export default {
             env,
             {
               "Retry-After":
-                String(ipLimit.retryAfter)
+                String(
+                  ipLimit.retryAfter
+                )
             }
           );
         }
 
-        const body = await readJSON(request);
+        const body =
+          await readJSON(request);
 
-        const email = normalizeEmail(body.email);
-        const password = String(
-          body.password ?? ""
-        );
+        const email =
+          normalizeEmail(
+            body.email
+          );
 
-        if (!validEmail(email)) {
+        const password =
+          String(
+            body.password ?? ""
+          );
+
+        if (
+          !validEmail(email)
+        ) {
           return errorResponse(
             "Invalid email or password",
             401,
@@ -1225,49 +1435,69 @@ export default {
           );
         }
 
-        if (!validPassword(password)) {
-          return errorResponse(
-            "Invalid email or password",
-            401,
-            request,
-            env
-          );
-        }
-
-        const emailLimit = await rateLimit(
-          env.DB,
-          "login:email:" +
-            await sha256(email),
-          8,
-          15 * 60
-        );
-
-        if (!emailLimit.allowed) {
-          return errorResponse(
-            "Too many login attempts. Try again later.",
-            429,
-            request,
-            env,
-            {
-              "Retry-After":
-                String(emailLimit.retryAfter)
-            }
-          );
-        }
-
-        const user = await env.DB
-          .prepare(
-            `SELECT
-              id,name,email,password_hash,country,
-              role,is_active,is_verified,created_at
-             FROM users
-             WHERE email=?
-             LIMIT 1`
+        if (
+          !validPassword(
+            password
           )
-          .bind(email)
-          .first();
+        ) {
+          return errorResponse(
+            "Invalid email or password",
+            401,
+            request,
+            env
+          );
+        }
 
-        if (!user || !user.is_active) {
+        const emailLimit =
+          await rateLimit(
+            env.DB,
+            "login:email:" +
+              await sha256(email),
+            8,
+            15 * 60
+          );
+
+        if (
+          !emailLimit.allowed
+        ) {
+          return errorResponse(
+            "Too many login attempts. Try again later.",
+            429,
+            request,
+            env,
+            {
+              "Retry-After":
+                String(
+                  emailLimit.retryAfter
+                )
+            }
+          );
+        }
+
+        const user =
+          await env.DB
+            .prepare(
+              `SELECT
+                 id,
+                 name,
+                 email,
+                 password_hash,
+                 country,
+                 role,
+                 is_active,
+                 is_verified,
+                 created_at
+               FROM users
+               WHERE email=?
+               LIMIT 1`
+            )
+            .bind(email)
+            .first();
+
+        if (
+          !user ||
+          !user.is_active
+        ) {
           return errorResponse(
             "Invalid email or password",
             401,
@@ -1293,11 +1523,15 @@ export default {
 
         if (
           /^[0-9a-f]{64}$/i.test(
-            String(user.password_hash)
+            String(
+              user.password_hash
+            )
           )
         ) {
           const upgraded =
-            await hashPassword(password);
+            await hashPassword(
+              password
+            );
 
           await env.DB
             .prepare(
@@ -1318,7 +1552,9 @@ export default {
              WHERE expires_at<?`
           )
           .bind(
-            Math.floor(Date.now() / 1000)
+            Math.floor(
+              Date.now() / 1000
+            )
           )
           .run();
 
@@ -1333,7 +1569,8 @@ export default {
           {
             ok: true,
             token,
-            user: safeUser(user)
+            user:
+              safeUser(user)
           },
           200,
           request,
@@ -1355,11 +1592,16 @@ export default {
             env
           );
 
-        if (auth.error) return auth.error;
+        if (auth.error) {
+          return auth.error;
+        }
 
         return json(
           {
-            user: safeUser(auth.user)
+            user:
+              safeUser(
+                auth.user
+              )
           },
           200,
           request,
@@ -1381,7 +1623,9 @@ export default {
             env
           );
 
-        if (auth.error) return auth.error;
+        if (auth.error) {
+          return auth.error;
+        }
 
         const secret =
           sessionSecret(env);
@@ -1403,7 +1647,9 @@ export default {
         ) {
           adminHash =
             await hmacSHA256(
-              secret + ":" + adminKey,
+              secret +
+                ":" +
+                adminKey,
               auth.token
             );
         }
@@ -1437,33 +1683,49 @@ export default {
         path === "/api/products" &&
         method === "GET"
       ) {
-        const search = cleanText(
-          url.searchParams.get("search"),
-          100
-        );
+        const search =
+          cleanText(
+            url.searchParams.get(
+              "search"
+            ),
+            100
+          );
 
-        const category = cleanText(
-          url.searchParams.get("category"),
-          120
-        );
+        const category =
+          cleanText(
+            url.searchParams.get(
+              "category"
+            ),
+            120
+          );
 
-        const country = cleanText(
-          url.searchParams.get("country"),
-          100
-        );
+        const country =
+          cleanText(
+            url.searchParams.get(
+              "country"
+            ),
+            100
+          );
 
-        const sellerId = integerValue(
-          url.searchParams.get("seller_id"),
-          0
-        );
+        const sellerId =
+          integerValue(
+            url.searchParams.get(
+              "seller_id"
+            ),
+            0
+          );
 
-        const limit = limitValue(
-          url.searchParams.get("limit"),
-          100,
-          500
-        );
+        const limit =
+          limitValue(
+            url.searchParams.get(
+              "limit"
+            ),
+            100,
+            500
+          );
 
         const params = [];
+
         const conditions = [
           "p.status='active'"
         ];
@@ -1480,10 +1742,16 @@ export default {
             )
           `);
 
-          const q = `%${search}%`;
+          const q =
+            `%${search}%`;
 
           params.push(
-            q,q,q,q,q,q
+            q,
+            q,
+            q,
+            q,
+            q,
+            q
           );
         }
 
@@ -1491,21 +1759,30 @@ export default {
           conditions.push(
             "p.category=?"
           );
-          params.push(category);
+
+          params.push(
+            category
+          );
         }
 
         if (country) {
           conditions.push(
             "p.country=?"
           );
-          params.push(country);
+
+          params.push(
+            country
+          );
         }
 
         if (sellerId > 0) {
           conditions.push(
             "p.seller_id=?"
           );
-          params.push(sellerId);
+
+          params.push(
+            sellerId
+          );
         }
 
         const sql = `
@@ -1516,7 +1793,9 @@ export default {
           FROM products p
           LEFT JOIN users u
             ON u.id=p.seller_id
-          WHERE ${conditions.join(" AND ")}
+          WHERE ${conditions.join(
+            " AND "
+          )}
           ORDER BY p.created_at DESC
           LIMIT ?
         `;
@@ -1530,19 +1809,20 @@ export default {
             .all();
 
         const list =
-          (rows.results || []).map(
-            p => ({
-              ...p,
-              seller:
-                p.seller_name ||
-                "IsokoHub Seller"
-            })
-          );
+          (
+            rows.results || []
+          ).map(p => ({
+            ...p,
+            seller:
+              p.seller_name ||
+              "IsokoHub Seller"
+          }));
 
         return json(
           {
             products: list,
-            count: list.length
+            count:
+              list.length
           },
           200,
           request,
@@ -1564,19 +1844,22 @@ export default {
         method === "GET"
       ) {
         const id =
-          Number(productMatch[1]);
+          Number(
+            productMatch[1]
+          );
 
         const product =
           await env.DB
             .prepare(
               `SELECT
-                p.*,
-                u.name AS seller_name,
-                u.email AS seller_email
+                 p.*,
+                 u.name AS seller_name,
+                 u.email AS seller_email
                FROM products p
                LEFT JOIN users u
                  ON u.id=p.seller_id
                WHERE p.id=?
+                 AND p.status='active'
                LIMIT 1`
             )
             .bind(id)
@@ -1601,7 +1884,9 @@ export default {
           .run();
 
         product.views =
-          Number(product.views || 0) + 1;
+          Number(
+            product.views || 0
+          ) + 1;
 
         product.seller =
           product.seller_name ||
@@ -1625,42 +1910,65 @@ export default {
         path === "/api/services" &&
         method === "GET"
       ) {
-        const search = cleanText(
-          url.searchParams.get("search"),
-          100
-        );
+        const search =
+          cleanText(
+            url.searchParams.get(
+              "search"
+            ),
+            100
+          );
 
-        const category = cleanText(
-          url.searchParams.get("category"),
-          120
-        );
+        const category =
+          cleanText(
+            url.searchParams.get(
+              "category"
+            ),
+            120
+          );
 
-        const country = cleanText(
-          url.searchParams.get("country"),
-          100
-        );
+        const country =
+          cleanText(
+            url.searchParams.get(
+              "country"
+            ),
+            100
+          );
 
-        const city = cleanText(
-          url.searchParams.get("city") ||
-          url.searchParams.get("district"),
-          120
-        );
+        const city =
+          cleanText(
+            url.searchParams.get(
+              "city"
+            ) ||
+              url.searchParams.get(
+                "district"
+              ),
+            120
+          );
 
-        const provider = cleanText(
-          url.searchParams.get("provider"),
-          120
-        );
+        const provider =
+          cleanText(
+            url.searchParams.get(
+              "provider"
+            ),
+            120
+          );
 
         const online =
-          url.searchParams.get("online");
+          url.searchParams.get(
+            "online"
+          );
 
-        const limit = limitValue(
-          url.searchParams.get("limit"),
-          100,
-          500
-        );
+        const limit =
+          limitValue(
+            url.searchParams.get(
+              "limit"
+            ),
+            100,
+            500
+          );
 
         const params = [];
+
         const conditions = [
           "p.status='active'"
         ];
@@ -1669,14 +1977,20 @@ export default {
           conditions.push(
             "p.category=?"
           );
-          params.push(category);
+
+          params.push(
+            category
+          );
         }
 
         if (country) {
           conditions.push(
             "p.country=?"
           );
-          params.push(country);
+
+          params.push(
+            country
+          );
         }
 
         if (city) {
@@ -1687,15 +2001,20 @@ export default {
             )
           `);
 
-          const q = `%${city}%`;
+          const q =
+            `%${city}%`;
 
-          params.push(q,q);
+          params.push(
+            q,
+            q
+          );
         }
 
         if (provider) {
           conditions.push(
             "u.name LIKE ?"
           );
+
           params.push(
             `%${provider}%`
           );
@@ -1712,20 +2031,28 @@ export default {
               FROM products p
               LEFT JOIN users u
                 ON u.id=p.seller_id
-              WHERE ${conditions.join(" AND ")}
+              WHERE ${conditions.join(
+                " AND "
+              )}
               ORDER BY p.created_at DESC
               LIMIT ?
               `
             )
             .bind(
               ...params,
-              Math.min(500, limit * 3)
+              Math.min(
+                500,
+                limit * 3
+              )
             )
             .all();
 
         let services =
-          (rows.results || [])
-            .filter(isServiceProduct);
+          (
+            rows.results || []
+          ).filter(
+            isServiceProduct
+          );
 
         if (search) {
           const q =
@@ -1734,8 +2061,9 @@ export default {
           services =
             services.filter(
               p =>
-                productText(p)
-                  .includes(q)
+                productText(
+                  p
+                ).includes(q)
             );
         }
 
@@ -1765,31 +2093,12 @@ export default {
         return json(
           {
             services,
-            count: services.length
+            count:
+              services.length
           },
           200,
           request,
           env
-        );
-      }
-
-      if (
-        path === "/api/service-search" &&
-        method === "GET"
-      ) {
-        const target =
-          new URL(request.url);
-
-        target.pathname =
-          "/api/services";
-
-        return this.fetch(
-          new Request(target.toString(), {
-            method: "GET",
-            headers: request.headers
-          }),
-          env,
-          ctx
         );
       }
 
@@ -1807,13 +2116,18 @@ export default {
             env
           );
 
-        if (auth.error) return auth.error;
+        if (auth.error) {
+          return auth.error;
+        }
 
         const body =
           await readJSON(request);
 
         const title =
-          cleanText(body.title, 200);
+          cleanText(
+            body.title,
+            200
+          );
 
         const category =
           cleanText(
@@ -1822,11 +2136,15 @@ export default {
           );
 
         const price =
-          numberValue(body.price, -1);
+          numberValue(
+            body.price,
+            -1
+          );
 
         const currency =
           cleanText(
-            body.currency || "RWF",
+            body.currency ||
+              "RWF",
             3
           ).toUpperCase();
 
@@ -1838,7 +2156,8 @@ export default {
 
         const condition =
           cleanText(
-            body.condition || "new",
+            body.condition ||
+              "new",
             40
           );
 
@@ -1851,26 +2170,29 @@ export default {
         const district =
           cleanText(
             body.district ||
-            body.city ||
-            "",
+              body.city ||
+              "",
             120
           );
 
         const imageUrl =
           cleanText(
-            body.image_url || "",
+            body.image_url ||
+              "",
             2048
           );
 
         const description =
           cleanText(
             body.description ||
-            body.specs ||
-            "",
+              body.specs ||
+              "",
             10000
           );
 
-        if (title.length < 2) {
+        if (
+          title.length < 2
+        ) {
           return errorResponse(
             "Product title is required",
             400,
@@ -1889,9 +2211,12 @@ export default {
         }
 
         if (
-          !Number.isFinite(price) ||
+          !Number.isFinite(
+            price
+          ) ||
           price < 0 ||
-          price > 100000000000
+          price >
+            100000000000
         ) {
           return errorResponse(
             "Invalid price",
@@ -1901,7 +2226,11 @@ export default {
           );
         }
 
-        if (!validCurrency(currency)) {
+        if (
+          !validCurrency(
+            currency
+          )
+        ) {
           return errorResponse(
             "Currency must be a 3-letter code",
             400,
@@ -1922,7 +2251,11 @@ export default {
           );
         }
 
-        if (!validCountry(country)) {
+        if (
+          !validCountry(
+            country
+          )
+        ) {
           return errorResponse(
             "Invalid country",
             400,
@@ -1938,7 +2271,9 @@ export default {
             "refurbished",
             "service",
             "digital"
-          ].includes(condition)
+          ].includes(
+            condition
+          )
         ) {
           return errorResponse(
             "Invalid condition",
@@ -1948,7 +2283,9 @@ export default {
           );
         }
 
-        if (!validURL(imageUrl)) {
+        if (
+          !validURL(imageUrl)
+        ) {
           return errorResponse(
             "Image URL must use HTTP or HTTPS",
             400,
@@ -1958,7 +2295,9 @@ export default {
         }
 
         const now =
-          Math.floor(Date.now() / 1000);
+          Math.floor(
+            Date.now() / 1000
+          );
 
         await env.DB
           .prepare(
@@ -2012,7 +2351,9 @@ export default {
                ORDER BY id DESC
                LIMIT 1`
             )
-            .bind(auth.user.id)
+            .bind(
+              auth.user.id
+            )
             .first();
 
         return json(
@@ -2040,10 +2381,14 @@ export default {
             env
           );
 
-        if (auth.error) return auth.error;
+        if (auth.error) {
+          return auth.error;
+        }
 
         const id =
-          Number(productMatch[1]);
+          Number(
+            productMatch[1]
+          );
 
         const product =
           await env.DB
@@ -2066,8 +2411,10 @@ export default {
         }
 
         if (
-          product.seller_id !== auth.user.id &&
-          auth.user.role !== "admin"
+          product.seller_id !==
+            auth.user.id &&
+          auth.user.role !==
+            "admin"
         ) {
           return errorResponse(
             "Not allowed",
@@ -2082,66 +2429,69 @@ export default {
 
         const title =
           cleanText(
-            body.title ?? product.title,
+            body.title ??
+              product.title,
             200
           );
 
         const category =
           cleanText(
-            body.category ?? product.category,
+            body.category ??
+              product.category,
             120
           );
 
         const price =
           numberValue(
-            body.price ?? product.price,
+            body.price ??
+              product.price,
             -1
           );
 
         const currency =
           cleanText(
             body.currency ||
-            product.currency ||
-            "RWF",
+              product.currency ||
+              "RWF",
             3
           ).toUpperCase();
 
         const stock =
           integerValue(
             body.stock ??
-            product.stock,
+              product.stock,
             -1
           );
 
         const country =
           cleanText(
             body.country ??
-            product.country,
+              product.country,
             100
           );
 
         const district =
           cleanText(
             body.district ??
-            product.district ??
-            "",
+              product.district ??
+              "",
             120
           );
 
         const imageUrl =
           cleanText(
             body.image_url ??
-            product.image_url ??
-            "",
+              product.image_url ??
+              "",
             2048
           );
 
         const description =
           cleanText(
             body.description ??
-            product.description ??
-            product.specs ??
-            "",
+              product.description ??
+              product.specs ??
+              "",
             10000
           );
 
@@ -2150,9 +2500,15 @@ export default {
           !category ||
           price < 0 ||
           stock < 0 ||
-          !validCurrency(currency) ||
-          !validCountry(country) ||
-          !validURL(imageUrl)
+          !validCurrency(
+            currency
+          ) ||
+          !validCountry(
+            country
+          ) ||
+          !validURL(
+            imageUrl
+          )
         ) {
           return errorResponse(
             "Invalid product data",
@@ -2221,10 +2577,14 @@ export default {
             env
           );
 
-        if (auth.error) return auth.error;
+        if (auth.error) {
+          return auth.error;
+        }
 
         const id =
-          Number(productMatch[1]);
+          Number(
+            productMatch[1]
+          );
 
         const product =
           await env.DB
@@ -2247,8 +2607,10 @@ export default {
         }
 
         if (
-          product.seller_id !== auth.user.id &&
-          auth.user.role !== "admin"
+          product.seller_id !==
+            auth.user.id &&
+          auth.user.role !==
+            "admin"
         ) {
           return errorResponse(
             "Not allowed",
@@ -2261,8 +2623,9 @@ export default {
         await env.DB
           .prepare(
             `UPDATE products
-             SET status='inactive',
-                 updated_at=?
+             SET
+               status='inactive',
+               updated_at=?
              WHERE id=?`
           )
           .bind(
@@ -2297,14 +2660,16 @@ export default {
             env
           );
 
-        if (auth.error) return auth.error;
+        if (auth.error) {
+          return auth.error;
+        }
 
         const rows =
           await env.DB
             .prepare(
               `SELECT
-                s.id AS saved_id,
-                p.*
+                 s.id AS saved_id,
+                 p.*
                FROM saved s
                JOIN products p
                  ON p.id=s.product_id
@@ -2313,7 +2678,9 @@ export default {
                  AND p.status='active'
                ORDER BY s.created_at DESC`
             )
-            .bind(auth.user.id)
+            .bind(
+              auth.user.id
+            )
             .all();
 
         return json(
@@ -2342,20 +2709,27 @@ export default {
             env
           );
 
-        if (auth.error) return auth.error;
+        if (auth.error) {
+          return auth.error;
+        }
 
         const productId =
-          Number(savedMatch[1]);
+          Number(
+            savedMatch[1]
+          );
 
         const product =
           await env.DB
             .prepare(
               `SELECT id
                FROM products
-               WHERE id=? AND status='active'
+               WHERE id=?
+                 AND status='active'
                LIMIT 1`
             )
-            .bind(productId)
+            .bind(
+              productId
+            )
             .first();
 
         if (!product) {
@@ -2383,7 +2757,9 @@ export default {
           .run();
 
         return json(
-          { ok: true },
+          {
+            ok: true
+          },
           200,
           request,
           env
@@ -2400,15 +2776,20 @@ export default {
             env
           );
 
-        if (auth.error) return auth.error;
+        if (auth.error) {
+          return auth.error;
+        }
 
         const productId =
-          Number(savedMatch[1]);
+          Number(
+            savedMatch[1]
+          );
 
         await env.DB
           .prepare(
             `DELETE FROM saved
-             WHERE user_id=? AND product_id=?`
+             WHERE user_id=?
+               AND product_id=?`
           )
           .bind(
             auth.user.id,
@@ -2417,7 +2798,9 @@ export default {
           .run();
 
         return json(
-          { ok: true },
+          {
+            ok: true
+          },
           200,
           request,
           env
@@ -2438,17 +2821,19 @@ export default {
             env
           );
 
-        if (auth.error) return auth.error;
+        if (auth.error) {
+          return auth.error;
+        }
 
         const rows =
           await env.DB
             .prepare(
               `SELECT
-                o.*,
-                p.title,
-                p.image_url,
-                p.currency,
-                u.name AS seller_name
+                 o.*,
+                 p.title,
+                 p.image_url,
+                 p.currency,
+                 u.name AS seller_name
                FROM orders o
                LEFT JOIN products p
                  ON p.id=o.product_id
@@ -2458,11 +2843,15 @@ export default {
                ORDER BY o.created_at DESC
                LIMIT 500`
             )
-            .bind(auth.user.id)
+            .bind(
+              auth.user.id
+            )
             .all();
 
         const orders =
-          (rows.results || []).map(o => ({
+          (
+            rows.results || []
+          ).map(o => ({
             ...o,
             total:
               o.total_price,
@@ -2496,7 +2885,9 @@ export default {
             env
           );
 
-        if (auth.error) return auth.error;
+        if (auth.error) {
+          return auth.error;
+        }
 
         const body =
           await readJSON(request);
@@ -2535,7 +2926,9 @@ export default {
                  AND status='active'
                LIMIT 1`
             )
-            .bind(productId)
+            .bind(
+              productId
+            )
             .first();
 
         if (!product) {
@@ -2560,8 +2953,9 @@ export default {
         }
 
         if (
-          Number(product.stock) <
-          quantity
+          Number(
+            product.stock
+          ) < quantity
         ) {
           return errorResponse(
             "Not enough stock",
@@ -2572,14 +2966,15 @@ export default {
         }
 
         const total =
-          Number(product.price) *
-          quantity;
+          Number(
+            product.price
+          ) * quantity;
 
         const commission =
           Math.round(
             total *
-            COMMISSION_RATE *
-            100
+              COMMISSION_RATE *
+              100
           ) / 100;
 
         const now =
@@ -2591,8 +2986,9 @@ export default {
           await env.DB
             .prepare(
               `UPDATE products
-               SET stock=stock-?,
-                   updated_at=?
+               SET
+                 stock=stock-?,
+                 updated_at=?
                WHERE id=?
                  AND status='active'
                  AND stock>=?`
@@ -2607,7 +3003,9 @@ export default {
 
         if (
           !update.meta ||
-          Number(update.meta.changes) !== 1
+          Number(
+            update.meta.changes
+          ) !== 1
         ) {
           return errorResponse(
             "Stock changed. Please try again.",
@@ -2656,8 +3054,9 @@ export default {
           await env.DB
             .prepare(
               `UPDATE products
-               SET stock=stock+?,
-                   updated_at=?
+               SET
+                 stock=stock+?,
+                 updated_at=?
                WHERE id=?`
             )
             .bind(
@@ -2675,10 +3074,13 @@ export default {
         return json(
           {
             ok: true,
-            total_price: total,
+            total_price:
+              total,
             commission,
-            payment_status: "unpaid",
-            status: "pending"
+            payment_status:
+              "unpaid",
+            status:
+              "pending"
           },
           201,
           request,
@@ -2700,15 +3102,17 @@ export default {
             env
           );
 
-        if (auth.error) return auth.error;
+        if (auth.error) {
+          return auth.error;
+        }
 
         const rows =
           await env.DB
             .prepare(
               `SELECT
-                m.*,
-                s.name AS sender_name,
-                r.name AS receiver_name
+                 m.*,
+                 s.name AS sender_name,
+                 r.name AS receiver_name
                FROM messages m
                LEFT JOIN users s
                  ON s.id=m.sender_id
@@ -2747,7 +3151,9 @@ export default {
             env
           );
 
-        if (auth.error) return auth.error;
+        if (auth.error) {
+          return auth.error;
+        }
 
         const body =
           await readJSON(request);
@@ -2777,7 +3183,8 @@ export default {
         }
 
         if (
-          receiverId === auth.user.id
+          receiverId ===
+          auth.user.id
         ) {
           return errorResponse(
             "You cannot message yourself",
@@ -2792,10 +3199,13 @@ export default {
             .prepare(
               `SELECT id
                FROM users
-               WHERE id=? AND is_active=1
+               WHERE id=?
+                 AND is_active=1
                LIMIT 1`
             )
-            .bind(receiverId)
+            .bind(
+              receiverId
+            )
             .first();
 
         if (!receiver) {
@@ -2810,7 +3220,13 @@ export default {
         await env.DB
           .prepare(
             `INSERT INTO messages
-             (sender_id,receiver_id,body,is_read,created_at)
+             (
+               sender_id,
+               receiver_id,
+               body,
+               is_read,
+               created_at
+             )
              VALUES (?,?,?,?,?)`
           )
           .bind(
@@ -2839,7 +3255,8 @@ export default {
       // ------------------------------------------------------
 
       if (
-        path === "/api/seller/products" &&
+        path ===
+          "/api/seller/products" &&
         method === "GET"
       ) {
         const auth =
@@ -2848,7 +3265,9 @@ export default {
             env
           );
 
-        if (auth.error) return auth.error;
+        if (auth.error) {
+          return auth.error;
+        }
 
         const rows =
           await env.DB
@@ -2859,7 +3278,9 @@ export default {
                ORDER BY created_at DESC
                LIMIT 500`
             )
-            .bind(auth.user.id)
+            .bind(
+              auth.user.id
+            )
             .all();
 
         return json(
@@ -2878,7 +3299,8 @@ export default {
       // ------------------------------------------------------
 
       if (
-        path === "/api/seller/stats" &&
+        path ===
+          "/api/seller/stats" &&
         method === "GET"
       ) {
         const auth =
@@ -2887,7 +3309,9 @@ export default {
             env
           );
 
-        if (auth.error) return auth.error;
+        if (auth.error) {
+          return auth.error;
+        }
 
         const products =
           await env.DB
@@ -2896,33 +3320,52 @@ export default {
                FROM products
                WHERE seller_id=?`
             )
-            .bind(auth.user.id)
+            .bind(
+              auth.user.id
+            )
             .first();
 
         const orders =
           await env.DB
             .prepare(
               `SELECT
-                COUNT(*) AS count,
-                COALESCE(SUM(total_price),0) AS revenue,
-                COALESCE(SUM(commission),0) AS commission
+                 COUNT(*) AS count,
+                 COALESCE(
+                   SUM(total_price),
+                   0
+                 ) AS revenue,
+                 COALESCE(
+                   SUM(commission),
+                   0
+                 ) AS commission
                FROM orders
                WHERE seller_id=?
                  AND payment_status='paid'`
             )
-            .bind(auth.user.id)
+            .bind(
+              auth.user.id
+            )
             .first();
 
         return json(
           {
             products:
-              Number(products?.count || 0),
+              Number(
+                products?.count || 0
+              ),
             orders:
-              Number(orders?.count || 0),
+              Number(
+                orders?.count || 0
+              ),
             revenue:
-              Number(orders?.revenue || 0),
+              Number(
+                orders?.revenue || 0
+              ),
             commission:
-              Number(orders?.commission || 0)
+              Number(
+                orders?.commission ||
+                  0
+              )
           },
           200,
           request,
@@ -2939,7 +3382,8 @@ export default {
       // ------------------------------------------------------
 
       if (
-        path === "/api/admin/stats" &&
+        path ===
+          "/api/admin/stats" &&
         method === "GET"
       ) {
         const auth =
@@ -2948,7 +3392,9 @@ export default {
             env
           );
 
-        if (auth.error) return auth.error;
+        if (auth.error) {
+          return auth.error;
+        }
 
         const users =
           await env.DB
@@ -2987,24 +3433,26 @@ export default {
           await env.DB
             .prepare(
               `SELECT
-                COALESCE(
-                  SUM(
-                    CASE
-                      WHEN payment_status='paid'
-                      THEN total_price
-                      ELSE 0
-                    END
-                  ),0
-                ) AS revenue,
-                COALESCE(
-                  SUM(
-                    CASE
-                      WHEN payment_status='paid'
-                      THEN commission
-                      ELSE 0
-                    END
-                  ),0
-                ) AS commission
+                 COALESCE(
+                   SUM(
+                     CASE
+                       WHEN payment_status='paid'
+                       THEN total_price
+                       ELSE 0
+                     END
+                   ),
+                   0
+                 ) AS revenue,
+                 COALESCE(
+                   SUM(
+                     CASE
+                       WHEN payment_status='paid'
+                       THEN commission
+                       ELSE 0
+                     END
+                   ),
+                   0
+                 ) AS commission
                FROM orders`
             )
             .first();
@@ -3012,17 +3460,30 @@ export default {
         return json(
           {
             users:
-              Number(users?.count || 0),
+              Number(
+                users?.count || 0
+              ),
             sellers:
-              Number(sellers?.count || 0),
+              Number(
+                sellers?.count || 0
+              ),
             products:
-              Number(products?.count || 0),
+              Number(
+                products?.count || 0
+              ),
             orders:
-              Number(orders?.count || 0),
+              Number(
+                orders?.count || 0
+              ),
             revenue:
-              Number(money?.revenue || 0),
+              Number(
+                money?.revenue || 0
+              ),
             commission:
-              Number(money?.commission || 0)
+              Number(
+                money?.commission ||
+                  0
+              )
           },
           200,
           request,
@@ -3035,7 +3496,8 @@ export default {
       // ------------------------------------------------------
 
       if (
-        path === "/api/admin/users" &&
+        path ===
+          "/api/admin/users" &&
         method === "GET"
       ) {
         const auth =
@@ -3044,14 +3506,22 @@ export default {
             env
           );
 
-        if (auth.error) return auth.error;
+        if (auth.error) {
+          return auth.error;
+        }
 
         const rows =
           await env.DB
             .prepare(
               `SELECT
-                id,name,email,country,role,
-                is_active,is_verified,created_at
+                 id,
+                 name,
+                 email,
+                 country,
+                 role,
+                 is_active,
+                 is_verified,
+                 created_at
                FROM users
                ORDER BY created_at DESC
                LIMIT 500`
@@ -3074,7 +3544,8 @@ export default {
       // ------------------------------------------------------
 
       if (
-        path === "/api/admin/sellers" &&
+        path ===
+          "/api/admin/sellers" &&
         method === "GET"
       ) {
         const auth =
@@ -3083,23 +3554,26 @@ export default {
             env
           );
 
-        if (auth.error) return auth.error;
+        if (auth.error) {
+          return auth.error;
+        }
 
         const rows =
           await env.DB
             .prepare(
               `SELECT
-                u.id,
-                u.name,
-                u.email,
-                u.country,
-                u.role,
-                u.is_active,
-                COUNT(p.id) AS products
+                 u.id,
+                 u.name,
+                 u.email,
+                 u.country,
+                 u.role,
+                 u.is_active,
+                 COUNT(p.id) AS products
                FROM users u
                LEFT JOIN products p
                  ON p.seller_id=u.id
-               WHERE u.role IN ('seller','admin')
+               WHERE u.role IN
+                 ('seller','admin')
                GROUP BY u.id
                ORDER BY u.created_at DESC
                LIMIT 500`
@@ -3122,7 +3596,8 @@ export default {
       // ------------------------------------------------------
 
       if (
-        path === "/api/admin/products" &&
+        path ===
+          "/api/admin/products" &&
         method === "GET"
       ) {
         const auth =
@@ -3131,14 +3606,16 @@ export default {
             env
           );
 
-        if (auth.error) return auth.error;
+        if (auth.error) {
+          return auth.error;
+        }
 
         const rows =
           await env.DB
             .prepare(
               `SELECT
-                p.*,
-                u.name AS seller_name
+                 p.*,
+                 u.name AS seller_name
                FROM products p
                LEFT JOIN users u
                  ON u.id=p.seller_id
@@ -3163,7 +3640,8 @@ export default {
       // ------------------------------------------------------
 
       if (
-        path === "/api/admin/orders" &&
+        path ===
+          "/api/admin/orders" &&
         method === "GET"
       ) {
         const auth =
@@ -3172,16 +3650,18 @@ export default {
             env
           );
 
-        if (auth.error) return auth.error;
+        if (auth.error) {
+          return auth.error;
+        }
 
         const rows =
           await env.DB
             .prepare(
               `SELECT
-                o.*,
-                p.title,
-                b.name AS buyer_name,
-                s.name AS seller_name
+                 o.*,
+                 p.title,
+                 b.name AS buyer_name,
+                 s.name AS seller_name
                FROM orders o
                LEFT JOIN products p
                  ON p.id=o.product_id
@@ -3210,7 +3690,8 @@ export default {
       // ------------------------------------------------------
 
       if (
-        path === "/api/admin/payments" &&
+        path ===
+          "/api/admin/payments" &&
         method === "GET"
       ) {
         const auth =
@@ -3219,21 +3700,23 @@ export default {
             env
           );
 
-        if (auth.error) return auth.error;
+        if (auth.error) {
+          return auth.error;
+        }
 
         const rows =
           await env.DB
             .prepare(
               `SELECT
-                o.id,
-                o.buyer_id,
-                o.seller_id,
-                o.product_id,
-                o.total_price,
-                o.currency,
-                o.commission,
-                o.payment_status,
-                o.created_at
+                 o.id,
+                 o.buyer_id,
+                 o.seller_id,
+                 o.product_id,
+                 o.total_price,
+                 o.currency,
+                 o.commission,
+                 o.payment_status,
+                 o.created_at
                FROM orders o
                ORDER BY o.created_at DESC
                LIMIT 500`
@@ -3256,7 +3739,8 @@ export default {
       // ------------------------------------------------------
 
       if (
-        path === "/api/admin/services" &&
+        path ===
+          "/api/admin/services" &&
         method === "GET"
       ) {
         const auth =
@@ -3265,14 +3749,16 @@ export default {
             env
           );
 
-        if (auth.error) return auth.error;
+        if (auth.error) {
+          return auth.error;
+        }
 
         const rows =
           await env.DB
             .prepare(
               `SELECT
-                p.*,
-                u.name AS seller_name
+                 p.*,
+                 u.name AS seller_name
                FROM products p
                LEFT JOIN users u
                  ON u.id=p.seller_id
@@ -3283,8 +3769,11 @@ export default {
             .all();
 
         const services =
-          (rows.results || [])
-            .filter(isServiceProduct);
+          (
+            rows.results || []
+          ).filter(
+            isServiceProduct
+          );
 
         return json(
           {
@@ -3301,7 +3790,8 @@ export default {
       // ------------------------------------------------------
 
       if (
-        path === "/api/admin/categories" &&
+        path ===
+          "/api/admin/categories" &&
         method === "GET"
       ) {
         const auth =
@@ -3310,7 +3800,9 @@ export default {
             env
           );
 
-        if (auth.error) return auth.error;
+        if (auth.error) {
+          return auth.error;
+        }
 
         const rows =
           await env.DB
@@ -3334,7 +3826,8 @@ export default {
       }
 
       if (
-        path === "/api/admin/categories" &&
+        path ===
+          "/api/admin/categories" &&
         method === "POST"
       ) {
         const auth =
@@ -3343,7 +3836,9 @@ export default {
             env
           );
 
-        if (auth.error) return auth.error;
+        if (auth.error) {
+          return auth.error;
+        }
 
         const body =
           await readJSON(request);
@@ -3393,7 +3888,8 @@ export default {
       // ------------------------------------------------------
 
       if (
-        path === "/api/admin/reports" &&
+        path ===
+          "/api/admin/reports" &&
         method === "GET"
       ) {
         const auth =
@@ -3402,19 +3898,31 @@ export default {
             env
           );
 
-        if (auth.error) return auth.error;
+        if (auth.error) {
+          return auth.error;
+        }
 
         const daily =
           await env.DB
             .prepare(
               `SELECT
-                DATE(
-                  datetime(created_at,'unixepoch')
-                ) AS day,
-                COUNT(*) AS orders,
-                COALESCE(
-                  SUM(total_price),0
-                ) AS revenue
+                 DATE(
+                   datetime(
+                     created_at,
+                     'unixepoch'
+                   )
+                 ) AS day,
+                 COUNT(*) AS orders,
+                 COALESCE(
+                   SUM(
+                     CASE
+                       WHEN payment_status='paid'
+                       THEN total_price
+                       ELSE 0
+                     END
+                   ),
+                   0
+                 ) AS revenue
                FROM orders
                GROUP BY day
                ORDER BY day DESC
@@ -3438,7 +3946,8 @@ export default {
       // ------------------------------------------------------
 
       if (
-        path === "/api/admin/reviews" &&
+        path ===
+          "/api/admin/reviews" &&
         method === "GET"
       ) {
         const auth =
@@ -3447,7 +3956,9 @@ export default {
             env
           );
 
-        if (auth.error) return auth.error;
+        if (auth.error) {
+          return auth.error;
+        }
 
         try {
           const rows =
@@ -3488,7 +3999,8 @@ export default {
       // ------------------------------------------------------
 
       if (
-        path === "/api/admin/promotions" &&
+        path ===
+          "/api/admin/promotions" &&
         method === "GET"
       ) {
         const auth =
@@ -3497,7 +4009,9 @@ export default {
             env
           );
 
-        if (auth.error) return auth.error;
+        if (auth.error) {
+          return auth.error;
+        }
 
         try {
           const rows =
@@ -3538,7 +4052,8 @@ export default {
       // ------------------------------------------------------
 
       if (
-        path === "/api/admin/ads" &&
+        path ===
+          "/api/admin/ads" &&
         method === "GET"
       ) {
         const auth =
@@ -3547,7 +4062,9 @@ export default {
             env
           );
 
-        if (auth.error) return auth.error;
+        if (auth.error) {
+          return auth.error;
+        }
 
         try {
           const rows =
@@ -3602,10 +4119,14 @@ export default {
             env
           );
 
-        if (auth.error) return auth.error;
+        if (auth.error) {
+          return auth.error;
+        }
 
         const id =
-          Number(adminOrderMatch[1]);
+          Number(
+            adminOrderMatch[1]
+          );
 
         const body =
           await readJSON(request);
@@ -3649,7 +4170,8 @@ export default {
         }
 
         const status =
-          body.status !== undefined
+          body.status !==
+          undefined
             ? cleanText(
                 body.status,
                 30
@@ -3729,10 +4251,14 @@ export default {
             env
           );
 
-        if (auth.error) return auth.error;
+        if (auth.error) {
+          return auth.error;
+        }
 
         const id =
-          Number(adminUserMatch[1]);
+          Number(
+            adminUserMatch[1]
+          );
 
         if (
           id === auth.user.id
@@ -3772,12 +4298,19 @@ export default {
           target.role;
 
         let isActive =
-          Number(target.is_active);
+          Number(
+            target.is_active
+          );
 
         let isVerified =
-          Number(target.is_verified);
+          Number(
+            target.is_verified
+          );
 
-        if (body.role !== undefined) {
+        if (
+          body.role !==
+          undefined
+        ) {
           const requestedRole =
             cleanText(
               body.role,
@@ -3806,23 +4339,31 @@ export default {
         }
 
         if (
-          body.is_active !== undefined
+          body.is_active !==
+          undefined
         ) {
           isActive =
-            body.is_active ? 1 : 0;
+            body.is_active
+              ? 1
+              : 0;
         }
 
         if (
-          body.is_verified !== undefined
+          body.is_verified !==
+          undefined
         ) {
           isVerified =
-            body.is_verified ? 1 : 0;
+            body.is_verified
+              ? 1
+              : 0;
         }
 
         if (
-          target.role === "admin" &&
+          target.role ===
+            "admin" &&
           (
-            role !== "admin" ||
+            role !==
+              "admin" ||
             isActive !== 1
           )
         ) {
@@ -3837,7 +4378,9 @@ export default {
               .first();
 
           if (
-            Number(admins?.count || 0) <= 1
+            Number(
+              admins?.count || 0
+            ) <= 1
           ) {
             return errorResponse(
               "The last active admin cannot be removed or disabled",
@@ -3902,10 +4445,35 @@ export default {
             env
           );
 
-        if (auth.error) return auth.error;
+        if (auth.error) {
+          return auth.error;
+        }
 
         const id =
-          Number(adminProductMatch[1]);
+          Number(
+            adminProductMatch[1]
+          );
+
+        // Verify that the product exists first
+        const existing =
+          await env.DB
+            .prepare(
+              `SELECT id
+               FROM products
+               WHERE id=?
+               LIMIT 1`
+            )
+            .bind(id)
+            .first();
+
+        if (!existing) {
+          return errorResponse(
+            "Product not found",
+            404,
+            request,
+            env
+          );
+        }
 
         const body =
           await readJSON(request);
@@ -3970,7 +4538,8 @@ export default {
 
       if (
         env.ASSETS &&
-        typeof env.ASSETS.fetch === "function"
+        typeof env.ASSETS.fetch ===
+          "function"
       ) {
         const assetResponse =
           await env.ASSETS.fetch(
@@ -3983,8 +4552,10 @@ export default {
           );
 
         for (
-          const [key, value]
-          of Object.entries(
+          const [
+            key,
+            value
+          ] of Object.entries(
             STATIC_SECURITY_HEADERS
           )
         ) {
@@ -4016,7 +4587,8 @@ export default {
     } catch (error) {
       console.error(
         "IsokoHub Worker Error:",
-        error?.message || error
+        error?.message ||
+          error
       );
 
       return errorResponse(
