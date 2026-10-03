@@ -2,17 +2,19 @@
 // IsokoHub — FINAL Cloudflare Worker API
 // Global Marketplace & Services
 // Domain: isokohub.online
-// Security: PBKDF2 + HMAC sessions + rate limiting + validation
+// D1 + R2
+// PBKDF2 passwords + HMAC sessions + validation
 // ============================================================
 
 const COMMISSION_RATE = 0.05;
 const PBKDF2_ITERATIONS = 150000;
 const MAX_JSON_BODY = 1024 * 1024;
 const SESSION_DAYS = 30;
-
-// ------------------------------------------------------------
-// SERVICE CATEGORIES
-// ------------------------------------------------------------
+const MAX_NAME = 100;
+const MAX_TEXT = 10000;
+const MAX_TITLE = 200;
+const MAX_PRICE = 100000000000;
+const MAX_STOCK = 1000000;
 
 const SERVICE_CATEGORIES = [
   "Business & Professional",
@@ -39,176 +41,125 @@ const SERVICE_CATEGORIES = [
   "Other Services"
 ];
 
-// ------------------------------------------------------------
-// 193 COUNTRIES
-// ------------------------------------------------------------
-
 const COUNTRIES = [
-  "Afghanistan","Albania","Algeria","Andorra","Angola",
-  "Antigua and Barbuda","Argentina","Armenia","Australia","Austria",
-  "Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados",
-  "Belarus","Belgium","Belize","Benin","Bhutan",
-  "Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei",
-  "Bulgaria","Burkina Faso","Burundi","Cabo Verde","Cambodia",
-  "Cameroon","Canada","Central African Republic","Chad","Chile",
-  "China","Colombia","Comoros","Congo","Costa Rica",
-  "Côte d'Ivoire","Croatia","Cuba","Cyprus","Czechia",
+  "Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda",
+  "Argentina","Armenia","Australia","Austria","Azerbaijan","Bahamas",
+  "Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin",
+  "Bhutan","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei",
+  "Bulgaria","Burkina Faso","Burundi","Cabo Verde","Cambodia","Cameroon",
+  "Canada","Central African Republic","Chad","Chile","China","Colombia",
+  "Comoros","Congo","Costa Rica","Croatia","Cuba","Cyprus","Czech Republic",
   "Democratic Republic of the Congo","Denmark","Djibouti","Dominica",
-  "Dominican Republic","Ecuador","Egypt","El Salvador",
-  "Equatorial Guinea","Eritrea","Estonia","Eswatini","Ethiopia",
-  "Fiji","Finland","France","Gabon","Gambia","Georgia","Germany",
-  "Ghana","Greece","Grenada","Guatemala","Guinea","Guinea-Bissau",
-  "Guyana","Haiti","Honduras","Hungary","Iceland","India",
-  "Indonesia","Iran","Iraq","Ireland","Israel","Italy","Jamaica",
-  "Japan","Jordan","Kazakhstan","Kenya","Kiribati","Kuwait",
-  "Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia",
-  "Libya","Liechtenstein","Lithuania","Luxembourg","Madagascar",
-  "Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands",
-  "Mauritania","Mauritius","Mexico","Micronesia","Moldova","Monaco",
-  "Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia",
-  "Nauru","Nepal","Netherlands","New Zealand","Nicaragua","Niger",
-  "Nigeria","North Korea","North Macedonia","Norway","Oman",
-  "Pakistan","Palau","Palestine","Panama","Papua New Guinea",
-  "Paraguay","Peru","Philippines","Poland","Portugal","Qatar",
-  "Romania","Russia","Rwanda","Saint Kitts and Nevis","Saint Lucia",
-  "Saint Vincent and the Grenadines","Samoa","San Marino",
-  "Sao Tome and Principe","Saudi Arabia","Senegal","Serbia",
-  "Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia",
-  "Solomon Islands","Somalia","South Africa","South Korea",
-  "South Sudan","Spain","Sri Lanka","Sudan","Suriname","Sweden",
-  "Switzerland","Syria","Tajikistan","Tanzania","Thailand",
-  "Timor-Leste","Togo","Tonga","Trinidad and Tobago","Tunisia",
-  "Türkiye","Turkmenistan","Tuvalu","Uganda","Ukraine",
-  "United Arab Emirates","United Kingdom","United States","Uruguay",
-  "Uzbekistan","Vanuatu","Venezuela","Vietnam","Yemen","Zambia",
-  "Zimbabwe"
+  "Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea",
+  "Eritrea","Estonia","Eswatini","Ethiopia","Fiji","Finland","France",
+  "Gabon","Gambia","Georgia","Germany","Ghana","Greece","Grenada",
+  "Guatemala","Guinea","Guinea-Bissau","Guyana","Haiti","Honduras",
+  "Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Israel",
+  "Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati",
+  "Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia",
+  "Libya","Liechtenstein","Lithuania","Luxembourg","Madagascar","Malawi",
+  "Malaysia","Maldives","Mali","Malta","Marshall Islands","Mauritania",
+  "Mauritius","Mexico","Micronesia","Moldova","Monaco","Mongolia",
+  "Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nauru",
+  "Nepal","Netherlands","New Zealand","Nicaragua","Niger","Nigeria",
+  "North Korea","North Macedonia","Norway","Oman","Pakistan","Palau",
+  "Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines",
+  "Poland","Portugal","Qatar","Romania","Russia","Rwanda",
+  "Saint Kitts and Nevis","Saint Lucia","Saint Vincent and the Grenadines",
+  "Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal",
+  "Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia",
+  "Solomon Islands","Somalia","South Africa","South Korea","South Sudan",
+  "Spain","Sri Lanka","Sudan","Suriname","Sweden","Switzerland","Syria",
+  "Taiwan","Tajikistan","Tanzania","Thailand","Timor-Leste","Togo",
+  "Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu",
+  "Uganda","Ukraine","United Arab Emirates","United Kingdom","United States",
+  "Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela","Vietnam",
+  "Yemen","Zambia","Zimbabwe"
 ];
 
-// ------------------------------------------------------------
-// SECURITY HEADERS
-// ------------------------------------------------------------
-
-const API_SECURITY_HEADERS = {
-  "X-Content-Type-Options": "nosniff",
-  "X-Frame-Options": "DENY",
-  "Referrer-Policy": "strict-origin-when-cross-origin",
-  "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
-  "Cache-Control": "no-store",
-  "Cross-Origin-Opener-Policy": "same-origin",
-  "Content-Security-Policy":
-    "default-src 'none'; frame-ancestors 'none'; base-uri 'none'"
-};
-
-const STATIC_SECURITY_HEADERS = {
-  "X-Content-Type-Options": "nosniff",
-  "X-Frame-Options": "DENY",
-  "Referrer-Policy": "strict-origin-when-cross-origin",
-  "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
-  "Cross-Origin-Opener-Policy": "same-origin",
-  "Content-Security-Policy":
-    "default-src 'self'; " +
-    "base-uri 'self'; " +
-    "object-src 'none'; " +
-    "frame-ancestors 'none'; " +
-    "img-src 'self' https: data:; " +
-    "style-src 'self' 'unsafe-inline'; " +
-    "script-src 'self' 'unsafe-inline'; " +
-    "connect-src 'self' " +
-    "https://isokohub-rwr.majyamberepierre00.workers.dev " +
-    "https://api.isokohub.online; " +
-    "form-action 'self'"
-};
-
-// ------------------------------------------------------------
+// ============================================================
 // CORS
-// ------------------------------------------------------------
+// ============================================================
 
-function allowedOrigins(env) {
-  const configured =
-    env.ALLOWED_ORIGINS ||
-    env.Allowed_origins ||
-    "";
+const ALLOWED_ORIGINS = [
+  "https://isokohub.online",
+  "https://www.isokohub.online",
+  "https://api.isokohub.online",
+  "https://isokohub-rw.pages.dev",
+  "https://isokohub-rwr.majyamberepierre00.workers.dev"
+];
 
-  const defaults = [
-    "https://isokohub-rw.pages.dev",
-    "https://isokohub.online",
-    "https://www.isokohub.online",
-    "https://api.isokohub.online",
-    "https://isokohub-rwr.majyamberepierre00.workers.dev"
-  ];
+function corsHeaders(request) {
+  const origin = request?.headers?.get("Origin") || "";
 
-  const list = configured
-    .split(",")
-    .map(x => x.trim())
-    .filter(Boolean);
+  const allowOrigin =
+    ALLOWED_ORIGINS.includes(origin)
+      ? origin
+      : "https://isokohub.online";
 
-  return new Set([...defaults, ...list]);
+  return {
+    "Access-Control-Allow-Origin": allowOrigin,
+    "Access-Control-Allow-Methods":
+      "GET,POST,PUT,PATCH,DELETE,OPTIONS",
+    "Access-Control-Allow-Headers":
+      "Content-Type, Authorization",
+    "Access-Control-Max-Age": "86400",
+    "Vary": "Origin"
+  };
 }
 
-function corsHeaders(request, env) {
-  const headers = {};
-  const origin = request.headers.get("Origin");
+function json(data, status = 200, request = null) {
+  return new Response(
+    JSON.stringify(data),
+    {
+      status,
+      headers: {
+        "Content-Type":
+          "application/json; charset=utf-8",
+        ...corsHeaders(request)
+      }
+    }
+  );
+}
 
-  if (origin && allowedOrigins(env).has(origin)) {
-    headers["Access-Control-Allow-Origin"] = origin;
-    headers["Vary"] = "Origin";
-  }
+function securityHeaders(request) {
+  const headers = new Headers(
+    corsHeaders(request)
+  );
 
-  headers["Access-Control-Allow-Methods"] =
-    "GET,POST,PUT,PATCH,DELETE,OPTIONS";
+  headers.set(
+    "X-Content-Type-Options",
+    "nosniff"
+  );
 
-  headers["Access-Control-Allow-Headers"] =
-    "Content-Type, Authorization";
+  headers.set(
+    "X-Frame-Options",
+    "DENY"
+  );
 
-  headers["Access-Control-Max-Age"] = "86400";
+  headers.set(
+    "Referrer-Policy",
+    "strict-origin-when-cross-origin"
+  );
+
+  headers.set(
+    "Permissions-Policy",
+    "camera=(), microphone=(), geolocation=()"
+  );
 
   return headers;
 }
 
-// ------------------------------------------------------------
-// RESPONSE HELPERS
-// ------------------------------------------------------------
+// ============================================================
+// HELPERS
+// ============================================================
 
-function json(data, status, request, env, extra = {}) {
-  return new Response(JSON.stringify(data), {
-    status: status || 200,
-    headers: {
-      "Content-Type": "application/json; charset=utf-8",
-      ...API_SECURITY_HEADERS,
-      ...corsHeaders(request, env),
-      ...extra
-    }
-  });
+function nowSeconds() {
+  return Math.floor(Date.now() / 1000);
 }
 
-function errorResponse(message, status, request, env, extra = {}) {
-  return json(
-    {
-      ok: false,
-      error: message
-    },
-    status || 400,
-    request,
-    env,
-    extra
-  );
-}
-
-function getIP(request) {
-  return (
-    request.headers.get("CF-Connecting-IP") ||
-    request.headers.get("X-Forwarded-For")?.split(",")[0]?.trim() ||
-    "unknown"
-  );
-}
-
-// ------------------------------------------------------------
-// INPUT / VALIDATION
-// ------------------------------------------------------------
-
-function cleanText(value, max = 255) {
+function cleanText(value, max = MAX_TEXT) {
   return String(value ?? "")
-    .replace(/\u0000/g, "")
     .trim()
     .slice(0, max);
 }
@@ -217,42 +168,31 @@ function normalizeEmail(value) {
   return cleanText(value, 254).toLowerCase();
 }
 
-function validEmail(email) {
-  return (
-    email.length >= 3 &&
-    email.length <= 254 &&
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-  );
+function validEmail(value) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
-function validPassword(password) {
-  return (
-    typeof password === "string" &&
-    password.length >= 8 &&
-    password.length <= 128
-  );
+function validPassword(value) {
+  return typeof value === "string" &&
+    value.length >= 8 &&
+    value.length <= 200;
 }
 
-function validCountry(country) {
-  return COUNTRIES.includes(country);
+function validCountry(value) {
+  return !value || COUNTRIES.includes(value);
 }
 
-function validCurrency(currency) {
-  return /^[A-Z]{3}$/.test(currency);
+function validCurrency(value) {
+  return /^[A-Z]{3}$/.test(value);
 }
 
 function validURL(value) {
   if (!value) return true;
 
-  if (value.length > 2048) return false;
-
   try {
-    const u = new URL(value);
-
-    return (
-      u.protocol === "https:" ||
-      u.protocol === "http:"
-    );
+    const url = new URL(value);
+    return url.protocol === "https:" ||
+      url.protocol === "http:";
   } catch {
     return false;
   }
@@ -273,144 +213,69 @@ function integerValue(value, fallback = 0) {
   return n;
 }
 
-function limitValue(value, fallback = 100, max = 500) {
-  const n = integerValue(value, fallback);
-
-  return Math.max(1, Math.min(max, n));
-}
-
-function productText(product) {
-  return [
-    product.title,
-    product.category,
-    product.description,
-    product.specs,
-    product.country,
-    product.district,
-    product.city
-  ]
-    .filter(Boolean)
-    .join(" ")
-    .toLowerCase();
-}
-
-function isServiceProduct(product) {
-  const words = [
-    "service",
-    "course",
-    "teacher",
-    "education",
-    "business",
-    "professional",
-    "engineering",
-    "technology",
-    "construction",
-    "property",
-    "creative",
-    "artist",
-    "film",
-    "entertainment",
-    "marketing",
-    "communication",
-    "automotive",
-    "transport",
-    "agriculture",
-    "environment",
-    "home services",
-    "legal",
-    "finance",
-    "health",
-    "wellness",
-    "beauty",
-    "food",
-    "hospitality",
-    "events",
-    "logistics",
-    "travel",
-    "tourism",
-    "industrial",
-    "manufacturing",
-    "jobs",
-    "freelance"
-  ];
-
-  const text = productText(product);
-
-  return words.some(word => text.includes(word));
-}
-
-// ------------------------------------------------------------
-// JSON BODY
-// ------------------------------------------------------------
-
-async function readJSON(request) {
-  const contentLength = Number(
-    request.headers.get("Content-Length") || 0
+function limitValue(value, fallback = 100) {
+  return Math.min(
+    Math.max(integerValue(value, fallback), 1),
+    500
   );
-
-  if (contentLength > MAX_JSON_BODY) {
-    throw new Error("Request body is too large");
-  }
-
-  const raw = await request.text();
-
-  const bytes =
-    new TextEncoder().encode(raw).byteLength;
-
-  if (bytes > MAX_JSON_BODY) {
-    throw new Error("Request body is too large");
-  }
-
-  if (!raw.trim()) {
-    return {};
-  }
-
-  try {
-    return JSON.parse(raw);
-  } catch {
-    throw new Error("Invalid JSON body");
-  }
 }
 
-// ------------------------------------------------------------
+function makeToken() {
+  return (
+    crypto.randomUUID().replaceAll("-", "") +
+    crypto.randomUUID().replaceAll("-", "")
+  );
+}
+
+// ============================================================
 // CRYPTO
-// ------------------------------------------------------------
+// ============================================================
 
 function bytesToHex(bytes) {
-  return Array.from(bytes)
-    .map(b => b.toString(16).padStart(2, "0"))
+  return [...new Uint8Array(bytes)]
+    .map(
+      b => b.toString(16).padStart(2, "0")
+    )
     .join("");
 }
 
 function hexToBytes(hex) {
-  const bytes = new Uint8Array(hex.length / 2);
+  if (
+    typeof hex !== "string" ||
+    !/^[0-9a-f]+$/i.test(hex) ||
+    hex.length % 2 !== 0
+  ) {
+    throw new Error("Invalid hexadecimal value");
+  }
 
-  for (let i = 0; i < bytes.length; i++) {
-    bytes[i] = parseInt(
+  const out = new Uint8Array(
+    hex.length / 2
+  );
+
+  for (let i = 0; i < out.length; i++) {
+    out[i] = parseInt(
       hex.slice(i * 2, i * 2 + 2),
       16
     );
   }
 
-  return bytes;
+  return out;
 }
 
 async function sha256(value) {
-  const data =
-    new TextEncoder().encode(value);
+  const bytes =
+    new TextEncoder().encode(String(value));
 
   const hash =
     await crypto.subtle.digest(
       "SHA-256",
-      data
+      bytes
     );
 
-  return bytesToHex(
-    new Uint8Array(hash)
-  );
+  return bytesToHex(hash);
 }
 
-async function hmacSHA256(secret, value) {
+async function hmacSha256(secret, value) {
   const key =
     await crypto.subtle.importKey(
       "raw",
@@ -430,42 +295,15 @@ async function hmacSHA256(secret, value) {
       new TextEncoder().encode(value)
     );
 
-  return bytesToHex(
-    new Uint8Array(signature)
-  );
+  return bytesToHex(signature);
 }
 
-function safeEqual(a, b) {
-  if (
-    typeof a !== "string" ||
-    typeof b !== "string" ||
-    a.length !== b.length
-  ) {
-    return false;
-  }
-
-  let result = 0;
-
-  for (let i = 0; i < a.length; i++) {
-    result |=
-      a.charCodeAt(i) ^
-      b.charCodeAt(i);
-  }
-
-  return result === 0;
-}
-
-// ------------------------------------------------------------
-// PASSWORD HASHING
-// ------------------------------------------------------------
-
-async function hashPassword(password) {
-  const salt =
-    crypto.getRandomValues(
-      new Uint8Array(16)
-    );
-
-  const key =
+async function pbkdf2Password(
+  password,
+  saltHex,
+  iterations = PBKDF2_ITERATIONS
+) {
+  const baseKey =
     await crypto.subtle.importKey(
       "raw",
       new TextEncoder().encode(password),
@@ -478,4131 +316,4223 @@ async function hashPassword(password) {
     await crypto.subtle.deriveBits(
       {
         name: "PBKDF2",
-        salt,
-        iterations: PBKDF2_ITERATIONS,
+        salt: hexToBytes(saltHex),
+        iterations,
         hash: "SHA-256"
       },
-      key,
+      baseKey,
       256
     );
 
-  return [
-    "pbkdf2",
-    PBKDF2_ITERATIONS,
-    bytesToHex(salt),
-    bytesToHex(
-      new Uint8Array(bits)
-    )
-  ].join("$");
+  return bytesToHex(bits);
 }
 
-async function verifyPassword(password, stored) {
-  if (!stored) return false;
+function randomSalt() {
+  return bytesToHex(
+    crypto.getRandomValues(
+      new Uint8Array(16)
+    )
+  );
+}
 
-  const parts =
-    String(stored).split("$");
+async function hashPassword(password, env) {
+  const salt = randomSalt();
 
+  const pepper =
+    String(env.AUTH_PEPPER || "");
+
+  const derived =
+    await pbkdf2Password(
+      `${pepper}:${password}`,
+      salt,
+      PBKDF2_ITERATIONS
+    );
+
+  return `pbkdf2$${PBKDF2_ITERATIONS}$${salt}$${derived}`;
+}
+
+async function verifyPassword(
+  password,
+  storedHash,
+  env
+) {
+  if (!storedHash) return false;
+
+  // Legacy SHA-256 support
   if (
-    parts.length === 4 &&
-    parts[0] === "pbkdf2"
-  ) {
-    const iterations =
-      Number(parts[1]);
-
-    const saltHex = parts[2];
-    const expected = parts[3];
-
-    if (
-      !Number.isInteger(iterations) ||
-      iterations < 100000 ||
-      !/^[0-9a-f]+$/i.test(saltHex) ||
-      !/^[0-9a-f]+$/i.test(expected)
-    ) {
-      return false;
-    }
-
-    try {
-      const key =
-        await crypto.subtle.importKey(
-          "raw",
-          new TextEncoder().encode(password),
-          "PBKDF2",
-          false,
-          ["deriveBits"]
-        );
-
-      const bits =
-        await crypto.subtle.deriveBits(
-          {
-            name: "PBKDF2",
-            salt: hexToBytes(saltHex),
-            iterations,
-            hash: "SHA-256"
-          },
-          key,
-          256
-        );
-
-      const actual =
-        bytesToHex(
-          new Uint8Array(bits)
-        );
-
-      return safeEqual(
-        actual.toLowerCase(),
-        expected.toLowerCase()
-      );
-    } catch {
-      return false;
-    }
-  }
-
-  if (
-    /^[0-9a-f]{64}$/i.test(stored)
+    !storedHash.startsWith("pbkdf2$")
   ) {
     const legacy =
-      await sha256(password);
+      await sha256(
+        `${env.AUTH_PEPPER || ""}:${password}`
+      );
 
-    return safeEqual(
-      legacy.toLowerCase(),
-      stored.toLowerCase()
-    );
+    return legacy === storedHash;
   }
 
-  return false;
-}
+  const parts =
+    storedHash.split("$");
 
-// ------------------------------------------------------------
-// SESSION MANAGEMENT
-// ------------------------------------------------------------
+  if (parts.length !== 4) {
+    return false;
+  }
 
-function sessionSecret(env) {
-  return (
-    env.Session_secret ||
-    env.SESSION_SECRET ||
-    ""
-  );
-}
-
-function adminSecret(env) {
-  return (
-    env.Admin_secret ||
-    env.ADMIN_SECRET ||
-    ""
-  );
-}
-
-async function createSession(db, user, env) {
-  const secret =
-    sessionSecret(env);
+  const iterations =
+    Number(parts[1]);
 
   if (
-    !secret ||
-    secret.length < 32
+    !Number.isInteger(iterations) ||
+    iterations < 100000 ||
+    iterations > 1000000
   ) {
-    throw new Error(
-      "Session_secret is missing or too short"
-    );
+    return false;
   }
 
-  if (user.role === "admin") {
-    const admin =
-      adminSecret(env);
-
-    if (
-      !admin ||
-      admin.length < 32
-    ) {
-      throw new Error(
-        "Admin_secret is missing or too short"
+  try {
+    const derived =
+      await pbkdf2Password(
+        `${env.AUTH_PEPPER || ""}:${password}`,
+        parts[2],
+        iterations
       );
-    }
+
+    return derived === parts[3];
+  } catch {
+    return false;
+  }
+}
+
+// ============================================================
+// BODY
+// ============================================================
+
+async function readBody(
+  request,
+  maxBytes = MAX_JSON_BODY
+) {
+  const contentLength =
+    request.headers.get("Content-Length");
+
+  if (
+    contentLength &&
+    Number(contentLength) > maxBytes
+  ) {
+    throw new Error("Request body too large");
+  }
+
+  const text =
+    await request.text();
+
+  if (
+    new TextEncoder().encode(text).byteLength >
+    maxBytes
+  ) {
+    throw new Error("Request body too large");
+  }
+
+  if (!text.trim()) {
+    return {};
+  }
+
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new Error("Invalid JSON body");
+  }
+}
+
+// ============================================================
+// AUTH
+// ============================================================
+
+function getToken(request) {
+  const auth =
+    request.headers.get("Authorization") || "";
+
+  if (!auth.startsWith("Bearer ")) {
+    return null;
   }
 
   const token =
-    crypto.randomUUID() +
-    "." +
-    crypto.randomUUID();
+    auth.slice(7).trim();
+
+  return token || null;
+}
+
+async function createSession(
+  userId,
+  role,
+  env
+) {
+  const token = makeToken();
 
   const tokenHash =
-    await hmacSHA256(
-      user.role === "admin"
-        ? secret +
-          ":" +
-          adminSecret(env)
-        : secret,
+    await hmacSha256(
+      env.SESSION_SECRET ||
+      env.Session_secret ||
+      "change-this-session-secret",
       token
     );
 
   const expiresAt =
-    Math.floor(Date.now() / 1000) +
-    SESSION_DAYS *
-      24 *
-      60 *
-      60;
+    nowSeconds() +
+    SESSION_DAYS * 86400;
 
-  await db
-    .prepare(
-      `INSERT INTO sessions
-       (user_id, token_hash, role, expires_at, created_at)
-       VALUES (?, ?, ?, ?, ?)`
+  await env.DB.prepare(`
+    INSERT INTO sessions (
+      user_id,
+      token_hash,
+      role,
+      expires_at,
+      created_at
     )
+    VALUES (?, ?, ?, ?, ?)
+  `)
     .bind(
-      user.id,
+      userId,
       tokenHash,
-      user.role,
+      role,
       expiresAt,
-      Math.floor(Date.now() / 1000)
+      nowSeconds()
     )
     .run();
 
   return token;
 }
 
-async function authenticate(request, env) {
-  const header =
-    request.headers.get(
-      "Authorization"
-    ) || "";
-
-  if (
-    !header.startsWith("Bearer ")
-  ) {
-    return null;
-  }
-
+async function currentUser(
+  request,
+  env
+) {
   const token =
-    header.slice(7).trim();
+    getToken(request);
 
-  if (
-    !token ||
-    token.length < 20 ||
-    token.length > 300
-  ) {
+  if (!token || !env.DB) {
     return null;
   }
 
-  const secret =
-    sessionSecret(env);
+  const secrets = [
+    env.SESSION_SECRET,
+    env.Session_secret,
+    "change-this-session-secret"
+  ].filter(Boolean);
 
-  if (
-    !secret ||
-    secret.length < 32
-  ) {
-    return null;
-  }
-
-  const normalHash =
-    await hmacSHA256(
-      secret,
-      token
-    );
-
-  const adminKey =
-    adminSecret(env);
-
-  let adminHash = null;
-
-  if (
-    adminKey &&
-    adminKey.length >= 32
-  ) {
-    adminHash =
-      await hmacSHA256(
-        secret +
-          ":" +
-          adminKey,
+  for (const secret of secrets) {
+    const tokenHash =
+      await hmacSha256(
+        secret,
         token
       );
-  }
 
-  const session =
-    await env.DB
-      .prepare(
-        `SELECT
-           s.id,
-           s.user_id,
-           s.role AS session_role,
-           s.expires_at,
-           u.id,
-           u.name,
-           u.email,
-           u.country,
-           u.role,
-           u.is_active,
-           u.is_verified,
-           u.created_at
-         FROM sessions s
-         JOIN users u
-           ON u.id=s.user_id
-         WHERE
-           (s.token_hash=? OR s.token_hash=?)
-           AND s.expires_at>?
-           AND u.is_active=1
-         LIMIT 1`
-      )
-      .bind(
-        normalHash,
-        adminHash || "",
-        Math.floor(
-          Date.now() / 1000
+    const user =
+      await env.DB.prepare(`
+        SELECT
+          u.id,
+          u.name,
+          u.email,
+          u.phone,
+          u.role,
+          u.country,
+          u.district,
+          u.avatar_url,
+          u.bio,
+          u.is_verified,
+          u.is_active,
+          u.created_at,
+          u.updated_at
+        FROM sessions s
+        JOIN users u
+          ON u.id = s.user_id
+        WHERE s.token_hash = ?
+          AND s.expires_at > ?
+          AND u.is_active = 1
+        LIMIT 1
+      `)
+        .bind(
+          tokenHash,
+          nowSeconds()
         )
-      )
-      .first();
+        .first();
 
-  if (!session) {
-    return null;
+    if (user) {
+      return user;
+    }
   }
 
-  return {
-    session,
-    user: {
-      id: session.user_id,
-      name: session.name,
-      email: session.email,
-      country: session.country,
-      role: session.role,
-      is_active:
-        session.is_active,
-      is_verified:
-        session.is_verified,
-      created_at:
-        session.created_at
-    },
-    token
-  };
+  return null;
 }
 
-async function requireAuth(request, env) {
-  const auth =
-    await authenticate(
-      request,
-      env
-    );
-
-  if (!auth) {
-    return {
-      error: errorResponse(
-        "Authentication required",
-        401,
-        request,
-        env
-      )
-    };
-  }
-
-  return auth;
-}
-
-async function requireAdmin(request, env) {
-  const auth =
-    await authenticate(
-      request,
-      env
-    );
-
-  if (!auth) {
-    return {
-      error: errorResponse(
-        "Authentication required",
-        401,
-        request,
-        env
-      )
-    };
-  }
-
-  if (
-    auth.user.role !== "admin"
-  ) {
-    return {
-      error: errorResponse(
-        "Admin access required",
-        403,
-        request,
-        env
-      )
-    };
-  }
-
-  return auth;
-}
-
-// ------------------------------------------------------------
-// RATE LIMITING
-// ------------------------------------------------------------
-
-async function ensureRateLimitTable(db) {
-  await db
-    .prepare(
-      `CREATE TABLE IF NOT EXISTS rate_limits (
-        rate_key TEXT PRIMARY KEY,
-        window_start INTEGER NOT NULL,
-        count INTEGER NOT NULL
-      )`
-    )
-    .run();
-}
-
-async function rateLimit(
-  db,
-  key,
-  max,
-  windowSeconds
-) {
-  await ensureRateLimitTable(db);
-
-  const now =
-    Math.floor(
-      Date.now() / 1000
-    );
-
-  const row =
-    await db
-      .prepare(
-        `SELECT
-           window_start,
-           count
-         FROM rate_limits
-         WHERE rate_key=?`
-      )
-      .bind(key)
-      .first();
-
-  if (
-    !row ||
-    now -
-      Number(row.window_start) >=
-      windowSeconds
-  ) {
-    await db
-      .prepare(
-        `INSERT INTO rate_limits
-         (rate_key, window_start, count)
-         VALUES (?, ?, 1)
-         ON CONFLICT(rate_key)
-         DO UPDATE SET
-           window_start=excluded.window_start,
-           count=1`
-      )
-      .bind(
-        key,
-        now
-      )
-      .run();
-
-    return {
-      allowed: true,
-      retryAfter:
-        windowSeconds
-    };
-  }
-
-  const count =
-    Number(row.count || 0);
-
-  if (
-    count >= max
-  ) {
-    return {
-      allowed: false,
-      retryAfter: Math.max(
-        1,
-        windowSeconds -
-          (
-            now -
-            Number(
-              row.window_start
-            )
-          )
-      )
-    };
-  }
-
-  await db
-    .prepare(
-      `UPDATE rate_limits
-       SET count=count+1
-       WHERE rate_key=?`
-    )
-    .bind(key)
-    .run();
-
-  return {
-    allowed: true,
-    retryAfter: Math.max(
-      1,
-      windowSeconds -
-        (
-          now -
-          Number(
-            row.window_start
-          )
-        )
-    )
-  };
-}
-
-// ------------------------------------------------------------
-// SAFE USER
-// ------------------------------------------------------------
-
-function safeUser(user) {
+function publicUser(user) {
   if (!user) return null;
 
   return {
     id: user.id,
-    name: user.name,
-    email: user.email,
-    country: user.country,
-    role: user.role,
-    is_active: user.is_active,
-    is_verified: user.is_verified,
-    created_at: user.created_at
+    name: user.name || "",
+    email: user.email || "",
+    phone: user.phone || "",
+    role: user.role || "buyer",
+    country: user.country || "",
+    district: user.district || "",
+    avatar_url: user.avatar_url || "",
+    bio: user.bio || "",
+    is_verified:
+      Number(user.is_verified || 0),
+    created_at:
+      user.created_at || null
   };
 }
 
-// ------------------------------------------------------------
-// ROUTE HANDLER
-// ------------------------------------------------------------
+function requireUser(
+  user,
+  request
+) {
+  if (!user) {
+    return json(
+      {
+        success: false,
+        error: "Authentication required"
+      },
+      401,
+      request
+    );
+  }
 
-export default {
-  async fetch(request, env, ctx) {
-    try {
-      const url =
-        new URL(request.url);
+  return null;
+}
 
-      const path =
-        url.pathname.replace(
-          /\/+$/,
-          ""
-        ) || "/";
+function requireAdmin(
+  user,
+  request
+) {
+  const error =
+    requireUser(user, request);
 
-      const method =
-        request.method.toUpperCase();
+  if (error) return error;
 
-      // ------------------------------------------------------
-      // CORS PREFLIGHT
-      // ------------------------------------------------------
+  if (user.role !== "admin") {
+    return json(
+      {
+        success: false,
+        error: "Admin access required"
+      },
+      403,
+      request
+    );
+  }
 
-      if (
-        method === "OPTIONS"
-      ) {
-        const origin =
-          request.headers.get(
-            "Origin"
-          );
+  return null;
+}
 
-        if (
-          origin &&
-          !allowedOrigins(env).has(
-            origin
-          )
-        ) {
-          return new Response(
-            null,
-            {
-              status: 403,
-              headers: {
-                ...API_SECURITY_HEADERS
-              }
-            }
-          );
-        }
+function requireSeller(
+  user,
+  request
+) {
+  const error =
+    requireUser(user, request);
 
-        return new Response(
-          null,
-          {
-            status: 204,
-            headers: {
-              ...API_SECURITY_HEADERS,
-              ...corsHeaders(
-                request,
-                env
-              )
-            }
-          }
-        );
+  if (error) return error;
+
+  if (
+    user.role !== "seller" &&
+    user.role !== "admin"
+  ) {
+    return json(
+      {
+        success: false,
+        error: "Seller access required"
+      },
+      403,
+      request
+    );
+  }
+
+  return null;
+}
+
+// ============================================================
+// RATE LIMIT
+// ============================================================
+
+async function ensureRateLimitTable(env) {
+  await env.DB.prepare(`
+    CREATE TABLE IF NOT EXISTS rate_limits (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      rate_key TEXT NOT NULL UNIQUE,
+      count INTEGER NOT NULL DEFAULT 0,
+      window_start INTEGER NOT NULL
+    )
+  `).run();
+}
+
+async function rateLimit(
+  env,
+  key,
+  max,
+  windowSeconds
+) {
+  try {
+    await ensureRateLimitTable(env);
+
+    const now =
+      nowSeconds();
+
+    const row =
+      await env.DB.prepare(`
+        SELECT *
+        FROM rate_limits
+        WHERE rate_key = ?
+        LIMIT 1
+      `)
+        .bind(key)
+        .first();
+
+    if (!row) {
+      await env.DB.prepare(`
+        INSERT INTO rate_limits (
+          rate_key,
+          count,
+          window_start
+        )
+        VALUES (?, 1, ?)
+      `)
+        .bind(key, now)
+        .run();
+
+      return true;
+    }
+
+    if (
+      now - Number(row.window_start) >=
+      windowSeconds
+    ) {
+      await env.DB.prepare(`
+        UPDATE rate_limits
+        SET count = 1,
+            window_start = ?
+        WHERE rate_key = ?
+      `)
+        .bind(now, key)
+        .run();
+
+      return true;
+    }
+
+    if (Number(row.count) >= max) {
+      return false;
+    }
+
+    await env.DB.prepare(`
+      UPDATE rate_limits
+      SET count = count + 1
+      WHERE rate_key = ?
+    `)
+      .bind(key)
+      .run();
+
+    return true;
+  } catch {
+    return true;
+  }
+}
+
+// ============================================================
+// HEALTH
+// ============================================================
+
+async function health(
+  env,
+  request
+) {
+  let database = false;
+
+  try {
+    await env.DB.prepare(
+      "SELECT 1"
+    ).first();
+
+    database = true;
+  } catch {
+    database = false;
+  }
+
+  return json(
+    {
+      success: true,
+      app: "IsokoHub",
+      domain: "isokohub.online",
+      status: "online",
+      database,
+      storage: Boolean(env.IMAGES)
+    },
+    200,
+    request
+  );
+}
+
+// ============================================================
+// CONFIG
+// ============================================================
+
+async function config(
+  env,
+  request
+) {
+  return json(
+    {
+      success: true,
+      app: "IsokoHub",
+      domain: "isokohub.online",
+      marketplace: "global",
+      countries: COUNTRIES.length,
+      service_categories:
+        SERVICE_CATEGORIES.length,
+      currency: "RWF",
+      commission_rate:
+        COMMISSION_RATE,
+      payments: {
+        enabled: false,
+        status: "unconfigured"
+      },
+      storage: {
+        r2: Boolean(env.IMAGES)
       }
-
-      // ------------------------------------------------------
-      // HEALTH
-      // ------------------------------------------------------
-
-      if (
-        path === "/api/health" &&
-        method === "GET"
-      ) {
-        return json(
-          {
-            ok: true,
-            service:
-              "IsokoHub API",
-            environment:
-              "production",
-            platform:
-              "cloudflare-workers",
-            database: "D1",
-            assets: "ASSETS",
-            global: true,
-            countries:
-              COUNTRIES.length,
-            service_categories:
-              SERVICE_CATEGORIES.length,
-            commission_rate:
-              COMMISSION_RATE,
-            time:
-              new Date().toISOString()
-          },
-          200,
-          request,
-          env
-        );
-      }
-
-      // ------------------------------------------------------
-      // CONFIG
-      // ------------------------------------------------------
-
-      if (
-        path === "/api/config" &&
-        method === "GET"
-      ) {
-        return json(
-          {
-            ok: true,
-            environment:
-              "production",
-            platform:
-              "cloudflare-workers",
-            database: "D1",
-            assets: "ASSETS",
-            global: true,
-            countries:
-              COUNTRIES.length,
-            service_categories:
-              SERVICE_CATEGORIES.length,
-            commission_rate:
-              COMMISSION_RATE
-          },
-          200,
-          request,
-          env
-        );
-      }
-
-      // ------------------------------------------------------
-      // COUNTRIES
-      // ------------------------------------------------------
-
-      if (
-        path === "/api/countries" &&
-        method === "GET"
-      ) {
-        return json(
-          {
-            countries:
-              COUNTRIES
-          },
-          200,
-          request,
-          env
-        );
-      }
-
-      // ------------------------------------------------------
-      // SERVICE CATEGORIES
-      // ------------------------------------------------------
-
-      if (
-        path ===
-          "/api/service-categories" &&
-        method === "GET"
-      ) {
-        return json(
-          {
-            categories:
-              SERVICE_CATEGORIES
-          },
-          200,
-          request,
-          env
-        );
-      }
-
-      // ------------------------------------------------------
-      // PRODUCT CATEGORIES
-      // ------------------------------------------------------
-
-      if (
-        path === "/api/categories" &&
-        method === "GET"
-      ) {
-        const rows =
-          await env.DB
-            .prepare(
-              `SELECT *
-               FROM categories
-               WHERE COALESCE(is_active,1)=1
-               ORDER BY name ASC`
-            )
-            .all();
-
-        return json(
-          {
-            categories:
-              rows.results || []
-          },
-          200,
-          request,
-          env
-        );
-      }
-
-      // ------------------------------------------------------
-      // REGISTER
-      // ------------------------------------------------------
-
-      if (
-        path === "/api/register" &&
-        method === "POST"
-      ) {
-        const ip =
-          getIP(request);
-
-        const ipLimit =
-          await rateLimit(
-            env.DB,
-            "register:ip:" +
-              await sha256(ip),
-            5,
-            60 * 60
-          );
-
-        if (
-          !ipLimit.allowed
-        ) {
-          return errorResponse(
-            "Too many registration attempts. Try again later.",
-            429,
-            request,
-            env,
-            {
-              "Retry-After":
-                String(
-                  ipLimit.retryAfter
-                )
-            }
-          );
-        }
-
-        const body =
-          await readJSON(request);
-
-        const name =
-          cleanText(
-            body.name,
-            120
-          );
-
-        const email =
-          normalizeEmail(
-            body.email
-          );
-
-        const password =
-          String(
-            body.password ?? ""
-          );
-
-        const country =
-          cleanText(
-            body.country,
-            100
-          );
-
-        if (
-          name.length < 2
-        ) {
-          return errorResponse(
-            "Name is required",
-            400,
-            request,
-            env
-          );
-        }
-
-        if (
-          !validEmail(email)
-        ) {
-          return errorResponse(
-            "Valid email is required",
-            400,
-            request,
-            env
-          );
-        }
-
-        if (
-          !validPassword(
-            password
-          )
-        ) {
-          return errorResponse(
-            "Password must be 8 to 128 characters",
-            400,
-            request,
-            env
-          );
-        }
-
-        if (
-          !validCountry(
-            country
-          )
-        ) {
-          return errorResponse(
-            "Invalid country",
-            400,
-            request,
-            env
-          );
-        }
-
-        const existing =
-          await env.DB
-            .prepare(
-              `SELECT id
-               FROM users
-               WHERE email=?
-               LIMIT 1`
-            )
-            .bind(email)
-            .first();
-
-        if (existing) {
-          return errorResponse(
-            "Unable to create account with these details",
-            409,
-            request,
-            env
-          );
-        }
-
-        const passwordHash =
-          await hashPassword(
-            password
-          );
-
-        const now =
-          Math.floor(
-            Date.now() / 1000
-          );
-
-        try {
-          await env.DB
-            .prepare(
-              `INSERT INTO users
-               (
-                 name,
-                 email,
-                 password_hash,
-                 country,
-                 role,
-                 is_active,
-                 is_verified,
-                 created_at
-               )
-               VALUES (?,?,?,?,?,?,?,?)`
-            )
-            .bind(
-              name,
-              email,
-              passwordHash,
-              country,
-              "buyer",
-              1,
-              0,
-              now
-            )
-            .run();
-        } catch {
-          return errorResponse(
-            "Unable to create account",
-            400,
-            request,
-            env
-          );
-        }
-
-        const user =
-          await env.DB
-            .prepare(
-              `SELECT
-                 id,
-                 name,
-                 email,
-                 country,
-                 role,
-                 is_active,
-                 is_verified,
-                 created_at
-               FROM users
-               WHERE email=?
-               LIMIT 1`
-            )
-            .bind(email)
-            .first();
-
-        const token =
-          await createSession(
-            env.DB,
-            user,
-            env
-          );
-
-        return json(
-          {
-            ok: true,
-            token,
-            user:
-              safeUser(user)
-          },
-          201,
-          request,
-          env
-        );
-      }
-
-      // ------------------------------------------------------
-      // LOGIN
-      // ------------------------------------------------------
-
-      if (
-        path === "/api/login" &&
-        method === "POST"
-      ) {
-        const ip =
-          getIP(request);
-
-        const ipLimit =
-          await rateLimit(
-            env.DB,
-            "login:ip:" +
-              await sha256(ip),
-            20,
-            15 * 60
-          );
-
-        if (
-          !ipLimit.allowed
-        ) {
-          return errorResponse(
-            "Too many login attempts. Try again later.",
-            429,
-            request,
-            env,
-            {
-              "Retry-After":
-                String(
-                  ipLimit.retryAfter
-                )
-            }
-          );
-        }
-
-        const body =
-          await readJSON(request);
-
-        const email =
-          normalizeEmail(
-            body.email
-          );
-
-        const password =
-          String(
-            body.password ?? ""
-          );
-
-        if (
-          !validEmail(email)
-        ) {
-          return errorResponse(
-            "Invalid email or password",
-            401,
-            request,
-            env
-          );
-        }
-
-        if (
-          !validPassword(
-            password
-          )
-        ) {
-          return errorResponse(
-            "Invalid email or password",
-            401,
-            request,
-            env
-          );
-        }
-
-        const emailLimit =
-          await rateLimit(
-            env.DB,
-            "login:email:" +
-              await sha256(email),
-            8,
-            15 * 60
-          );
-
-        if (
-          !emailLimit.allowed
-        ) {
-          return errorResponse(
-            "Too many login attempts. Try again later.",
-            429,
-            request,
-            env,
-            {
-              "Retry-After":
-                String(
-                  emailLimit.retryAfter
-                )
-            }
-          );
-        }
-
-        const user =
-          await env.DB
-            .prepare(
-              `SELECT
-                 id,
-                 name,
-                 email,
-                 password_hash,
-                 country,
-                 role,
-                 is_active,
-                 is_verified,
-                 created_at
-               FROM users
-               WHERE email=?
-               LIMIT 1`
-            )
-            .bind(email)
-            .first();
-
-        if (
-          !user ||
-          !user.is_active
-        ) {
-          return errorResponse(
-            "Invalid email or password",
-            401,
-            request,
-            env
-          );
-        }
-
-        const passwordOK =
-          await verifyPassword(
-            password,
-            user.password_hash
-          );
-
-        if (!passwordOK) {
-          return errorResponse(
-            "Invalid email or password",
-            401,
-            request,
-            env
-          );
-        }
-
-        if (
-          /^[0-9a-f]{64}$/i.test(
-            String(
-              user.password_hash
-            )
-          )
-        ) {
-          const upgraded =
-            await hashPassword(
-              password
-            );
-
-          await env.DB
-            .prepare(
-              `UPDATE users
-               SET password_hash=?
-               WHERE id=?`
-            )
-            .bind(
-              upgraded,
-              user.id
-            )
-            .run();
-        }
-
-        await env.DB
-          .prepare(
-            `DELETE FROM sessions
-             WHERE expires_at<?`
-          )
-          .bind(
-            Math.floor(
-              Date.now() / 1000
-            )
-          )
-          .run();
-
-        const token =
-          await createSession(
-            env.DB,
-            user,
-            env
-          );
-
-        return json(
-          {
-            ok: true,
-            token,
-            user:
-              safeUser(user)
-          },
-          200,
-          request,
-          env
-        );
-      }
-
-      // ------------------------------------------------------
-      // AUTHENTICATED ROUTES
-      // ------------------------------------------------------
-
-      if (
-        path === "/api/me" &&
-        method === "GET"
-      ) {
-        const auth =
-          await requireAuth(
-            request,
-            env
-          );
-
-        if (auth.error) {
-          return auth.error;
-        }
-
-        return json(
-          {
-            user:
-              safeUser(
-                auth.user
-              )
-          },
-          200,
-          request,
-          env
-        );
-      }
-
-      // ------------------------------------------------------
-      // LOGOUT
-      // ------------------------------------------------------
-
-      if (
-        path === "/api/logout" &&
-        method === "POST"
-      ) {
-        const auth =
-          await requireAuth(
-            request,
-            env
-          );
-
-        if (auth.error) {
-          return auth.error;
-        }
-
-        const secret =
-          sessionSecret(env);
-
-        const normalHash =
-          await hmacSHA256(
-            secret,
-            auth.token
-          );
-
-        const adminKey =
-          adminSecret(env);
-
-        let adminHash = "";
-
-        if (
-          adminKey &&
-          adminKey.length >= 32
-        ) {
-          adminHash =
-            await hmacSHA256(
-              secret +
-                ":" +
-                adminKey,
-              auth.token
-            );
-        }
-
-        await env.DB
-          .prepare(
-            `DELETE FROM sessions
-             WHERE token_hash=? OR token_hash=?`
-          )
-          .bind(
-            normalHash,
-            adminHash
-          )
-          .run();
-
-        return json(
-          {
-            ok: true
-          },
-          200,
-          request,
-          env
-        );
-      }
-
-      // ------------------------------------------------------
-      // PRODUCTS — GET
-      // ------------------------------------------------------
-
-      if (
-        path === "/api/products" &&
-        method === "GET"
-      ) {
-        const search =
-          cleanText(
-            url.searchParams.get(
-              "search"
-            ),
-            100
-          );
-
-        const category =
-          cleanText(
-            url.searchParams.get(
-              "category"
-            ),
-            120
-          );
-
-        const country =
-          cleanText(
-            url.searchParams.get(
-              "country"
-            ),
-            100
-          );
-
-        const sellerId =
-          integerValue(
-            url.searchParams.get(
-              "seller_id"
-            ),
-            0
-          );
-
-        const limit =
-          limitValue(
-            url.searchParams.get(
-              "limit"
-            ),
-            100,
-            500
-          );
-
-        const params = [];
-
-        const conditions = [
-          "p.status='active'"
-        ];
-
-        if (search) {
-          conditions.push(`
-            (
-              p.title LIKE ?
-              OR p.category LIKE ?
-              OR p.description LIKE ?
-              OR p.specs LIKE ?
-              OR p.country LIKE ?
-              OR p.district LIKE ?
-            )
-          `);
-
-          const q =
-            `%${search}%`;
-
-          params.push(
-            q,
-            q,
-            q,
-            q,
-            q,
-            q
-          );
-        }
-
-        if (category) {
-          conditions.push(
-            "p.category=?"
-          );
-
-          params.push(
-            category
-          );
-        }
-
-        if (country) {
-          conditions.push(
-            "p.country=?"
-          );
-
-          params.push(
-            country
-          );
-        }
-
-        if (sellerId > 0) {
-          conditions.push(
-            "p.seller_id=?"
-          );
-
-          params.push(
-            sellerId
-          );
-        }
-
-        const sql = `
-          SELECT
-            p.*,
-            u.name AS seller_name,
-            u.email AS seller_email
-          FROM products p
-          LEFT JOIN users u
-            ON u.id=p.seller_id
-          WHERE ${conditions.join(
-            " AND "
-          )}
-          ORDER BY p.created_at DESC
-          LIMIT ?
-        `;
-
-        params.push(limit);
-
-        const rows =
-          await env.DB
-            .prepare(sql)
-            .bind(...params)
-            .all();
-
-        const list =
-          (
-            rows.results || []
-          ).map(p => ({
-            ...p,
-            seller:
-              p.seller_name ||
-              "IsokoHub Seller"
-          }));
-
-        return json(
-          {
-            products: list,
-            count:
-              list.length
-          },
-          200,
-          request,
-          env
-        );
-      }
-
-      // ------------------------------------------------------
-      // PRODUCT — SINGLE
-      // ------------------------------------------------------
-
-      const productMatch =
-        path.match(
-          /^\/api\/products\/(\d+)$/
-        );
-
-      if (
-        productMatch &&
-        method === "GET"
-      ) {
-        const id =
-          Number(
-            productMatch[1]
-          );
-
-        const product =
-          await env.DB
-            .prepare(
-              `SELECT
-                 p.*,
-                 u.name AS seller_name,
-                 u.email AS seller_email
-               FROM products p
-               LEFT JOIN users u
-                 ON u.id=p.seller_id
-               WHERE p.id=?
-                 AND p.status='active'
-               LIMIT 1`
-            )
-            .bind(id)
-            .first();
-
-        if (!product) {
-          return errorResponse(
-            "Product not found",
-            404,
-            request,
-            env
-          );
-        }
-
-        await env.DB
-          .prepare(
-            `UPDATE products
-             SET views=COALESCE(views,0)+1
-             WHERE id=?`
-          )
-          .bind(id)
-          .run();
-
-        product.views =
-          Number(
-            product.views || 0
-          ) + 1;
-
-        product.seller =
-          product.seller_name ||
-          "IsokoHub Seller";
-
-        return json(
-          {
-            product
-          },
-          200,
-          request,
-          env
-        );
-      }
-
-      // ------------------------------------------------------
-      // SERVICES SEARCH
-      // ------------------------------------------------------
-
-      if (
-        path === "/api/services" &&
-        method === "GET"
-      ) {
-        const search =
-          cleanText(
-            url.searchParams.get(
-              "search"
-            ),
-            100
-          );
-
-        const category =
-          cleanText(
-            url.searchParams.get(
-              "category"
-            ),
-            120
-          );
-
-        const country =
-          cleanText(
-            url.searchParams.get(
-              "country"
-            ),
-            100
-          );
-
-        const city =
-          cleanText(
-            url.searchParams.get(
-              "city"
-            ) ||
-              url.searchParams.get(
-                "district"
-              ),
-            120
-          );
-
-        const provider =
-          cleanText(
-            url.searchParams.get(
-              "provider"
-            ),
-            120
-          );
-
-        const online =
-          url.searchParams.get(
-            "online"
-          );
-
-        const limit =
-          limitValue(
-            url.searchParams.get(
-              "limit"
-            ),
-            100,
-            500
-          );
-
-        const params = [];
-
-        const conditions = [
-          "p.status='active'"
-        ];
-
-        if (category) {
-          conditions.push(
-            "p.category=?"
-          );
-
-          params.push(
-            category
-          );
-        }
-
-        if (country) {
-          conditions.push(
-            "p.country=?"
-          );
-
-          params.push(
-            country
-          );
-        }
-
-        if (city) {
-          conditions.push(`
-            (
-              p.city LIKE ?
-              OR p.district LIKE ?
-            )
-          `);
-
-          const q =
-            `%${city}%`;
-
-          params.push(
-            q,
-            q
-          );
-        }
-
-        if (provider) {
-          conditions.push(
-            "u.name LIKE ?"
-          );
-
-          params.push(
-            `%${provider}%`
-          );
-        }
-
-        const rows =
-          await env.DB
-            .prepare(
-              `
-              SELECT
-                p.*,
-                u.name AS seller_name,
-                u.email AS seller_email
-              FROM products p
-              LEFT JOIN users u
-                ON u.id=p.seller_id
-              WHERE ${conditions.join(
-                " AND "
-              )}
-              ORDER BY p.created_at DESC
-              LIMIT ?
-              `
-            )
-            .bind(
-              ...params,
-              Math.min(
-                500,
-                limit * 3
-              )
-            )
-            .all();
-
-        let services =
-          (
-            rows.results || []
-          ).filter(
-            isServiceProduct
-          );
-
-        if (search) {
-          const q =
-            search.toLowerCase();
-
-          services =
-            services.filter(
-              p =>
-                productText(
-                  p
-                ).includes(q)
-            );
-        }
-
-        if (
-          online === "true" ||
-          online === "1"
-        ) {
-          services =
-            services.filter(
-              p =>
-                /online|remote|virtual/i.test(
-                  productText(p)
-                )
-            );
-        }
-
-        services =
-          services
-            .slice(0, limit)
-            .map(p => ({
-              ...p,
-              seller:
-                p.seller_name ||
-                "IsokoHub Provider"
-            }));
-
-        return json(
-          {
-            services,
-            count:
-              services.length
-          },
-          200,
-          request,
-          env
-        );
-      }
-
-      // ------------------------------------------------------
-      // CREATE PRODUCT
-      // ------------------------------------------------------
-
-      if (
-        path === "/api/products" &&
-        method === "POST"
-      ) {
-        const auth =
-          await requireAuth(
-            request,
-            env
-          );
-
-        if (auth.error) {
-          return auth.error;
-        }
-
-        const body =
-          await readJSON(request);
-
-        const title =
-          cleanText(
-            body.title,
-            200
-          );
-
-        const category =
-          cleanText(
-            body.category,
-            120
-          );
-
-        const price =
-          numberValue(
-            body.price,
-            -1
-          );
-
-        const currency =
-          cleanText(
-            body.currency ||
-              "RWF",
-            3
-          ).toUpperCase();
-
-        const stock =
-          integerValue(
-            body.stock,
-            -1
-          );
-
-        const condition =
-          cleanText(
-            body.condition ||
-              "new",
-            40
-          );
-
-        const country =
-          cleanText(
-            body.country,
-            100
-          );
-
-        const district =
-          cleanText(
-            body.district ||
-              body.city ||
-              "",
-            120
-          );
-
-        const imageUrl =
-          cleanText(
-            body.image_url ||
-              "",
-            2048
-          );
-
-        const description =
-          cleanText(
-            body.description ||
-              body.specs ||
-              "",
-            10000
-          );
-
-        if (
-          title.length < 2
-        ) {
-          return errorResponse(
-            "Product title is required",
-            400,
-            request,
-            env
-          );
-        }
-
-        if (!category) {
-          return errorResponse(
-            "Category is required",
-            400,
-            request,
-            env
-          );
-        }
-
-        if (
-          !Number.isFinite(
-            price
-          ) ||
-          price < 0 ||
-          price >
-            100000000000
-        ) {
-          return errorResponse(
-            "Invalid price",
-            400,
-            request,
-            env
-          );
-        }
-
-        if (
-          !validCurrency(
-            currency
-          )
-        ) {
-          return errorResponse(
-            "Currency must be a 3-letter code",
-            400,
-            request,
-            env
-          );
-        }
-
-        if (
-          stock < 0 ||
-          stock > 1000000
-        ) {
-          return errorResponse(
-            "Invalid stock",
-            400,
-            request,
-            env
-          );
-        }
-
-        if (
-          !validCountry(
-            country
-          )
-        ) {
-          return errorResponse(
-            "Invalid country",
-            400,
-            request,
-            env
-          );
-        }
-
-        if (
-          ![
-            "new",
-            "used",
-            "refurbished",
-            "service",
-            "digital"
-          ].includes(
-            condition
-          )
-        ) {
-          return errorResponse(
-            "Invalid condition",
-            400,
-            request,
-            env
-          );
-        }
-
-        if (
-          !validURL(imageUrl)
-        ) {
-          return errorResponse(
-            "Image URL must use HTTP or HTTPS",
-            400,
-            request,
-            env
-          );
-        }
-
-        const now =
-          Math.floor(
-            Date.now() / 1000
-          );
-
-        await env.DB
-          .prepare(
-            `INSERT INTO products
-             (
-               seller_id,
-               title,
-               category,
-               price,
-               currency,
-               stock,
-               condition,
-               country,
-               district,
-               image_url,
-               description,
-               specs,
-               status,
-               views,
-               created_at,
-               updated_at
-             )
-             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
-          )
-          .bind(
-            auth.user.id,
-            title,
-            category,
-            price,
-            currency,
-            stock,
-            condition,
-            country,
-            district,
-            imageUrl,
-            description,
-            description,
-            "active",
-            0,
-            now,
-            now
-          )
-          .run();
-
-        const product =
-          await env.DB
-            .prepare(
-              `SELECT *
-               FROM products
-               WHERE seller_id=?
-               ORDER BY id DESC
-               LIMIT 1`
-            )
-            .bind(
-              auth.user.id
-            )
-            .first();
-
-        return json(
-          {
-            ok: true,
-            product
-          },
-          201,
-          request,
-          env
-        );
-      }
-
-      // ------------------------------------------------------
-      // UPDATE PRODUCT
-      // ------------------------------------------------------
-
-      if (
-        productMatch &&
-        method === "PUT"
-      ) {
-        const auth =
-          await requireAuth(
-            request,
-            env
-          );
-
-        if (auth.error) {
-          return auth.error;
-        }
-
-        const id =
-          Number(
-            productMatch[1]
-          );
-
-        const product =
-          await env.DB
-            .prepare(
-              `SELECT *
-               FROM products
-               WHERE id=?
-               LIMIT 1`
-            )
-            .bind(id)
-            .first();
-
-        if (!product) {
-          return errorResponse(
-            "Product not found",
-            404,
-            request,
-            env
-          );
-        }
-
-        if (
-          product.seller_id !==
-            auth.user.id &&
-          auth.user.role !==
-            "admin"
-        ) {
-          return errorResponse(
-            "Not allowed",
-            403,
-            request,
-            env
-          );
-        }
-
-        const body =
-          await readJSON(request);
-
-        const title =
-          cleanText(
-            body.title ??
-              product.title,
-            200
-          );
-
-        const category =
-          cleanText(
-            body.category ??
-              product.category,
-            120
-          );
-
-        const price =
-          numberValue(
-            body.price ??
-              product.price,
-            -1
-          );
-
-        const currency =
-          cleanText(
-            body.currency ||
-              product.currency ||
-              "RWF",
-            3
-          ).toUpperCase();
-
-        const stock =
-          integerValue(
-            body.stock ??
-              product.stock,
-            -1
-          );
-
-        const country =
-          cleanText(
-            body.country ??
-              product.country,
-            100
-          );
-
-        const district =
-          cleanText(
-            body.district ??
-              product.district ??
-              "",
-            120
-          );
-
-        const imageUrl =
-          cleanText(
-            body.image_url ??
-              product.image_url ??
-              "",
-            2048
-          );
-
-        const description =
-          cleanText(
-            body.description ??
-              product.description ??
-              product.specs ??
-              "",
-            10000
-          );
-
-        if (
-          title.length < 2 ||
-          !category ||
-          price < 0 ||
-          stock < 0 ||
-          !validCurrency(
-            currency
-          ) ||
-          !validCountry(
-            country
-          ) ||
-          !validURL(
-            imageUrl
-          )
-        ) {
-          return errorResponse(
-            "Invalid product data",
-            400,
-            request,
-            env
-          );
-        }
-
-        await env.DB
-          .prepare(
-            `UPDATE products
-             SET
-               title=?,
-               category=?,
-               price=?,
-               currency=?,
-               stock=?,
-               country=?,
-               district=?,
-               image_url=?,
-               description=?,
-               specs=?,
-               updated_at=?
-             WHERE id=?`
-          )
-          .bind(
-            title,
-            category,
-            price,
-            currency,
-            stock,
-            country,
-            district,
-            imageUrl,
-            description,
-            description,
-            Math.floor(
-              Date.now() / 1000
-            ),
-            id
-          )
-          .run();
-
-        return json(
-          {
-            ok: true
-          },
-          200,
-          request,
-          env
-        );
-      }
-
-      // ------------------------------------------------------
-      // DELETE PRODUCT
-      // ------------------------------------------------------
-
-      if (
-        productMatch &&
-        method === "DELETE"
-      ) {
-        const auth =
-          await requireAuth(
-            request,
-            env
-          );
-
-        if (auth.error) {
-          return auth.error;
-        }
-
-        const id =
-          Number(
-            productMatch[1]
-          );
-
-        const product =
-          await env.DB
-            .prepare(
-              `SELECT seller_id
-               FROM products
-               WHERE id=?
-               LIMIT 1`
-            )
-            .bind(id)
-            .first();
-
-        if (!product) {
-          return errorResponse(
-            "Product not found",
-            404,
-            request,
-            env
-          );
-        }
-
-        if (
-          product.seller_id !==
-            auth.user.id &&
-          auth.user.role !==
-            "admin"
-        ) {
-          return errorResponse(
-            "Not allowed",
-            403,
-            request,
-            env
-          );
-        }
-
-        await env.DB
-          .prepare(
-            `UPDATE products
-             SET
-               status='inactive',
-               updated_at=?
-             WHERE id=?`
-          )
-          .bind(
-            Math.floor(
-              Date.now() / 1000
-            ),
-            id
-          )
-          .run();
-
-        return json(
-          {
-            ok: true
-          },
-          200,
-          request,
-          env
-        );
-      }
-
-      // ------------------------------------------------------
-      // SAVED
-      // ------------------------------------------------------
-
-      if (
-        path === "/api/saved" &&
-        method === "GET"
-      ) {
-        const auth =
-          await requireAuth(
-            request,
-            env
-          );
-
-        if (auth.error) {
-          return auth.error;
-        }
-
-        const rows =
-          await env.DB
-            .prepare(
-              `SELECT
-                 s.id AS saved_id,
-                 p.*
-               FROM saved s
-               JOIN products p
-                 ON p.id=s.product_id
-               WHERE
-                 s.user_id=?
-                 AND p.status='active'
-               ORDER BY s.created_at DESC`
-            )
-            .bind(
-              auth.user.id
-            )
-            .all();
-
-        return json(
-          {
-            saved:
-              rows.results || []
-          },
-          200,
-          request,
-          env
-        );
-      }
-
-      const savedMatch =
-        path.match(
-          /^\/api\/saved\/(\d+)$/
-        );
-
-      if (
-        savedMatch &&
-        method === "POST"
-      ) {
-        const auth =
-          await requireAuth(
-            request,
-            env
-          );
-
-        if (auth.error) {
-          return auth.error;
-        }
-
-        const productId =
-          Number(
-            savedMatch[1]
-          );
-
-        const product =
-          await env.DB
-            .prepare(
-              `SELECT id
-               FROM products
-               WHERE id=?
-                 AND status='active'
-               LIMIT 1`
-            )
-            .bind(
-              productId
-            )
-            .first();
-
-        if (!product) {
-          return errorResponse(
-            "Product not found",
-            404,
-            request,
-            env
-          );
-        }
-
-        await env.DB
-          .prepare(
-            `INSERT OR IGNORE INTO saved
-             (user_id,product_id,created_at)
-             VALUES (?,?,?)`
-          )
-          .bind(
-            auth.user.id,
-            productId,
-            Math.floor(
-              Date.now() / 1000
-            )
-          )
-          .run();
-
-        return json(
-          {
-            ok: true
-          },
-          200,
-          request,
-          env
-        );
-      }
-
-      if (
-        savedMatch &&
-        method === "DELETE"
-      ) {
-        const auth =
-          await requireAuth(
-            request,
-            env
-          );
-
-        if (auth.error) {
-          return auth.error;
-        }
-
-        const productId =
-          Number(
-            savedMatch[1]
-          );
-
-        await env.DB
-          .prepare(
-            `DELETE FROM saved
-             WHERE user_id=?
-               AND product_id=?`
-          )
-          .bind(
-            auth.user.id,
-            productId
-          )
-          .run();
-
-        return json(
-          {
-            ok: true
-          },
-          200,
-          request,
-          env
-        );
-      }
-
-      // ------------------------------------------------------
-      // ORDERS — GET
-      // ------------------------------------------------------
-
-      if (
-        path === "/api/orders" &&
-        method === "GET"
-      ) {
-        const auth =
-          await requireAuth(
-            request,
-            env
-          );
-
-        if (auth.error) {
-          return auth.error;
-        }
-
-        const rows =
-          await env.DB
-            .prepare(
-              `SELECT
-                 o.*,
-                 p.title,
-                 p.image_url,
-                 p.currency,
-                 u.name AS seller_name
-               FROM orders o
-               LEFT JOIN products p
-                 ON p.id=o.product_id
-               LEFT JOIN users u
-                 ON u.id=o.seller_id
-               WHERE o.buyer_id=?
-               ORDER BY o.created_at DESC
-               LIMIT 500`
-            )
-            .bind(
-              auth.user.id
-            )
-            .all();
-
-        const orders =
-          (
-            rows.results || []
-          ).map(o => ({
-            ...o,
-            total:
-              o.total_price,
-            total_amount:
-              o.total_price,
-            total_price:
-              o.total_price
-          }));
-
-        return json(
-          {
-            orders
-          },
-          200,
-          request,
-          env
-        );
-      }
-
-      // ------------------------------------------------------
-      // CREATE ORDER
-      // ------------------------------------------------------
-
-      if (
-        path === "/api/orders" &&
-        method === "POST"
-      ) {
-        const auth =
-          await requireAuth(
-            request,
-            env
-          );
-
-        if (auth.error) {
-          return auth.error;
-        }
-
-        const body =
-          await readJSON(request);
-
-        const productId =
-          integerValue(
-            body.product_id,
-            0
-          );
-
-        const quantity =
-          integerValue(
-            body.quantity,
-            0
-          );
-
-        if (
-          productId <= 0 ||
-          quantity < 1 ||
-          quantity > 1000
-        ) {
-          return errorResponse(
-            "Invalid order",
-            400,
-            request,
-            env
-          );
-        }
-
-        const product =
-          await env.DB
-            .prepare(
-              `SELECT *
-               FROM products
-               WHERE id=?
-                 AND status='active'
-               LIMIT 1`
-            )
-            .bind(
-              productId
-            )
-            .first();
-
-        if (!product) {
-          return errorResponse(
-            "Product not found",
-            404,
-            request,
-            env
-          );
-        }
-
-        if (
-          product.seller_id ===
-          auth.user.id
-        ) {
-          return errorResponse(
-            "You cannot order your own listing",
-            400,
-            request,
-            env
-          );
-        }
-
-        if (
-          Number(
-            product.stock
-          ) < quantity
-        ) {
-          return errorResponse(
-            "Not enough stock",
-            409,
-            request,
-            env
-          );
-        }
-
-        const total =
-          Number(
-            product.price
-          ) * quantity;
-
-        const commission =
-          Math.round(
-            total *
-              COMMISSION_RATE *
-              100
-          ) / 100;
-
-        const now =
-          Math.floor(
-            Date.now() / 1000
-          );
-
-        const update =
-          await env.DB
-            .prepare(
-              `UPDATE products
-               SET
-                 stock=stock-?,
-                 updated_at=?
-               WHERE id=?
-                 AND status='active'
-                 AND stock>=?`
-            )
-            .bind(
-              quantity,
-              now,
-              productId,
-              quantity
-            )
-            .run();
-
-        if (
-          !update.meta ||
-          Number(
-            update.meta.changes
-          ) !== 1
-        ) {
-          return errorResponse(
-            "Stock changed. Please try again.",
-            409,
-            request,
-            env
-          );
-        }
-
-        try {
-          await env.DB
-            .prepare(
-              `INSERT INTO orders
-               (
-                 buyer_id,
-                 seller_id,
-                 product_id,
-                 quantity,
-                 unit_price,
-                 total_price,
-                 currency,
-                 commission,
-                 status,
-                 payment_status,
-                 created_at,
-                 updated_at
-               )
-               VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`
-            )
-            .bind(
-              auth.user.id,
-              product.seller_id,
-              productId,
-              quantity,
-              product.price,
-              total,
-              product.currency,
-              commission,
-              "pending",
-              "unpaid",
-              now,
-              now
-            )
-            .run();
-        } catch {
-          await env.DB
-            .prepare(
-              `UPDATE products
-               SET
-                 stock=stock+?,
-                 updated_at=?
-               WHERE id=?`
-            )
-            .bind(
-              quantity,
-              now,
-              productId
-            )
-            .run();
-
-          throw new Error(
-            "Could not create order"
-          );
-        }
-
-        return json(
-          {
-            ok: true,
-            total_price:
-              total,
-            commission,
-            payment_status:
-              "unpaid",
-            status:
-              "pending"
-          },
-          201,
-          request,
-          env
-        );
-      }
-
-      // ------------------------------------------------------
-      // MESSAGES
-      // ------------------------------------------------------
-
-      if (
-        path === "/api/messages" &&
-        method === "GET"
-      ) {
-        const auth =
-          await requireAuth(
-            request,
-            env
-          );
-
-        if (auth.error) {
-          return auth.error;
-        }
-
-        const rows =
-          await env.DB
-            .prepare(
-              `SELECT
-                 m.*,
-                 s.name AS sender_name,
-                 r.name AS receiver_name
-               FROM messages m
-               LEFT JOIN users s
-                 ON s.id=m.sender_id
-               LEFT JOIN users r
-                 ON r.id=m.receiver_id
-               WHERE
-                 m.sender_id=?
-                 OR m.receiver_id=?
-               ORDER BY m.created_at DESC
-               LIMIT 500`
-            )
-            .bind(
-              auth.user.id,
-              auth.user.id
-            )
-            .all();
-
-        return json(
-          {
-            messages:
-              rows.results || []
-          },
-          200,
-          request,
-          env
-        );
-      }
-
-      if (
-        path === "/api/messages" &&
-        method === "POST"
-      ) {
-        const auth =
-          await requireAuth(
-            request,
-            env
-          );
-
-        if (auth.error) {
-          return auth.error;
-        }
-
-        const body =
-          await readJSON(request);
-
-        const receiverId =
-          integerValue(
-            body.receiver_id,
-            0
-          );
-
-        const message =
-          cleanText(
-            body.body,
-            5000
-          );
-
-        if (
-          receiverId <= 0 ||
-          !message
-        ) {
-          return errorResponse(
-            "Receiver and message are required",
-            400,
-            request,
-            env
-          );
-        }
-
-        if (
-          receiverId ===
-          auth.user.id
-        ) {
-          return errorResponse(
-            "You cannot message yourself",
-            400,
-            request,
-            env
-          );
-        }
-
-        const receiver =
-          await env.DB
-            .prepare(
-              `SELECT id
-               FROM users
-               WHERE id=?
-                 AND is_active=1
-               LIMIT 1`
-            )
-            .bind(
-              receiverId
-            )
-            .first();
-
-        if (!receiver) {
-          return errorResponse(
-            "Receiver not found",
-            404,
-            request,
-            env
-          );
-        }
-
-        await env.DB
-          .prepare(
-            `INSERT INTO messages
-             (
-               sender_id,
-               receiver_id,
-               body,
-               is_read,
-               created_at
-             )
-             VALUES (?,?,?,?,?)`
-          )
-          .bind(
-            auth.user.id,
-            receiverId,
-            message,
-            0,
-            Math.floor(
-              Date.now() / 1000
-            )
-          )
-          .run();
-
-        return json(
-          {
-            ok: true
-          },
-          201,
-          request,
-          env
-        );
-      }
-
-      // ------------------------------------------------------
-      // SELLER PRODUCTS
-      // ------------------------------------------------------
-
-      if (
-        path ===
-          "/api/seller/products" &&
-        method === "GET"
-      ) {
-        const auth =
-          await requireAuth(
-            request,
-            env
-          );
-
-        if (auth.error) {
-          return auth.error;
-        }
-
-        const rows =
-          await env.DB
-            .prepare(
-              `SELECT *
-               FROM products
-               WHERE seller_id=?
-               ORDER BY created_at DESC
-               LIMIT 500`
-            )
-            .bind(
-              auth.user.id
-            )
-            .all();
-
-        return json(
-          {
-            products:
-              rows.results || []
-          },
-          200,
-          request,
-          env
-        );
-      }
-
-      // ------------------------------------------------------
-      // SELLER STATS
-      // ------------------------------------------------------
-
-      if (
-        path ===
-          "/api/seller/stats" &&
-        method === "GET"
-      ) {
-        const auth =
-          await requireAuth(
-            request,
-            env
-          );
-
-        if (auth.error) {
-          return auth.error;
-        }
-
-        const products =
-          await env.DB
-            .prepare(
-              `SELECT COUNT(*) AS count
-               FROM products
-               WHERE seller_id=?`
-            )
-            .bind(
-              auth.user.id
-            )
-            .first();
-
-        const orders =
-          await env.DB
-            .prepare(
-              `SELECT
-                 COUNT(*) AS count,
-                 COALESCE(
-                   SUM(total_price),
-                   0
-                 ) AS revenue,
-                 COALESCE(
-                   SUM(commission),
-                   0
-                 ) AS commission
-               FROM orders
-               WHERE seller_id=?
-                 AND payment_status='paid'`
-            )
-            .bind(
-              auth.user.id
-            )
-            .first();
-
-        return json(
-          {
-            products:
-              Number(
-                products?.count || 0
-              ),
-            orders:
-              Number(
-                orders?.count || 0
-              ),
-            revenue:
-              Number(
-                orders?.revenue || 0
-              ),
-            commission:
-              Number(
-                orders?.commission ||
-                  0
-              )
-          },
-          200,
-          request,
-          env
-        );
-      }
-
-      // ======================================================
-      // ADMIN
-      // ======================================================
-
-      // ------------------------------------------------------
-      // ADMIN OVERVIEW
-      // ------------------------------------------------------
-
-      if (
-        path ===
-          "/api/admin/stats" &&
-        method === "GET"
-      ) {
-        const auth =
-          await requireAdmin(
-            request,
-            env
-          );
-
-        if (auth.error) {
-          return auth.error;
-        }
-
-        const users =
-          await env.DB
-            .prepare(
-              `SELECT COUNT(*) AS count
-               FROM users`
-            )
-            .first();
-
-        const sellers =
-          await env.DB
-            .prepare(
-              `SELECT COUNT(*) AS count
-               FROM users
-               WHERE role='seller'`
-            )
-            .first();
-
-        const products =
-          await env.DB
-            .prepare(
-              `SELECT COUNT(*) AS count
-               FROM products`
-            )
-            .first();
-
-        const orders =
-          await env.DB
-            .prepare(
-              `SELECT COUNT(*) AS count
-               FROM orders`
-            )
-            .first();
-
-        const money =
-          await env.DB
-            .prepare(
-              `SELECT
-                 COALESCE(
-                   SUM(
-                     CASE
-                       WHEN payment_status='paid'
-                       THEN total_price
-                       ELSE 0
-                     END
-                   ),
-                   0
-                 ) AS revenue,
-                 COALESCE(
-                   SUM(
-                     CASE
-                       WHEN payment_status='paid'
-                       THEN commission
-                       ELSE 0
-                     END
-                   ),
-                   0
-                 ) AS commission
-               FROM orders`
-            )
-            .first();
-
-        return json(
-          {
-            users:
-              Number(
-                users?.count || 0
-              ),
-            sellers:
-              Number(
-                sellers?.count || 0
-              ),
-            products:
-              Number(
-                products?.count || 0
-              ),
-            orders:
-              Number(
-                orders?.count || 0
-              ),
-            revenue:
-              Number(
-                money?.revenue || 0
-              ),
-            commission:
-              Number(
-                money?.commission ||
-                  0
-              )
-          },
-          200,
-          request,
-          env
-        );
-      }
-
-      // ------------------------------------------------------
-      // ADMIN USERS
-      // ------------------------------------------------------
-
-      if (
-        path ===
-          "/api/admin/users" &&
-        method === "GET"
-      ) {
-        const auth =
-          await requireAdmin(
-            request,
-            env
-          );
-
-        if (auth.error) {
-          return auth.error;
-        }
-
-        const rows =
-          await env.DB
-            .prepare(
-              `SELECT
-                 id,
-                 name,
-                 email,
-                 country,
-                 role,
-                 is_active,
-                 is_verified,
-                 created_at
-               FROM users
-               ORDER BY created_at DESC
-               LIMIT 500`
-            )
-            .all();
-
-        return json(
-          {
-            users:
-              rows.results || []
-          },
-          200,
-          request,
-          env
-        );
-      }
-
-      // ------------------------------------------------------
-      // ADMIN SELLERS
-      // ------------------------------------------------------
-
-      if (
-        path ===
-          "/api/admin/sellers" &&
-        method === "GET"
-      ) {
-        const auth =
-          await requireAdmin(
-            request,
-            env
-          );
-
-        if (auth.error) {
-          return auth.error;
-        }
-
-        const rows =
-          await env.DB
-            .prepare(
-              `SELECT
-                 u.id,
-                 u.name,
-                 u.email,
-                 u.country,
-                 u.role,
-                 u.is_active,
-                 COUNT(p.id) AS products
-               FROM users u
-               LEFT JOIN products p
-                 ON p.seller_id=u.id
-               WHERE u.role IN
-                 ('seller','admin')
-               GROUP BY u.id
-               ORDER BY u.created_at DESC
-               LIMIT 500`
-            )
-            .all();
-
-        return json(
-          {
-            sellers:
-              rows.results || []
-          },
-          200,
-          request,
-          env
-        );
-      }
-
-      // ------------------------------------------------------
-      // ADMIN PRODUCTS
-      // ------------------------------------------------------
-
-      if (
-        path ===
-          "/api/admin/products" &&
-        method === "GET"
-      ) {
-        const auth =
-          await requireAdmin(
-            request,
-            env
-          );
-
-        if (auth.error) {
-          return auth.error;
-        }
-
-        const rows =
-          await env.DB
-            .prepare(
-              `SELECT
-                 p.*,
-                 u.name AS seller_name
-               FROM products p
-               LEFT JOIN users u
-                 ON u.id=p.seller_id
-               ORDER BY p.created_at DESC
-               LIMIT 500`
-            )
-            .all();
-
-        return json(
-          {
-            products:
-              rows.results || []
-          },
-          200,
-          request,
-          env
-        );
-      }
-
-      // ------------------------------------------------------
-      // ADMIN ORDERS
-      // ------------------------------------------------------
-
-      if (
-        path ===
-          "/api/admin/orders" &&
-        method === "GET"
-      ) {
-        const auth =
-          await requireAdmin(
-            request,
-            env
-          );
-
-        if (auth.error) {
-          return auth.error;
-        }
-
-        const rows =
-          await env.DB
-            .prepare(
-              `SELECT
-                 o.*,
-                 p.title,
-                 b.name AS buyer_name,
-                 s.name AS seller_name
-               FROM orders o
-               LEFT JOIN products p
-                 ON p.id=o.product_id
-               LEFT JOIN users b
-                 ON b.id=o.buyer_id
-               LEFT JOIN users s
-                 ON s.id=o.seller_id
-               ORDER BY o.created_at DESC
-               LIMIT 500`
-            )
-            .all();
-
-        return json(
-          {
-            orders:
-              rows.results || []
-          },
-          200,
-          request,
-          env
-        );
-      }
-
-      // ------------------------------------------------------
-      // ADMIN PAYMENTS
-      // ------------------------------------------------------
-
-      if (
-        path ===
-          "/api/admin/payments" &&
-        method === "GET"
-      ) {
-        const auth =
-          await requireAdmin(
-            request,
-            env
-          );
-
-        if (auth.error) {
-          return auth.error;
-        }
-
-        const rows =
-          await env.DB
-            .prepare(
-              `SELECT
-                 o.id,
-                 o.buyer_id,
-                 o.seller_id,
-                 o.product_id,
-                 o.total_price,
-                 o.currency,
-                 o.commission,
-                 o.payment_status,
-                 o.created_at
-               FROM orders o
-               ORDER BY o.created_at DESC
-               LIMIT 500`
-            )
-            .all();
-
-        return json(
-          {
-            payments:
-              rows.results || []
-          },
-          200,
-          request,
-          env
-        );
-      }
-
-      // ------------------------------------------------------
-      // ADMIN SERVICES
-      // ------------------------------------------------------
-
-      if (
-        path ===
-          "/api/admin/services" &&
-        method === "GET"
-      ) {
-        const auth =
-          await requireAdmin(
-            request,
-            env
-          );
-
-        if (auth.error) {
-          return auth.error;
-        }
-
-        const rows =
-          await env.DB
-            .prepare(
-              `SELECT
-                 p.*,
-                 u.name AS seller_name
-               FROM products p
-               LEFT JOIN users u
-                 ON u.id=p.seller_id
-               WHERE p.status='active'
-               ORDER BY p.created_at DESC
-               LIMIT 500`
-            )
-            .all();
-
-        const services =
-          (
-            rows.results || []
-          ).filter(
-            isServiceProduct
-          );
-
-        return json(
-          {
-            services
-          },
-          200,
-          request,
-          env
-        );
-      }
-
-      // ------------------------------------------------------
-      // ADMIN CATEGORIES
-      // ------------------------------------------------------
-
-      if (
-        path ===
-          "/api/admin/categories" &&
-        method === "GET"
-      ) {
-        const auth =
-          await requireAdmin(
-            request,
-            env
-          );
-
-        if (auth.error) {
-          return auth.error;
-        }
-
-        const rows =
-          await env.DB
-            .prepare(
-              `SELECT *
-               FROM categories
-               ORDER BY name ASC
-               LIMIT 500`
-            )
-            .all();
-
-        return json(
-          {
-            categories:
-              rows.results || []
-          },
-          200,
-          request,
-          env
-        );
-      }
-
-      if (
-        path ===
-          "/api/admin/categories" &&
-        method === "POST"
-      ) {
-        const auth =
-          await requireAdmin(
-            request,
-            env
-          );
-
-        if (auth.error) {
-          return auth.error;
-        }
-
-        const body =
-          await readJSON(request);
-
-        const name =
-          cleanText(
-            body.name,
-            120
-          );
-
-        if (!name) {
-          return errorResponse(
-            "Category name is required",
-            400,
-            request,
-            env
-          );
-        }
-
-        await env.DB
-          .prepare(
-            `INSERT INTO categories
-             (name,is_active,created_at)
-             VALUES (?,?,?)`
-          )
-          .bind(
-            name,
-            1,
-            Math.floor(
-              Date.now() / 1000
-            )
-          )
-          .run();
-
-        return json(
-          {
-            ok: true
-          },
-          201,
-          request,
-          env
-        );
-      }
-
-      // ------------------------------------------------------
-      // ADMIN REPORTS
-      // ------------------------------------------------------
-
-      if (
-        path ===
-          "/api/admin/reports" &&
-        method === "GET"
-      ) {
-        const auth =
-          await requireAdmin(
-            request,
-            env
-          );
-
-        if (auth.error) {
-          return auth.error;
-        }
-
-        const daily =
-          await env.DB
-            .prepare(
-              `SELECT
-                 DATE(
-                   datetime(
-                     created_at,
-                     'unixepoch'
-                   )
-                 ) AS day,
-                 COUNT(*) AS orders,
-                 COALESCE(
-                   SUM(
-                     CASE
-                       WHEN payment_status='paid'
-                       THEN total_price
-                       ELSE 0
-                     END
-                   ),
-                   0
-                 ) AS revenue
-               FROM orders
-               GROUP BY day
-               ORDER BY day DESC
-               LIMIT 90`
-            )
-            .all();
-
-        return json(
-          {
-            reports:
-              daily.results || []
-          },
-          200,
-          request,
-          env
-        );
-      }
-
-      // ------------------------------------------------------
-      // ADMIN REVIEWS
-      // ------------------------------------------------------
-
-      if (
-        path ===
-          "/api/admin/reviews" &&
-        method === "GET"
-      ) {
-        const auth =
-          await requireAdmin(
-            request,
-            env
-          );
-
-        if (auth.error) {
-          return auth.error;
-        }
-
-        try {
-          const rows =
-            await env.DB
-              .prepare(
-                `SELECT *
-                 FROM reviews
-                 ORDER BY created_at DESC
-                 LIMIT 500`
-              )
-              .all();
-
-          return json(
-            {
-              reviews:
-                rows.results || []
-            },
-            200,
-            request,
-            env
-          );
-        } catch {
-          return json(
-            {
-              reviews: [],
-              message:
-                "Reviews table is not enabled yet"
-            },
-            200,
-            request,
-            env
-          );
-        }
-      }
-
-      // ------------------------------------------------------
-      // ADMIN PROMOTIONS
-      // ------------------------------------------------------
-
-      if (
-        path ===
-          "/api/admin/promotions" &&
-        method === "GET"
-      ) {
-        const auth =
-          await requireAdmin(
-            request,
-            env
-          );
-
-        if (auth.error) {
-          return auth.error;
-        }
-
-        try {
-          const rows =
-            await env.DB
-              .prepare(
-                `SELECT *
-                 FROM promotions
-                 ORDER BY created_at DESC
-                 LIMIT 500`
-              )
-              .all();
-
-          return json(
-            {
-              promotions:
-                rows.results || []
-            },
-            200,
-            request,
-            env
-          );
-        } catch {
-          return json(
-            {
-              promotions: [],
-              message:
-                "Promotions table is not enabled yet"
-            },
-            200,
-            request,
-            env
-          );
-        }
-      }
-
-      // ------------------------------------------------------
-      // ADMIN ADS
-      // ------------------------------------------------------
-
-      if (
-        path ===
-          "/api/admin/ads" &&
-        method === "GET"
-      ) {
-        const auth =
-          await requireAdmin(
-            request,
-            env
-          );
-
-        if (auth.error) {
-          return auth.error;
-        }
-
-        try {
-          const rows =
-            await env.DB
-              .prepare(
-                `SELECT *
-                 FROM ads
-                 ORDER BY created_at DESC
-                 LIMIT 500`
-              )
-              .all();
-
-          return json(
-            {
-              ads:
-                rows.results || []
-            },
-            200,
-            request,
-            env
-          );
-        } catch {
-          return json(
-            {
-              ads: [],
-              message:
-                "Ads table is not enabled yet"
-            },
-            200,
-            request,
-            env
-          );
-        }
-      }
-
-      // ------------------------------------------------------
-      // ADMIN UPDATE ORDER
-      // ------------------------------------------------------
-
-      const adminOrderMatch =
-        path.match(
-          /^\/api\/admin\/orders\/(\d+)$/
-        );
-
-      if (
-        adminOrderMatch &&
-        method === "PATCH"
-      ) {
-        const auth =
-          await requireAdmin(
-            request,
-            env
-          );
-
-        if (auth.error) {
-          return auth.error;
-        }
-
-        const id =
-          Number(
-            adminOrderMatch[1]
-          );
-
-        const body =
-          await readJSON(request);
-
-        const allowedStatus = [
-          "pending",
-          "confirmed",
-          "processing",
-          "shipped",
-          "delivered",
-          "completed",
-          "cancelled"
-        ];
-
-        const allowedPayment = [
-          "unpaid",
-          "pending",
-          "paid",
-          "failed",
-          "refunded"
-        ];
-
-        const current =
-          await env.DB
-            .prepare(
-              `SELECT *
-               FROM orders
-               WHERE id=?
-               LIMIT 1`
-            )
-            .bind(id)
-            .first();
-
-        if (!current) {
-          return errorResponse(
-            "Order not found",
-            404,
-            request,
-            env
-          );
-        }
-
-        const status =
-          body.status !==
-          undefined
-            ? cleanText(
-                body.status,
-                30
-              )
-            : current.status;
-
-        const paymentStatus =
-          body.payment_status !==
-          undefined
-            ? cleanText(
-                body.payment_status,
-                30
-              )
-            : current.payment_status;
-
-        if (
-          !allowedStatus.includes(
-            status
-          ) ||
-          !allowedPayment.includes(
-            paymentStatus
-          )
-        ) {
-          return errorResponse(
-            "Invalid order status",
-            400,
-            request,
-            env
-          );
-        }
-
-        await env.DB
-          .prepare(
-            `UPDATE orders
-             SET
-               status=?,
-               payment_status=?,
-               updated_at=?
-             WHERE id=?`
-          )
-          .bind(
-            status,
-            paymentStatus,
-            Math.floor(
-              Date.now() / 1000
-            ),
-            id
-          )
-          .run();
-
-        return json(
-          {
-            ok: true
-          },
-          200,
-          request,
-          env
-        );
-      }
-
-      // ------------------------------------------------------
-      // ADMIN UPDATE USER
-      // ------------------------------------------------------
-
-      const adminUserMatch =
-        path.match(
-          /^\/api\/admin\/users\/(\d+)$/
-        );
-
-      if (
-        adminUserMatch &&
-        method === "PATCH"
-      ) {
-        const auth =
-          await requireAdmin(
-            request,
-            env
-          );
-
-        if (auth.error) {
-          return auth.error;
-        }
-
-        const id =
-          Number(
-            adminUserMatch[1]
-          );
-
-        if (
-          id === auth.user.id
-        ) {
-          return errorResponse(
-            "You cannot modify your own admin status here",
-            400,
-            request,
-            env
-          );
-        }
-
-        const body =
-          await readJSON(request);
-
-        const target =
-          await env.DB
-            .prepare(
-              `SELECT *
-               FROM users
-               WHERE id=?
-               LIMIT 1`
-            )
-            .bind(id)
-            .first();
-
-        if (!target) {
-          return errorResponse(
-            "User not found",
-            404,
-            request,
-            env
-          );
-        }
-
-        let role =
-          target.role;
-
-        let isActive =
-          Number(
-            target.is_active
-          );
-
-        let isVerified =
-          Number(
-            target.is_verified
-          );
-
-        if (
-          body.role !==
-          undefined
-        ) {
-          const requestedRole =
-            cleanText(
-              body.role,
-              20
-            );
-
-          if (
-            ![
-              "buyer",
-              "seller",
-              "admin"
-            ].includes(
-              requestedRole
-            )
-          ) {
-            return errorResponse(
-              "Invalid role",
-              400,
-              request,
-              env
-            );
-          }
-
-          role =
-            requestedRole;
-        }
-
-        if (
-          body.is_active !==
-          undefined
-        ) {
-          isActive =
-            body.is_active
-              ? 1
-              : 0;
-        }
-
-        if (
-          body.is_verified !==
-          undefined
-        ) {
-          isVerified =
-            body.is_verified
-              ? 1
-              : 0;
-        }
-
-        if (
-          target.role ===
-            "admin" &&
-          (
-            role !==
-              "admin" ||
-            isActive !== 1
-          )
-        ) {
-          const admins =
-            await env.DB
-              .prepare(
-                `SELECT COUNT(*) AS count
-                 FROM users
-                 WHERE role='admin'
-                   AND is_active=1`
-              )
-              .first();
-
-          if (
-            Number(
-              admins?.count || 0
-            ) <= 1
-          ) {
-            return errorResponse(
-              "The last active admin cannot be removed or disabled",
-              400,
-              request,
-              env
-            );
-          }
-        }
-
-        await env.DB
-          .prepare(
-            `UPDATE users
-             SET
-               role=?,
-               is_active=?,
-               is_verified=?
-             WHERE id=?`
-          )
-          .bind(
-            role,
-            isActive,
-            isVerified,
-            id
-          )
-          .run();
-
-        await env.DB
-          .prepare(
-            `DELETE FROM sessions
-             WHERE user_id=?`
-          )
-          .bind(id)
-          .run();
-
-        return json(
-          {
-            ok: true
-          },
-          200,
-          request,
-          env
-        );
-      }
-
-      // ------------------------------------------------------
-      // ADMIN UPDATE PRODUCT
-      // ------------------------------------------------------
-
-      const adminProductMatch =
-        path.match(
-          /^\/api\/admin\/products\/(\d+)$/
-        );
-
-      if (
-        adminProductMatch &&
-        method === "PATCH"
-      ) {
-        const auth =
-          await requireAdmin(
-            request,
-            env
-          );
-
-        if (auth.error) {
-          return auth.error;
-        }
-
-        const id =
-          Number(
-            adminProductMatch[1]
-          );
-
-        // Verify that the product exists first
-        const existing =
-          await env.DB
-            .prepare(
-              `SELECT id
-               FROM products
-               WHERE id=?
-               LIMIT 1`
-            )
-            .bind(id)
-            .first();
-
-        if (!existing) {
-          return errorResponse(
-            "Product not found",
-            404,
-            request,
-            env
-          );
-        }
-
-        const body =
-          await readJSON(request);
-
-        const allowedStatuses = [
-          "active",
-          "inactive",
-          "sold",
-          "draft",
-          "blocked"
-        ];
-
-        const status =
-          cleanText(
-            body.status,
-            30
-          );
-
-        if (
-          !allowedStatuses.includes(
-            status
-          )
-        ) {
-          return errorResponse(
-            "Invalid product status",
-            400,
-            request,
-            env
-          );
-        }
-
-        await env.DB
-          .prepare(
-            `UPDATE products
-             SET
-               status=?,
-               updated_at=?
-             WHERE id=?`
-          )
-          .bind(
-            status,
-            Math.floor(
-              Date.now() / 1000
-            ),
-            id
-          )
-          .run();
-
-        return json(
-          {
-            ok: true
-          },
-          200,
-          request,
-          env
-        );
-      }
-
-      // ------------------------------------------------------
-      // STATIC ASSETS / FRONTEND
-      // ------------------------------------------------------
-
-      if (
-        env.ASSETS &&
-        typeof env.ASSETS.fetch ===
-          "function"
-      ) {
-        const assetResponse =
-          await env.ASSETS.fetch(
-            request
-          );
-
-        const headers =
-          new Headers(
-            assetResponse.headers
-          );
-
-        for (
-          const [
-            key,
-            value
-          ] of Object.entries(
-            STATIC_SECURITY_HEADERS
-          )
-        ) {
-          headers.set(
-            key,
-            value
-          );
-        }
-
-        return new Response(
-          assetResponse.body,
-          {
-            status:
-              assetResponse.status,
-            statusText:
-              assetResponse.statusText,
-            headers
-          }
-        );
-      }
-
-      return errorResponse(
-        "Route not found",
-        404,
-        request,
+    },
+    200,
+    request
+  );
+}
+
+// ============================================================
+// COUNTRIES
+// ============================================================
+
+async function countries(request) {
+  return json(
+    {
+      success: true,
+      countries: COUNTRIES
+    },
+    200,
+    request
+  );
+}
+
+// ============================================================
+// SERVICE CATEGORIES
+// ============================================================
+
+async function serviceCategories(
+  request
+) {
+  return json(
+    {
+      success: true,
+      categories:
+        SERVICE_CATEGORIES
+    },
+    200,
+    request
+  );
+}
+
+// ============================================================
+// CATEGORIES
+// ============================================================
+
+async function categories(
+  request,
+  env
+) {
+  const result =
+    await env.DB.prepare(`
+      SELECT *
+      FROM categories
+      WHERE is_active = 1
+      ORDER BY name ASC
+    `).all();
+
+  return json(
+    {
+      success: true,
+      categories:
+        result.results || []
+    },
+    200,
+    request
+  );
+}
+
+// ============================================================
+// REGISTER
+// ============================================================
+
+async function register(
+  request,
+  env
+) {
+  const allowed =
+    await rateLimit(
+      env,
+      `register:${request.headers.get("CF-Connecting-IP") || "unknown"}`,
+      5,
+      3600
+    );
+
+  if (!allowed) {
+    return json(
+      {
+        success: false,
+        error:
+          "Too many registration attempts. Try again later."
+      },
+      429,
+      request
+    );
+  }
+
+  const data =
+    await readBody(request);
+
+  const name =
+    cleanText(data.name, MAX_NAME);
+
+  const email =
+    normalizeEmail(data.email);
+
+  const password =
+    String(data.password || "");
+
+  const phone =
+    cleanText(data.phone, 50);
+
+  const country =
+    cleanText(
+      data.country,
+      100
+    );
+
+  const district =
+    cleanText(
+      data.district,
+      100
+    );
+
+  if (
+    !name ||
+    !email ||
+    !password
+  ) {
+    return json(
+      {
+        success: false,
+        error:
+          "Name, email and password are required"
+      },
+      400,
+      request
+    );
+  }
+
+  if (!validEmail(email)) {
+    return json(
+      {
+        success: false,
+        error: "Invalid email address"
+      },
+      400,
+      request
+    );
+  }
+
+  if (!validPassword(password)) {
+    return json(
+      {
+        success: false,
+        error:
+          "Password must contain 8-200 characters"
+      },
+      400,
+      request
+    );
+  }
+
+  if (!validCountry(country)) {
+    return json(
+      {
+        success: false,
+        error: "Invalid country"
+      },
+      400,
+      request
+    );
+  }
+
+  const existing =
+    await env.DB.prepare(`
+      SELECT id
+      FROM users
+      WHERE email = ?
+      LIMIT 1
+    `)
+      .bind(email)
+      .first();
+
+  if (existing) {
+    return json(
+      {
+        success: false,
+        error:
+          "Email already registered"
+      },
+      409,
+      request
+    );
+  }
+
+  const passwordHash =
+    await hashPassword(
+      password,
+      env
+    );
+
+  const result =
+    await env.DB.prepare(`
+      INSERT INTO users (
+        name,
+        email,
+        password_hash,
+        role,
+        phone,
+        country,
+        district,
+        is_verified,
+        is_active,
+        created_at,
+        updated_at
+      )
+      VALUES (?, ?, ?, 'buyer', ?, ?, ?, 0, 1, ?, ?)
+    `)
+      .bind(
+        name,
+        email,
+        passwordHash,
+        phone,
+        country,
+        district,
+        nowSeconds(),
+        nowSeconds()
+      )
+      .run();
+
+  const userId =
+    result.meta?.last_row_id;
+
+  const token =
+    await createSession(
+      userId,
+      "buyer",
+      env
+    );
+
+  const user =
+    await env.DB.prepare(`
+      SELECT *
+      FROM users
+      WHERE id = ?
+      LIMIT 1
+    `)
+      .bind(userId)
+      .first();
+
+  return json(
+    {
+      success: true,
+      token,
+      user: publicUser(user)
+    },
+    201,
+    request
+  );
+}
+
+// ============================================================
+// LOGIN
+// ============================================================
+
+async function login(
+  request,
+  env
+) {
+  const ip =
+    request.headers.get(
+      "CF-Connecting-IP"
+    ) || "unknown";
+
+  const data =
+    await readBody(request);
+
+  const email =
+    normalizeEmail(data.email);
+
+  const password =
+    String(data.password || "");
+
+  if (!email || !password) {
+    return json(
+      {
+        success: false,
+        error:
+          "Email and password are required"
+      },
+      400,
+      request
+    );
+  }
+
+  const emailAllowed =
+    await rateLimit(
+      env,
+      `login-email:${email}`,
+      8,
+      900
+    );
+
+  const ipAllowed =
+    await rateLimit(
+      env,
+      `login-ip:${ip}`,
+      20,
+      900
+    );
+
+  if (
+    !emailAllowed ||
+    !ipAllowed
+  ) {
+    return json(
+      {
+        success: false,
+        error:
+          "Too many login attempts. Try again later."
+      },
+      429,
+      request
+    );
+  }
+
+  const user =
+    await env.DB.prepare(`
+      SELECT *
+      FROM users
+      WHERE email = ?
+      LIMIT 1
+    `)
+      .bind(email)
+      .first();
+
+  if (!user) {
+    return json(
+      {
+        success: false,
+        error:
+          "Invalid email or password"
+      },
+      401,
+      request
+    );
+  }
+
+  if (
+    Number(user.is_active) !== 1
+  ) {
+    return json(
+      {
+        success: false,
+        error:
+          "This account is inactive"
+      },
+      403,
+      request
+    );
+  }
+
+  const valid =
+    await verifyPassword(
+      password,
+      user.password_hash,
+      env
+    );
+
+  if (!valid) {
+    return json(
+      {
+        success: false,
+        error:
+          "Invalid email or password"
+      },
+      401,
+      request
+    );
+  }
+
+  // Upgrade old SHA-256 hashes
+  if (
+    !String(user.password_hash)
+      .startsWith("pbkdf2$")
+  ) {
+    const upgraded =
+      await hashPassword(
+        password,
         env
       );
 
-    } catch (error) {
-      console.error(
-        "IsokoHub Worker Error:",
-        error?.message ||
-          error
+    await env.DB.prepare(`
+      UPDATE users
+      SET password_hash = ?,
+          updated_at = ?
+      WHERE id = ?
+    `)
+      .bind(
+        upgraded,
+        nowSeconds(),
+        user.id
+      )
+      .run();
+  }
+
+  const token =
+    await createSession(
+      user.id,
+      user.role,
+      env
+    );
+
+  return json(
+    {
+      success: true,
+      token,
+      user: publicUser(user)
+    },
+    200,
+    request
+  );
+}
+
+// ============================================================
+// LOGOUT
+// ============================================================
+
+async function logout(
+  request,
+  env
+) {
+  const token =
+    getToken(request);
+
+  if (token) {
+    const secrets = [
+      env.SESSION_SECRET,
+      env.Session_secret,
+      "change-this-session-secret"
+    ].filter(Boolean);
+
+    for (const secret of secrets) {
+      const tokenHash =
+        await hmacSha256(
+          secret,
+          token
+        );
+
+      await env.DB.prepare(`
+        DELETE FROM sessions
+        WHERE token_hash = ?
+      `)
+        .bind(tokenHash)
+        .run();
+    }
+  }
+
+  return json(
+    {
+      success: true,
+      message:
+        "Logged out successfully"
+    },
+    200,
+    request
+  );
+}
+
+// ============================================================
+// ME
+// ============================================================
+
+async function me(
+  request,
+  env
+) {
+  const user =
+    await currentUser(
+      request,
+      env
+    );
+
+  const error =
+    requireUser(
+      user,
+      request
+    );
+
+  if (error) return error;
+
+  return json(
+    {
+      success: true,
+      user: publicUser(user)
+    },
+    200,
+    request
+  );
+}
+
+// ============================================================
+// PRODUCTS
+// ============================================================
+
+function serviceScore(product) {
+  const text = [
+    product.title,
+    product.category,
+    product.description,
+    product.specs,
+    product.condition
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  if (
+    String(product.condition)
+      .toLowerCase() === "service"
+  ) {
+    return 10;
+  }
+
+  const keywords = [
+    "service",
+    "business",
+    "engineering",
+    "consulting",
+    "construction",
+    "teacher",
+    "teaching",
+    "course",
+    "education",
+    "design",
+    "photography",
+    "video",
+    "film",
+    "marketing",
+    "website",
+    "software",
+    "development",
+    "repair",
+    "cleaning",
+    "delivery",
+    "transport",
+    "freelance",
+    "legal",
+    "finance",
+    "event",
+    "tourism"
+  ];
+
+  return keywords.reduce(
+    (score, keyword) =>
+      score +
+      (text.includes(keyword) ? 1 : 0),
+    0
+  );
+}
+
+async function listProducts(
+  request,
+  env
+) {
+  const url =
+    new URL(request.url);
+
+  const search =
+    cleanText(
+      url.searchParams.get("search"),
+      200
+    );
+
+  const category =
+    cleanText(
+      url.searchParams.get("category"),
+      200
+    );
+
+  const country =
+    cleanText(
+      url.searchParams.get("country"),
+      100
+    );
+
+  const district =
+    cleanText(
+      url.searchParams.get("district"),
+      100
+    );
+
+  const city =
+    cleanText(
+      url.searchParams.get("city"),
+      100
+    );
+
+  const seller =
+    url.searchParams.get("seller") || "";
+
+  const limit =
+    limitValue(
+      url.searchParams.get("limit"),
+      100
+    );
+
+  let sql = `
+    SELECT
+      p.*,
+      u.name AS seller_name,
+      u.phone AS seller_phone
+    FROM products p
+    JOIN users u
+      ON u.id = p.seller_id
+    WHERE p.status = 'approved'
+      AND u.is_active = 1
+  `;
+
+  const params = [];
+
+  if (search) {
+    sql += `
+      AND (
+        p.title LIKE ?
+        OR p.description LIKE ?
+        OR p.brand LIKE ?
+        OR p.category LIKE ?
+        OR p.model LIKE ?
+        OR p.specs LIKE ?
+        OR p.city LIKE ?
+      )
+    `;
+
+    const q = `%${search}%`;
+
+    params.push(
+      q, q, q, q, q, q, q
+    );
+  }
+
+  if (category) {
+    sql += `
+      AND p.category = ?
+    `;
+
+    params.push(category);
+  }
+
+  if (country) {
+    sql += `
+      AND p.country = ?
+    `;
+
+    params.push(country);
+  }
+
+  if (district) {
+    sql += `
+      AND p.district = ?
+    `;
+
+    params.push(district);
+  }
+
+  if (city) {
+    sql += `
+      AND p.city = ?
+    `;
+
+    params.push(city);
+  }
+
+  if (seller) {
+    sql += `
+      AND p.seller_id = ?
+    `;
+
+    params.push(seller);
+  }
+
+  sql += `
+    ORDER BY p.created_at DESC
+    LIMIT ${limit}
+  `;
+
+  const result =
+    await env.DB
+      .prepare(sql)
+      .bind(...params)
+      .all();
+
+  return json(
+    {
+      success: true,
+      products:
+        result.results || []
+    },
+    200,
+    request
+  );
+}
+
+// ============================================================
+// SINGLE PRODUCT
+// ============================================================
+
+async function getProduct(
+  productId,
+  env,
+  request
+) {
+  const id =
+    integerValue(productId, -1);
+
+  const product =
+    await env.DB.prepare(`
+      SELECT
+        p.*,
+        u.name AS seller_name,
+        u.phone AS seller_phone
+      FROM products p
+      JOIN users u
+        ON u.id = p.seller_id
+      WHERE p.id = ?
+        AND p.status = 'approved'
+        AND u.is_active = 1
+      LIMIT 1
+    `)
+      .bind(id)
+      .first();
+
+  if (!product) {
+    return json(
+      {
+        success: false,
+        error:
+          "Product not found"
+      },
+      404,
+      request
+    );
+  }
+
+  await env.DB.prepare(`
+    UPDATE products
+    SET views = COALESCE(views, 0) + 1
+    WHERE id = ?
+  `)
+    .bind(id)
+    .run();
+
+  product.views =
+    Number(product.views || 0) + 1;
+
+  return json(
+    {
+      success: true,
+      product
+    },
+    200,
+    request
+  );
+}
+
+// ============================================================
+// CREATE PRODUCT
+// ============================================================
+
+async function createProduct(
+  request,
+  env
+) {
+  const user =
+    await currentUser(
+      request,
+      env
+    );
+
+  const authError =
+    requireUser(
+      user,
+      request
+    );
+
+  if (authError) return authError;
+
+  const data =
+    await readBody(request);
+
+  const title =
+    cleanText(
+      data.title,
+      MAX_TITLE
+    );
+
+  const description =
+    cleanText(
+      data.description,
+      MAX_TEXT
+    );
+
+  const category =
+    cleanText(
+      data.category,
+      200
+    );
+
+  const brand =
+    cleanText(
+      data.brand,
+      150
+    );
+
+  const model =
+    cleanText(
+      data.model,
+      150
+    );
+
+  const condition =
+    cleanText(
+      data.condition,
+      50
+    );
+
+  const currency =
+    cleanText(
+      data.currency || "RWF",
+      3
+    ).toUpperCase();
+
+  const country =
+    cleanText(
+      data.country ||
+      user.country ||
+      "",
+      100
+    );
+
+  const district =
+    cleanText(
+      data.district ||
+      user.district ||
+      "",
+      100
+    );
+
+  const city =
+    cleanText(
+      data.city,
+      100
+    );
+
+  const price =
+    numberValue(
+      data.price,
+      -1
+    );
+
+  const stock =
+    integerValue(
+      data.stock,
+      1
+    );
+
+  const imageUrl =
+    cleanText(
+      data.image_url ||
+      data.image ||
+      "",
+      2000
+    );
+
+  const specs =
+    cleanText(
+      data.specs,
+      MAX_TEXT
+    );
+
+  if (!title) {
+    return json(
+      {
+        success: false,
+        error:
+          "Product title is required"
+      },
+      400,
+      request
+    );
+  }
+
+  if (
+    !Number.isFinite(price) ||
+    price < 0 ||
+    price > MAX_PRICE
+  ) {
+    return json(
+      {
+        success: false,
+        error:
+          "Valid product price is required"
+      },
+      400,
+      request
+    );
+  }
+
+  if (
+    !Number.isInteger(stock) ||
+    stock < 0 ||
+    stock > MAX_STOCK
+  ) {
+    return json(
+      {
+        success: false,
+        error:
+          "Valid stock quantity is required"
+      },
+      400,
+      request
+    );
+  }
+
+  if (!validCurrency(currency)) {
+    return json(
+      {
+        success: false,
+        error:
+          "Invalid currency"
+      },
+      400,
+      request
+    );
+  }
+
+  if (!validCountry(country)) {
+    return json(
+      {
+        success: false,
+        error:
+          "Invalid country"
+      },
+      400,
+      request
+    );
+  }
+
+  if (!validURL(imageUrl)) {
+    return json(
+      {
+        success: false,
+        error:
+          "Invalid image URL"
+      },
+      400,
+      request
+    );
+  }
+
+  const result =
+    await env.DB.prepare(`
+      INSERT INTO products (
+        seller_id,
+        title,
+        category,
+        description,
+        price,
+        currency,
+        stock,
+        brand,
+        model,
+        condition,
+        country,
+        district,
+        city,
+        storage,
+        ram,
+        image_url,
+        specs,
+        negotiable,
+        status,
+        views,
+        created_at,
+        updated_at
+      )
+      VALUES (
+        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+        ?, ?, ?, ?, ?, ?, ?, ?, 'pending',
+        0, ?, ?
+      )
+    `)
+      .bind(
+        user.id,
+        title,
+        category,
+        description,
+        price,
+        currency,
+        stock,
+        brand,
+        model,
+        condition,
+        country,
+        district,
+        city,
+        cleanText(data.storage, 100),
+        cleanText(data.ram, 100),
+        imageUrl,
+        specs,
+        data.negotiable ? 1 : 0,
+        nowSeconds(),
+        nowSeconds()
+      )
+      .run();
+
+  return json(
+    {
+      success: true,
+      message:
+        "Product submitted for review",
+      product_id:
+        result.meta?.last_row_id,
+      status: "pending"
+    },
+    201,
+    request
+  );
+}
+
+// ============================================================
+// MY PRODUCTS
+// ============================================================
+
+async function myProducts(
+  request,
+  env
+) {
+  const user =
+    await currentUser(
+      request,
+      env
+    );
+
+  const error =
+    requireUser(
+      user,
+      request
+    );
+
+  if (error) return error;
+
+  const result =
+    await env.DB.prepare(`
+      SELECT *
+      FROM products
+      WHERE seller_id = ?
+      ORDER BY created_at DESC
+    `)
+      .bind(user.id)
+      .all();
+
+  return json(
+    {
+      success: true,
+      products:
+        result.results || []
+    },
+    200,
+    request
+  );
+}
+
+// ============================================================
+// SELLER ORDERS
+// ============================================================
+
+async function sellerOrders(
+  request,
+  env
+) {
+  const user =
+    await currentUser(
+      request,
+      env
+    );
+
+  const error =
+    requireSeller(
+      user,
+      request
+    );
+
+  if (error) return error;
+
+  const result =
+    await env.DB.prepare(`
+      SELECT
+        o.*,
+        p.title AS product_title,
+        p.image_url AS product_image,
+        b.name AS buyer_name,
+        b.phone AS buyer_phone
+      FROM orders o
+      LEFT JOIN products p
+        ON p.id = o.product_id
+      LEFT JOIN users b
+        ON b.id = o.buyer_id
+      WHERE o.seller_id = ?
+      ORDER BY o.created_at DESC
+    `)
+      .bind(user.id)
+      .all();
+
+  return json(
+    {
+      success: true,
+      orders:
+        result.results || []
+    },
+    200,
+    request
+  );
+}
+
+// ============================================================
+// ORDERS
+// ============================================================
+
+async function listOrders(
+  request,
+  env
+) {
+  const user =
+    await currentUser(
+      request,
+      env
+    );
+
+  const error =
+    requireUser(
+      user,
+      request
+    );
+
+  if (error) return error;
+
+  const result =
+    await env.DB.prepare(`
+      SELECT
+        o.*,
+        p.title AS product_title,
+        p.image_url AS product_image,
+        b.name AS buyer_name,
+        s.name AS seller_name
+      FROM orders o
+      LEFT JOIN products p
+        ON p.id = o.product_id
+      LEFT JOIN users b
+        ON b.id = o.buyer_id
+      LEFT JOIN users s
+        ON s.id = o.seller_id
+      WHERE o.buyer_id = ?
+         OR o.seller_id = ?
+      ORDER BY o.created_at DESC
+    `)
+      .bind(
+        user.id,
+        user.id
+      )
+      .all();
+
+  return json(
+    {
+      success: true,
+      orders:
+        result.results || []
+    },
+    200,
+    request
+  );
+}
+
+// ============================================================
+// CREATE ORDER
+// ============================================================
+
+async function createOrder(
+  request,
+  env
+) {
+  const user =
+    await currentUser(
+      request,
+      env
+    );
+
+  const error =
+    requireUser(
+      user,
+      request
+    );
+
+  if (error) return error;
+
+  const data =
+    await readBody(request);
+
+  const productId =
+    integerValue(
+      data.product_id,
+      -1
+    );
+
+  const quantity =
+    integerValue(
+      data.quantity,
+      1
+    );
+
+  if (productId < 1) {
+    return json(
+      {
+        success: false,
+        error:
+          "Valid product_id is required"
+      },
+      400,
+      request
+    );
+  }
+
+  if (
+    quantity < 1 ||
+    quantity > MAX_STOCK
+  ) {
+    return json(
+      {
+        success: false,
+        error:
+          "Invalid quantity"
+      },
+      400,
+      request
+    );
+  }
+
+  const product =
+    await env.DB.prepare(`
+      SELECT *
+      FROM products
+      WHERE id = ?
+        AND status = 'approved'
+      LIMIT 1
+    `)
+      .bind(productId)
+      .first();
+
+  if (!product) {
+    return json(
+      {
+        success: false,
+        error:
+          "Product not found"
+      },
+      404,
+      request
+    );
+  }
+
+  if (
+    Number(product.seller_id) ===
+    Number(user.id)
+  ) {
+    return json(
+      {
+        success: false,
+        error:
+          "You cannot order your own product"
+      },
+      400,
+      request
+    );
+  }
+
+  if (
+    Number(product.stock) <
+    quantity
+  ) {
+    return json(
+      {
+        success: false,
+        error:
+          "Not enough stock available"
+      },
+      409,
+      request
+    );
+  }
+
+  const unitPrice =
+    Number(product.price);
+
+  const totalPrice =
+    unitPrice * quantity;
+
+  const commission =
+    totalPrice *
+    COMMISSION_RATE;
+
+  const deliveryAddress =
+    cleanText(
+      data.delivery_address,
+      500
+    );
+
+  const deliveryCountry =
+    cleanText(
+      data.delivery_country ||
+      user.country ||
+      "",
+      100
+    );
+
+  const deliveryDistrict =
+    cleanText(
+      data.delivery_district ||
+      user.district ||
+      "",
+      100
+    );
+
+  const deliveryPhone =
+    cleanText(
+      data.delivery_phone ||
+      user.phone ||
+      "",
+      50
+    );
+
+  // Atomic stock protection.
+  const stockUpdate =
+    await env.DB.prepare(`
+      UPDATE products
+      SET stock = stock - ?,
+          updated_at = ?
+      WHERE id = ?
+        AND stock >= ?
+        AND status = 'approved'
+    `)
+      .bind(
+        quantity,
+        nowSeconds(),
+        productId,
+        quantity
+      )
+      .run();
+
+  if (
+    !stockUpdate.meta ||
+    stockUpdate.meta.changes === 0
+  ) {
+    return json(
+      {
+        success: false,
+        error:
+          "Product is out of stock or unavailable"
+      },
+      409,
+      request
+    );
+  }
+
+  try {
+    const result =
+      await env.DB.prepare(`
+        INSERT INTO orders (
+          buyer_id,
+          product_id,
+          seller_id,
+          quantity,
+          unit_price,
+          total_price,
+          commission,
+          currency,
+          status,
+          payment_status,
+          delivery_address,
+          delivery_country,
+          delivery_district,
+          delivery_phone,
+          created_at,
+          updated_at
+        )
+        VALUES (
+          ?, ?, ?, ?, ?, ?, ?, ?, 'pending',
+          'unpaid', ?, ?, ?, ?, ?, ?
+        )
+      `)
+        .bind(
+          user.id,
+          product.id,
+          product.seller_id,
+          quantity,
+          unitPrice,
+          totalPrice,
+          commission,
+          product.currency || "RWF",
+          deliveryAddress,
+          deliveryCountry,
+          deliveryDistrict,
+          deliveryPhone,
+          nowSeconds(),
+          nowSeconds()
+        )
+        .run();
+
+    return json(
+      {
+        success: true,
+        order: {
+          id:
+            result.meta?.last_row_id,
+          product_id:
+            product.id,
+          quantity,
+          unit_price:
+            unitPrice,
+          total_price:
+            totalPrice,
+          commission,
+          currency:
+            product.currency || "RWF",
+          status: "pending",
+          payment_status:
+            "unpaid"
+        }
+      },
+      201,
+      request
+    );
+  } catch (error) {
+    // Restore stock if order creation fails.
+    await env.DB.prepare(`
+      UPDATE products
+      SET stock = stock + ?,
+          updated_at = ?
+      WHERE id = ?
+    `)
+      .bind(
+        quantity,
+        nowSeconds(),
+        productId
+      )
+      .run();
+
+    throw error;
+  }
+}
+
+// ============================================================
+// SAVED
+// ============================================================
+
+async function listSaved(
+  request,
+  env
+) {
+  const user =
+    await currentUser(
+      request,
+      env
+    );
+
+  const error =
+    requireUser(
+      user,
+      request
+    );
+
+  if (error) return error;
+
+  const result =
+    await env.DB.prepare(`
+      SELECT
+        p.*,
+        u.name AS seller_name
+      FROM saved sp
+      JOIN products p
+        ON p.id = sp.product_id
+      JOIN users u
+        ON u.id = p.seller_id
+      WHERE sp.user_id = ?
+      ORDER BY sp.created_at DESC
+    `)
+      .bind(user.id)
+      .all();
+
+  return json(
+    {
+      success: true,
+      saved:
+        result.results || []
+    },
+    200,
+    request
+  );
+}
+
+async function saveProduct(
+  request,
+  env,
+  productId
+) {
+  const user =
+    await currentUser(
+      request,
+      env
+    );
+
+  const error =
+    requireUser(
+      user,
+      request
+    );
+
+  if (error) return error;
+
+  const id =
+    integerValue(
+      productId,
+      -1
+    );
+
+  const product =
+    await env.DB.prepare(`
+      SELECT id
+      FROM products
+      WHERE id = ?
+        AND status = 'approved'
+      LIMIT 1
+    `)
+      .bind(id)
+      .first();
+
+  if (!product) {
+    return json(
+      {
+        success: false,
+        error:
+          "Product not found"
+      },
+      404,
+      request
+    );
+  }
+
+  await env.DB.prepare(`
+    INSERT OR IGNORE INTO saved (
+      user_id,
+      product_id,
+      created_at
+    )
+    VALUES (?, ?, ?)
+  `)
+    .bind(
+      user.id,
+      id,
+      nowSeconds()
+    )
+    .run();
+
+  return json(
+    {
+      success: true,
+      saved: true
+    },
+    201,
+    request
+  );
+}
+
+async function unsaveProduct(
+  request,
+  env,
+  productId
+) {
+  const user =
+    await currentUser(
+      request,
+      env
+    );
+
+  const error =
+    requireUser(
+      user,
+      request
+    );
+
+  if (error) return error;
+
+  const id =
+    integerValue(
+      productId,
+      -1
+    );
+
+  await env.DB.prepare(`
+    DELETE FROM saved
+    WHERE user_id = ?
+      AND product_id = ?
+  `)
+    .bind(
+      user.id,
+      id
+    )
+    .run();
+
+  return json(
+    {
+      success: true,
+      saved: false
+    },
+    200,
+    request
+  );
+}
+
+// ============================================================
+// MESSAGES
+// ============================================================
+
+async function listMessages(
+  request,
+  env
+) {
+  const user =
+    await currentUser(
+      request,
+      env
+    );
+
+  const error =
+    requireUser(
+      user,
+      request
+    );
+
+  if (error) return error;
+
+  const url =
+    new URL(request.url);
+
+  const withUser =
+    url.searchParams.get("with") || "";
+
+  let result;
+
+  if (withUser) {
+    const otherId =
+      integerValue(
+        withUser,
+        -1
       );
 
-      return errorResponse(
-        error?.message ===
-          "Request body is too large"
-          ? "Request body is too large"
-          : "Internal server error",
-        error?.message ===
-          "Request body is too large"
-          ? 413
-          : 500,
+    result =
+      await env.DB.prepare(`
+        SELECT
+          m.*,
+          s.name AS sender_name,
+          r.name AS receiver_name
+        FROM messages m
+        LEFT JOIN users s
+          ON s.id = m.sender_id
+        LEFT JOIN users r
+          ON r.id = m.receiver_id
+        WHERE
+          (
+            m.sender_id = ?
+            AND m.receiver_id = ?
+          )
+          OR
+          (
+            m.sender_id = ?
+            AND m.receiver_id = ?
+          )
+        ORDER BY m.created_at ASC
+        LIMIT 200
+      `)
+        .bind(
+          user.id,
+          otherId,
+          otherId,
+          user.id
+        )
+        .all();
+
+    await env.DB.prepare(`
+      UPDATE messages
+      SET is_read = 1
+      WHERE receiver_id = ?
+        AND sender_id = ?
+    `)
+      .bind(
+        user.id,
+        otherId
+      )
+      .run();
+  } else {
+    result =
+      await env.DB.prepare(`
+        SELECT
+          m.*,
+          s.name AS sender_name,
+          r.name AS receiver_name
+        FROM messages m
+        LEFT JOIN users s
+          ON s.id = m.sender_id
+        LEFT JOIN users r
+          ON r.id = m.receiver_id
+        WHERE
+          m.sender_id = ?
+          OR m.receiver_id = ?
+        ORDER BY m.created_at DESC
+        LIMIT 200
+      `)
+        .bind(
+          user.id,
+          user.id
+        )
+        .all();
+  }
+
+  return json(
+    {
+      success: true,
+      messages:
+        result.results || []
+    },
+    200,
+    request
+  );
+}
+
+async function sendMessage(
+  request,
+  env
+) {
+  const user =
+    await currentUser(
+      request,
+      env
+    );
+
+  const error =
+    requireUser(
+      user,
+      request
+    );
+
+  if (error) return error;
+
+  const data =
+    await readBody(request);
+
+  const receiverId =
+    integerValue(
+      data.receiver_id,
+      -1
+    );
+
+  const message =
+    cleanText(
+      data.message ||
+      data.body,
+      5000
+    );
+
+  if (
+    receiverId < 1 ||
+    !message
+  ) {
+    return json(
+      {
+        success: false,
+        error:
+          "receiver_id and message are required"
+      },
+      400,
+      request
+    );
+  }
+
+  if (
+    Number(receiverId) ===
+    Number(user.id)
+  ) {
+    return json(
+      {
+        success: false,
+        error:
+          "You cannot message yourself"
+      },
+      400,
+      request
+    );
+  }
+
+  const receiver =
+    await env.DB.prepare(`
+      SELECT id
+      FROM users
+      WHERE id = ?
+        AND is_active = 1
+      LIMIT 1
+    `)
+      .bind(receiverId)
+      .first();
+
+  if (!receiver) {
+    return json(
+      {
+        success: false,
+        error:
+          "Receiver not found"
+      },
+      404,
+      request
+    );
+  }
+
+  const result =
+    await env.DB.prepare(`
+      INSERT INTO messages (
+        sender_id,
+        receiver_id,
+        body,
+        product_id,
+        is_read,
+        created_at
+      )
+      VALUES (?, ?, ?, ?, 0, ?)
+    `)
+      .bind(
+        user.id,
+        receiverId,
+        message,
+        data.product_id
+          ? integerValue(data.product_id, null)
+          : null,
+        nowSeconds()
+      )
+      .run();
+
+  return json(
+    {
+      success: true,
+      message: {
+        id:
+          result.meta?.last_row_id,
+        sender_id:
+          user.id,
+        receiver_id:
+          receiverId,
+        body: message
+      }
+    },
+    201,
+    request
+  );
+}
+
+// ============================================================
+// ADMIN PRODUCTS
+// ============================================================
+
+async function adminProducts(
+  request,
+  env
+) {
+  const user =
+    await currentUser(
+      request,
+      env
+    );
+
+  const error =
+    requireAdmin(
+      user,
+      request
+    );
+
+  if (error) return error;
+
+  const result =
+    await env.DB.prepare(`
+      SELECT
+        p.*,
+        u.name AS seller_name,
+        u.email AS seller_email
+      FROM products p
+      LEFT JOIN users u
+        ON u.id = p.seller_id
+      ORDER BY p.created_at DESC
+    `)
+      .all();
+
+  return json(
+    {
+      success: true,
+      products:
+        result.results || []
+    },
+    200,
+    request
+  );
+}
+
+// ============================================================
+// ADMIN PRODUCT STATUS
+// ============================================================
+
+async function updateProductStatus(
+  request,
+  env,
+  productId
+) {
+  const user =
+    await currentUser(
+      request,
+      env
+    );
+
+  const error =
+    requireAdmin(
+      user,
+      request
+    );
+
+  if (error) return error;
+
+  const id =
+    integerValue(
+      productId,
+      -1
+    );
+
+  const data =
+    await readBody(request);
+
+  const status =
+    cleanText(
+      data.status,
+      30
+    );
+
+  const allowed = [
+    "pending",
+    "approved",
+    "rejected",
+    "sold"
+  ];
+
+  if (!allowed.includes(status)) {
+    return json(
+      {
+        success: false,
+        error:
+          "Invalid product status"
+      },
+      400,
+      request
+    );
+  }
+
+  const result =
+    await env.DB.prepare(`
+      UPDATE products
+      SET status = ?,
+          updated_at = ?
+      WHERE id = ?
+    `)
+      .bind(
+        status,
+        nowSeconds(),
+        id
+      )
+      .run();
+
+  if (
+    !result.meta ||
+    result.meta.changes === 0
+  ) {
+    return json(
+      {
+        success: false,
+        error:
+          "Product not found"
+      },
+      404,
+      request
+    );
+  }
+
+  return json(
+    {
+      success: true,
+      message:
+        "Product status updated",
+      status
+    },
+    200,
+    request
+  );
+}
+
+// ============================================================
+// ADMIN ORDER LIST
+// ============================================================
+
+async function adminOrders(
+  request,
+  env
+) {
+  const user =
+    await currentUser(
+      request,
+      env
+    );
+
+  const error =
+    requireAdmin(
+      user,
+      request
+    );
+
+  if (error) return error;
+
+  const result =
+    await env.DB.prepare(`
+      SELECT
+        o.*,
+        p.title AS product_title,
+        b.name AS buyer_name,
+        s.name AS seller_name
+      FROM orders o
+      LEFT JOIN products p
+        ON p.id = o.product_id
+      LEFT JOIN users b
+        ON b.id = o.buyer_id
+      LEFT JOIN users s
+        ON s.id = o.seller_id
+      ORDER BY o.created_at DESC
+      LIMIT 500
+    `)
+      .all();
+
+  return json(
+    {
+      success: true,
+      orders:
+        result.results || []
+    },
+    200,
+    request
+  );
+}
+
+// ============================================================
+// ADMIN ORDER UPDATE
+// ============================================================
+
+async function adminUpdateOrder(
+  request,
+  env,
+  orderId
+) {
+  const user =
+    await currentUser(
+      request,
+      env
+    );
+
+  const error =
+    requireAdmin(
+      user,
+      request
+    );
+
+  if (error) return error;
+
+  const id =
+    integerValue(
+      orderId,
+      -1
+    );
+
+  const data =
+    await readBody(request);
+
+  const existing =
+    await env.DB.prepare(`
+      SELECT *
+      FROM orders
+      WHERE id = ?
+      LIMIT 1
+    `)
+      .bind(id)
+      .first();
+
+  if (!existing) {
+    return json(
+      {
+        success: false,
+        error:
+          "Order not found"
+      },
+      404,
+      request
+    );
+  }
+
+  const newStatus =
+    data.status !== undefined
+      ? cleanText(data.status, 30)
+      : existing.status;
+
+  const newPaymentStatus =
+    data.payment_status !== undefined
+      ? cleanText(
+          data.payment_status,
+          30
+        )
+      : existing.payment_status;
+
+  const allowedStatuses = [
+    "pending",
+    "processing",
+    "confirmed",
+    "shipped",
+    "delivered",
+    "completed",
+    "cancelled",
+    "refunded"
+  ];
+
+  const allowedPaymentStatuses = [
+    "unpaid",
+    "pending",
+    "paid",
+    "failed",
+    "refunded"
+  ];
+
+  if (
+    !allowedStatuses.includes(
+      newStatus
+    )
+  ) {
+    return json(
+      {
+        success: false,
+        error:
+          "Invalid order status"
+      },
+      400,
+      request
+    );
+  }
+
+  if (
+    !allowedPaymentStatuses.includes(
+      newPaymentStatus
+    )
+  ) {
+    return json(
+      {
+        success: false,
+        error:
+          "Invalid payment status"
+      },
+      400,
+      request
+    );
+  }
+
+  const oldClosed =
+    existing.status === "cancelled" ||
+    existing.status === "refunded" ||
+    existing.payment_status === "refunded";
+
+  const newClosed =
+    newStatus === "cancelled" ||
+    newStatus === "refunded" ||
+    newPaymentStatus === "refunded";
+
+  // Restore stock once when order becomes cancelled/refunded.
+  if (
+    !oldClosed &&
+    newClosed
+  ) {
+    await env.DB.prepare(`
+      UPDATE products
+      SET stock = stock + ?,
+          updated_at = ?
+      WHERE id = ?
+    `)
+      .bind(
+        Number(existing.quantity),
+        nowSeconds(),
+        existing.product_id
+      )
+      .run();
+  }
+
+  // If a cancelled/refunded order becomes active again,
+  // take stock back.
+  if (
+    oldClosed &&
+    !newClosed
+  ) {
+    const restored =
+      await env.DB.prepare(`
+        UPDATE products
+        SET stock = stock - ?,
+            updated_at = ?
+        WHERE id = ?
+          AND stock >= ?
+      `)
+        .bind(
+          Number(existing.quantity),
+          nowSeconds(),
+          existing.product_id,
+          Number(existing.quantity)
+        )
+        .run();
+
+    if (
+      !restored.meta ||
+      restored.meta.changes === 0
+    ) {
+      return json(
+        {
+          success: false,
+          error:
+            "Not enough stock to reactivate this order"
+        },
+        409,
+        request
+      );
+    }
+  }
+
+  await env.DB.prepare(`
+    UPDATE orders
+    SET status = ?,
+        payment_status = ?,
+        updated_at = ?
+    WHERE id = ?
+  `)
+    .bind(
+      newStatus,
+      newPaymentStatus,
+      nowSeconds(),
+      id
+    )
+    .run();
+
+  return json(
+    {
+      success: true,
+      message:
+        "Order updated",
+      status:
+        newStatus,
+      payment_status:
+        newPaymentStatus
+    },
+    200,
+    request
+  );
+}
+
+// ============================================================
+// ADMIN USERS
+// ============================================================
+
+async function adminUsers(
+  request,
+  env
+) {
+  const user =
+    await currentUser(
+      request,
+      env
+    );
+
+  const error =
+    requireAdmin(
+      user,
+      request
+    );
+
+  if (error) return error;
+
+  const result =
+    await env.DB.prepare(`
+      SELECT
+        id,
+        name,
+        email,
+        phone,
+        role,
+        country,
+        district,
+        avatar_url,
+        bio,
+        is_verified,
+        is_active,
+        created_at,
+        updated_at
+      FROM users
+      ORDER BY created_at DESC
+      LIMIT 500
+    `)
+      .all();
+
+  return json(
+    {
+      success: true,
+      users:
+        result.results || []
+    },
+    200,
+    request
+  );
+}
+
+// ============================================================
+// ADMIN STATS
+// ============================================================
+
+async function adminStats(
+  request,
+  env
+) {
+  const user =
+    await currentUser(
+      request,
+      env
+    );
+
+  const error =
+    requireAdmin(
+      user,
+      request
+    );
+
+  if (error) return error;
+
+  const users =
+    await env.DB.prepare(`
+      SELECT COUNT(*) AS count
+      FROM users
+    `).first();
+
+  const sellers =
+    await env.DB.prepare(`
+      SELECT COUNT(*) AS count
+      FROM users
+      WHERE role = 'seller'
+    `).first();
+
+  const products =
+    await env.DB.prepare(`
+      SELECT COUNT(*) AS count
+      FROM products
+    `).first();
+
+  const orders =
+    await env.DB.prepare(`
+      SELECT COUNT(*) AS count
+      FROM orders
+    `).first();
+
+  const paid =
+    await env.DB.prepare(`
+      SELECT
+        COALESCE(
+          SUM(total_price),
+          0
+        ) AS revenue,
+        COALESCE(
+          SUM(commission),
+          0
+        ) AS commission
+      FROM orders
+      WHERE payment_status = 'paid'
+    `).first();
+
+  return json(
+    {
+      success: true,
+      stats: {
+        users:
+          Number(users?.count || 0),
+        sellers:
+          Number(sellers?.count || 0),
+        products:
+          Number(products?.count || 0),
+        orders:
+          Number(orders?.count || 0),
+        revenue:
+          Number(paid?.revenue || 0),
+        commission:
+          Number(paid?.commission || 0)
+      }
+    },
+    200,
+    request
+  );
+}
+
+// ============================================================
+// SELLER STATS
+// ============================================================
+
+async function sellerStats(
+  request,
+  env
+) {
+  const user =
+    await currentUser(
+      request,
+      env
+    );
+
+  const error =
+    requireSeller(
+      user,
+      request
+    );
+
+  if (error) return error;
+
+  const products =
+    await env.DB.prepare(`
+      SELECT COUNT(*) AS count
+      FROM products
+      WHERE seller_id = ?
+    `)
+      .bind(user.id)
+      .first();
+
+  const orders =
+    await env.DB.prepare(`
+      SELECT COUNT(*) AS count
+      FROM orders
+      WHERE seller_id = ?
+    `)
+      .bind(user.id)
+      .first();
+
+  const revenue =
+    await env.DB.prepare(`
+      SELECT
+        COALESCE(
+          SUM(total_price),
+          0
+        ) AS revenue,
+        COALESCE(
+          SUM(commission),
+          0
+        ) AS commission
+      FROM orders
+      WHERE seller_id = ?
+        AND payment_status = 'paid'
+    `)
+      .bind(user.id)
+      .first();
+
+  return json(
+    {
+      success: true,
+      stats: {
+        products:
+          Number(products?.count || 0),
+        orders:
+          Number(orders?.count || 0),
+        revenue:
+          Number(revenue?.revenue || 0),
+        commission:
+          Number(revenue?.commission || 0),
+        net_revenue:
+          Number(revenue?.revenue || 0) -
+          Number(revenue?.commission || 0)
+      }
+    },
+    200,
+    request
+  );
+}
+
+// ============================================================
+// ADMIN CATEGORIES
+// ============================================================
+
+async function adminCategories(
+  request,
+  env
+) {
+  const user =
+    await currentUser(
+      request,
+      env
+    );
+
+  const error =
+    requireAdmin(
+      user,
+      request
+    );
+
+  if (error) return error;
+
+  const result =
+    await env.DB.prepare(`
+      SELECT *
+      FROM categories
+      ORDER BY name ASC
+    `)
+      .all();
+
+  return json(
+    {
+      success: true,
+      categories:
+        result.results || []
+    },
+    200,
+    request
+  );
+}
+
+async function createCategory(
+  request,
+  env
+) {
+  const user =
+    await currentUser(
+      request,
+      env
+    );
+
+  const error =
+    requireAdmin(
+      user,
+      request
+    );
+
+  if (error) return error;
+
+  const data =
+    await readBody(request);
+
+  const name =
+    cleanText(
+      data.name,
+      200
+    );
+
+  const description =
+    cleanText(
+      data.description,
+      1000
+    );
+
+  const icon =
+    cleanText(
+      data.icon,
+      100
+    );
+
+  if (!name) {
+    return json(
+      {
+        success: false,
+        error:
+          "Category name is required"
+      },
+      400,
+      request
+    );
+  }
+
+  try {
+    const result =
+      await env.DB.prepare(`
+        INSERT INTO categories (
+          name,
+          description,
+          icon,
+          is_active,
+          created_at
+        )
+        VALUES (?, ?, ?, 1, ?)
+      `)
+        .bind(
+          name,
+          description,
+          icon,
+          nowSeconds()
+        )
+        .run();
+
+    return json(
+      {
+        success: true,
+        category_id:
+          result.meta?.last_row_id,
+        name
+      },
+      201,
+      request
+    );
+  } catch {
+    return json(
+      {
+        success: false,
+        error:
+          "Category already exists or could not be created"
+      },
+      409,
+      request
+    );
+  }
+}
+
+// ============================================================
+// SERVICES
+// ============================================================
+
+async function listServices(
+  request,
+  env
+) {
+  const url =
+    new URL(request.url);
+
+  const search =
+    cleanText(
+      url.searchParams.get("search"),
+      200
+    );
+
+  const category =
+    cleanText(
+      url.searchParams.get("category"),
+      200
+    );
+
+  const country =
+    cleanText(
+      url.searchParams.get("country"),
+      100
+    );
+
+  const district =
+    cleanText(
+      url.searchParams.get("district"),
+      100
+    );
+
+  let sql = `
+    SELECT
+      p.*,
+      u.name AS seller_name,
+      u.phone AS seller_phone
+    FROM products p
+    JOIN users u
+      ON u.id = p.seller_id
+    WHERE p.status = 'approved'
+      AND u.is_active = 1
+  `;
+
+  const params = [];
+
+  if (category) {
+    sql += `
+      AND p.category = ?
+    `;
+
+    params.push(category);
+  }
+
+  if (country) {
+    sql += `
+      AND p.country = ?
+    `;
+
+    params.push(country);
+  }
+
+  if (district) {
+    sql += `
+      AND p.district = ?
+    `;
+
+    params.push(district);
+  }
+
+  if (search) {
+    sql += `
+      AND (
+        p.title LIKE ?
+        OR p.description LIKE ?
+        OR p.category LIKE ?
+        OR p.specs LIKE ?
+      )
+    `;
+
+    const q =
+      `%${search}%`;
+
+    params.push(
+      q, q, q, q
+    );
+  }
+
+  sql += `
+    ORDER BY p.created_at DESC
+    LIMIT 500
+  `;
+
+  const result =
+    await env.DB
+      .prepare(sql)
+      .bind(...params)
+      .all();
+
+  const services =
+    (result.results || [])
+      .filter(
+        product =>
+          serviceScore(product) > 0
+      );
+
+  return json(
+    {
+      success: true,
+      services
+    },
+    200,
+    request
+  );
+}
+
+// ============================================================
+// ADMIN SERVICES
+// ============================================================
+
+async function adminServices(
+  request,
+  env
+) {
+  const user =
+    await currentUser(
+      request,
+      env
+    );
+
+  const error =
+    requireAdmin(
+      user,
+      request
+    );
+
+  if (error) return error;
+
+  const result =
+    await env.DB.prepare(`
+      SELECT
+        p.*,
+        u.name AS seller_name,
+        u.email AS seller_email
+      FROM products p
+      LEFT JOIN users u
+        ON u.id = p.seller_id
+      WHERE p.status = 'approved'
+      ORDER BY p.created_at DESC
+      LIMIT 500
+    `)
+      .all();
+
+  const services =
+    (result.results || [])
+      .filter(
+        product =>
+          serviceScore(product) > 0
+      );
+
+  return json(
+    {
+      success: true,
+      services
+    },
+    200,
+    request
+  );
+}
+
+// ============================================================
+// R2 IMAGE UPLOAD
+// ============================================================
+
+async function uploadImage(
+  request,
+  env
+) {
+  const user =
+    await currentUser(
+      request,
+      env
+    );
+
+  const error =
+    requireUser(
+      user,
+      request
+    );
+
+  if (error) return error;
+
+  if (!env.IMAGES) {
+    return json(
+      {
+        success: false,
+        error:
+          "R2 image storage is not configured"
+      },
+      503,
+      request
+    );
+  }
+
+  const contentType =
+    request.headers.get(
+      "content-type"
+    ) || "";
+
+  if (
+    !contentType.includes(
+      "multipart/form-data"
+    )
+  ) {
+    return json(
+      {
+        success: false,
+        error:
+          "multipart/form-data is required"
+      },
+      400,
+      request
+    );
+  }
+
+  const form =
+    await request.formData();
+
+  const file =
+    form.get("file");
+
+  if (
+    !file ||
+    typeof file.arrayBuffer !==
+      "function"
+  ) {
+    return json(
+      {
+        success: false,
+        error:
+          "Image file is required"
+      },
+      400,
+      request
+    );
+  }
+
+  const maxImageSize =
+    10 * 1024 * 1024;
+
+  if (
+    Number(file.size || 0) >
+    maxImageSize
+  ) {
+    return json(
+      {
+        success: false,
+        error:
+          "Image must be 10MB or smaller"
+      },
+      413,
+      request
+    );
+  }
+
+  const allowedTypes = [
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+    "image/gif"
+  ];
+
+  if (
+    file.type &&
+    !allowedTypes.includes(
+      file.type
+    )
+  ) {
+    return json(
+      {
+        success: false,
+        error:
+          "Unsupported image type"
+      },
+      400,
+      request
+    );
+  }
+
+  let extension = "jpg";
+
+  if (file.type === "image/png") {
+    extension = "png";
+  }
+
+  if (file.type === "image/webp") {
+    extension = "webp";
+  }
+
+  if (file.type === "image/gif") {
+    extension = "gif";
+  }
+
+  const key =
+    `users/${user.id}/${crypto.randomUUID()}.${extension}`;
+
+  await env.IMAGES.put(
+    key,
+    await file.arrayBuffer(),
+    {
+      httpMetadata: {
+        contentType:
+          file.type ||
+          "image/jpeg"
+      }
+    }
+  );
+
+  return json(
+    {
+      success: true,
+      key,
+      url:
+        `/api/images/${encodeURIComponent(key)}`
+    },
+    201,
+    request
+  );
+}
+
+// ============================================================
+// R2 IMAGE GET
+// ============================================================
+
+async function getImage(
+  env,
+  key,
+  request
+) {
+  if (!env.IMAGES) {
+    return new Response(
+      "R2 not configured",
+      {
+        status: 503,
+        headers:
+          securityHeaders(request)
+      }
+    );
+  }
+
+  const object =
+    await env.IMAGES.get(key);
+
+  if (!object) {
+    return new Response(
+      "Image not found",
+      {
+        status: 404,
+        headers:
+          securityHeaders(request)
+      }
+    );
+  }
+
+  const headers =
+    securityHeaders(request);
+
+  object.writeHttpMetadata(
+    headers
+  );
+
+  headers.set(
+    "ETag",
+    object.httpEtag
+  );
+
+  headers.set(
+    "Cache-Control",
+    "public, max-age=31536000, immutable"
+  );
+
+  return new Response(
+    object.body,
+    {
+      status: 200,
+      headers
+    }
+  );
+}
+
+// ============================================================
+// ADMIN PAYMENT VIEW
+// ============================================================
+
+async function adminPayments(
+  request,
+  env
+) {
+  const user =
+    await currentUser(
+      request,
+      env
+    );
+
+  const error =
+    requireAdmin(
+      user,
+      request
+    );
+
+  if (error) return error;
+
+  const result =
+    await env.DB.prepare(`
+      SELECT
+        o.id,
+        o.buyer_id,
+        o.seller_id,
+        o.product_id,
+        o.quantity,
+        o.unit_price,
+        o.total_price,
+        o.commission,
+        o.currency,
+        o.payment_status,
+        o.status,
+        o.created_at,
+        o.updated_at,
+        b.name AS buyer_name,
+        s.name AS seller_name,
+        p.title AS product_title
+      FROM orders o
+      LEFT JOIN users b
+        ON b.id = o.buyer_id
+      LEFT JOIN users s
+        ON s.id = o.seller_id
+      LEFT JOIN products p
+        ON p.id = o.product_id
+      ORDER BY o.created_at DESC
+      LIMIT 500
+    `)
+      .all();
+
+  return json(
+    {
+      success: true,
+      payments:
+        result.results || []
+    },
+    200,
+    request
+  );
+}
+
+// ============================================================
+// ADMIN REPORTS
+// ============================================================
+
+async function adminReports(
+  request,
+  env
+) {
+  const user =
+    await currentUser(
+      request,
+      env
+    );
+
+  const error =
+    requireAdmin(
+      user,
+      request
+    );
+
+  if (error) return error;
+
+  const result =
+    await env.DB.prepare(`
+      SELECT
+        status,
+        payment_status,
+        COUNT(*) AS count,
+        COALESCE(
+          SUM(total_price),
+          0
+        ) AS total
+      FROM orders
+      GROUP BY status, payment_status
+      ORDER BY count DESC
+    `)
+      .all();
+
+  return json(
+    {
+      success: true,
+      reports:
+        result.results || []
+    },
+    200,
+    request
+  );
+}
+
+// ============================================================
+// MAIN ROUTER
+// ============================================================
+
+export default {
+  async fetch(
+    request,
+    env,
+    ctx
+  ) {
+    return handleRequest(
+      request,
+      env,
+      ctx
+    );
+  }
+};
+
+export async function onRequest(
+  context
+) {
+  return handleRequest(
+    context.request,
+    context.env,
+    context
+  );
+}
+
+async function handleRequest(
+  request,
+  env,
+  ctx
+) {
+  if (
+    request.method === "OPTIONS"
+  ) {
+    return new Response(
+      null,
+      {
+        status: 204,
+        headers:
+          securityHeaders(request)
+      }
+    );
+  }
+
+  const url =
+    new URL(request.url);
+
+  const path =
+    url.pathname.replace(
+      /\/+$/,
+      ""
+    ) || "/";
+
+  const method =
+    request.method.toUpperCase();
+
+  try {
+    if (!env.DB) {
+      return json(
+        {
+          success: false,
+          error:
+            "D1 binding DB is not configured"
+        },
+        500,
+        request
+      );
+    }
+
+    // -------------------------
+    // HEALTH / CONFIG
+    // -------------------------
+
+    if (
+      path === "/api/health" &&
+      method === "GET"
+    ) {
+      return health(
+        env,
+        request
+      );
+    }
+
+    if (
+      path === "/api/config" &&
+      method === "GET"
+    ) {
+      return config(
+        env,
+        request
+      );
+    }
+
+    if (
+      path === "/api/countries" &&
+      method === "GET"
+    ) {
+      return countries(
+        request
+      );
+    }
+
+    if (
+      path === "/api/service-categories" &&
+      method === "GET"
+    ) {
+      return serviceCategories(
+        request
+      );
+    }
+
+    if (
+      path === "/api/categories" &&
+      method === "GET"
+    ) {
+      return categories(
         request,
         env
       );
     }
+
+    // -------------------------
+    // AUTH
+    // -------------------------
+
+    if (
+      (
+        path === "/api/register" ||
+        path === "/api/auth/register"
+      ) &&
+      method === "POST"
+    ) {
+      return register(
+        request,
+        env
+      );
+    }
+
+    if (
+      (
+        path === "/api/login" ||
+        path === "/api/auth/login"
+      ) &&
+      method === "POST"
+    ) {
+      return login(
+        request,
+        env
+      );
+    }
+
+    if (
+      (
+        path === "/api/logout" ||
+        path === "/api/auth/logout"
+      ) &&
+      method === "POST"
+    ) {
+      return logout(
+        request,
+        env
+      );
+    }
+
+    if (
+      (
+        path === "/api/me" ||
+        path === "/api/auth/me"
+      ) &&
+      method === "GET"
+    ) {
+      return me(
+        request,
+        env
+      );
+    }
+
+    // -------------------------
+    // PRODUCTS
+    // -------------------------
+
+    if (
+      path === "/api/products" &&
+      method === "GET"
+    ) {
+      return listProducts(
+        request,
+        env
+      );
+    }
+
+    if (
+      path === "/api/products" &&
+      method === "POST"
+    ) {
+      return createProduct(
+        request,
+        env
+      );
+    }
+
+    if (
+      path === "/api/my-products" &&
+      method === "GET"
+    ) {
+      return myProducts(
+        request,
+        env
+      );
+    }
+
+    // -------------------------
+    // SERVICES
+    // -------------------------
+
+    if (
+      path === "/api/services" &&
+      method === "GET"
+    ) {
+      return listServices(
+        request,
+        env
+      );
+    }
+
+    // -------------------------
+    // SAVED
+    // -------------------------
+
+    if (
+      path === "/api/saved" &&
+      method === "GET"
+    ) {
+      return listSaved(
+        request,
+        env
+      );
+    }
+
+    // -------------------------
+    // ORDERS
+    // -------------------------
+
+    if (
+      path === "/api/orders" &&
+      method === "GET"
+    ) {
+      return listOrders(
+        request,
+        env
+      );
+    }
+
+    if (
+      path === "/api/orders" &&
+      method === "POST"
+    ) {
+      return createOrder(
+        request,
+        env
+      );
+    }
+
+    if (
+      path === "/api/seller/orders" &&
+      method === "GET"
+    ) {
+      return sellerOrders(
+        request,
+        env
+      );
+    }
+
+    // -------------------------
+    // MESSAGES
+    // -------------------------
+
+    if (
+      path === "/api/messages" &&
+      method === "GET"
+    ) {
+      return listMessages(
+        request,
+        env
+      );
+    }
+
+    if (
+      path === "/api/messages" &&
+      method === "POST"
+    ) {
+      return sendMessage(
+        request,
+        env
+      );
+    }
+
+    // -------------------------
+    // SELLER STATS
+    // -------------------------
+
+    if (
+      path === "/api/seller/stats" &&
+      method === "GET"
+    ) {
+      return sellerStats(
+        request,
+        env
+      );
+    }
+
+    // -------------------------
+    // IMAGE UPLOAD
+    // -------------------------
+
+    if (
+      path === "/api/images" &&
+      method === "POST"
+    ) {
+      return uploadImage(
+        request,
+        env
+      );
+    }
+
+    // -------------------------
+    // ADMIN
+    // -------------------------
+
+    if (
+      path === "/api/admin/stats" &&
+      method === "GET"
+    ) {
+      return adminStats(
+        request,
+        env
+      );
+    }
+
+    if (
+      path === "/api/admin/users" &&
+      method === "GET"
+    ) {
+      return adminUsers(
+        request,
+        env
+      );
+    }
+
+    if (
+      path === "/api/admin/products" &&
+      method === "GET"
+    ) {
+      return adminProducts(
+        request,
+        env
+      );
+    }
+
+    if (
+      path === "/api/admin/orders" &&
+      method === "GET"
+    ) {
+      return adminOrders(
+        request,
+        env
+      );
+    }
+
+    if (
+      path === "/api/admin/payments" &&
+      method === "GET"
+    ) {
+      return adminPayments(
+        request,
+        env
+      );
+    }
+
+    if (
+      path === "/api/admin/reports" &&
+      method === "GET"
+    ) {
+      return adminReports(
+        request,
+        env
+      );
+    }
+
+    if (
+      path === "/api/admin/services" &&
+      method === "GET"
+    ) {
+      return adminServices(
+        request,
+        env
+      );
+    }
+
+    if (
+      path === "/api/admin/categories" &&
+      method === "GET"
+    ) {
+      return adminCategories(
+        request,
+        env
+      );
+    }
+
+    if (
+      path === "/api/admin/categories" &&
+      method === "POST"
+    ) {
+      return createCategory(
+        request,
+        env
+      );
+    }
+
+    // -------------------------
+    // PRODUCT ID ROUTES
+    // -------------------------
+
+    const productMatch =
+      path.match(
+        /^\/api\/products\/([0-9]+)$/
+      );
+
+    if (
+      productMatch &&
+      method === "GET"
+    ) {
+      return getProduct(
+        productMatch[1],
+        env,
+        request
+      );
+    }
+
+    // -------------------------
+    // SAVED PRODUCT ID
+    // -------------------------
+
+    const savedMatch =
+      path.match(
+        /^\/api\/saved\/([0-9]+)$/
+      );
+
+    if (
+      savedMatch &&
+      method === "POST"
+    ) {
+      return saveProduct(
+        request,
+        env,
+        savedMatch[1]
+      );
+    }
+
+    if (
+      savedMatch &&
+      method === "DELETE"
+    ) {
+      return unsaveProduct(
+        request,
+        env,
+        savedMatch[1]
+      );
+    }
+
+    // -------------------------
+    // ADMIN PRODUCT STATUS
+    // -------------------------
+
+    const statusMatch =
+      path.match(
+        /^\/api\/admin\/products\/([0-9]+)\/status$/
+      );
+
+    if (
+      statusMatch &&
+      method === "PATCH"
+    ) {
+      return updateProductStatus(
+        request,
+        env,
+        statusMatch[1]
+      );
+    }
+
+    // -------------------------
+    // ADMIN ORDER UPDATE
+    // -------------------------
+
+    const orderMatch =
+      path.match(
+        /^\/api\/admin\/orders\/([0-9]+)$/
+      );
+
+    if (
+      orderMatch &&
+      method === "PATCH"
+    ) {
+      return adminUpdateOrder(
+        request,
+        env,
+        orderMatch[1]
+      );
+    }
+
+    // -------------------------
+    // R2 IMAGE GET
+    // -------------------------
+
+    const imageMatch =
+      path.match(
+        /^\/api\/images\/(.+)$/
+      );
+
+    if (
+      imageMatch &&
+      method === "GET"
+    ) {
+      return getImage(
+        env,
+        decodeURIComponent(
+          imageMatch[1]
+        ),
+        request
+      );
+    }
+
+    // -------------------------
+    // UNKNOWN ROUTE
+    // -------------------------
+
+    return json(
+      {
+        success: false,
+        error:
+          "API route not found",
+        path
+      },
+      404,
+      request
+    );
+
+  } catch (error) {
+    console.error(
+      "IsokoHub API error:",
+      error
+    );
+
+    const message =
+      error?.message || "";
+
+    if (
+      message ===
+      "Request body too large"
+    ) {
+      return json(
+        {
+          success: false,
+          error:
+            "Request body too large"
+        },
+        413,
+        request
+      );
+    }
+
+    if (
+      message ===
+      "Invalid JSON body"
+    ) {
+      return json(
+        {
+          success: false,
+          error:
+            "Invalid JSON body"
+        },
+        400,
+        request
+      );
+    }
+
+    return json(
+      {
+        success: false,
+        error:
+          "Internal server error"
+      },
+      500,
+      request
+    );
   }
-};
+}
