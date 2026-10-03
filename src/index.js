@@ -3,18 +3,20 @@
 // Global Marketplace & Services
 // Domain: isokohub.online
 // D1 + R2
-// PBKDF2 passwords + HMAC sessions + validation
+// PBKDF2 passwords + HMAC sessions + validation + rate limiting
 // ============================================================
 
 const COMMISSION_RATE = 0.05;
 const PBKDF2_ITERATIONS = 150000;
 const MAX_JSON_BODY = 1024 * 1024;
 const SESSION_DAYS = 30;
+
 const MAX_NAME = 100;
 const MAX_TEXT = 10000;
 const MAX_TITLE = 200;
 const MAX_PRICE = 100000000000;
 const MAX_STOCK = 1000000;
+const MAX_IMAGE_SIZE = 10 * 1024 * 1024;
 
 const SERVICE_CATEGORIES = [
   "Business & Professional",
@@ -42,39 +44,47 @@ const SERVICE_CATEGORIES = [
 ];
 
 const COUNTRIES = [
-  "Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda",
-  "Argentina","Armenia","Australia","Austria","Azerbaijan","Bahamas",
-  "Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin",
-  "Bhutan","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei",
-  "Bulgaria","Burkina Faso","Burundi","Cabo Verde","Cambodia","Cameroon",
-  "Canada","Central African Republic","Chad","Chile","China","Colombia",
-  "Comoros","Congo","Costa Rica","Croatia","Cuba","Cyprus","Czech Republic",
-  "Democratic Republic of the Congo","Denmark","Djibouti","Dominica",
-  "Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea",
-  "Eritrea","Estonia","Eswatini","Ethiopia","Fiji","Finland","France",
-  "Gabon","Gambia","Georgia","Germany","Ghana","Greece","Grenada",
-  "Guatemala","Guinea","Guinea-Bissau","Guyana","Haiti","Honduras",
-  "Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Israel",
-  "Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati",
-  "Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia",
-  "Libya","Liechtenstein","Lithuania","Luxembourg","Madagascar","Malawi",
-  "Malaysia","Maldives","Mali","Malta","Marshall Islands","Mauritania",
-  "Mauritius","Mexico","Micronesia","Moldova","Monaco","Mongolia",
-  "Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nauru",
-  "Nepal","Netherlands","New Zealand","Nicaragua","Niger","Nigeria",
-  "North Korea","North Macedonia","Norway","Oman","Pakistan","Palau",
-  "Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines",
-  "Poland","Portugal","Qatar","Romania","Russia","Rwanda",
-  "Saint Kitts and Nevis","Saint Lucia","Saint Vincent and the Grenadines",
-  "Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal",
-  "Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia",
-  "Solomon Islands","Somalia","South Africa","South Korea","South Sudan",
-  "Spain","Sri Lanka","Sudan","Suriname","Sweden","Switzerland","Syria",
-  "Taiwan","Tajikistan","Tanzania","Thailand","Timor-Leste","Togo",
-  "Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu",
-  "Uganda","Ukraine","United Arab Emirates","United Kingdom","United States",
-  "Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela","Vietnam",
-  "Yemen","Zambia","Zimbabwe"
+  "Afghanistan","Albania","Algeria","Andorra","Angola",
+  "Antigua and Barbuda","Argentina","Armenia","Australia",
+  "Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh",
+  "Barbados","Belarus","Belgium","Belize","Benin","Bhutan",
+  "Bolivia","Bosnia and Herzegovina","Botswana","Brazil",
+  "Brunei","Bulgaria","Burkina Faso","Burundi","Cabo Verde",
+  "Cambodia","Cameroon","Canada","Central African Republic",
+  "Chad","Chile","China","Colombia","Comoros","Congo",
+  "Costa Rica","Croatia","Cuba","Cyprus","Czech Republic",
+  "Democratic Republic of the Congo","Denmark","Djibouti",
+  "Dominica","Dominican Republic","Ecuador","Egypt",
+  "El Salvador","Equatorial Guinea","Eritrea","Estonia",
+  "Eswatini","Ethiopia","Fiji","Finland","France","Gabon",
+  "Gambia","Georgia","Germany","Ghana","Greece","Grenada",
+  "Guatemala","Guinea","Guinea-Bissau","Guyana","Haiti",
+  "Honduras","Hungary","Iceland","India","Indonesia","Iran",
+  "Iraq","Ireland","Israel","Italy","Jamaica","Japan",
+  "Jordan","Kazakhstan","Kenya","Kiribati","Kuwait","Laos",
+  "Latvia","Lebanon","Lesotho","Liberia","Libya",
+  "Liechtenstein","Lithuania","Luxembourg","Madagascar",
+  "Malawi","Malaysia","Maldives","Mali","Malta",
+  "Marshall Islands","Mauritania","Mauritius","Mexico",
+  "Micronesia","Moldova","Monaco","Mongolia","Montenegro",
+  "Morocco","Mozambique","Myanmar","Namibia","Nauru",
+  "Nepal","Netherlands","New Zealand","Nicaragua","Niger",
+  "Nigeria","North Korea","North Macedonia","Norway","Oman",
+  "Pakistan","Palau","Palestine","Panama","Papua New Guinea",
+  "Paraguay","Peru","Philippines","Poland","Portugal",
+  "Qatar","Romania","Russia","Rwanda","Saint Kitts and Nevis",
+  "Saint Lucia","Saint Vincent and the Grenadines","Samoa",
+  "San Marino","Sao Tome and Principe","Saudi Arabia","Senegal",
+  "Serbia","Seychelles","Sierra Leone","Singapore","Slovakia",
+  "Slovenia","Solomon Islands","Somalia","South Africa",
+  "South Korea","South Sudan","Spain","Sri Lanka","Sudan",
+  "Suriname","Sweden","Switzerland","Syria","Taiwan",
+  "Tajikistan","Tanzania","Thailand","Timor-Leste","Togo",
+  "Tonga","Trinidad and Tobago","Tunisia","Turkey",
+  "Turkmenistan","Tuvalu","Uganda","Ukraine",
+  "United Arab Emirates","United Kingdom","United States",
+  "Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela",
+  "Vietnam","Yemen","Zambia","Zimbabwe"
 ];
 
 // ============================================================
@@ -90,7 +100,8 @@ const ALLOWED_ORIGINS = [
 ];
 
 function corsHeaders(request) {
-  const origin = request?.headers?.get("Origin") || "";
+  const origin =
+    request?.headers?.get("Origin") || "";
 
   const allowOrigin =
     ALLOWED_ORIGINS.includes(origin)
@@ -116,6 +127,7 @@ function json(data, status = 200, request = null) {
       headers: {
         "Content-Type":
           "application/json; charset=utf-8",
+        "Cache-Control": "no-store",
         ...corsHeaders(request)
       }
     }
@@ -123,9 +135,8 @@ function json(data, status = 200, request = null) {
 }
 
 function securityHeaders(request) {
-  const headers = new Headers(
-    corsHeaders(request)
-  );
+  const headers =
+    new Headers(corsHeaders(request));
 
   headers.set(
     "X-Content-Type-Options",
@@ -147,6 +158,11 @@ function securityHeaders(request) {
     "camera=(), microphone=(), geolocation=()"
   );
 
+  headers.set(
+    "Cache-Control",
+    "no-store"
+  );
+
   return headers;
 }
 
@@ -158,28 +174,41 @@ function nowSeconds() {
   return Math.floor(Date.now() / 1000);
 }
 
-function cleanText(value, max = MAX_TEXT) {
+function cleanText(
+  value,
+  max = MAX_TEXT
+) {
   return String(value ?? "")
     .trim()
     .slice(0, max);
 }
 
 function normalizeEmail(value) {
-  return cleanText(value, 254).toLowerCase();
+  return cleanText(
+    value,
+    254
+  ).toLowerCase();
 }
 
 function validEmail(value) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+    value
+  );
 }
 
 function validPassword(value) {
-  return typeof value === "string" &&
+  return (
+    typeof value === "string" &&
     value.length >= 8 &&
-    value.length <= 200;
+    value.length <= 200
+  );
 }
 
 function validCountry(value) {
-  return !value || COUNTRIES.includes(value);
+  return (
+    !value ||
+    COUNTRIES.includes(value)
+  );
 }
 
 function validCurrency(value) {
@@ -191,31 +220,50 @@ function validURL(value) {
 
   try {
     const url = new URL(value);
-    return url.protocol === "https:" ||
-      url.protocol === "http:";
+
+    return (
+      url.protocol === "https:" ||
+      url.protocol === "http:"
+    );
   } catch {
     return false;
   }
 }
 
-function numberValue(value, fallback = 0) {
-  const n = Number(value);
-  return Number.isFinite(n) ? n : fallback;
-}
-
-function integerValue(value, fallback = 0) {
+function numberValue(
+  value,
+  fallback = 0
+) {
   const n = Number(value);
 
-  if (!Number.isInteger(n)) {
-    return fallback;
-  }
-
-  return n;
+  return Number.isFinite(n)
+    ? n
+    : fallback;
 }
 
-function limitValue(value, fallback = 100) {
+function integerValue(
+  value,
+  fallback = 0
+) {
+  const n = Number(value);
+
+  return Number.isInteger(n)
+    ? n
+    : fallback;
+}
+
+function limitValue(
+  value,
+  fallback = 100
+) {
   return Math.min(
-    Math.max(integerValue(value, fallback), 1),
+    Math.max(
+      integerValue(
+        value,
+        fallback
+      ),
+      1
+    ),
     500
   );
 }
@@ -227,6 +275,25 @@ function makeToken() {
   );
 }
 
+function getRequiredSecret(
+  env,
+  name
+) {
+  const value =
+    env?.[name];
+
+  if (
+    typeof value !== "string" ||
+    value.length < 32
+  ) {
+    throw new Error(
+      `${name} is not configured`
+    );
+  }
+
+  return value;
+}
+
 // ============================================================
 // CRYPTO
 // ============================================================
@@ -234,7 +301,10 @@ function makeToken() {
 function bytesToHex(bytes) {
   return [...new Uint8Array(bytes)]
     .map(
-      b => b.toString(16).padStart(2, "0")
+      b =>
+        b
+          .toString(16)
+          .padStart(2, "0")
     )
     .join("");
 }
@@ -245,18 +315,29 @@ function hexToBytes(hex) {
     !/^[0-9a-f]+$/i.test(hex) ||
     hex.length % 2 !== 0
   ) {
-    throw new Error("Invalid hexadecimal value");
+    throw new Error(
+      "Invalid hexadecimal value"
+    );
   }
 
-  const out = new Uint8Array(
-    hex.length / 2
-  );
-
-  for (let i = 0; i < out.length; i++) {
-    out[i] = parseInt(
-      hex.slice(i * 2, i * 2 + 2),
-      16
+  const out =
+    new Uint8Array(
+      hex.length / 2
     );
+
+  for (
+    let i = 0;
+    i < out.length;
+    i++
+  ) {
+    out[i] =
+      parseInt(
+        hex.slice(
+          i * 2,
+          i * 2 + 2
+        ),
+        16
+      );
   }
 
   return out;
@@ -264,7 +345,9 @@ function hexToBytes(hex) {
 
 async function sha256(value) {
   const bytes =
-    new TextEncoder().encode(String(value));
+    new TextEncoder().encode(
+      String(value)
+    );
 
   const hash =
     await crypto.subtle.digest(
@@ -275,11 +358,16 @@ async function sha256(value) {
   return bytesToHex(hash);
 }
 
-async function hmacSha256(secret, value) {
+async function hmacSha256(
+  secret,
+  value
+) {
   const key =
     await crypto.subtle.importKey(
       "raw",
-      new TextEncoder().encode(secret),
+      new TextEncoder().encode(
+        secret
+      ),
       {
         name: "HMAC",
         hash: "SHA-256"
@@ -292,7 +380,9 @@ async function hmacSha256(secret, value) {
     await crypto.subtle.sign(
       "HMAC",
       key,
-      new TextEncoder().encode(value)
+      new TextEncoder().encode(
+        value
+      )
     );
 
   return bytesToHex(signature);
@@ -306,7 +396,9 @@ async function pbkdf2Password(
   const baseKey =
     await crypto.subtle.importKey(
       "raw",
-      new TextEncoder().encode(password),
+      new TextEncoder().encode(
+        password
+      ),
       "PBKDF2",
       false,
       ["deriveBits"]
@@ -316,7 +408,9 @@ async function pbkdf2Password(
     await crypto.subtle.deriveBits(
       {
         name: "PBKDF2",
-        salt: hexToBytes(saltHex),
+        salt: hexToBytes(
+          saltHex
+        ),
         iterations,
         hash: "SHA-256"
       },
@@ -335,11 +429,18 @@ function randomSalt() {
   );
 }
 
-async function hashPassword(password, env) {
-  const salt = randomSalt();
+async function hashPassword(
+  password,
+  env
+) {
+  const salt =
+    randomSalt();
 
   const pepper =
-    String(env.AUTH_PEPPER || "");
+    getRequiredSecret(
+      env,
+      "AUTH_PEPPER"
+    );
 
   const derived =
     await pbkdf2Password(
@@ -348,7 +449,12 @@ async function hashPassword(password, env) {
       PBKDF2_ITERATIONS
     );
 
-  return `pbkdf2$${PBKDF2_ITERATIONS}$${salt}$${derived}`;
+  return [
+    "pbkdf2",
+    PBKDF2_ITERATIONS,
+    salt,
+    derived
+  ].join("$");
 }
 
 async function verifyPassword(
@@ -356,15 +462,25 @@ async function verifyPassword(
   storedHash,
   env
 ) {
-  if (!storedHash) return false;
+  if (!storedHash) {
+    return false;
+  }
 
-  // Legacy SHA-256 support
+  const pepper =
+    getRequiredSecret(
+      env,
+      "AUTH_PEPPER"
+    );
+
+  // Legacy SHA-256 support.
   if (
-    !storedHash.startsWith("pbkdf2$")
+    !storedHash.startsWith(
+      "pbkdf2$"
+    )
   ) {
     const legacy =
       await sha256(
-        `${env.AUTH_PEPPER || ""}:${password}`
+        `${pepper}:${password}`
       );
 
     return legacy === storedHash;
@@ -381,7 +497,9 @@ async function verifyPassword(
     Number(parts[1]);
 
   if (
-    !Number.isInteger(iterations) ||
+    !Number.isInteger(
+      iterations
+    ) ||
     iterations < 100000 ||
     iterations > 1000000
   ) {
@@ -391,7 +509,7 @@ async function verifyPassword(
   try {
     const derived =
       await pbkdf2Password(
-        `${env.AUTH_PEPPER || ""}:${password}`,
+        `${pepper}:${password}`,
         parts[2],
         iterations
       );
@@ -411,23 +529,31 @@ async function readBody(
   maxBytes = MAX_JSON_BODY
 ) {
   const contentLength =
-    request.headers.get("Content-Length");
+    request.headers.get(
+      "Content-Length"
+    );
 
   if (
     contentLength &&
-    Number(contentLength) > maxBytes
+    Number(contentLength) >
+      maxBytes
   ) {
-    throw new Error("Request body too large");
+    throw new Error(
+      "Request body too large"
+    );
   }
 
   const text =
     await request.text();
 
   if (
-    new TextEncoder().encode(text).byteLength >
-    maxBytes
+    new TextEncoder()
+      .encode(text)
+      .byteLength > maxBytes
   ) {
-    throw new Error("Request body too large");
+    throw new Error(
+      "Request body too large"
+    );
   }
 
   if (!text.trim()) {
@@ -437,7 +563,9 @@ async function readBody(
   try {
     return JSON.parse(text);
   } catch {
-    throw new Error("Invalid JSON body");
+    throw new Error(
+      "Invalid JSON body"
+    );
   }
 }
 
@@ -447,9 +575,15 @@ async function readBody(
 
 function getToken(request) {
   const auth =
-    request.headers.get("Authorization") || "";
+    request.headers.get(
+      "Authorization"
+    ) || "";
 
-  if (!auth.startsWith("Bearer ")) {
+  if (
+    !auth.startsWith(
+      "Bearer "
+    )
+  ) {
     return null;
   }
 
@@ -464,13 +598,18 @@ async function createSession(
   role,
   env
 ) {
-  const token = makeToken();
+  const secret =
+    getRequiredSecret(
+      env,
+      "SESSION_SECRET"
+    );
+
+  const token =
+    makeToken();
 
   const tokenHash =
     await hmacSha256(
-      env.SESSION_SECRET ||
-      env.Session_secret ||
-      "change-this-session-secret",
+      secret,
       token
     );
 
@@ -507,76 +646,88 @@ async function currentUser(
   const token =
     getToken(request);
 
-  if (!token || !env.DB) {
+  if (
+    !token ||
+    !env.DB
+  ) {
     return null;
   }
 
-  const secrets = [
-    env.SESSION_SECRET,
-    env.Session_secret,
-    "change-this-session-secret"
-  ].filter(Boolean);
+  let secret;
 
-  for (const secret of secrets) {
-    const tokenHash =
-      await hmacSha256(
-        secret,
-        token
+  try {
+    secret =
+      getRequiredSecret(
+        env,
+        "SESSION_SECRET"
       );
-
-    const user =
-      await env.DB.prepare(`
-        SELECT
-          u.id,
-          u.name,
-          u.email,
-          u.phone,
-          u.role,
-          u.country,
-          u.district,
-          u.avatar_url,
-          u.bio,
-          u.is_verified,
-          u.is_active,
-          u.created_at,
-          u.updated_at
-        FROM sessions s
-        JOIN users u
-          ON u.id = s.user_id
-        WHERE s.token_hash = ?
-          AND s.expires_at > ?
-          AND u.is_active = 1
-        LIMIT 1
-      `)
-        .bind(
-          tokenHash,
-          nowSeconds()
-        )
-        .first();
-
-    if (user) {
-      return user;
-    }
+  } catch {
+    return null;
   }
 
-  return null;
+  const tokenHash =
+    await hmacSha256(
+      secret,
+      token
+    );
+
+  const user =
+    await env.DB.prepare(`
+      SELECT
+        u.id,
+        u.name,
+        u.email,
+        u.phone,
+        u.role,
+        u.country,
+        u.district,
+        u.avatar_url,
+        u.bio,
+        u.is_verified,
+        u.is_active,
+        u.created_at,
+        u.updated_at
+      FROM sessions s
+      JOIN users u
+        ON u.id = s.user_id
+      WHERE s.token_hash = ?
+        AND s.expires_at > ?
+        AND u.is_active = 1
+      LIMIT 1
+    `)
+      .bind(
+        tokenHash,
+        nowSeconds()
+      )
+      .first();
+
+  return user || null;
 }
 
 function publicUser(user) {
-  if (!user) return null;
+  if (!user) {
+    return null;
+  }
 
   return {
     id: user.id,
     name: user.name || "",
     email: user.email || "",
     phone: user.phone || "",
-    role: user.role || "buyer",
-    country: user.country || "",
-    district: user.district || "",
-    avatar_url: user.avatar_url || "",
-    bio: user.bio || "",
+    role:
+      user.role || "buyer",
+    country:
+      user.country || "",
+    district:
+      user.district || "",
+    avatar_url:
+      user.avatar_url || "",
+    bio:
+      user.bio || "",
     is_verified:
-      Number(user.is_verified || 0),
+      Number(
+        user.is_verified || 0
+      ),
     created_at:
       user.created_at || null
   };
@@ -590,7 +741,8 @@ function requireUser(
     return json(
       {
         success: false,
-        error: "Authentication required"
+        error:
+          "Authentication required"
       },
       401,
       request
@@ -605,15 +757,23 @@ function requireAdmin(
   request
 ) {
   const error =
-    requireUser(user, request);
+    requireUser(
+      user,
+      request
+    );
 
-  if (error) return error;
+  if (error) {
+    return error;
+  }
 
-  if (user.role !== "admin") {
+  if (
+    user.role !== "admin"
+  ) {
     return json(
       {
         success: false,
-        error: "Admin access required"
+        error:
+          "Admin access required"
       },
       403,
       request
@@ -628,9 +788,14 @@ function requireSeller(
   request
 ) {
   const error =
-    requireUser(user, request);
+    requireUser(
+      user,
+      request
+    );
 
-  if (error) return error;
+  if (error) {
+    return error;
+  }
 
   if (
     user.role !== "seller" &&
@@ -639,7 +804,8 @@ function requireSeller(
     return json(
       {
         success: false,
-        error: "Seller access required"
+        error:
+          "Seller access required"
       },
       403,
       request
@@ -653,7 +819,9 @@ function requireSeller(
 // RATE LIMIT
 // ============================================================
 
-async function ensureRateLimitTable(env) {
+async function ensureRateLimitTable(
+  env
+) {
   await env.DB.prepare(`
     CREATE TABLE IF NOT EXISTS rate_limits (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -671,7 +839,9 @@ async function rateLimit(
   windowSeconds
 ) {
   try {
-    await ensureRateLimitTable(env);
+    await ensureRateLimitTable(
+      env
+    );
 
     const now =
       nowSeconds();
@@ -695,14 +865,20 @@ async function rateLimit(
         )
         VALUES (?, 1, ?)
       `)
-        .bind(key, now)
+        .bind(
+          key,
+          now
+        )
         .run();
 
       return true;
     }
 
     if (
-      now - Number(row.window_start) >=
+      now -
+        Number(
+          row.window_start
+        ) >=
       windowSeconds
     ) {
       await env.DB.prepare(`
@@ -711,13 +887,19 @@ async function rateLimit(
             window_start = ?
         WHERE rate_key = ?
       `)
-        .bind(now, key)
+        .bind(
+          now,
+          key
+        )
         .run();
 
       return true;
     }
 
-    if (Number(row.count) >= max) {
+    if (
+      Number(row.count) >=
+      max
+    ) {
       return false;
     }
 
@@ -731,6 +913,8 @@ async function rateLimit(
 
     return true;
   } catch {
+    // Do not make the whole API unavailable
+    // because rate-limit bookkeeping failed.
     return true;
   }
 }
@@ -751,18 +935,18 @@ async function health(
     ).first();
 
     database = true;
-  } catch {
-    database = false;
-  }
+  } catch {}
 
   return json(
     {
       success: true,
       app: "IsokoHub",
-      domain: "isokohub.online",
+      domain:
+        "isokohub.online",
       status: "online",
       database,
-      storage: Boolean(env.IMAGES)
+      storage:
+        Boolean(env.IMAGES)
     },
     200,
     request
@@ -781,9 +965,11 @@ async function config(
     {
       success: true,
       app: "IsokoHub",
-      domain: "isokohub.online",
+      domain:
+        "isokohub.online",
       marketplace: "global",
-      countries: COUNTRIES.length,
+      countries:
+        COUNTRIES.length,
       service_categories:
         SERVICE_CATEGORIES.length,
       currency: "RWF",
@@ -791,10 +977,12 @@ async function config(
         COMMISSION_RATE,
       payments: {
         enabled: false,
-        status: "unconfigured"
+        status:
+          "unconfigured"
       },
       storage: {
-        r2: Boolean(env.IMAGES)
+        r2:
+          Boolean(env.IMAGES)
       }
     },
     200,
@@ -806,11 +994,14 @@ async function config(
 // COUNTRIES
 // ============================================================
 
-async function countries(request) {
+async function countries(
+  request
+) {
   return json(
     {
       success: true,
-      countries: COUNTRIES
+      countries:
+        COUNTRIES
     },
     200,
     request
@@ -870,10 +1061,15 @@ async function register(
   request,
   env
 ) {
+  const ip =
+    request.headers.get(
+      "CF-Connecting-IP"
+    ) || "unknown";
+
   const allowed =
     await rateLimit(
       env,
-      `register:${request.headers.get("CF-Connecting-IP") || "unknown"}`,
+      `register:${ip}`,
       5,
       3600
     );
@@ -894,16 +1090,26 @@ async function register(
     await readBody(request);
 
   const name =
-    cleanText(data.name, MAX_NAME);
+    cleanText(
+      data.name,
+      MAX_NAME
+    );
 
   const email =
-    normalizeEmail(data.email);
+    normalizeEmail(
+      data.email
+    );
 
   const password =
-    String(data.password || "");
+    String(
+      data.password || ""
+    );
 
   const phone =
-    cleanText(data.phone, 50);
+    cleanText(
+      data.phone,
+      50
+    );
 
   const country =
     cleanText(
@@ -933,18 +1139,23 @@ async function register(
     );
   }
 
-  if (!validEmail(email)) {
+  if (
+    !validEmail(email)
+  ) {
     return json(
       {
         success: false,
-        error: "Invalid email address"
+        error:
+          "Invalid email address"
       },
       400,
       request
     );
   }
 
-  if (!validPassword(password)) {
+  if (
+    !validPassword(password)
+  ) {
     return json(
       {
         success: false,
@@ -956,11 +1167,14 @@ async function register(
     );
   }
 
-  if (!validCountry(country)) {
+  if (
+    !validCountry(country)
+  ) {
     return json(
       {
         success: false,
-        error: "Invalid country"
+        error:
+          "Invalid country"
       },
       400,
       request
@@ -995,6 +1209,9 @@ async function register(
       env
     );
 
+  const timestamp =
+    nowSeconds();
+
   const result =
     await env.DB.prepare(`
       INSERT INTO users (
@@ -1010,7 +1227,10 @@ async function register(
         created_at,
         updated_at
       )
-      VALUES (?, ?, ?, 'buyer', ?, ?, ?, 0, 1, ?, ?)
+      VALUES (
+        ?, ?, ?, 'buyer',
+        ?, ?, ?, 0, 1, ?, ?
+      )
     `)
       .bind(
         name,
@@ -1019,13 +1239,19 @@ async function register(
         phone,
         country,
         district,
-        nowSeconds(),
-        nowSeconds()
+        timestamp,
+        timestamp
       )
       .run();
 
   const userId =
     result.meta?.last_row_id;
+
+  if (!userId) {
+    throw new Error(
+      "Could not create user"
+    );
+  }
 
   const token =
     await createSession(
@@ -1048,7 +1274,8 @@ async function register(
     {
       success: true,
       token,
-      user: publicUser(user)
+      user:
+        publicUser(user)
     },
     201,
     request
@@ -1072,12 +1299,19 @@ async function login(
     await readBody(request);
 
   const email =
-    normalizeEmail(data.email);
+    normalizeEmail(
+      data.email
+    );
 
   const password =
-    String(data.password || "");
+    String(
+      data.password || ""
+    );
 
-  if (!email || !password) {
+  if (
+    !email ||
+    !password
+  ) {
     return json(
       {
         success: false,
@@ -1143,7 +1377,8 @@ async function login(
   }
 
   if (
-    Number(user.is_active) !== 1
+    Number(user.is_active) !==
+    1
   ) {
     return json(
       {
@@ -1175,10 +1410,13 @@ async function login(
     );
   }
 
-  // Upgrade old SHA-256 hashes
+  // Upgrade old SHA-256 hashes.
   if (
-    !String(user.password_hash)
-      .startsWith("pbkdf2$")
+    !String(
+      user.password_hash
+    ).startsWith(
+      "pbkdf2$"
+    )
   ) {
     const upgraded =
       await hashPassword(
@@ -1211,7 +1449,8 @@ async function login(
     {
       success: true,
       token,
-      user: publicUser(user)
+      user:
+        publicUser(user)
     },
     200,
     request
@@ -1230,26 +1469,24 @@ async function logout(
     getToken(request);
 
   if (token) {
-    const secrets = [
-      env.SESSION_SECRET,
-      env.Session_secret,
-      "change-this-session-secret"
-    ].filter(Boolean);
+    const secret =
+      getRequiredSecret(
+        env,
+        "SESSION_SECRET"
+      );
 
-    for (const secret of secrets) {
-      const tokenHash =
-        await hmacSha256(
-          secret,
-          token
-        );
+    const tokenHash =
+      await hmacSha256(
+        secret,
+        token
+      );
 
-      await env.DB.prepare(`
-        DELETE FROM sessions
-        WHERE token_hash = ?
-      `)
-        .bind(tokenHash)
-        .run();
-    }
+    await env.DB.prepare(`
+      DELETE FROM sessions
+      WHERE token_hash = ?
+    `)
+      .bind(tokenHash)
+      .run();
   }
 
   return json(
@@ -1283,12 +1520,15 @@ async function me(
       request
     );
 
-  if (error) return error;
+  if (error) {
+    return error;
+  }
 
   return json(
     {
       success: true,
-      user: publicUser(user)
+      user:
+        publicUser(user)
     },
     200,
     request
@@ -1296,10 +1536,12 @@ async function me(
 }
 
 // ============================================================
-// PRODUCTS
+// SERVICE SCORE
 // ============================================================
 
-function serviceScore(product) {
+function serviceScore(
+  product
+) {
   const text = [
     product.title,
     product.category,
@@ -1311,8 +1553,10 @@ function serviceScore(product) {
     .toLowerCase();
 
   if (
-    String(product.condition)
-      .toLowerCase() === "service"
+    String(
+      product.condition
+    ).toLowerCase() ===
+    "service"
   ) {
     return 10;
   }
@@ -1347,12 +1591,25 @@ function serviceScore(product) {
   ];
 
   return keywords.reduce(
-    (score, keyword) =>
+    (
+      score,
+      keyword
+    ) =>
       score +
-      (text.includes(keyword) ? 1 : 0),
+      (
+        text.includes(
+          keyword
+        )
+          ? 1
+          : 0
+      ),
     0
   );
 }
+
+// ============================================================
+// PRODUCTS
+// ============================================================
 
 async function listProducts(
   request,
@@ -1363,40 +1620,57 @@ async function listProducts(
 
   const search =
     cleanText(
-      url.searchParams.get("search"),
+      url.searchParams.get(
+        "search"
+      ),
       200
     );
 
   const category =
     cleanText(
-      url.searchParams.get("category"),
+      url.searchParams.get(
+        "category"
+      ),
       200
     );
 
   const country =
     cleanText(
-      url.searchParams.get("country"),
+      url.searchParams.get(
+        "country"
+      ),
       100
     );
 
   const district =
     cleanText(
-      url.searchParams.get("district"),
+      url.searchParams.get(
+        "district"
+      ),
       100
     );
 
   const city =
     cleanText(
-      url.searchParams.get("city"),
+      url.searchParams.get(
+        "city"
+      ),
       100
     );
 
   const seller =
-    url.searchParams.get("seller") || "";
+    integerValue(
+      url.searchParams.get(
+        "seller"
+      ),
+      -1
+    );
 
   const limit =
     limitValue(
-      url.searchParams.get("limit"),
+      url.searchParams.get(
+        "limit"
+      ),
       100
     );
 
@@ -1427,10 +1701,12 @@ async function listProducts(
       )
     `;
 
-    const q = `%${search}%`;
+    const q =
+      `%${search}%`;
 
     params.push(
-      q, q, q, q, q, q, q
+      q, q, q, q,
+      q, q, q
     );
   }
 
@@ -1439,7 +1715,9 @@ async function listProducts(
       AND p.category = ?
     `;
 
-    params.push(category);
+    params.push(
+      category
+    );
   }
 
   if (country) {
@@ -1447,7 +1725,9 @@ async function listProducts(
       AND p.country = ?
     `;
 
-    params.push(country);
+    params.push(
+      country
+    );
   }
 
   if (district) {
@@ -1455,7 +1735,9 @@ async function listProducts(
       AND p.district = ?
     `;
 
-    params.push(district);
+    params.push(
+      district
+    );
   }
 
   if (city) {
@@ -1466,7 +1748,7 @@ async function listProducts(
     params.push(city);
   }
 
-  if (seller) {
+  if (seller > 0) {
     sql += `
       AND p.seller_id = ?
     `;
@@ -1506,7 +1788,10 @@ async function getProduct(
   request
 ) {
   const id =
-    integerValue(productId, -1);
+    integerValue(
+      productId,
+      -1
+    );
 
   const product =
     await env.DB.prepare(`
@@ -1539,14 +1824,17 @@ async function getProduct(
 
   await env.DB.prepare(`
     UPDATE products
-    SET views = COALESCE(views, 0) + 1
+    SET views =
+          COALESCE(views, 0) + 1
     WHERE id = ?
   `)
     .bind(id)
     .run();
 
   product.views =
-    Number(product.views || 0) + 1;
+    Number(
+      product.views || 0
+    ) + 1;
 
   return json(
     {
@@ -1573,12 +1861,14 @@ async function createProduct(
     );
 
   const authError =
-    requireUser(
+    requireSeller(
       user,
       request
     );
 
-  if (authError) return authError;
+  if (authError) {
+    return authError;
+  }
 
   const data =
     await readBody(request);
@@ -1621,23 +1911,24 @@ async function createProduct(
 
   const currency =
     cleanText(
-      data.currency || "RWF",
+      data.currency ||
+        "RWF",
       3
     ).toUpperCase();
 
   const country =
     cleanText(
       data.country ||
-      user.country ||
-      "",
+        user.country ||
+        "",
       100
     );
 
   const district =
     cleanText(
       data.district ||
-      user.district ||
-      "",
+        user.district ||
+        "",
       100
     );
 
@@ -1662,8 +1953,8 @@ async function createProduct(
   const imageUrl =
     cleanText(
       data.image_url ||
-      data.image ||
-      "",
+        data.image ||
+        "",
       2000
     );
 
@@ -1717,7 +2008,9 @@ async function createProduct(
     );
   }
 
-  if (!validCurrency(currency)) {
+  if (
+    !validCurrency(currency)
+  ) {
     return json(
       {
         success: false,
@@ -1729,7 +2022,9 @@ async function createProduct(
     );
   }
 
-  if (!validCountry(country)) {
+  if (
+    !validCountry(country)
+  ) {
     return json(
       {
         success: false,
@@ -1741,7 +2036,9 @@ async function createProduct(
     );
   }
 
-  if (!validURL(imageUrl)) {
+  if (
+    !validURL(imageUrl)
+  ) {
     return json(
       {
         success: false,
@@ -1752,6 +2049,9 @@ async function createProduct(
       request
     );
   }
+
+  const timestamp =
+    nowSeconds();
 
   const result =
     await env.DB.prepare(`
@@ -1799,13 +2099,21 @@ async function createProduct(
         country,
         district,
         city,
-        cleanText(data.storage, 100),
-        cleanText(data.ram, 100),
+        cleanText(
+          data.storage,
+          100
+        ),
+        cleanText(
+          data.ram,
+          100
+        ),
         imageUrl,
         specs,
-        data.negotiable ? 1 : 0,
-        nowSeconds(),
-        nowSeconds()
+        data.negotiable
+          ? 1
+          : 0,
+        timestamp,
+        timestamp
       )
       .run();
 
@@ -1838,12 +2146,14 @@ async function myProducts(
     );
 
   const error =
-    requireUser(
+    requireSeller(
       user,
       request
     );
 
-  if (error) return error;
+  if (error) {
+    return error;
+  }
 
   const result =
     await env.DB.prepare(`
@@ -1886,7 +2196,9 @@ async function sellerOrders(
       request
     );
 
-  if (error) return error;
+  if (error) {
+    return error;
+  }
 
   const result =
     await env.DB.prepare(`
@@ -1938,7 +2250,9 @@ async function listOrders(
       request
     );
 
-  if (error) return error;
+  if (error) {
+    return error;
+  }
 
   const result =
     await env.DB.prepare(`
@@ -1955,8 +2269,9 @@ async function listOrders(
         ON b.id = o.buyer_id
       LEFT JOIN users s
         ON s.id = o.seller_id
-      WHERE o.buyer_id = ?
-         OR o.seller_id = ?
+      WHERE
+        o.buyer_id = ?
+        OR o.seller_id = ?
       ORDER BY o.created_at DESC
     `)
       .bind(
@@ -1996,7 +2311,9 @@ async function createOrder(
       request
     );
 
-  if (error) return error;
+  if (error) {
+    return error;
+  }
 
   const data =
     await readBody(request);
@@ -2064,7 +2381,9 @@ async function createOrder(
   }
 
   if (
-    Number(product.seller_id) ===
+    Number(
+      product.seller_id
+    ) ===
     Number(user.id)
   ) {
     return json(
@@ -2097,7 +2416,8 @@ async function createOrder(
     Number(product.price);
 
   const totalPrice =
-    unitPrice * quantity;
+    unitPrice *
+    quantity;
 
   const commission =
     totalPrice *
@@ -2112,28 +2432,28 @@ async function createOrder(
   const deliveryCountry =
     cleanText(
       data.delivery_country ||
-      user.country ||
-      "",
+        user.country ||
+        "",
       100
     );
 
   const deliveryDistrict =
     cleanText(
       data.delivery_district ||
-      user.district ||
-      "",
+        user.district ||
+        "",
       100
     );
 
   const deliveryPhone =
     cleanText(
       data.delivery_phone ||
-      user.phone ||
-      "",
+        user.phone ||
+        "",
       50
     );
 
-  // Atomic stock protection.
+  // Atomic stock reservation.
   const stockUpdate =
     await env.DB.prepare(`
       UPDATE products
@@ -2153,7 +2473,7 @@ async function createOrder(
 
   if (
     !stockUpdate.meta ||
-    stockUpdate.meta.changes === 0
+    stockUpdate.meta.changes !== 1
   ) {
     return json(
       {
@@ -2167,6 +2487,9 @@ async function createOrder(
   }
 
   try {
+    const timestamp =
+      nowSeconds();
+
     const result =
       await env.DB.prepare(`
         INSERT INTO orders (
@@ -2188,8 +2511,10 @@ async function createOrder(
           updated_at
         )
         VALUES (
-          ?, ?, ?, ?, ?, ?, ?, ?, 'pending',
-          'unpaid', ?, ?, ?, ?, ?, ?
+          ?, ?, ?, ?, ?, ?, ?, ?,
+          'pending',
+          'unpaid',
+          ?, ?, ?, ?, ?, ?
         )
       `)
         .bind(
@@ -2200,13 +2525,14 @@ async function createOrder(
           unitPrice,
           totalPrice,
           commission,
-          product.currency || "RWF",
+          product.currency ||
+            "RWF",
           deliveryAddress,
           deliveryCountry,
           deliveryDistrict,
           deliveryPhone,
-          nowSeconds(),
-          nowSeconds()
+          timestamp,
+          timestamp
         )
         .run();
 
@@ -2215,7 +2541,8 @@ async function createOrder(
         success: true,
         order: {
           id:
-            result.meta?.last_row_id,
+            result.meta
+              ?.last_row_id,
           product_id:
             product.id,
           quantity,
@@ -2225,8 +2552,10 @@ async function createOrder(
             totalPrice,
           commission,
           currency:
-            product.currency || "RWF",
-          status: "pending",
+            product.currency ||
+            "RWF",
+          status:
+            "pending",
           payment_status:
             "unpaid"
         }
@@ -2235,7 +2564,6 @@ async function createOrder(
       request
     );
   } catch (error) {
-    // Restore stock if order creation fails.
     await env.DB.prepare(`
       UPDATE products
       SET stock = stock + ?,
@@ -2273,7 +2601,9 @@ async function listSaved(
       request
     );
 
-  if (error) return error;
+  if (error) {
+    return error;
+  }
 
   const result =
     await env.DB.prepare(`
@@ -2319,7 +2649,9 @@ async function saveProduct(
       request
     );
 
-  if (error) return error;
+  if (error) {
+    return error;
+  }
 
   const id =
     integerValue(
@@ -2392,7 +2724,9 @@ async function unsaveProduct(
       request
     );
 
-  if (error) return error;
+  if (error) {
+    return error;
+  }
 
   const id =
     integerValue(
@@ -2441,13 +2775,17 @@ async function listMessages(
       request
     );
 
-  if (error) return error;
+  if (error) {
+    return error;
+  }
 
   const url =
     new URL(request.url);
 
   const withUser =
-    url.searchParams.get("with") || "";
+    url.searchParams.get(
+      "with"
+    ) || "";
 
   let result;
 
@@ -2457,6 +2795,18 @@ async function listMessages(
         withUser,
         -1
       );
+
+    if (otherId < 1) {
+      return json(
+        {
+          success: false,
+          error:
+            "Invalid user id"
+        },
+        400,
+        request
+      );
+    }
 
     result =
       await env.DB.prepare(`
@@ -2553,7 +2903,9 @@ async function sendMessage(
       request
     );
 
-  if (error) return error;
+  if (error) {
+    return error;
+  }
 
   const data =
     await readBody(request);
@@ -2567,7 +2919,7 @@ async function sendMessage(
   const message =
     cleanText(
       data.message ||
-      data.body,
+        data.body,
       5000
     );
 
@@ -2624,6 +2976,16 @@ async function sendMessage(
     );
   }
 
+  const productId =
+    data.product_id !==
+      undefined &&
+    data.product_id !== null
+      ? integerValue(
+          data.product_id,
+          null
+        )
+      : null;
+
   const result =
     await env.DB.prepare(`
       INSERT INTO messages (
@@ -2640,9 +3002,7 @@ async function sendMessage(
         user.id,
         receiverId,
         message,
-        data.product_id
-          ? integerValue(data.product_id, null)
-          : null,
+        productId,
         nowSeconds()
       )
       .run();
@@ -2652,12 +3012,15 @@ async function sendMessage(
       success: true,
       message: {
         id:
-          result.meta?.last_row_id,
+          result.meta
+            ?.last_row_id,
         sender_id:
           user.id,
         receiver_id:
           receiverId,
-        body: message
+        body: message,
+        product_id:
+          productId
       }
     },
     201,
@@ -2685,7 +3048,9 @@ async function adminProducts(
       request
     );
 
-  if (error) return error;
+  if (error) {
+    return error;
+  }
 
   const result =
     await env.DB.prepare(`
@@ -2732,7 +3097,9 @@ async function updateProductStatus(
       request
     );
 
-  if (error) return error;
+  if (error) {
+    return error;
+  }
 
   const id =
     integerValue(
@@ -2756,7 +3123,11 @@ async function updateProductStatus(
     "sold"
   ];
 
-  if (!allowed.includes(status)) {
+  if (
+    !allowed.includes(
+      status
+    )
+  ) {
     return json(
       {
         success: false,
@@ -2829,7 +3200,9 @@ async function adminOrders(
       request
     );
 
-  if (error) return error;
+  if (error) {
+    return error;
+  }
 
   const result =
     await env.DB.prepare(`
@@ -2882,7 +3255,9 @@ async function adminUpdateOrder(
       request
     );
 
-  if (error) return error;
+  if (error) {
+    return error;
+  }
 
   const id =
     integerValue(
@@ -2916,12 +3291,17 @@ async function adminUpdateOrder(
   }
 
   const newStatus =
-    data.status !== undefined
-      ? cleanText(data.status, 30)
+    data.status !==
+    undefined
+      ? cleanText(
+          data.status,
+          30
+        )
       : existing.status;
 
   const newPaymentStatus =
-    data.payment_status !== undefined
+    data.payment_status !==
+    undefined
       ? cleanText(
           data.payment_status,
           30
@@ -2980,16 +3360,21 @@ async function adminUpdateOrder(
   }
 
   const oldClosed =
-    existing.status === "cancelled" ||
-    existing.status === "refunded" ||
-    existing.payment_status === "refunded";
+    existing.status ===
+      "cancelled" ||
+    existing.status ===
+      "refunded" ||
+    existing.payment_status ===
+      "refunded";
 
   const newClosed =
-    newStatus === "cancelled" ||
-    newStatus === "refunded" ||
-    newPaymentStatus === "refunded";
+    newStatus ===
+      "cancelled" ||
+    newStatus ===
+      "refunded" ||
+    newPaymentStatus ===
+      "refunded";
 
-  // Restore stock once when order becomes cancelled/refunded.
   if (
     !oldClosed &&
     newClosed
@@ -3001,15 +3386,15 @@ async function adminUpdateOrder(
       WHERE id = ?
     `)
       .bind(
-        Number(existing.quantity),
+        Number(
+          existing.quantity
+        ),
         nowSeconds(),
         existing.product_id
       )
       .run();
   }
 
-  // If a cancelled/refunded order becomes active again,
-  // take stock back.
   if (
     oldClosed &&
     !newClosed
@@ -3023,10 +3408,14 @@ async function adminUpdateOrder(
           AND stock >= ?
       `)
         .bind(
-          Number(existing.quantity),
+          Number(
+            existing.quantity
+          ),
           nowSeconds(),
           existing.product_id,
-          Number(existing.quantity)
+          Number(
+            existing.quantity
+          )
         )
         .run();
 
@@ -3096,7 +3485,9 @@ async function adminUsers(
       request
     );
 
-  if (error) return error;
+  if (error) {
+    return error;
+  }
 
   const result =
     await env.DB.prepare(`
@@ -3151,7 +3542,9 @@ async function adminStats(
       request
     );
 
-  if (error) return error;
+  if (error) {
+    return error;
+  }
 
   const users =
     await env.DB.prepare(`
@@ -3198,17 +3591,29 @@ async function adminStats(
       success: true,
       stats: {
         users:
-          Number(users?.count || 0),
+          Number(
+            users?.count || 0
+          ),
         sellers:
-          Number(sellers?.count || 0),
+          Number(
+            sellers?.count || 0
+          ),
         products:
-          Number(products?.count || 0),
+          Number(
+            products?.count || 0
+          ),
         orders:
-          Number(orders?.count || 0),
+          Number(
+            orders?.count || 0
+          ),
         revenue:
-          Number(paid?.revenue || 0),
+          Number(
+            paid?.revenue || 0
+          ),
         commission:
-          Number(paid?.commission || 0)
+          Number(
+            paid?.commission || 0
+          )
       }
     },
     200,
@@ -3236,7 +3641,9 @@ async function sellerStats(
       request
     );
 
-  if (error) return error;
+  if (error) {
+    return error;
+  }
 
   const products =
     await env.DB.prepare(`
@@ -3279,16 +3686,28 @@ async function sellerStats(
       success: true,
       stats: {
         products:
-          Number(products?.count || 0),
+          Number(
+            products?.count || 0
+          ),
         orders:
-          Number(orders?.count || 0),
+          Number(
+            orders?.count || 0
+          ),
         revenue:
-          Number(revenue?.revenue || 0),
+          Number(
+            revenue?.revenue || 0
+          ),
         commission:
-          Number(revenue?.commission || 0),
+          Number(
+            revenue?.commission || 0
+          ),
         net_revenue:
-          Number(revenue?.revenue || 0) -
-          Number(revenue?.commission || 0)
+          Number(
+            revenue?.revenue || 0
+          ) -
+          Number(
+            revenue?.commission || 0
+          )
       }
     },
     200,
@@ -3316,7 +3735,9 @@ async function adminCategories(
       request
     );
 
-  if (error) return error;
+  if (error) {
+    return error;
+  }
 
   const result =
     await env.DB.prepare(`
@@ -3353,7 +3774,9 @@ async function createCategory(
       request
     );
 
-  if (error) return error;
+  if (error) {
+    return error;
+  }
 
   const data =
     await readBody(request);
@@ -3412,7 +3835,8 @@ async function createCategory(
       {
         success: true,
         category_id:
-          result.meta?.last_row_id,
+          result.meta
+            ?.last_row_id,
         name
       },
       201,
@@ -3444,25 +3868,33 @@ async function listServices(
 
   const search =
     cleanText(
-      url.searchParams.get("search"),
+      url.searchParams.get(
+        "search"
+      ),
       200
     );
 
   const category =
     cleanText(
-      url.searchParams.get("category"),
+      url.searchParams.get(
+        "category"
+      ),
       200
     );
 
   const country =
     cleanText(
-      url.searchParams.get("country"),
+      url.searchParams.get(
+        "country"
+      ),
       100
     );
 
   const district =
     cleanText(
-      url.searchParams.get("district"),
+      url.searchParams.get(
+        "district"
+      ),
       100
     );
 
@@ -3485,7 +3917,9 @@ async function listServices(
       AND p.category = ?
     `;
 
-    params.push(category);
+    params.push(
+      category
+    );
   }
 
   if (country) {
@@ -3493,7 +3927,9 @@ async function listServices(
       AND p.country = ?
     `;
 
-    params.push(country);
+    params.push(
+      country
+    );
   }
 
   if (district) {
@@ -3501,7 +3937,9 @@ async function listServices(
       AND p.district = ?
     `;
 
-    params.push(district);
+    params.push(
+      district
+    );
   }
 
   if (search) {
@@ -3518,7 +3956,10 @@ async function listServices(
       `%${search}%`;
 
     params.push(
-      q, q, q, q
+      q,
+      q,
+      q,
+      q
     );
   }
 
@@ -3534,11 +3975,14 @@ async function listServices(
       .all();
 
   const services =
-    (result.results || [])
-      .filter(
-        product =>
-          serviceScore(product) > 0
-      );
+    (
+      result.results || []
+    ).filter(
+      product =>
+        serviceScore(
+          product
+        ) > 0
+    );
 
   return json(
     {
@@ -3570,7 +4014,9 @@ async function adminServices(
       request
     );
 
-  if (error) return error;
+  if (error) {
+    return error;
+  }
 
   const result =
     await env.DB.prepare(`
@@ -3588,11 +4034,14 @@ async function adminServices(
       .all();
 
   const services =
-    (result.results || [])
-      .filter(
-        product =>
-          serviceScore(product) > 0
-      );
+    (
+      result.results || []
+    ).filter(
+      product =>
+        serviceScore(
+          product
+        ) > 0
+    );
 
   return json(
     {
@@ -3608,6 +4057,63 @@ async function adminServices(
 // R2 IMAGE UPLOAD
 // ============================================================
 
+function detectImageType(
+  bytes
+) {
+  if (
+    bytes.length >= 3 &&
+    bytes[0] === 0xff &&
+    bytes[1] === 0xd8 &&
+    bytes[2] === 0xff
+  ) {
+    return "image/jpeg";
+  }
+
+  if (
+    bytes.length >= 8 &&
+    bytes[0] === 0x89 &&
+    bytes[1] === 0x50 &&
+    bytes[2] === 0x4e &&
+    bytes[3] === 0x47 &&
+    bytes[4] === 0x0d &&
+    bytes[5] === 0x0a &&
+    bytes[6] === 0x1a &&
+    bytes[7] === 0x0a
+  ) {
+    return "image/png";
+  }
+
+  if (
+    bytes.length >= 12 &&
+    bytes[0] === 0x52 &&
+    bytes[1] === 0x49 &&
+    bytes[2] === 0x46 &&
+    bytes[3] === 0x46 &&
+    bytes[8] === 0x57 &&
+    bytes[9] === 0x45 &&
+    bytes[10] === 0x42 &&
+    bytes[11] === 0x50
+  ) {
+    return "image/webp";
+  }
+
+  if (
+    bytes.length >= 6 &&
+    (
+      String.fromCharCode(
+        ...bytes.slice(0, 6)
+      ) === "GIF87a" ||
+      String.fromCharCode(
+        ...bytes.slice(0, 6)
+      ) === "GIF89a"
+    )
+  ) {
+    return "image/gif";
+  }
+
+  return null;
+}
+
 async function uploadImage(
   request,
   env
@@ -3619,12 +4125,14 @@ async function uploadImage(
     );
 
   const error =
-    requireUser(
+    requireSeller(
       user,
       request
     );
 
-  if (error) return error;
+  if (error) {
+    return error;
+  }
 
   if (!env.IMAGES) {
     return json(
@@ -3681,12 +4189,9 @@ async function uploadImage(
     );
   }
 
-  const maxImageSize =
-    10 * 1024 * 1024;
-
   if (
     Number(file.size || 0) >
-    maxImageSize
+    MAX_IMAGE_SIZE
   ) {
     return json(
       {
@@ -3699,6 +4204,19 @@ async function uploadImage(
     );
   }
 
+  const buffer =
+    await file.arrayBuffer();
+
+  const detectedType =
+    detectImageType(
+      new Uint8Array(
+        buffer.slice(
+          0,
+          32
+        )
+      )
+    );
+
   const allowedTypes = [
     "image/jpeg",
     "image/png",
@@ -3707,16 +4225,16 @@ async function uploadImage(
   ];
 
   if (
-    file.type &&
+    !detectedType ||
     !allowedTypes.includes(
-      file.type
+      detectedType
     )
   ) {
     return json(
       {
         success: false,
         error:
-          "Unsupported image type"
+          "Unsupported or invalid image file"
       },
       400,
       request
@@ -3725,15 +4243,24 @@ async function uploadImage(
 
   let extension = "jpg";
 
-  if (file.type === "image/png") {
+  if (
+    detectedType ===
+    "image/png"
+  ) {
     extension = "png";
   }
 
-  if (file.type === "image/webp") {
+  if (
+    detectedType ===
+    "image/webp"
+  ) {
     extension = "webp";
   }
 
-  if (file.type === "image/gif") {
+  if (
+    detectedType ===
+    "image/gif"
+  ) {
     extension = "gif";
   }
 
@@ -3742,12 +4269,11 @@ async function uploadImage(
 
   await env.IMAGES.put(
     key,
-    await file.arrayBuffer(),
+    buffer,
     {
       httpMetadata: {
         contentType:
-          file.type ||
-          "image/jpeg"
+          detectedType
       }
     }
   );
@@ -3757,7 +4283,9 @@ async function uploadImage(
       success: true,
       key,
       url:
-        `/api/images/${encodeURIComponent(key)}`
+        `/api/images/${encodeURIComponent(
+          key
+        )}`
     },
     201,
     request
@@ -3779,13 +4307,17 @@ async function getImage(
       {
         status: 503,
         headers:
-          securityHeaders(request)
+          securityHeaders(
+            request
+          )
       }
     );
   }
 
   const object =
-    await env.IMAGES.get(key);
+    await env.IMAGES.get(
+      key
+    );
 
   if (!object) {
     return new Response(
@@ -3793,13 +4325,17 @@ async function getImage(
       {
         status: 404,
         headers:
-          securityHeaders(request)
+          securityHeaders(
+            request
+          )
       }
     );
   }
 
   const headers =
-    securityHeaders(request);
+    securityHeaders(
+      request
+    );
 
   object.writeHttpMetadata(
     headers
@@ -3844,7 +4380,9 @@ async function adminPayments(
       request
     );
 
-  if (error) return error;
+  if (error) {
+    return error;
+  }
 
   const result =
     await env.DB.prepare(`
@@ -3908,7 +4446,9 @@ async function adminReports(
       request
     );
 
-  if (error) return error;
+  if (error) {
+    return error;
+  }
 
   const result =
     await env.DB.prepare(`
@@ -3921,7 +4461,9 @@ async function adminReports(
           0
         ) AS total
       FROM orders
-      GROUP BY status, payment_status
+      GROUP BY
+        status,
+        payment_status
       ORDER BY count DESC
     `)
       .all();
@@ -3935,6 +4477,25 @@ async function adminReports(
     200,
     request
   );
+}
+
+// ============================================================
+// CLEAN EXPIRED SESSIONS
+// ============================================================
+
+async function cleanExpiredSessions(
+  env
+) {
+  try {
+    await env.DB.prepare(`
+      DELETE FROM sessions
+      WHERE expires_at <= ?
+    `)
+      .bind(
+        nowSeconds()
+      )
+      .run();
+  } catch {}
 }
 
 // ============================================================
@@ -3971,14 +4532,17 @@ async function handleRequest(
   ctx
 ) {
   if (
-    request.method === "OPTIONS"
+    request.method ===
+    "OPTIONS"
   ) {
     return new Response(
       null,
       {
         status: 204,
         headers:
-          securityHeaders(request)
+          securityHeaders(
+            request
+          )
       }
     );
   }
@@ -4008,12 +4572,29 @@ async function handleRequest(
       );
     }
 
-    // -------------------------
-    // HEALTH / CONFIG
-    // -------------------------
+    // --------------------------------------------------------
+    // CLEAN EXPIRED SESSIONS
+    // --------------------------------------------------------
 
     if (
-      path === "/api/health" &&
+      ctx &&
+      typeof ctx.waitUntil ===
+        "function"
+    ) {
+      ctx.waitUntil(
+        cleanExpiredSessions(
+          env
+        )
+      );
+    }
+
+    // --------------------------------------------------------
+    // HEALTH / CONFIG
+    // --------------------------------------------------------
+
+    if (
+      path ===
+        "/api/health" &&
       method === "GET"
     ) {
       return health(
@@ -4023,7 +4604,8 @@ async function handleRequest(
     }
 
     if (
-      path === "/api/config" &&
+      path ===
+        "/api/config" &&
       method === "GET"
     ) {
       return config(
@@ -4033,7 +4615,8 @@ async function handleRequest(
     }
 
     if (
-      path === "/api/countries" &&
+      path ===
+        "/api/countries" &&
       method === "GET"
     ) {
       return countries(
@@ -4042,7 +4625,8 @@ async function handleRequest(
     }
 
     if (
-      path === "/api/service-categories" &&
+      path ===
+        "/api/service-categories" &&
       method === "GET"
     ) {
       return serviceCategories(
@@ -4051,7 +4635,8 @@ async function handleRequest(
     }
 
     if (
-      path === "/api/categories" &&
+      path ===
+        "/api/categories" &&
       method === "GET"
     ) {
       return categories(
@@ -4060,14 +4645,16 @@ async function handleRequest(
       );
     }
 
-    // -------------------------
+    // --------------------------------------------------------
     // AUTH
-    // -------------------------
+    // --------------------------------------------------------
 
     if (
       (
-        path === "/api/register" ||
-        path === "/api/auth/register"
+        path ===
+          "/api/register" ||
+        path ===
+          "/api/auth/register"
       ) &&
       method === "POST"
     ) {
@@ -4079,8 +4666,10 @@ async function handleRequest(
 
     if (
       (
-        path === "/api/login" ||
-        path === "/api/auth/login"
+        path ===
+          "/api/login" ||
+        path ===
+          "/api/auth/login"
       ) &&
       method === "POST"
     ) {
@@ -4092,8 +4681,10 @@ async function handleRequest(
 
     if (
       (
-        path === "/api/logout" ||
-        path === "/api/auth/logout"
+        path ===
+          "/api/logout" ||
+        path ===
+          "/api/auth/logout"
       ) &&
       method === "POST"
     ) {
@@ -4105,8 +4696,10 @@ async function handleRequest(
 
     if (
       (
-        path === "/api/me" ||
-        path === "/api/auth/me"
+        path ===
+          "/api/me" ||
+        path ===
+          "/api/auth/me"
       ) &&
       method === "GET"
     ) {
@@ -4116,12 +4709,13 @@ async function handleRequest(
       );
     }
 
-    // -------------------------
+    // --------------------------------------------------------
     // PRODUCTS
-    // -------------------------
+    // --------------------------------------------------------
 
     if (
-      path === "/api/products" &&
+      path ===
+        "/api/products" &&
       method === "GET"
     ) {
       return listProducts(
@@ -4131,7 +4725,8 @@ async function handleRequest(
     }
 
     if (
-      path === "/api/products" &&
+      path ===
+        "/api/products" &&
       method === "POST"
     ) {
       return createProduct(
@@ -4141,7 +4736,8 @@ async function handleRequest(
     }
 
     if (
-      path === "/api/my-products" &&
+      path ===
+        "/api/my-products" &&
       method === "GET"
     ) {
       return myProducts(
@@ -4150,12 +4746,13 @@ async function handleRequest(
       );
     }
 
-    // -------------------------
+    // --------------------------------------------------------
     // SERVICES
-    // -------------------------
+    // --------------------------------------------------------
 
     if (
-      path === "/api/services" &&
+      path ===
+        "/api/services" &&
       method === "GET"
     ) {
       return listServices(
@@ -4164,12 +4761,13 @@ async function handleRequest(
       );
     }
 
-    // -------------------------
+    // --------------------------------------------------------
     // SAVED
-    // -------------------------
+    // --------------------------------------------------------
 
     if (
-      path === "/api/saved" &&
+      path ===
+        "/api/saved" &&
       method === "GET"
     ) {
       return listSaved(
@@ -4178,12 +4776,13 @@ async function handleRequest(
       );
     }
 
-    // -------------------------
+    // --------------------------------------------------------
     // ORDERS
-    // -------------------------
+    // --------------------------------------------------------
 
     if (
-      path === "/api/orders" &&
+      path ===
+        "/api/orders" &&
       method === "GET"
     ) {
       return listOrders(
@@ -4193,7 +4792,8 @@ async function handleRequest(
     }
 
     if (
-      path === "/api/orders" &&
+      path ===
+        "/api/orders" &&
       method === "POST"
     ) {
       return createOrder(
@@ -4203,7 +4803,8 @@ async function handleRequest(
     }
 
     if (
-      path === "/api/seller/orders" &&
+      path ===
+        "/api/seller/orders" &&
       method === "GET"
     ) {
       return sellerOrders(
@@ -4212,12 +4813,13 @@ async function handleRequest(
       );
     }
 
-    // -------------------------
+    // --------------------------------------------------------
     // MESSAGES
-    // -------------------------
+    // --------------------------------------------------------
 
     if (
-      path === "/api/messages" &&
+      path ===
+        "/api/messages" &&
       method === "GET"
     ) {
       return listMessages(
@@ -4227,7 +4829,8 @@ async function handleRequest(
     }
 
     if (
-      path === "/api/messages" &&
+      path ===
+        "/api/messages" &&
       method === "POST"
     ) {
       return sendMessage(
@@ -4236,12 +4839,13 @@ async function handleRequest(
       );
     }
 
-    // -------------------------
+    // --------------------------------------------------------
     // SELLER STATS
-    // -------------------------
+    // --------------------------------------------------------
 
     if (
-      path === "/api/seller/stats" &&
+      path ===
+        "/api/seller/stats" &&
       method === "GET"
     ) {
       return sellerStats(
@@ -4250,12 +4854,13 @@ async function handleRequest(
       );
     }
 
-    // -------------------------
+    // --------------------------------------------------------
     // IMAGE UPLOAD
-    // -------------------------
+    // --------------------------------------------------------
 
     if (
-      path === "/api/images" &&
+      path ===
+        "/api/images" &&
       method === "POST"
     ) {
       return uploadImage(
@@ -4264,12 +4869,13 @@ async function handleRequest(
       );
     }
 
-    // -------------------------
+    // --------------------------------------------------------
     // ADMIN
-    // -------------------------
+    // --------------------------------------------------------
 
     if (
-      path === "/api/admin/stats" &&
+      path ===
+        "/api/admin/stats" &&
       method === "GET"
     ) {
       return adminStats(
@@ -4279,7 +4885,8 @@ async function handleRequest(
     }
 
     if (
-      path === "/api/admin/users" &&
+      path ===
+        "/api/admin/users" &&
       method === "GET"
     ) {
       return adminUsers(
@@ -4289,7 +4896,8 @@ async function handleRequest(
     }
 
     if (
-      path === "/api/admin/products" &&
+      path ===
+        "/api/admin/products" &&
       method === "GET"
     ) {
       return adminProducts(
@@ -4299,7 +4907,8 @@ async function handleRequest(
     }
 
     if (
-      path === "/api/admin/orders" &&
+      path ===
+        "/api/admin/orders" &&
       method === "GET"
     ) {
       return adminOrders(
@@ -4309,7 +4918,8 @@ async function handleRequest(
     }
 
     if (
-      path === "/api/admin/payments" &&
+      path ===
+        "/api/admin/payments" &&
       method === "GET"
     ) {
       return adminPayments(
@@ -4319,7 +4929,8 @@ async function handleRequest(
     }
 
     if (
-      path === "/api/admin/reports" &&
+      path ===
+        "/api/admin/reports" &&
       method === "GET"
     ) {
       return adminReports(
@@ -4329,7 +4940,8 @@ async function handleRequest(
     }
 
     if (
-      path === "/api/admin/services" &&
+      path ===
+        "/api/admin/services" &&
       method === "GET"
     ) {
       return adminServices(
@@ -4339,7 +4951,8 @@ async function handleRequest(
     }
 
     if (
-      path === "/api/admin/categories" &&
+      path ===
+        "/api/admin/categories" &&
       method === "GET"
     ) {
       return adminCategories(
@@ -4349,7 +4962,8 @@ async function handleRequest(
     }
 
     if (
-      path === "/api/admin/categories" &&
+      path ===
+        "/api/admin/categories" &&
       method === "POST"
     ) {
       return createCategory(
@@ -4358,9 +4972,9 @@ async function handleRequest(
       );
     }
 
-    // -------------------------
-    // PRODUCT ID ROUTES
-    // -------------------------
+    // --------------------------------------------------------
+    // PRODUCT ID
+    // --------------------------------------------------------
 
     const productMatch =
       path.match(
@@ -4378,9 +4992,9 @@ async function handleRequest(
       );
     }
 
-    // -------------------------
+    // --------------------------------------------------------
     // SAVED PRODUCT ID
-    // -------------------------
+    // --------------------------------------------------------
 
     const savedMatch =
       path.match(
@@ -4409,9 +5023,9 @@ async function handleRequest(
       );
     }
 
-    // -------------------------
+    // --------------------------------------------------------
     // ADMIN PRODUCT STATUS
-    // -------------------------
+    // --------------------------------------------------------
 
     const statusMatch =
       path.match(
@@ -4429,9 +5043,9 @@ async function handleRequest(
       );
     }
 
-    // -------------------------
+    // --------------------------------------------------------
     // ADMIN ORDER UPDATE
-    // -------------------------
+    // --------------------------------------------------------
 
     const orderMatch =
       path.match(
@@ -4449,9 +5063,9 @@ async function handleRequest(
       );
     }
 
-    // -------------------------
+    // --------------------------------------------------------
     // R2 IMAGE GET
-    // -------------------------
+    // --------------------------------------------------------
 
     const imageMatch =
       path.match(
@@ -4471,9 +5085,9 @@ async function handleRequest(
       );
     }
 
-    // -------------------------
+    // --------------------------------------------------------
     // UNKNOWN ROUTE
-    // -------------------------
+    // --------------------------------------------------------
 
     return json(
       {
@@ -4521,6 +5135,38 @@ async function handleRequest(
             "Invalid JSON body"
         },
         400,
+        request
+      );
+    }
+
+    if (
+      message.includes(
+        "SESSION_SECRET is not configured"
+      )
+    ) {
+      return json(
+        {
+          success: false,
+          error:
+            "SESSION_SECRET is not configured"
+        },
+        500,
+        request
+      );
+    }
+
+    if (
+      message.includes(
+        "AUTH_PEPPER is not configured"
+      )
+    ) {
+      return json(
+        {
+          success: false,
+          error:
+            "AUTH_PEPPER is not configured"
+        },
+        500,
         request
       );
     }
